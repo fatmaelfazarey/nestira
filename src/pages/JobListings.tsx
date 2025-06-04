@@ -42,32 +42,35 @@ const JobListings = () => {
 
   const handleCreateNewJob = () => {
     console.log('Create new job clicked');
-    // You can add navigation to job creation form here
-    alert('Create New Job functionality - this would navigate to a job creation form');
+    // Navigate to job creation form
+    window.alert('Redirecting to job creation form...');
   };
 
   const handleViewJob = (jobId: number) => {
     console.log('View job:', jobId);
-    alert(`View job ${jobId} - this would show job details`);
+    window.alert(`Opening job details for Job ID: ${jobId}`);
   };
 
   const handleEditJob = (jobId: number) => {
     console.log('Edit job:', jobId);
-    alert(`Edit job ${jobId} - this would open job editor`);
+    window.alert(`Opening job editor for Job ID: ${jobId}`);
   };
 
   const handleViewAnalytics = (jobId: number) => {
     console.log('View analytics for job:', jobId);
-    alert(`View analytics for job ${jobId} - this would show job performance metrics`);
+    window.alert(`Opening analytics dashboard for Job ID: ${jobId}`);
   };
 
   const handleArchiveJob = (jobId: number) => {
     console.log('Archive job:', jobId);
-    setJobs(jobs.map(job => 
-      job.id === jobId 
-        ? { ...job, status: job.status === 'Active' ? 'Archived' : 'Active' }
-        : job
-    ));
+    setJobs(prevJobs => 
+      prevJobs.map(job => 
+        job.id === jobId 
+          ? { ...job, status: job.status === 'Active' ? 'Archived' : 'Active' }
+          : job
+      )
+    );
+    window.alert(`Job ${jobId} has been ${jobs.find(job => job.id === jobId)?.status === 'Active' ? 'archived' : 'reactivated'}`);
   };
 
   return (
@@ -79,8 +82,9 @@ const JobListings = () => {
             <p className="text-gray-600">Manage your job postings and track performance</p>
           </div>
           <Button 
-            className="bg-accent hover:bg-accent/90"
+            className="bg-accent hover:bg-accent/90 cursor-pointer"
             onClick={handleCreateNewJob}
+            type="button"
           >
             <Plus className="w-4 h-4 mr-2" />
             Create New Job
@@ -121,6 +125,8 @@ const JobListings = () => {
                       size="sm"
                       onClick={() => handleViewJob(job.id)}
                       title="View Job"
+                      type="button"
+                      className="cursor-pointer"
                     >
                       <Eye className="w-4 h-4" />
                     </Button>
@@ -129,6 +135,8 @@ const JobListings = () => {
                       size="sm"
                       onClick={() => handleEditJob(job.id)}
                       title="Edit Job"
+                      type="button"
+                      className="cursor-pointer"
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
@@ -137,6 +145,8 @@ const JobListings = () => {
                       size="sm"
                       onClick={() => handleViewAnalytics(job.id)}
                       title="View Analytics"
+                      type="button"
+                      className="cursor-pointer"
                     >
                       <BarChart2 className="w-4 h-4" />
                     </Button>
@@ -145,6 +155,8 @@ const JobListings = () => {
                       size="sm"
                       onClick={() => handleArchiveJob(job.id)}
                       title={job.status === 'Active' ? 'Archive Job' : 'Unarchive Job'}
+                      type="button"
+                      className="cursor-pointer"
                     >
                       <Archive className="w-4 h-4" />
                     </Button>
