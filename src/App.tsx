@@ -4,7 +4,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ThemeProvider } from "next-themes";
 import Index from "./pages/Index";
 import Inbox from "./pages/Inbox";
 import TalentPool from "./pages/TalentPool";
@@ -24,31 +23,29 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/inbox" element={<Inbox />} />
-            <Route path="/talent-pool" element={<TalentPool />} />
-            <Route path="/job-listings" element={<JobListings />} />
-            <Route path="/recruitment-board" element={<RecruitmentBoard />} />
-            <Route path="/interviews" element={<Interviews />} />
-            <Route path="/quiz-builder" element={<QuizBuilder />} />
-            <Route path="/interview-questions" element={<InterviewQuestions />} />
-            <Route path="/offer-templates" element={<OfferTemplates />} />
-            <Route path="/billing" element={<Billing />} />
-            <Route path="/referrals" element={<Referrals />} />
-            <Route path="/blog" element={<BlogReports />} />
-            <Route path="/help" element={<HelpCenter />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/inbox" element={<Inbox />} />
+          <Route path="/talent-pool" element={<TalentPool />} />
+          <Route path="/job-listings" element={<JobListings />} />
+          <Route path="/recruitment-board" element={<RecruitmentBoard />} />
+          <Route path="/interviews" element={<Interviews />} />
+          <Route path="/quiz-builder" element={<QuizBuilder />} />
+          <Route path="/interview-questions" element={<InterviewQuestions />} />
+          <Route path="/offer-templates" element={<OfferTemplates />} />
+          <Route path="/billing" element={<Billing />} />
+          <Route path="/referrals" element={<Referrals />} />
+          <Route path="/blog" element={<BlogReports />} />
+          <Route path="/help" element={<HelpCenter />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 
