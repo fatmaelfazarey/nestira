@@ -17,6 +17,7 @@ import Billing from "./pages/Billing";
 import Referrals from "./pages/Referrals";
 import BlogReports from "./pages/BlogReports";
 import HelpCenter from "./pages/HelpCenter";
+import EmailAlertsSettings from "./pages/EmailAlertsSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/referrals" element={<Referrals />} />
           <Route path="/blog" element={<BlogReports />} />
           <Route path="/help" element={<HelpCenter />} />
+          <Route path="/email-alerts" element={<EmailAlertsSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -7,7 +7,8 @@ import {
   Plus,
   File,
   List,
-  Check
+  Check,
+  Bell
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -93,6 +94,12 @@ const navigationSections = [
         title: "Offer Templates",
         url: "/offer-templates",
         icon: File,
+        badge: null
+      },
+      {
+        title: "Email Alerts",
+        url: "/email-alerts",
+        icon: Bell,
         badge: null
       }
     ]
