@@ -8,8 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Slider } from '@/components/ui/slider';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Star, MapPin, Briefcase, Unlock, Search, Filter, ChevronDown } from 'lucide-react';
+import { Star, MapPin, Briefcase, Unlock, Search, Calendar, DollarSign, Flag } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 
 const TalentPool = () => {
@@ -21,7 +20,7 @@ const TalentPool = () => {
   const [scoreRange, setScoreRange] = useState([0]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
-  const [showMoreFilters, setShowMoreFilters] = useState(false);
+  const [currentView, setCurrentView] = useState('grid');
 
   const candidates = [
     {
@@ -29,6 +28,7 @@ const TalentPool = () => {
       name: "Sarah Johnson",
       title: "Senior Finance Manager",
       location: "Dubai, UAE",
+      country: "AE",
       experience: "8 years",
       score: 92,
       status: "Available",
@@ -38,13 +38,16 @@ const TalentPool = () => {
       phone: "+971 50 123 4567",
       yearsOfExperience: 8,
       education: "MBA Finance, American University of Dubai",
-      summary: "Experienced finance professional with 8+ years in financial planning, analysis, and team leadership. Proven track record in implementing cost-saving initiatives and driving strategic financial decisions in multinational corporations."
+      summary: "Experienced finance professional with 8+ years in financial planning, analysis, and team leadership. Proven track record in implementing cost-saving initiatives and driving strategic financial decisions in multinational corporations.",
+      profileAdded: "2024-01-15",
+      salaryExpectation: "120,000 - 150,000 AED"
     },
     {
       id: 2,
       name: "Ahmed Hassan",
       title: "Financial Analyst",
       location: "Cairo, Egypt",
+      country: "EG",
       experience: "5 years",
       score: 88,
       status: "Interviewing",
@@ -54,13 +57,16 @@ const TalentPool = () => {
       phone: "+20 10 123 4567",
       yearsOfExperience: 5,
       education: "Bachelor's in Finance, Cairo University",
-      summary: "Detail-oriented financial analyst specializing in data analysis, risk assessment, and financial modeling. Expert in Power BI and SQL with strong analytical skills."
+      summary: "Detail-oriented financial analyst specializing in data analysis, risk assessment, and financial modeling. Expert in Power BI and SQL with strong analytical skills.",
+      profileAdded: "2024-02-20",
+      salaryExpectation: "80,000 - 100,000 EGP"
     },
     {
       id: 3,
       name: "Fatima Al-Zahra",
       title: "Accounting Manager",
       location: "Riyadh, Saudi Arabia",
+      country: "SA",
       experience: "6 years",
       score: 90,
       status: "Shortlisted",
@@ -70,7 +76,9 @@ const TalentPool = () => {
       phone: "+966 50 123 4567",
       yearsOfExperience: 6,
       education: "Master's in Accounting, King Saud University",
-      summary: "Strategic accounting manager with expertise in SAP implementation, IFRS compliance, and team leadership. Successfully managed accounting teams of 15+ members."
+      summary: "Strategic accounting manager with expertise in SAP implementation, IFRS compliance, and team leadership. Successfully managed accounting teams of 15+ members.",
+      profileAdded: "2024-03-10",
+      salaryExpectation: "180,000 - 220,000 SAR"
     }
   ];
 
@@ -102,6 +110,32 @@ const TalentPool = () => {
     setFavorites(newFavorites);
   };
 
+  const getCountryFlag = (countryCode) => {
+    const flags = {
+      'AE': '🇦🇪',
+      'EG': '🇪🇬',
+      'SA': '🇸🇦'
+    };
+    return flags[countryCode] || '🌍';
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 30) {
+      return `${diffDays} days ago`;
+    } else if (diffDays < 365) {
+      const months = Math.floor(diffDays / 30);
+      return `${months} month${months > 1 ? 's' : ''} ago`;
+    } else {
+      const years = Math.floor(diffDays / 365);
+      return `${years} year${years > 1 ? 's' : ''} ago`;
+    }
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -111,17 +145,32 @@ const TalentPool = () => {
             <p className="text-gray-600">Browse and filter finance professionals</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">Grid View</Button>
-            <Button variant="outline">Table View</Button>
-            <Button variant="outline">Kanban</Button>
+            <Button 
+              variant={currentView === 'grid' ? 'default' : 'outline'}
+              onClick={() => setCurrentView('grid')}
+            >
+              Grid View
+            </Button>
+            <Button 
+              variant={currentView === 'table' ? 'default' : 'outline'}
+              onClick={() => setCurrentView('table')}
+            >
+              Table View
+            </Button>
+            <Button 
+              variant={currentView === 'kanban' ? 'default' : 'outline'}
+              onClick={() => setCurrentView('kanban')}
+            >
+              Kanban
+            </Button>
           </div>
         </div>
 
-        {/* Filters */}
+        {/* All Filters - Always Visible */}
         <Card>
-          <CardContent className="p-4">
-            <div className="space-y-4">
-              {/* Main filters */}
+          <CardContent className="p-6">
+            <div className="space-y-6">
+              {/* Top row filters */}
               <div className="flex items-center gap-4 flex-wrap">
                 <div className="flex items-center gap-2">
                   <Search className="w-4 h-4 text-gray-500" />
@@ -156,70 +205,56 @@ const TalentPool = () => {
                     <SelectItem value="Shortlisted">Shortlisted</SelectItem>
                   </SelectContent>
                 </Select>
-
-                <Collapsible open={showMoreFilters} onOpenChange={setShowMoreFilters}>
-                  <CollapsibleTrigger asChild>
-                    <Button variant="outline" size="sm">
-                      <Filter className="w-4 h-4 mr-2" />
-                      More Filters
-                      <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showMoreFilters ? 'rotate-180' : ''}`} />
-                    </Button>
-                  </CollapsibleTrigger>
-                </Collapsible>
               </div>
 
-              {/* Collapsible additional filters */}
-              <Collapsible open={showMoreFilters} onOpenChange={setShowMoreFilters}>
-                <CollapsibleContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg">
-                    {/* Experience Slider */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
-                        Years of Experience: {experienceRange[0]}+ years
-                      </label>
-                      <Slider
-                        value={experienceRange}
-                        onValueChange={setExperienceRange}
-                        max={15}
-                        min={0}
-                        step={1}
-                        className="w-full"
-                      />
-                    </div>
+              {/* Bottom row filters */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg">
+                {/* Experience Slider */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Years of Experience: {experienceRange[0]}+ years
+                  </label>
+                  <Slider
+                    value={experienceRange}
+                    onValueChange={setExperienceRange}
+                    max={15}
+                    min={0}
+                    step={1}
+                    className="w-full"
+                  />
+                </div>
 
-                    {/* Skills Filter */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">Skills</label>
-                      <Select value={skillsFilter} onValueChange={setSkillsFilter}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="All Skills" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All Skills</SelectItem>
-                          {allSkills.map((skill) => (
-                            <SelectItem key={skill} value={skill}>{skill}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                {/* Skills Filter */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">Skills</label>
+                  <Select value={skillsFilter} onValueChange={setSkillsFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="All Skills" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Skills</SelectItem>
+                      {allSkills.map((skill) => (
+                        <SelectItem key={skill} value={skill}>{skill}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                    {/* Matching Score Slider */}
-                    <div className="space-y-2">
-                      <label className="text-sm font-medium text-gray-700">
-                        Minimum Score: {scoreRange[0]}%
-                      </label>
-                      <Slider
-                        value={scoreRange}
-                        onValueChange={setScoreRange}
-                        max={100}
-                        min={0}
-                        step={5}
-                        className="w-full"
-                      />
-                    </div>
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
+                {/* Matching Score Slider */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    Minimum Score: {scoreRange[0]}%
+                  </label>
+                  <Slider
+                    value={scoreRange}
+                    onValueChange={setScoreRange}
+                    max={100}
+                    min={0}
+                    step={5}
+                    className="w-full"
+                  />
+                </div>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -235,7 +270,10 @@ const TalentPool = () => {
                       <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <CardTitle className="text-lg">{candidate.name}</CardTitle>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        {candidate.name}
+                        <span className="text-lg">{getCountryFlag(candidate.country)}</span>
+                      </CardTitle>
                       <p className="text-sm text-gray-600">{candidate.title}</p>
                     </div>
                   </div>
@@ -262,6 +300,14 @@ const TalentPool = () => {
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <Briefcase className="w-4 h-4" />
                   {candidate.experience} experience
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Calendar className="w-4 h-4" />
+                  Joined {formatDate(candidate.profileAdded)}
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <DollarSign className="w-4 h-4" />
+                  {candidate.salaryExpectation}
                 </div>
                 <div className="flex flex-wrap gap-1">
                   {candidate.tags.map((tag) => (
