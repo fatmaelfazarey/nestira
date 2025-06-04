@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Slider } from '@/components/ui/slider';
-import { Star, MapPin, Briefcase, Unlock, Search, Calendar, DollarSign, Flag } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Star, MapPin, Briefcase, Unlock, Search, Calendar, DollarSign, Flag, Grid2X2, LayoutList, Kanban } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 
 const TalentPool = () => {
@@ -122,7 +123,7 @@ const TalentPool = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const now = new Date();
-    const diffTime = Math.abs(now - date);
+    const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
     if (diffDays < 30) {
@@ -133,6 +134,253 @@ const TalentPool = () => {
     } else {
       const years = Math.floor(diffDays / 365);
       return `${years} year${years > 1 ? 's' : ''} ago`;
+    }
+  };
+
+  const renderGridView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {filteredCandidates.map((candidate) => (
+        <Card key={candidate.id} className="hover:shadow-lg transition-shadow relative">
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <div className="flex items-center gap-3">
+                <Avatar className="w-12 h-12">
+                  <AvatarImage src={candidate.photo} alt={candidate.name} />
+                  <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    {candidate.name}
+                    <span className="text-lg">{getCountryFlag(candidate.country)}</span>
+                  </CardTitle>
+                  <p className="text-sm text-gray-600">{candidate.title}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleFavorite(candidate.id)}
+                  className="text-yellow-500 hover:text-yellow-600 p-1"
+                >
+                  <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                </Button>
+                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-accent text-white font-bold text-sm">
+                  {candidate.score}
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <MapPin className="w-4 h-4" />
+              {candidate.location}
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Briefcase className="w-4 h-4" />
+              {candidate.experience} experience
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Calendar className="w-4 h-4" />
+              Joined {formatDate(candidate.profileAdded)}
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <DollarSign className="w-4 h-4" />
+              {candidate.salaryExpectation}
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {candidate.tags.map((tag) => (
+                <Badge key={tag} variant="secondary" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+            <div className="flex justify-between items-center">
+              <Badge 
+                variant={candidate.status === 'Available' ? 'default' : 'secondary'}
+                className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
+              >
+                {candidate.status}
+              </Badge>
+              <Button 
+                size="sm" 
+                className="bg-accent hover:bg-accent/90"
+                onClick={() => handleUnlock(candidate)}
+              >
+                <Unlock className="w-4 h-4 mr-1" />
+                Unlock
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
+  const renderTableView = () => (
+    <Card>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Candidate</TableHead>
+            <TableHead>Title</TableHead>
+            <TableHead>Location</TableHead>
+            <TableHead>Experience</TableHead>
+            <TableHead>Score</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Salary</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredCandidates.map((candidate) => (
+            <TableRow key={candidate.id}>
+              <TableCell>
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-8 h-8">
+                    <AvatarImage src={candidate.photo} alt={candidate.name} />
+                    <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <div className="font-medium flex items-center gap-2">
+                      {candidate.name}
+                      <span>{getCountryFlag(candidate.country)}</span>
+                    </div>
+                    <div className="text-sm text-gray-500">{formatDate(candidate.profileAdded)}</div>
+                  </div>
+                </div>
+              </TableCell>
+              <TableCell>{candidate.title}</TableCell>
+              <TableCell>{candidate.location}</TableCell>
+              <TableCell>{candidate.experience}</TableCell>
+              <TableCell>
+                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-white font-bold text-sm">
+                  {candidate.score}
+                </div>
+              </TableCell>
+              <TableCell>
+                <Badge 
+                  variant={candidate.status === 'Available' ? 'default' : 'secondary'}
+                  className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
+                >
+                  {candidate.status}
+                </Badge>
+              </TableCell>
+              <TableCell className="text-sm">{candidate.salaryExpectation}</TableCell>
+              <TableCell>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleFavorite(candidate.id)}
+                    className="text-yellow-500 hover:text-yellow-600 p-1"
+                  >
+                    <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    className="bg-accent hover:bg-accent/90"
+                    onClick={() => handleUnlock(candidate)}
+                  >
+                    <Unlock className="w-4 h-4" />
+                  </Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Card>
+  );
+
+  const renderKanbanView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {['Available', 'Interviewing', 'Shortlisted'].map((status) => (
+        <div key={status} className="space-y-4">
+          <h3 className="font-semibold text-lg text-gray-900 border-b pb-2">
+            {status} ({filteredCandidates.filter(c => c.status === status).length})
+          </h3>
+          <div className="space-y-3">
+            {filteredCandidates
+              .filter(candidate => candidate.status === status)
+              .map((candidate) => (
+                <Card key={candidate.id} className="hover:shadow-md transition-shadow">
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-2">
+                        <Avatar className="w-8 h-8">
+                          <AvatarImage src={candidate.photo} alt={candidate.name} />
+                          <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <div className="font-medium text-sm flex items-center gap-1">
+                            {candidate.name}
+                            <span className="text-xs">{getCountryFlag(candidate.country)}</span>
+                          </div>
+                          <div className="text-xs text-gray-500">{candidate.title}</div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleFavorite(candidate.id)}
+                          className="text-yellow-500 hover:text-yellow-600 p-1 h-6 w-6"
+                        >
+                          <Star className={`w-3 h-3 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                        </Button>
+                        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-accent text-white font-bold text-xs">
+                          {candidate.score}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="space-y-2 text-xs text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {candidate.location}
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <DollarSign className="w-3 h-3" />
+                        {candidate.salaryExpectation}
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {candidate.tags.slice(0, 2).map((tag) => (
+                        <Badge key={tag} variant="secondary" className="text-xs px-1 py-0">
+                          {tag}
+                        </Badge>
+                      ))}
+                      {candidate.tags.length > 2 && (
+                        <Badge variant="secondary" className="text-xs px-1 py-0">
+                          +{candidate.tags.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                    <Button 
+                      size="sm" 
+                      className="w-full mt-3 text-xs h-7 bg-accent hover:bg-accent/90"
+                      onClick={() => handleUnlock(candidate)}
+                    >
+                      <Unlock className="w-3 h-3 mr-1" />
+                      Unlock
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
+  const renderCurrentView = () => {
+    switch (currentView) {
+      case 'table':
+        return renderTableView();
+      case 'kanban':
+        return renderKanbanView();
+      default:
+        return renderGridView();
     }
   };
 
@@ -148,19 +396,25 @@ const TalentPool = () => {
             <Button 
               variant={currentView === 'grid' ? 'default' : 'outline'}
               onClick={() => setCurrentView('grid')}
+              className="flex items-center gap-2"
             >
+              <Grid2X2 className="w-4 h-4" />
               Grid View
             </Button>
             <Button 
               variant={currentView === 'table' ? 'default' : 'outline'}
               onClick={() => setCurrentView('table')}
+              className="flex items-center gap-2"
             >
+              <LayoutList className="w-4 h-4" />
               Table View
             </Button>
             <Button 
               variant={currentView === 'kanban' ? 'default' : 'outline'}
               onClick={() => setCurrentView('kanban')}
+              className="flex items-center gap-2"
             >
+              <Kanban className="w-4 h-4" />
               Kanban
             </Button>
           </div>
@@ -259,83 +513,7 @@ const TalentPool = () => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredCandidates.map((candidate) => (
-            <Card key={candidate.id} className="hover:shadow-lg transition-shadow relative">
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="w-12 h-12">
-                      <AvatarImage src={candidate.photo} alt={candidate.name} />
-                      <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        {candidate.name}
-                        <span className="text-lg">{getCountryFlag(candidate.country)}</span>
-                      </CardTitle>
-                      <p className="text-sm text-gray-600">{candidate.title}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => toggleFavorite(candidate.id)}
-                      className="text-yellow-500 hover:text-yellow-600 p-1"
-                    >
-                      <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                    </Button>
-                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-accent text-white font-bold text-sm">
-                      {candidate.score}
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <MapPin className="w-4 h-4" />
-                  {candidate.location}
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Briefcase className="w-4 h-4" />
-                  {candidate.experience} experience
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Calendar className="w-4 h-4" />
-                  Joined {formatDate(candidate.profileAdded)}
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <DollarSign className="w-4 h-4" />
-                  {candidate.salaryExpectation}
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {candidate.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-                <div className="flex justify-between items-center">
-                  <Badge 
-                    variant={candidate.status === 'Available' ? 'default' : 'secondary'}
-                    className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
-                  >
-                    {candidate.status}
-                  </Badge>
-                  <Button 
-                    size="sm" 
-                    className="bg-accent hover:bg-accent/90"
-                    onClick={() => handleUnlock(candidate)}
-                  >
-                    <Unlock className="w-4 h-4 mr-1" />
-                    Unlock
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        {renderCurrentView()}
 
         {filteredCandidates.length === 0 && (
           <div className="text-center py-12">
