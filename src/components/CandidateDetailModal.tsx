@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, Maximize2 } from 'lucide-react';
 
 interface Candidate {
   id: number;
@@ -28,6 +28,7 @@ interface CandidateDetailModalProps {
   onClose: () => void;
   isFavorite: boolean;
   onToggleFavorite: () => void;
+  onExpandProfile?: () => void;
 }
 
 export function CandidateDetailModal({ 
@@ -35,7 +36,8 @@ export function CandidateDetailModal({
   isOpen, 
   onClose, 
   isFavorite, 
-  onToggleFavorite 
+  onToggleFavorite,
+  onExpandProfile
 }: CandidateDetailModalProps) {
   if (!candidate) return null;
 
@@ -126,6 +128,14 @@ export function CandidateDetailModal({
             </div>
 
             <div className="flex gap-2 pt-4">
+              <Button 
+                variant="outline"
+                onClick={onExpandProfile}
+                className="flex items-center gap-2"
+              >
+                <Maximize2 className="w-4 h-4" />
+                🔍 Expand Profile
+              </Button>
               <Button className="bg-accent hover:bg-accent/90">
                 <Calendar className="w-4 h-4 mr-2" />
                 Schedule Interview

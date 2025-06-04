@@ -103,6 +103,7 @@ const TalentPool = () => {
   };
 
   const handleExpandProfile = (candidate) => {
+    setSelectedCandidate(null); // Close the current modal first
     setExpandedCandidate(candidate);
   };
 
@@ -207,25 +208,14 @@ const TalentPool = () => {
               >
                 {candidate.status}
               </Badge>
-              <div className="flex gap-2">
-                <Button 
-                  size="sm" 
-                  variant="outline"
-                  onClick={() => handleExpandProfile(candidate)}
-                  className="text-xs"
-                >
-                  <Maximize2 className="w-3 h-3 mr-1" />
-                  🔍 Expand Profile
-                </Button>
-                <Button 
-                  size="sm" 
-                  className="bg-accent hover:bg-accent/90"
-                  onClick={() => handleUnlock(candidate)}
-                >
-                  <Unlock className="w-4 h-4 mr-1" />
-                  Unlock
-                </Button>
-              </div>
+              <Button 
+                size="sm" 
+                className="bg-accent hover:bg-accent/90"
+                onClick={() => handleUnlock(candidate)}
+              >
+                <Unlock className="w-4 h-4 mr-1" />
+                Unlock
+              </Button>
             </div>
           </CardContent>
         </Card>
@@ -292,13 +282,6 @@ const TalentPool = () => {
                     className="text-yellow-500 hover:text-yellow-600 p-1"
                   >
                     <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="outline"
-                    onClick={() => handleExpandProfile(candidate)}
-                  >
-                    <Maximize2 className="w-4 h-4" />
                   </Button>
                   <Button 
                     size="sm" 
@@ -380,15 +363,6 @@ const TalentPool = () => {
                       )}
                     </div>
                     <div className="flex gap-1 mt-3">
-                      <Button 
-                        size="sm" 
-                        variant="outline"
-                        className="flex-1 text-xs h-6"
-                        onClick={() => handleExpandProfile(candidate)}
-                      >
-                        <Maximize2 className="w-3 h-3 mr-1" />
-                        Expand
-                      </Button>
                       <Button 
                         size="sm" 
                         className="flex-1 text-xs h-6 bg-accent hover:bg-accent/90"
@@ -561,6 +535,7 @@ const TalentPool = () => {
           onClose={() => setSelectedCandidate(null)}
           isFavorite={selectedCandidate ? favorites.has(selectedCandidate.id) : false}
           onToggleFavorite={() => selectedCandidate && toggleFavorite(selectedCandidate.id)}
+          onExpandProfile={() => selectedCandidate && handleExpandProfile(selectedCandidate)}
         />
 
         <ExpandedCandidateModal
