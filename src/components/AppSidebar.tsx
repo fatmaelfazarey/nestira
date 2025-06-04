@@ -1,9 +1,7 @@
 
 import {
-  Calendar,
   Grid2X2,
   Inbox,
-  Settings,
   User,
   Plus,
   File,
@@ -15,7 +13,8 @@ import {
   CreditCard,
   Users,
   PenTool,
-  FileSignature
+  FileSignature,
+  Calendar
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -159,36 +158,36 @@ export function AppSidebar() {
 
   return (
     <>
-      <Sidebar className="border-r border-gray-200">
-        <SidebarHeader className="p-4">
+      <Sidebar className="border-r border-gray-200/60 bg-gradient-to-b from-slate-50 to-white">
+        <SidebarHeader className="p-6 border-b border-gray-100">
           <Button 
-            className="bg-accent hover:bg-accent/90 text-white w-full"
+            className="bg-gradient-to-r from-accent to-orange-600 hover:from-accent/90 hover:to-orange-600/90 text-white w-full shadow-lg hover:shadow-xl transition-all duration-200 font-semibold py-3"
             onClick={() => setIsJobModalOpen(true)}
           >
-            <Plus className="w-4 h-4 mr-2" />
+            <Plus className="w-5 h-5 mr-3" />
             Create Job Post
           </Button>
         </SidebarHeader>
         
-        <SidebarContent className="px-2">
+        <SidebarContent className="px-4 py-2">
           {navigationSections.map((section) => (
-            <SidebarGroup key={section.label}>
-              <SidebarGroupLabel className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+            <SidebarGroup key={section.label} className="mb-8">
+              <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-[0.1em] mb-4 px-3">
                 {section.label}
               </SidebarGroupLabel>
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="space-y-1">
                   {section.items.map((item) => (
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton 
                         asChild 
-                        className="hover:bg-gray-100 transition-colors duration-200"
+                        className="hover:bg-gradient-to-r hover:from-accent/10 hover:to-accent/5 hover:border-l-4 hover:border-accent transition-all duration-200 rounded-lg group py-3"
                       >
-                        <Link to={item.url} className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
-                          <item.icon className="w-4 h-4" />
-                          <span className="font-medium">{item.title}</span>
+                        <Link to={item.url} className="flex items-center gap-4 px-4 py-3 text-gray-700 hover:text-accent font-medium">
+                          <item.icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                          <span className="text-sm">{item.title}</span>
                           {item.badge && (
-                            <span className="ml-auto bg-accent text-white text-xs px-2 py-1 rounded-full">
+                            <span className="ml-auto bg-gradient-to-r from-accent to-orange-600 text-white text-xs px-2.5 py-1 rounded-full font-semibold shadow-sm">
                               {item.badge}
                             </span>
                           )}
@@ -202,9 +201,9 @@ export function AppSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter className="p-4 border-t border-gray-200">
-          <div className="text-xs text-gray-500 text-center">
-            Powered by Nestira
+        <SidebarFooter className="p-6 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-slate-50">
+          <div className="text-xs text-gray-400 text-center font-medium">
+            Powered by <span className="text-accent font-semibold">Nestira</span>
           </div>
         </SidebarFooter>
       </Sidebar>

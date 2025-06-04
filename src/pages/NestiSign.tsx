@@ -1,56 +1,33 @@
 
-import { DashboardLayout } from "@/components/DashboardLayout";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  PenTool, 
-  Upload, 
-  FileText, 
-  Send, 
-  Clock, 
-  CheckCircle, 
-  XCircle,
-  Download,
-  Eye,
-  Plus,
-  Users,
-  Calendar
-} from "lucide-react";
-import { useState } from "react";
+import { DashboardLayout } from '@/components/DashboardLayout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Plus, FileText, Send, Download, Eye, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 
 const NestiSign = () => {
-  const [activeTab, setActiveTab] = useState("create");
-
-  const documents = [
+  const recentDocuments = [
     {
       id: 1,
-      name: "Employment Contract - John Doe",
-      status: "pending",
-      recipient: "john.doe@email.com",
-      createdAt: "2024-06-03",
-      dueDate: "2024-06-10",
-      type: "contract"
+      name: "Employment Agreement - John Doe",
+      status: "completed",
+      date: "2024-01-15",
+      signers: 2
     },
     {
       id: 2,
-      name: "NDA Agreement - Sarah Smith",
-      status: "signed",
-      recipient: "sarah.smith@email.com",
-      createdAt: "2024-06-01",
-      signedAt: "2024-06-02",
-      type: "nda"
+      name: "NDA - Tech Startup Inc",
+      status: "pending",
+      date: "2024-01-14",
+      signers: 1
     },
     {
       id: 3,
-      name: "Offer Letter - Mike Johnson",
-      status: "expired",
-      recipient: "mike.johnson@email.com",
-      createdAt: "2024-05-20",
-      dueDate: "2024-05-27",
-      type: "offer"
+      name: "Offer Letter - Sarah Wilson",
+      status: "draft",
+      date: "2024-01-13",
+      signers: 0
     }
   ];
 
@@ -58,281 +35,130 @@ const NestiSign = () => {
     {
       id: 1,
       name: "Employment Contract",
-      description: "Standard full-time employment agreement",
-      fields: 8,
-      lastUsed: "2024-06-01"
+      description: "Standard employment agreement template",
+      category: "HR"
     },
     {
       id: 2,
-      name: "Offer Letter",
-      description: "Job offer letter template",
-      fields: 6,
-      lastUsed: "2024-05-30"
+      name: "Non-Disclosure Agreement",
+      description: "Confidentiality agreement for candidates",
+      category: "Legal"
     },
     {
       id: 3,
-      name: "NDA Agreement",
-      description: "Non-disclosure agreement for candidates",
-      fields: 4,
-      lastUsed: "2024-05-28"
-    },
-    {
-      id: 4,
-      name: "Freelance Contract",
-      description: "Contract for freelance/contractor positions",
-      fields: 7,
-      lastUsed: "2024-05-25"
+      name: "Offer Letter",
+      description: "Job offer letter template",
+      category: "HR"
     }
   ];
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'signed':
-        return <CheckCircle className="w-4 h-4 text-green-500" />;
-      case 'pending':
-        return <Clock className="w-4 h-4 text-yellow-500" />;
-      case 'expired':
-        return <XCircle className="w-4 h-4 text-red-500" />;
-      default:
-        return <FileText className="w-4 h-4 text-gray-500" />;
-    }
-  };
-
   const getStatusBadge = (status: string) => {
-    const variants = {
-      signed: "default",
-      pending: "secondary",
-      expired: "destructive"
-    };
-    return (
-      <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </Badge>
-    );
+    switch (status) {
+      case 'completed':
+        return <Badge className="bg-green-100 text-green-800"><CheckCircle className="w-3 h-3 mr-1" />Completed</Badge>;
+      case 'pending':
+        return <Badge className="bg-yellow-100 text-yellow-800"><Clock className="w-3 h-3 mr-1" />Pending</Badge>;
+      case 'draft':
+        return <Badge className="bg-gray-100 text-gray-800"><FileText className="w-3 h-3 mr-1" />Draft</Badge>;
+      default:
+        return <Badge variant="secondary">{status}</Badge>;
+    }
   };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-              <PenTool className="w-8 h-8 text-primary" />
-              Nesti-Sign
-            </h1>
-            <p className="text-gray-600 mt-1">
-              Create, send, and manage digital signature documents
-            </p>
+            <h1 className="text-3xl font-bold text-gray-900">Nesti-Sign</h1>
+            <p className="text-gray-600 mt-1">Digital signature solution for your hiring documents</p>
           </div>
-          <Button className="sm:w-auto">
+          <Button className="bg-accent hover:bg-accent/90">
             <Plus className="w-4 h-4 mr-2" />
             Create Document
           </Button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Total Documents</p>
-                  <p className="text-2xl font-bold">24</p>
-                </div>
-                <FileText className="w-8 h-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Pending Signatures</p>
-                  <p className="text-2xl font-bold">8</p>
-                </div>
-                <Clock className="w-8 h-8 text-yellow-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">Completed</p>
-                  <p className="text-2xl font-bold">15</p>
-                </div>
-                <CheckCircle className="w-8 h-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600">This Month</p>
-                  <p className="text-2xl font-bold">12</p>
-                </div>
-                <Calendar className="w-8 h-8 text-purple-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs defaultValue="documents" className="space-y-6">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="create">Create Document</TabsTrigger>
-            <TabsTrigger value="documents">My Documents</TabsTrigger>
+            <TabsTrigger value="documents">Documents</TabsTrigger>
             <TabsTrigger value="templates">Templates</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
-          {/* Create Document Tab */}
-          <TabsContent value="create" className="space-y-6">
+          <TabsContent value="documents" className="space-y-4">
+            <div className="grid gap-4">
+              {recentDocuments.map((doc) => (
+                <Card key={doc.id}>
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <FileText className="w-8 h-8 text-accent" />
+                        <div>
+                          <h3 className="font-semibold text-gray-900">{doc.name}</h3>
+                          <p className="text-sm text-gray-500">Created on {doc.date}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-4">
+                        {getStatusBadge(doc.status)}
+                        <div className="flex space-x-2">
+                          <Button variant="outline" size="sm">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Download className="w-4 h-4" />
+                          </Button>
+                          <Button variant="outline" size="sm">
+                            <Send className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="templates" className="space-y-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {templates.map((template) => (
+                <Card key={template.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader>
+                    <CardTitle className="text-lg">{template.name}</CardTitle>
+                    <CardDescription>{template.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex justify-between items-center">
+                      <Badge variant="secondary">{template.category}</Badge>
+                      <Button size="sm">Use Template</Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>Create New Document</CardTitle>
-                <CardDescription>
-                  Start by choosing how you'd like to create your document
-                </CardDescription>
+                <CardTitle>Signature Settings</CardTitle>
+                <CardDescription>Configure your digital signature preferences</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
-                    <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">Upload Document</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Upload a PDF or Word document to add signature fields
-                    </p>
-                    <Button variant="outline">Choose File</Button>
-                  </div>
-                  
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary transition-colors cursor-pointer">
-                    <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                    <h3 className="font-semibold mb-2">Use Template</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Start with a pre-made template for common documents
-                    </p>
-                    <Button variant="outline">Browse Templates</Button>
-                  </div>
-                </div>
-
+              <CardContent className="space-y-4">
                 <div className="space-y-4">
-                  <h3 className="font-semibold">Document Details</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Document Title</label>
-                      <Input placeholder="e.g., Employment Contract - John Doe" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Recipient Email</label>
-                      <Input placeholder="candidate@email.com" type="email" />
-                    </div>
+                  <div>
+                    <h4 className="font-medium">Default Signature Style</h4>
+                    <p className="text-sm text-gray-500">Choose how your signature appears on documents</p>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Message (Optional)</label>
-                    <Input placeholder="Please review and sign this document..." />
+                    <h4 className="font-medium">Email Templates</h4>
+                    <p className="text-sm text-gray-500">Customize signature request emails</p>
                   </div>
-                </div>
-
-                <div className="flex gap-4">
-                  <Button className="flex-1">
-                    <Send className="w-4 h-4 mr-2" />
-                    Create & Send
-                  </Button>
-                  <Button variant="outline">Save as Draft</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Documents Tab */}
-          <TabsContent value="documents" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Document Management</CardTitle>
-                <CardDescription>
-                  Track and manage all your signature documents
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {documents.map((doc) => (
-                    <div key={doc.id} className="border rounded-lg p-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-start gap-3">
-                          {getStatusIcon(doc.status)}
-                          <div>
-                            <h3 className="font-medium">{doc.name}</h3>
-                            <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
-                              <span className="flex items-center gap-1">
-                                <Users className="w-3 h-3" />
-                                {doc.recipient}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Calendar className="w-3 h-3" />
-                                Created: {doc.createdAt}
-                              </span>
-                              {doc.dueDate && (
-                                <span className="flex items-center gap-1">
-                                  <Clock className="w-3 h-3" />
-                                  Due: {doc.dueDate}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {getStatusBadge(doc.status)}
-                          <div className="flex gap-2">
-                            <Button size="sm" variant="outline">
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button size="sm" variant="outline">
-                              <Download className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Templates Tab */}
-          <TabsContent value="templates" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Document Templates</CardTitle>
-                <CardDescription>
-                  Pre-built templates for common hiring documents
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
-                  {templates.map((template) => (
-                    <div key={template.id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="font-semibold">{template.name}</h3>
-                          <p className="text-sm text-gray-600">{template.description}</p>
-                        </div>
-                        <FileText className="w-5 h-5 text-gray-400" />
-                      </div>
-                      <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
-                        <span>{template.fields} signature fields</span>
-                        <span>Last used: {template.lastUsed}</span>
-                      </div>
-                      <div className="flex gap-2">
-                        <Button size="sm" className="flex-1">Use Template</Button>
-                        <Button size="sm" variant="outline">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
+                  <div>
+                    <h4 className="font-medium">Security Settings</h4>
+                    <p className="text-sm text-gray-500">Configure authentication requirements</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
