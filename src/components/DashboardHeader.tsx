@@ -2,6 +2,7 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Search, Settings, User } from "lucide-react";
+import { ThemeToggle } from "./ThemeToggle";
 
 interface DashboardHeaderProps {
   currentMode: 'hiring' | 'interview';
@@ -10,7 +11,7 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ currentMode, onModeChange }: DashboardHeaderProps) {
   return (
-    <header className="border-b bg-white px-6 py-4">
+    <header className="border-b bg-white dark:bg-gray-900 px-6 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <SidebarTrigger />
@@ -27,15 +28,15 @@ export function DashboardHeader({ currentMode, onModeChange }: DashboardHeaderPr
 
         <div className="flex items-center gap-4">
           {/* Mode Switcher */}
-          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+          <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
             <Button
               variant={currentMode === 'hiring' ? 'default' : 'ghost'}
               size="sm"
               onClick={() => onModeChange('hiring')}
               className={`${
                 currentMode === 'hiring' 
-                  ? 'bg-white shadow-sm text-primary' 
-                  : 'text-gray-600 hover:text-primary'
+                  ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-primary'
               }`}
             >
               Hiring Mode
@@ -46,8 +47,8 @@ export function DashboardHeader({ currentMode, onModeChange }: DashboardHeaderPr
               onClick={() => onModeChange('interview')}
               className={`${
                 currentMode === 'interview' 
-                  ? 'bg-white shadow-sm text-primary' 
-                  : 'text-gray-600 hover:text-primary'
+                  ? 'bg-white dark:bg-gray-700 shadow-sm text-primary' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-primary'
               }`}
             >
               Interview Mode
@@ -60,12 +61,13 @@ export function DashboardHeader({ currentMode, onModeChange }: DashboardHeaderPr
             <input
               type="text"
               placeholder="Search candidates, jobs..."
-              className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent w-64"
+              className="pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent w-64 bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-white"
             />
           </div>
 
           {/* User Actions */}
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="sm">
               <Settings className="w-4 h-4" />
             </Button>
