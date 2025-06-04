@@ -7,16 +7,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Star, MapPin, Briefcase, Unlock, Search, Filter } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Star, MapPin, Briefcase, Unlock, Search, Filter, ChevronDown } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('all');
-  const [experienceFilter, setExperienceFilter] = useState('all');
+  const [experienceRange, setExperienceRange] = useState([0]);
   const [statusFilter, setStatusFilter] = useState('all');
+  const [skillsFilter, setSkillsFilter] = useState('all');
+  const [scoreRange, setScoreRange] = useState([0]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   const candidates = [
     {
@@ -69,14 +74,18 @@ const TalentPool = () => {
     }
   ];
 
+  const allSkills = Array.from(new Set(candidates.flatMap(c => c.tags)));
+
   const filteredCandidates = candidates.filter(candidate => {
     const matchesSearch = candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          candidate.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLocation = locationFilter === 'all' || candidate.location.includes(locationFilter);
-    const matchesExperience = experienceFilter === 'all' || candidate.experience.includes(experienceFilter);
+    const matchesExperience = experienceRange[0] === 0 || candidate.yearsOfExperience >= experienceRange[0];
     const matchesStatus = statusFilter === 'all' || candidate.status === statusFilter;
+    const matchesSkills = skillsFilter === 'all' || candidate.tags.includes(skillsFilter);
+    const matchesScore = scoreRange[0] === 0 || candidate.score >= scoreRange[0];
     
-    return matchesSearch && matchesLocation && matchesExperience && matchesStatus;
+    return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore;
   });
 
   const handleUnlock = (candidate) => {
@@ -111,57 +120,106 @@ const TalentPool = () => {
         {/* Filters */}
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-4 flex-wrap">
-              <div className="flex items-center gap-2">
-                <Search className="w-4 h-4 text-gray-500" />
-                <Input
-                  placeholder="Search candidates..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-64"
-                />
+            <div className="space-y-4">
+              {/* Main filters */}
+              <div className="flex items-center gap-4 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <Search className="w-4 h-4 text-gray-500" />
+                  <Input
+                    placeholder="Search candidates..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-64"
+                  />
+                </div>
+                
+                <Select value={locationFilter} onValueChange={setLocationFilter}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Location" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Locations</SelectItem>
+                    <SelectItem value="Dubai">Dubai, UAE</SelectItem>
+                    <SelectItem value="Cairo">Cairo, Egypt</SelectItem>
+                    <SelectItem value="Riyadh">Riyadh, Saudi Arabia</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="Available">Available</SelectItem>
+                    <SelectItem value="Interviewing">Interviewing</SelectItem>
+                    <SelectItem value="Shortlisted">Shortlisted</SelectItem>
+                  </SelectContent>
+                </Select>
+
+                <Collapsible open={showMoreFilters} onOpenChange={setShowMoreFilters}>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="outline" size="sm">
+                      <Filter className="w-4 h-4 mr-2" />
+                      More Filters
+                      <ChevronDown className={`w-4 h-4 ml-2 transition-transform ${showMoreFilters ? 'rotate-180' : ''}`} />
+                    </Button>
+                  </CollapsibleTrigger>
+                </Collapsible>
               </div>
-              
-              <Select value={locationFilter} onValueChange={setLocationFilter}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Location" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Locations</SelectItem>
-                  <SelectItem value="Dubai">Dubai, UAE</SelectItem>
-                  <SelectItem value="Cairo">Cairo, Egypt</SelectItem>
-                  <SelectItem value="Riyadh">Riyadh, Saudi Arabia</SelectItem>
-                </SelectContent>
-              </Select>
 
-              <Select value={experienceFilter} onValueChange={setExperienceFilter}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Experience" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Experience</SelectItem>
-                  <SelectItem value="5">5+ years</SelectItem>
-                  <SelectItem value="6">6+ years</SelectItem>
-                  <SelectItem value="8">8+ years</SelectItem>
-                </SelectContent>
-              </Select>
+              {/* Collapsible additional filters */}
+              <Collapsible open={showMoreFilters} onOpenChange={setShowMoreFilters}>
+                <CollapsibleContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-gray-50 rounded-lg">
+                    {/* Experience Slider */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Years of Experience: {experienceRange[0]}+ years
+                      </label>
+                      <Slider
+                        value={experienceRange}
+                        onValueChange={setExperienceRange}
+                        max={15}
+                        min={0}
+                        step={1}
+                        className="w-full"
+                      />
+                    </div>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="Available">Available</SelectItem>
-                  <SelectItem value="Interviewing">Interviewing</SelectItem>
-                  <SelectItem value="Shortlisted">Shortlisted</SelectItem>
-                </SelectContent>
-              </Select>
+                    {/* Skills Filter */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">Skills</label>
+                      <Select value={skillsFilter} onValueChange={setSkillsFilter}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="All Skills" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">All Skills</SelectItem>
+                          {allSkills.map((skill) => (
+                            <SelectItem key={skill} value={skill}>{skill}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
 
-              <Button variant="outline" size="sm">
-                <Filter className="w-4 h-4 mr-2" />
-                More Filters
-              </Button>
+                    {/* Matching Score Slider */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700">
+                        Minimum Score: {scoreRange[0]}%
+                      </label>
+                      <Slider
+                        value={scoreRange}
+                        onValueChange={setScoreRange}
+                        max={100}
+                        min={0}
+                        step={5}
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             </div>
           </CardContent>
         </Card>
@@ -190,9 +248,8 @@ const TalentPool = () => {
                     >
                       <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
                     </Button>
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                      <span className="font-medium">{candidate.score}</span>
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full bg-accent text-white font-bold text-sm">
+                      {candidate.score}
                     </div>
                   </div>
                 </div>
