@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import Inbox from "./pages/Inbox";
 import TalentPool from "./pages/TalentPool";
 import JobListings from "./pages/JobListings";
+import RecruitmentBoard from "./pages/RecruitmentBoard";
+import Interviews from "./pages/Interviews";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,6 +25,8 @@ const App = () => (
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/talent-pool" element={<TalentPool />} />
           <Route path="/job-listings" element={<JobListings />} />
+          <Route path="/recruitment-board" element={<RecruitmentBoard />} />
+          <Route path="/interviews" element={<Interviews />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
