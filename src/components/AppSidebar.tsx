@@ -1,4 +1,3 @@
-
 import {
   Calendar,
   Grid2X2,
@@ -24,6 +23,8 @@ import {
   SidebarFooter
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
+import { JobCreationModal } from "./JobCreationModal";
+import { useState } from "react";
 
 // Navigation items organized by sections
 const navigationSections = [
@@ -116,63 +117,75 @@ const navigationSections = [
 ];
 
 export function AppSidebar() {
-  return (
-    <Sidebar className="border-r border-gray-200">
-      <SidebarHeader className="p-4">
-        <Button className="bg-accent hover:bg-accent/90 text-white w-full">
-          <Plus className="w-4 h-4 mr-2" />
-          Create Job Post
-        </Button>
-      </SidebarHeader>
-      
-      <SidebarContent className="px-2">
-        {navigationSections.map((section) => (
-          <SidebarGroup key={section.label}>
-            <SidebarGroupLabel className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
-              {section.label}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {section.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton 
-                      asChild 
-                      className="hover:bg-gray-100 transition-colors duration-200"
-                    >
-                      <Link to={item.url} className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
-                        <item.icon className="w-4 h-4" />
-                        <span className="font-medium">{item.title}</span>
-                        {item.badge && (
-                          <span className="ml-auto bg-accent text-white text-xs px-2 py-1 rounded-full">
-                            {item.badge}
-                          </span>
-                        )}
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
-      </SidebarContent>
+  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
 
-      <SidebarFooter className="p-4 border-t border-gray-200">
-        <div className="space-y-2">
-          <SidebarMenuButton asChild>
-            <Link to="/blog" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
-              <File className="w-4 h-4" />
-              <span>Blog & Reports</span>
-            </Link>
-          </SidebarMenuButton>
-          <SidebarMenuButton asChild>
-            <Link to="/help" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
-              <Settings className="w-4 h-4" />
-              <span>Help Center</span>
-            </Link>
-          </SidebarMenuButton>
-        </div>
-      </SidebarFooter>
-    </Sidebar>
+  return (
+    <>
+      <Sidebar className="border-r border-gray-200">
+        <SidebarHeader className="p-4">
+          <Button 
+            className="bg-accent hover:bg-accent/90 text-white w-full"
+            onClick={() => setIsJobModalOpen(true)}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Create Job Post
+          </Button>
+        </SidebarHeader>
+        
+        <SidebarContent className="px-2">
+          {navigationSections.map((section) => (
+            <SidebarGroup key={section.label}>
+              <SidebarGroupLabel className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                {section.label}
+              </SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {section.items.map((item) => (
+                    <SidebarMenuItem key={item.title}>
+                      <SidebarMenuButton 
+                        asChild 
+                        className="hover:bg-gray-100 transition-colors duration-200"
+                      >
+                        <Link to={item.url} className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
+                          <item.icon className="w-4 h-4" />
+                          <span className="font-medium">{item.title}</span>
+                          {item.badge && (
+                            <span className="ml-auto bg-accent text-white text-xs px-2 py-1 rounded-full">
+                              {item.badge}
+                            </span>
+                          )}
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+
+        <SidebarFooter className="p-4 border-t border-gray-200">
+          <div className="space-y-2">
+            <SidebarMenuButton asChild>
+              <Link to="/blog" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
+                <File className="w-4 h-4" />
+                <span>Blog & Reports</span>
+              </Link>
+            </SidebarMenuButton>
+            <SidebarMenuButton asChild>
+              <Link to="/help" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
+                <Settings className="w-4 h-4" />
+                <span>Help Center</span>
+              </Link>
+            </SidebarMenuButton>
+          </div>
+        </SidebarFooter>
+      </Sidebar>
+
+      <JobCreationModal 
+        open={isJobModalOpen} 
+        onOpenChange={setIsJobModalOpen} 
+      />
+    </>
   );
 }
