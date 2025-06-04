@@ -10,6 +10,7 @@ import {
   List,
   Check
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -138,7 +139,7 @@ export function AppSidebar() {
                       asChild 
                       className="hover:bg-gray-100 transition-colors duration-200"
                     >
-                      <a href={item.url} className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
+                      <Link to={item.url} className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
                         <item.icon className="w-4 h-4" />
                         <span className="font-medium">{item.title}</span>
                         {item.badge && (
@@ -146,7 +147,7 @@ export function AppSidebar() {
                             {item.badge}
                           </span>
                         )}
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
@@ -159,16 +160,16 @@ export function AppSidebar() {
       <SidebarFooter className="p-4 border-t border-gray-200">
         <div className="space-y-2">
           <SidebarMenuButton asChild>
-            <a href="/blog" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
+            <Link to="/blog" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
               <File className="w-4 h-4" />
               <span>Blog & Reports</span>
-            </a>
+            </Link>
           </SidebarMenuButton>
           <SidebarMenuButton asChild>
-            <a href="/help" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
+            <Link to="/help" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
               <Settings className="w-4 h-4" />
               <span>Help Center</span>
-            </a>
+            </Link>
           </SidebarMenuButton>
         </div>
       </SidebarFooter>
