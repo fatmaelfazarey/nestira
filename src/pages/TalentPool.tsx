@@ -12,9 +12,9 @@ import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [locationFilter, setLocationFilter] = useState('');
-  const [experienceFilter, setExperienceFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [locationFilter, setLocationFilter] = useState('all');
+  const [experienceFilter, setExperienceFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState('all');
   const [selectedCandidate, setSelectedCandidate] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
 
@@ -72,9 +72,9 @@ const TalentPool = () => {
   const filteredCandidates = candidates.filter(candidate => {
     const matchesSearch = candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          candidate.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesLocation = !locationFilter || candidate.location.includes(locationFilter);
-    const matchesExperience = !experienceFilter || candidate.experience.includes(experienceFilter);
-    const matchesStatus = !statusFilter || candidate.status === statusFilter;
+    const matchesLocation = locationFilter === 'all' || candidate.location.includes(locationFilter);
+    const matchesExperience = experienceFilter === 'all' || candidate.experience.includes(experienceFilter);
+    const matchesStatus = statusFilter === 'all' || candidate.status === statusFilter;
     
     return matchesSearch && matchesLocation && matchesExperience && matchesStatus;
   });
@@ -127,7 +127,7 @@ const TalentPool = () => {
                   <SelectValue placeholder="Location" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Locations</SelectItem>
+                  <SelectItem value="all">All Locations</SelectItem>
                   <SelectItem value="Dubai">Dubai, UAE</SelectItem>
                   <SelectItem value="Cairo">Cairo, Egypt</SelectItem>
                   <SelectItem value="Riyadh">Riyadh, Saudi Arabia</SelectItem>
@@ -139,7 +139,7 @@ const TalentPool = () => {
                   <SelectValue placeholder="Experience" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Experience</SelectItem>
+                  <SelectItem value="all">All Experience</SelectItem>
                   <SelectItem value="5">5+ years</SelectItem>
                   <SelectItem value="6">6+ years</SelectItem>
                   <SelectItem value="8">8+ years</SelectItem>
@@ -151,7 +151,7 @@ const TalentPool = () => {
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="all">All Status</SelectItem>
                   <SelectItem value="Available">Available</SelectItem>
                   <SelectItem value="Interviewing">Interviewing</SelectItem>
                   <SelectItem value="Shortlisted">Shortlisted</SelectItem>
