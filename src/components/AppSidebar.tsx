@@ -1,3 +1,4 @@
+
 import {
   Calendar,
   Grid2X2,
@@ -8,7 +9,13 @@ import {
   File,
   List,
   Check,
-  Bell
+  Bell,
+  BookOpen,
+  HelpCircle,
+  CreditCard,
+  Users,
+  PenTool,
+  FileSignature
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -43,6 +50,12 @@ const navigationSections = [
         url: "/inbox",
         icon: Inbox,
         badge: "3"
+      },
+      {
+        title: "Blog & Reports",
+        url: "/blog",
+        icon: BookOpen,
+        badge: null
       }
     ]
   },
@@ -79,21 +92,27 @@ const navigationSections = [
     label: "Tools",
     items: [
       {
-        title: "Quiz Builder",
+        title: "Quiz Designer",
         url: "/quiz-builder",
         icon: Check,
         badge: null
       },
       {
-        title: "Interview Questions",
+        title: "Interview Preparation Designer",
         url: "/interview-questions",
         icon: File,
         badge: null
       },
       {
-        title: "Offer Templates",
+        title: "Job Offer Designer",
         url: "/offer-templates",
-        icon: File,
+        icon: FileSignature,
+        badge: null
+      },
+      {
+        title: "Nesti-Sign",
+        url: "/nesti-sign",
+        icon: PenTool,
         badge: null
       },
       {
@@ -108,15 +127,27 @@ const navigationSections = [
     label: "Account",
     items: [
       {
+        title: "User Guide",
+        url: "/user-guide",
+        icon: BookOpen,
+        badge: null
+      },
+      {
         title: "Billing",
         url: "/billing",
-        icon: Settings,
+        icon: CreditCard,
         badge: null
       },
       {
         title: "Referrals",
         url: "/referrals",
-        icon: User,
+        icon: Users,
+        badge: null
+      },
+      {
+        title: "Help Center",
+        url: "/help",
+        icon: HelpCircle,
         badge: null
       }
     ]
@@ -172,19 +203,8 @@ export function AppSidebar() {
         </SidebarContent>
 
         <SidebarFooter className="p-4 border-t border-gray-200">
-          <div className="space-y-2">
-            <SidebarMenuButton asChild>
-              <Link to="/blog" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
-                <File className="w-4 h-4" />
-                <span>Blog & Reports</span>
-              </Link>
-            </SidebarMenuButton>
-            <SidebarMenuButton asChild>
-              <Link to="/help" className="flex items-center gap-3 px-3 py-2 text-gray-700 hover:text-primary">
-                <Settings className="w-4 h-4" />
-                <span>Help Center</span>
-              </Link>
-            </SidebarMenuButton>
+          <div className="text-xs text-gray-500 text-center">
+            Powered by Nestira
           </div>
         </SidebarFooter>
       </Sidebar>
