@@ -18,6 +18,8 @@ import Referrals from "./pages/Referrals";
 import BlogReports from "./pages/BlogReports";
 import HelpCenter from "./pages/HelpCenter";
 import EmailAlertsSettings from "./pages/EmailAlertsSettings";
+import UserGuide from "./pages/UserGuide";
+import NestiSign from "./pages/NestiSign";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +45,8 @@ const App = () => (
           <Route path="/blog" element={<BlogReports />} />
           <Route path="/help" element={<HelpCenter />} />
           <Route path="/email-alerts" element={<EmailAlertsSettings />} />
+          <Route path="/user-guide" element={<UserGuide />} />
+          <Route path="/nesti-sign" element={<NestiSign />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
