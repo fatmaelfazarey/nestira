@@ -1,11 +1,23 @@
 
+import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Star, MapPin, Briefcase, Unlock } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Star, MapPin, Briefcase, Unlock, Search, Filter } from 'lucide-react';
+import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 
 const TalentPool = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [locationFilter, setLocationFilter] = useState('');
+  const [experienceFilter, setExperienceFilter] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [favorites, setFavorites] = useState(new Set());
+
   const candidates = [
     {
       id: 1,
@@ -15,7 +27,13 @@ const TalentPool = () => {
       experience: "8 years",
       score: 92,
       status: "Available",
-      tags: ["CPA", "Excel Expert", "Financial Analysis"]
+      tags: ["CPA", "Excel Expert", "Financial Analysis"],
+      photo: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop&crop=face",
+      email: "sarah.johnson@email.com",
+      phone: "+971 50 123 4567",
+      yearsOfExperience: 8,
+      education: "MBA Finance, American University of Dubai",
+      summary: "Experienced finance professional with 8+ years in financial planning, analysis, and team leadership. Proven track record in implementing cost-saving initiatives and driving strategic financial decisions in multinational corporations."
     },
     {
       id: 2,
@@ -25,7 +43,13 @@ const TalentPool = () => {
       experience: "5 years",
       score: 88,
       status: "Interviewing",
-      tags: ["Power BI", "SQL", "Risk Management"]
+      tags: ["Power BI", "SQL", "Risk Management"],
+      photo: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=100&h=100&fit=crop&crop=face",
+      email: "ahmed.hassan@email.com",
+      phone: "+20 10 123 4567",
+      yearsOfExperience: 5,
+      education: "Bachelor's in Finance, Cairo University",
+      summary: "Detail-oriented financial analyst specializing in data analysis, risk assessment, and financial modeling. Expert in Power BI and SQL with strong analytical skills."
     },
     {
       id: 3,
@@ -35,9 +59,39 @@ const TalentPool = () => {
       experience: "6 years",
       score: 90,
       status: "Shortlisted",
-      tags: ["SAP", "IFRS", "Team Leadership"]
+      tags: ["SAP", "IFRS", "Team Leadership"],
+      photo: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=100&h=100&fit=crop&crop=face",
+      email: "fatima.alzahra@email.com",
+      phone: "+966 50 123 4567",
+      yearsOfExperience: 6,
+      education: "Master's in Accounting, King Saud University",
+      summary: "Strategic accounting manager with expertise in SAP implementation, IFRS compliance, and team leadership. Successfully managed accounting teams of 15+ members."
     }
   ];
+
+  const filteredCandidates = candidates.filter(candidate => {
+    const matchesSearch = candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         candidate.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesLocation = !locationFilter || candidate.location.includes(locationFilter);
+    const matchesExperience = !experienceFilter || candidate.experience.includes(experienceFilter);
+    const matchesStatus = !statusFilter || candidate.status === statusFilter;
+    
+    return matchesSearch && matchesLocation && matchesExperience && matchesStatus;
+  });
+
+  const handleUnlock = (candidate) => {
+    setSelectedCandidate(candidate);
+  };
+
+  const toggleFavorite = (candidateId) => {
+    const newFavorites = new Set(favorites);
+    if (newFavorites.has(candidateId)) {
+      newFavorites.delete(candidateId);
+    } else {
+      newFavorites.add(candidateId);
+    }
+    setFavorites(newFavorites);
+  };
 
   return (
     <DashboardLayout>
@@ -54,18 +108,92 @@ const TalentPool = () => {
           </div>
         </div>
 
+        {/* Filters */}
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-4 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Search className="w-4 h-4 text-gray-500" />
+                <Input
+                  placeholder="Search candidates..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-64"
+                />
+              </div>
+              
+              <Select value={locationFilter} onValueChange={setLocationFilter}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Location" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Locations</SelectItem>
+                  <SelectItem value="Dubai">Dubai, UAE</SelectItem>
+                  <SelectItem value="Cairo">Cairo, Egypt</SelectItem>
+                  <SelectItem value="Riyadh">Riyadh, Saudi Arabia</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={experienceFilter} onValueChange={setExperienceFilter}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Experience" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Experience</SelectItem>
+                  <SelectItem value="5">5+ years</SelectItem>
+                  <SelectItem value="6">6+ years</SelectItem>
+                  <SelectItem value="8">8+ years</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="w-48">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="">All Status</SelectItem>
+                  <SelectItem value="Available">Available</SelectItem>
+                  <SelectItem value="Interviewing">Interviewing</SelectItem>
+                  <SelectItem value="Shortlisted">Shortlisted</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Button variant="outline" size="sm">
+                <Filter className="w-4 h-4 mr-2" />
+                More Filters
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {candidates.map((candidate) => (
-            <Card key={candidate.id} className="hover:shadow-lg transition-shadow">
+          {filteredCandidates.map((candidate) => (
+            <Card key={candidate.id} className="hover:shadow-lg transition-shadow relative">
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="text-lg">{candidate.name}</CardTitle>
-                    <p className="text-sm text-gray-600">{candidate.title}</p>
+                  <div className="flex items-center gap-3">
+                    <Avatar className="w-12 h-12">
+                      <AvatarImage src={candidate.photo} alt={candidate.name} />
+                      <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle className="text-lg">{candidate.name}</CardTitle>
+                      <p className="text-sm text-gray-600">{candidate.title}</p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="font-medium">{candidate.score}</span>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleFavorite(candidate.id)}
+                      className="text-yellow-500 hover:text-yellow-600 p-1"
+                    >
+                      <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                    </Button>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                      <span className="font-medium">{candidate.score}</span>
+                    </div>
                   </div>
                 </div>
               </CardHeader>
@@ -92,7 +220,11 @@ const TalentPool = () => {
                   >
                     {candidate.status}
                   </Badge>
-                  <Button size="sm" className="bg-accent hover:bg-accent/90">
+                  <Button 
+                    size="sm" 
+                    className="bg-accent hover:bg-accent/90"
+                    onClick={() => handleUnlock(candidate)}
+                  >
                     <Unlock className="w-4 h-4 mr-1" />
                     Unlock
                   </Button>
@@ -101,6 +233,20 @@ const TalentPool = () => {
             </Card>
           ))}
         </div>
+
+        {filteredCandidates.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-500">No candidates found matching your filters.</p>
+          </div>
+        )}
+
+        <CandidateDetailModal
+          candidate={selectedCandidate}
+          isOpen={!!selectedCandidate}
+          onClose={() => setSelectedCandidate(null)}
+          isFavorite={selectedCandidate ? favorites.has(selectedCandidate.id) : false}
+          onToggleFavorite={() => selectedCandidate && toggleFavorite(selectedCandidate.id)}
+        />
       </div>
     </DashboardLayout>
   );
