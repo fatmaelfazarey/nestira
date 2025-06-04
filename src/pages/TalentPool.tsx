@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -9,8 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Slider } from '@/components/ui/slider';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Star, MapPin, Briefcase, Unlock, Search, Calendar, DollarSign, Flag, Grid2X2, LayoutList, Kanban } from 'lucide-react';
+import { Star, MapPin, Briefcase, Unlock, Search, Calendar, DollarSign, Flag, Grid2X2, LayoutList, Kanban, Maximize2 } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
+import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
 
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,6 +20,7 @@ const TalentPool = () => {
   const [skillsFilter, setSkillsFilter] = useState('all');
   const [scoreRange, setScoreRange] = useState([0]);
   const [selectedCandidate, setSelectedCandidate] = useState(null);
+  const [expandedCandidate, setExpandedCandidate] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [currentView, setCurrentView] = useState('grid');
 
@@ -99,6 +100,10 @@ const TalentPool = () => {
 
   const handleUnlock = (candidate) => {
     setSelectedCandidate(candidate);
+  };
+
+  const handleExpandProfile = (candidate) => {
+    setExpandedCandidate(candidate);
   };
 
   const toggleFavorite = (candidateId) => {
@@ -195,21 +200,32 @@ const TalentPool = () => {
                 </Badge>
               ))}
             </div>
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center gap-2">
               <Badge 
                 variant={candidate.status === 'Available' ? 'default' : 'secondary'}
                 className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
               >
                 {candidate.status}
               </Badge>
-              <Button 
-                size="sm" 
-                className="bg-accent hover:bg-accent/90"
-                onClick={() => handleUnlock(candidate)}
-              >
-                <Unlock className="w-4 h-4 mr-1" />
-                Unlock
-              </Button>
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={() => handleExpandProfile(candidate)}
+                  className="text-xs"
+                >
+                  <Maximize2 className="w-3 h-3 mr-1" />
+                  🔍 Expand Profile
+                </Button>
+                <Button 
+                  size="sm" 
+                  className="bg-accent hover:bg-accent/90"
+                  onClick={() => handleUnlock(candidate)}
+                >
+                  <Unlock className="w-4 h-4 mr-1" />
+                  Unlock
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -276,6 +292,13 @@ const TalentPool = () => {
                     className="text-yellow-500 hover:text-yellow-600 p-1"
                   >
                     <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => handleExpandProfile(candidate)}
+                  >
+                    <Maximize2 className="w-4 h-4" />
                   </Button>
                   <Button 
                     size="sm" 
@@ -356,14 +379,25 @@ const TalentPool = () => {
                         </Badge>
                       )}
                     </div>
-                    <Button 
-                      size="sm" 
-                      className="w-full mt-3 text-xs h-7 bg-accent hover:bg-accent/90"
-                      onClick={() => handleUnlock(candidate)}
-                    >
-                      <Unlock className="w-3 h-3 mr-1" />
-                      Unlock
-                    </Button>
+                    <div className="flex gap-1 mt-3">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        className="flex-1 text-xs h-6"
+                        onClick={() => handleExpandProfile(candidate)}
+                      >
+                        <Maximize2 className="w-3 h-3 mr-1" />
+                        Expand
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        className="flex-1 text-xs h-6 bg-accent hover:bg-accent/90"
+                        onClick={() => handleUnlock(candidate)}
+                      >
+                        <Unlock className="w-3 h-3 mr-1" />
+                        Unlock
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
@@ -527,6 +561,14 @@ const TalentPool = () => {
           onClose={() => setSelectedCandidate(null)}
           isFavorite={selectedCandidate ? favorites.has(selectedCandidate.id) : false}
           onToggleFavorite={() => selectedCandidate && toggleFavorite(selectedCandidate.id)}
+        />
+
+        <ExpandedCandidateModal
+          candidate={expandedCandidate}
+          isOpen={!!expandedCandidate}
+          onClose={() => setExpandedCandidate(null)}
+          isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false}
+          onToggleFavorite={() => expandedCandidate && toggleFavorite(expandedCandidate.id)}
         />
       </div>
     </DashboardLayout>
