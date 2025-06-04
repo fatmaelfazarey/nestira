@@ -40,28 +40,37 @@ const JobListings = () => {
     }
   ]);
 
-  const handleCreateNewJob = () => {
+  const handleCreateNewJob = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log('Create new job clicked');
-    // Navigate to job creation form
-    window.alert('Redirecting to job creation form...');
+    alert('Redirecting to job creation form...');
   };
 
-  const handleViewJob = (jobId: number) => {
+  const handleViewJob = (e: React.MouseEvent, jobId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log('View job:', jobId);
-    window.alert(`Opening job details for Job ID: ${jobId}`);
+    alert(`Opening job details for Job ID: ${jobId}`);
   };
 
-  const handleEditJob = (jobId: number) => {
+  const handleEditJob = (e: React.MouseEvent, jobId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log('Edit job:', jobId);
-    window.alert(`Opening job editor for Job ID: ${jobId}`);
+    alert(`Opening job editor for Job ID: ${jobId}`);
   };
 
-  const handleViewAnalytics = (jobId: number) => {
+  const handleViewAnalytics = (e: React.MouseEvent, jobId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log('View analytics for job:', jobId);
-    window.alert(`Opening analytics dashboard for Job ID: ${jobId}`);
+    alert(`Opening analytics dashboard for Job ID: ${jobId}`);
   };
 
-  const handleArchiveJob = (jobId: number) => {
+  const handleArchiveJob = (e: React.MouseEvent, jobId: number) => {
+    e.preventDefault();
+    e.stopPropagation();
     console.log('Archive job:', jobId);
     setJobs(prevJobs => 
       prevJobs.map(job => 
@@ -70,7 +79,8 @@ const JobListings = () => {
           : job
       )
     );
-    window.alert(`Job ${jobId} has been ${jobs.find(job => job.id === jobId)?.status === 'Active' ? 'archived' : 'reactivated'}`);
+    const currentJob = jobs.find(job => job.id === jobId);
+    alert(`Job ${jobId} has been ${currentJob?.status === 'Active' ? 'archived' : 'reactivated'}`);
   };
 
   return (
@@ -82,7 +92,7 @@ const JobListings = () => {
             <p className="text-gray-600">Manage your job postings and track performance</p>
           </div>
           <Button 
-            className="bg-accent hover:bg-accent/90 cursor-pointer"
+            className="bg-accent hover:bg-accent/90"
             onClick={handleCreateNewJob}
             type="button"
           >
@@ -123,40 +133,36 @@ const JobListings = () => {
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleViewJob(job.id)}
+                      onClick={(e) => handleViewJob(e, job.id)}
                       title="View Job"
-                      type="button"
-                      className="cursor-pointer"
+                      className="hover:bg-gray-50 active:bg-gray-100"
                     >
                       <Eye className="w-4 h-4" />
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleEditJob(job.id)}
+                      onClick={(e) => handleEditJob(e, job.id)}
                       title="Edit Job"
-                      type="button"
-                      className="cursor-pointer"
+                      className="hover:bg-gray-50 active:bg-gray-100"
                     >
                       <Pencil className="w-4 h-4" />
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleViewAnalytics(job.id)}
+                      onClick={(e) => handleViewAnalytics(e, job.id)}
                       title="View Analytics"
-                      type="button"
-                      className="cursor-pointer"
+                      className="hover:bg-gray-50 active:bg-gray-100"
                     >
                       <BarChart2 className="w-4 h-4" />
                     </Button>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleArchiveJob(job.id)}
+                      onClick={(e) => handleArchiveJob(e, job.id)}
                       title={job.status === 'Active' ? 'Archive Job' : 'Unarchive Job'}
-                      type="button"
-                      className="cursor-pointer"
+                      className="hover:bg-gray-50 active:bg-gray-100"
                     >
                       <Archive className="w-4 h-4" />
                     </Button>
