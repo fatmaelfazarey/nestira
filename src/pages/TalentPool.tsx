@@ -11,6 +11,8 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Star, MapPin, Briefcase, Unlock, Search, Calendar, DollarSign, Flag, Grid2X2, LayoutList, Kanban, Maximize2 } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
+import { AICandidateSearch } from '@/components/AICandidateSearch';
+import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
 
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -23,6 +25,9 @@ const TalentPool = () => {
   const [expandedCandidate, setExpandedCandidate] = useState(null);
   const [favorites, setFavorites] = useState(new Set());
   const [currentView, setCurrentView] = useState('grid');
+  const [aiSearchQuery, setAiSearchQuery] = useState('');
+  const [isAiSearching, setIsAiSearching] = useState(false);
+  const [aiFilteredCandidates, setAiFilteredCandidates] = useState(null);
 
   const candidates = [
     {
@@ -86,7 +91,10 @@ const TalentPool = () => {
 
   const allSkills = Array.from(new Set(candidates.flatMap(c => c.tags)));
 
-  const filteredCandidates = candidates.filter(candidate => {
+  // Use AI filtered candidates if available, otherwise use regular filtering
+  const baseCandidates = aiFilteredCandidates || candidates;
+
+  const filteredCandidates = baseCandidates.filter(candidate => {
     const matchesSearch = candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          candidate.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLocation = locationFilter === 'all' || candidate.location.includes(locationFilter);
@@ -97,6 +105,23 @@ const TalentPool = () => {
     
     return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore;
   });
+
+  const handleAiSearch = async (query: string) => {
+    setIsAiSearching(true);
+    setAiSearchQuery(query);
+    
+    // Simulate AI processing delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    const aiResults = aiSearchCandidates(candidates, query);
+    setAiFilteredCandidates(aiResults);
+    setIsAiSearching(false);
+  };
+
+  const handleClearAiSearch = () => {
+    setAiSearchQuery('');
+    setAiFilteredCandidates(null);
+  };
 
   const handleUnlock = (candidate) => {
     setSelectedCandidate(candidate);
@@ -427,6 +452,14 @@ const TalentPool = () => {
             </Button>
           </div>
         </div>
+
+        {/* AI Search Component */}
+        <AICandidateSearch
+          onSearch={handleAiSearch}
+          isSearching={isAiSearching}
+          currentQuery={aiSearchQuery}
+          onClear={handleClearAiSearch}
+        />
 
         {/* All Filters - Always Visible */}
         <Card>
