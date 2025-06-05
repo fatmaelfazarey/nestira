@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { GripVertical, Edit, Trash2, Save, X } from 'lucide-react';
+import { GripVertical, Edit, Trash2, Save, X, Plus } from 'lucide-react';
 import { Question } from './types';
 
 interface QuestionEditorProps {
