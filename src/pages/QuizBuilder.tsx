@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { QuizCreator } from '@/components/QuizCreator';
+import { QuizPreviewModal } from '@/components/quiz/QuizPreviewModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -10,10 +11,41 @@ import { toast } from 'sonner';
 
 const QuizBuilder = () => {
   const [showCreator, setShowCreator] = useState(false);
+  const [previewQuiz, setPreviewQuiz] = useState<any>(null);
   const [quizzes, setQuizzes] = useState([
-    { id: 1, title: 'Financial Analysis Basics', questions: 15, duration: '30 min', status: 'Active', isActive: true },
-    { id: 2, title: 'Excel for Finance', questions: 20, duration: '45 min', status: 'Draft', isActive: false },
-    { id: 3, title: 'Risk Management', questions: 12, duration: '25 min', status: 'Active', isActive: true },
+    { 
+      id: 1, 
+      title: 'Financial Analysis Basics', 
+      description: 'Test basic financial analysis skills',
+      questions: 15, 
+      duration: '30 min', 
+      status: 'Active', 
+      isActive: true,
+      questionsList: [],
+      timeLimit: { hours: 0, minutes: 30, seconds: 0 }
+    },
+    { 
+      id: 2, 
+      title: 'Excel for Finance', 
+      description: 'Advanced Excel skills assessment',
+      questions: 20, 
+      duration: '45 min', 
+      status: 'Draft', 
+      isActive: false,
+      questionsList: [],
+      timeLimit: { hours: 0, minutes: 45, seconds: 0 }
+    },
+    { 
+      id: 3, 
+      title: 'Risk Management', 
+      description: 'Risk assessment and management principles',
+      questions: 12, 
+      duration: '25 min', 
+      status: 'Active', 
+      isActive: true,
+      questionsList: [],
+      timeLimit: { hours: 0, minutes: 25, seconds: 0 }
+    },
   ]);
 
   const handleSaveQuiz = (newQuiz: any) => {
@@ -33,6 +65,10 @@ const QuizBuilder = () => {
     const shareUrl = `${window.location.origin}/quiz/${quiz.id}`;
     navigator.clipboard.writeText(shareUrl);
     toast.success(`Quiz link copied to clipboard!`);
+  };
+
+  const previewQuizHandler = (quiz: any) => {
+    setPreviewQuiz(quiz);
   };
 
   if (showCreator) {
@@ -95,7 +131,11 @@ const QuizBuilder = () => {
                     <Settings className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => previewQuizHandler(quiz)}
+                  >
                     <Play className="w-4 h-4 mr-1" />
                     Preview
                   </Button>
@@ -113,6 +153,14 @@ const QuizBuilder = () => {
           ))}
         </div>
       </div>
+
+      {previewQuiz && (
+        <QuizPreviewModal
+          isOpen={!!previewQuiz}
+          onClose={() => setPreviewQuiz(null)}
+          quiz={previewQuiz}
+        />
+      )}
     </DashboardLayout>
   );
 };

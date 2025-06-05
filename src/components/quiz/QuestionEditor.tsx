@@ -35,11 +35,13 @@ export function QuestionEditor({
   const handleCancel = () => {
     setEditedQuestion(question);
     setIsEditing(false);
+    onUpdate({ isEditing: false });
   };
 
   const handleEdit = () => {
     setIsEditing(true);
     setEditedQuestion(question);
+    onUpdate({ isEditing: true });
   };
 
   const handleTypeChange = (newType: string) => {
