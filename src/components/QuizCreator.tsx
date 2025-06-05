@@ -6,12 +6,27 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Plus, GripVertical, X, Bot, Edit, Trash2, Save } from 'lucide-react';
-import { 
-  DragDropContext, 
-  Droppable, 
-  Draggable,
-  DropResult 
-} from '@hello-pangea/dnd';
+import {
+  DndContext,
+  DragEndEvent,
+  DragOverlay,
+  DragStartEvent,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import {
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface Question {
   id: string;
@@ -63,37 +78,105 @@ const suggestedQuestions: Question[] = [
   }
 ];
 
+function SortableItem({ question, index, onUpdate, onRemove }: {
+  question: Question;
+  index: number;
+  onUpdate: (updates: Partial<Question>) => void;
+  onRemove: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: question.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`p-4 bg-white border rounded-lg shadow-sm ${
+        isDragging ? 'shadow-lg' : ''
+      }`}
+    >
+      <QuestionEditor
+        question={question}
+        index={index}
+        onUpdate={onUpdate}
+        onRemove={onRemove}
+        dragHandleProps={{ ...attributes, ...listeners }}
+      />
+    </div>
+  );
+}
+
+function DraggableSuggestion({ question, onAddToQuiz }: {
+  question: Question;
+  onAddToQuiz: (question: Question) => void;
+}) {
+  return (
+    <div
+      className="p-3 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 cursor-pointer hover:border-accent transition-colors"
+      onClick={() => onAddToQuiz(question)}
+    >
+      <div className="flex items-start gap-2">
+        <GripVertical className="w-4 h-4 text-gray-400 mt-1" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-700">{question.text}</p>
+          <Badge variant="outline" className="mt-1 text-xs">
+            {question.type.replace('-', ' ')}
+          </Badge>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
   const [quizTitle, setQuizTitle] = useState('');
   const [quizDescription, setQuizDescription] = useState('');
   const [timeLimit, setTimeLimit] = useState({ hours: 0, minutes: 30, seconds: 0 });
   const [questions, setQuestions] = useState<Question[]>([]);
   const [availableQuestions, setAvailableQuestions] = useState<Question[]>(suggestedQuestions);
+  const [activeId, setActiveId] = useState<string | null>(null);
 
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination) return;
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
 
-    const { source, destination } = result;
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
 
-    if (source.droppableId === 'suggested' && destination.droppableId === 'quiz') {
-      // Moving from suggested to quiz
-      const questionToMove = availableQuestions[source.index];
-      const newQuestion = { ...questionToMove, id: `quiz-${Date.now()}` };
-      
-      setQuestions(prev => {
-        const newQuestions = [...prev];
-        newQuestions.splice(destination.index, 0, newQuestion);
-        return newQuestions;
-      });
-    } else if (source.droppableId === 'quiz' && destination.droppableId === 'quiz') {
-      // Reordering within quiz
-      setQuestions(prev => {
-        const newQuestions = [...prev];
-        const [reorderedItem] = newQuestions.splice(source.index, 1);
-        newQuestions.splice(destination.index, 0, reorderedItem);
-        return newQuestions;
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      setQuestions((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over?.id);
+
+        return arrayMove(items, oldIndex, newIndex);
       });
     }
+
+    setActiveId(null);
+  };
+
+  const addSuggestedQuestion = (suggestedQuestion: Question) => {
+    const newQuestion = { ...suggestedQuestion, id: `quiz-${Date.now()}` };
+    setQuestions(prev => [...prev, newQuestion]);
   };
 
   const addCustomQuestion = () => {
@@ -223,37 +306,15 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Droppable droppableId="suggested">
-                {(provided) => (
-                  <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-2">
-                    {availableQuestions.map((question, index) => (
-                      <Draggable key={question.id} draggableId={question.id} index={index}>
-                        {(provided, snapshot) => (
-                          <div
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            {...provided.dragHandleProps}
-                            className={`p-3 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200 cursor-move hover:border-accent transition-colors ${
-                              snapshot.isDragging ? 'bg-accent/10 border-accent' : ''
-                            }`}
-                          >
-                            <div className="flex items-start gap-2">
-                              <GripVertical className="w-4 h-4 text-gray-400 mt-1" />
-                              <div className="flex-1">
-                                <p className="text-sm font-medium text-gray-700">{question.text}</p>
-                                <Badge variant="outline" className="mt-1 text-xs">
-                                  {question.type.replace('-', ' ')}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </Draggable>
-                    ))}
-                    {provided.placeholder}
-                  </div>
-                )}
-              </Droppable>
+              <div className="space-y-2">
+                {availableQuestions.map((question) => (
+                  <DraggableSuggestion
+                    key={question.id}
+                    question={question}
+                    onAddToQuiz={addSuggestedQuestion}
+                  />
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -271,51 +332,48 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="quiz">
-                  {(provided, snapshot) => (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      className={`min-h-[400px] space-y-4 ${
-                        snapshot.isDraggingOver ? 'bg-accent/5 rounded-lg' : ''
-                      }`}
-                    >
-                      {questions.length === 0 ? (
-                        <div className="flex items-center justify-center h-64 border-2 border-dashed border-gray-200 rounded-lg">
-                          <div className="text-center">
-                            <p className="text-gray-500 mb-2">Drag questions here or add custom ones</p>
-                            <p className="text-sm text-gray-400">Your quiz questions will appear here</p>
-                          </div>
-                        </div>
-                      ) : (
-                        questions.map((question, index) => (
-                          <Draggable key={question.id} draggableId={question.id} index={index}>
-                            {(provided, snapshot) => (
-                              <div
-                                ref={provided.innerRef}
-                                {...provided.draggableProps}
-                                className={`p-4 bg-white border rounded-lg shadow-sm ${
-                                  snapshot.isDragging ? 'shadow-lg' : ''
-                                }`}
-                              >
-                                <QuestionEditor
-                                  question={question}
-                                  index={index}
-                                  onUpdate={(updates) => updateQuestion(question.id, updates)}
-                                  onRemove={() => removeQuestion(question.id)}
-                                  dragHandleProps={provided.dragHandleProps}
-                                />
-                              </div>
-                            )}
-                          </Draggable>
-                        ))
-                      )}
-                      {provided.placeholder}
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                onDragStart={handleDragStart}
+                onDragEnd={handleDragEnd}
+              >
+                <div className="min-h-[400px] space-y-4">
+                  {questions.length === 0 ? (
+                    <div className="flex items-center justify-center h-64 border-2 border-dashed border-gray-200 rounded-lg">
+                      <div className="text-center">
+                        <p className="text-gray-500 mb-2">Click on suggested questions or add custom ones</p>
+                        <p className="text-sm text-gray-400">Your quiz questions will appear here</p>
+                      </div>
                     </div>
+                  ) : (
+                    <SortableContext items={questions.map(q => q.id)} strategy={verticalListSortingStrategy}>
+                      {questions.map((question, index) => (
+                        <SortableItem
+                          key={question.id}
+                          question={question}
+                          index={index}
+                          onUpdate={(updates) => updateQuestion(question.id, updates)}
+                          onRemove={() => removeQuestion(question.id)}
+                        />
+                      ))}
+                    </SortableContext>
                   )}
-                </Droppable>
-              </DragDropContext>
+                </div>
+
+                <DragOverlay>
+                  {activeId ? (
+                    <div className="p-4 bg-white border rounded-lg shadow-lg opacity-90">
+                      <div className="flex items-center gap-2">
+                        <GripVertical className="w-4 h-4 text-gray-400" />
+                        <span className="text-sm font-medium">
+                          {questions.find(q => q.id === activeId)?.text}
+                        </span>
+                      </div>
+                    </div>
+                  ) : null}
+                </DragOverlay>
+              </DndContext>
             </CardContent>
           </Card>
         </div>
