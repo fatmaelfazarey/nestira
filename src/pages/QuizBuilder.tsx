@@ -22,7 +22,21 @@ const QuizBuilder = () => {
       duration: '30 min', 
       status: 'Active', 
       isActive: true,
-      questionsList: [],
+      questionsList: [
+        { 
+          id: 'q1', 
+          text: 'What is the primary purpose of financial analysis?', 
+          type: 'multiple-choice', 
+          options: ['To predict stock prices', 'To evaluate financial performance', 'To calculate taxes', 'To prepare budgets'],
+          correctAnswer: 'To evaluate financial performance'
+        },
+        { 
+          id: 'q2', 
+          text: 'A current ratio of 2.5 indicates good liquidity.', 
+          type: 'true-false', 
+          correctAnswer: 'True'
+        }
+      ],
       timeLimit: { hours: 0, minutes: 30, seconds: 0 }
     },
     { 
@@ -33,7 +47,15 @@ const QuizBuilder = () => {
       duration: '45 min', 
       status: 'Draft', 
       isActive: false,
-      questionsList: [],
+      questionsList: [
+        { 
+          id: 'q3', 
+          text: 'Which Excel function is used to calculate net present value?', 
+          type: 'multiple-choice', 
+          options: ['NPV', 'PV', 'FV', 'IRR'],
+          correctAnswer: 'NPV'
+        }
+      ],
       timeLimit: { hours: 0, minutes: 45, seconds: 0 }
     },
     { 
@@ -44,7 +66,14 @@ const QuizBuilder = () => {
       duration: '25 min', 
       status: 'Active', 
       isActive: true,
-      questionsList: [],
+      questionsList: [
+        { 
+          id: 'q4', 
+          text: 'Describe the difference between systematic and unsystematic risk.', 
+          type: 'short-answer',
+          correctAnswer: 'Systematic risk affects the entire market, while unsystematic risk is specific to individual companies or sectors.'
+        }
+      ],
       timeLimit: { hours: 0, minutes: 25, seconds: 0 }
     },
   ]);
@@ -80,10 +109,12 @@ const QuizBuilder = () => {
   };
 
   const previewQuizHandler = (quiz: any) => {
+    console.log('Opening preview for quiz:', quiz);
     setPreviewQuiz(quiz);
   };
 
   const editQuizHandler = (quiz: any) => {
+    console.log('Opening edit for quiz:', quiz);
     setEditingQuiz(quiz);
     setShowCreator(true);
   };

@@ -16,8 +16,8 @@ interface QuizPreviewModalProps {
   quiz: {
     title: string;
     description: string;
-    questions: Question[];
-    timeLimit: { hours: number; minutes: number; seconds: number };
+    questionsList?: Question[];
+    timeLimit?: { hours: number; minutes: number; seconds: number };
   };
 }
 
@@ -27,8 +27,9 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
   const [candidateName, setCandidateName] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const totalQuestions = quiz.questions.length + 1; // +1 for name question
-  const currentQuestion = quiz.questions[currentQuestionIndex - 1]; // -1 because first question is name
+  const questions = quiz.questionsList || [];
+  const totalQuestions = questions.length + 1; // +1 for name question
+  const currentQuestion = questions[currentQuestionIndex - 1]; // -1 because first question is name
 
   const handleAnswerChange = (questionId: string, answer: string) => {
     setAnswers(prev => ({ ...prev, [questionId]: answer }));
@@ -67,7 +68,8 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
   };
 
   const getTotalTime = () => {
-    const { hours, minutes, seconds } = quiz.timeLimit;
+    const timeLimit = quiz.timeLimit || { hours: 0, minutes: 30, seconds: 0 };
+    const { hours, minutes, seconds } = timeLimit;
     let timeString = '';
     if (hours > 0) timeString += `${hours}h `;
     if (minutes > 0) timeString += `${minutes}m `;
@@ -87,7 +89,12 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
           )}
         </DialogHeader>
 
-        {!isCompleted ? (
+        {questions.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500">No questions added to this quiz yet.</p>
+            <p className="text-sm text-gray-400 mt-2">Add questions in the quiz editor to preview them.</p>
+          </div>
+        ) : !isCompleted ? (
           <div className="space-y-6">
             {/* Progress Bar */}
             <div className="w-full bg-gray-200 rounded-full h-2">
