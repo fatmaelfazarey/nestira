@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Save, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
@@ -13,9 +12,10 @@ import { generateAIQuestions } from './quiz/aiQuestionGenerator';
 interface QuizCreatorProps {
   onSave: (quiz: any) => void;
   onCancel: () => void;
+  editingQuiz?: any;
 }
 
-export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
+export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps) {
   // Quiz state
   const [quizTitle, setQuizTitle] = useState('');
   const [quizDescription, setQuizDescription] = useState('');
@@ -28,6 +28,17 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
   // UI state
   const [showAISuggestions, setShowAISuggestions] = useState(false);
   const [personalizationParams, setPersonalizationParams] = useState<PersonalizationParams | null>(null);
+
+  // Load editing quiz data
+  useEffect(() => {
+    if (editingQuiz) {
+      setQuizTitle(editingQuiz.title || '');
+      setQuizDescription(editingQuiz.description || '');
+      setTimeLimit(editingQuiz.timeLimit || { hours: 0, minutes: 30, seconds: 0 });
+      setQuestions(editingQuiz.questionsList || []);
+      setPersonalizationParams(editingQuiz.personalizationParams || null);
+    }
+  }, [editingQuiz]);
 
   const handleGenerateQuestions = (params: PersonalizationParams) => {
     console.log('Generating questions for:', params);
@@ -88,19 +99,19 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
     }
 
     const quiz = {
-      id: Date.now(),
+      id: editingQuiz?.id || Date.now(),
       title: quizTitle,
       description: quizDescription,
       questions: questions.length,
       duration: `${timeLimit.hours > 0 ? timeLimit.hours + 'h ' : ''}${timeLimit.minutes}min`,
-      status: 'Draft',
-      createdAt: new Date().toISOString(),
+      status: editingQuiz?.status || 'Draft',
+      createdAt: editingQuiz?.createdAt || new Date().toISOString(),
       questionsList: questions,
-      personalizationParams
+      personalizationParams,
+      timeLimit
     };
 
     onSave(quiz);
-    toast.success('Quiz created successfully!');
   };
 
   const isQuizComplete = quizTitle.trim() && questions.length > 0;
@@ -117,7 +128,9 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
                 Back
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-primary">Create New Quiz</h1>
+                <h1 className="text-2xl font-bold text-primary">
+                  {editingQuiz ? 'Edit Quiz' : 'Create New Quiz'}
+                </h1>
                 <p className="text-sm text-gray-600">Powered by Nestira Finance</p>
               </div>
             </div>
@@ -132,7 +145,7 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
                 className="bg-accent hover:bg-accent/90 text-white"
               >
                 <Save className="w-4 h-4 mr-2" />
-                Create Quiz
+                {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
               </Button>
             </div>
           </div>
@@ -192,7 +205,7 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
             size="lg"
           >
             <Save className="w-4 h-4 mr-2" />
-            Create Quiz
+            {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
           </Button>
         </div>
       </div>

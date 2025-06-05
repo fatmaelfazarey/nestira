@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 
 const QuizBuilder = () => {
   const [showCreator, setShowCreator] = useState(false);
+  const [editingQuiz, setEditingQuiz] = useState<any>(null);
   const [previewQuiz, setPreviewQuiz] = useState<any>(null);
   const [quizzes, setQuizzes] = useState([
     { 
@@ -49,8 +50,19 @@ const QuizBuilder = () => {
   ]);
 
   const handleSaveQuiz = (newQuiz: any) => {
-    setQuizzes(prev => [...prev, { ...newQuiz, isActive: false }]);
+    if (editingQuiz) {
+      // Update existing quiz
+      setQuizzes(prev => prev.map(quiz => 
+        quiz.id === editingQuiz.id ? { ...newQuiz, id: editingQuiz.id } : quiz
+      ));
+      toast.success('Quiz updated successfully!');
+    } else {
+      // Create new quiz
+      setQuizzes(prev => [...prev, { ...newQuiz, isActive: false }]);
+      toast.success('Quiz created successfully!');
+    }
     setShowCreator(false);
+    setEditingQuiz(null);
   };
 
   const toggleQuizActive = (quizId: number) => {
@@ -71,12 +83,21 @@ const QuizBuilder = () => {
     setPreviewQuiz(quiz);
   };
 
+  const editQuizHandler = (quiz: any) => {
+    setEditingQuiz(quiz);
+    setShowCreator(true);
+  };
+
   if (showCreator) {
     return (
       <DashboardLayout>
         <QuizCreator 
           onSave={handleSaveQuiz}
-          onCancel={() => setShowCreator(false)}
+          onCancel={() => {
+            setShowCreator(false);
+            setEditingQuiz(null);
+          }}
+          editingQuiz={editingQuiz}
         />
       </DashboardLayout>
     );
@@ -127,7 +148,11 @@ const QuizBuilder = () => {
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex gap-2 flex-wrap">
-                  <Button variant="outline" size="sm">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => editQuizHandler(quiz)}
+                  >
                     <Settings className="w-4 h-4 mr-1" />
                     Edit
                   </Button>
