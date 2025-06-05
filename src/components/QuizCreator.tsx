@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Plus, GripVertical, X, Bot, Edit, Trash2, Save } from 'lucide-react';
+import { Plus, GripVertical, X, Bot, Edit, Trash2, Save, Sparkles } from 'lucide-react';
 import {
   DndContext,
   DragEndEvent,
@@ -42,7 +41,7 @@ interface QuizCreatorProps {
   onCancel: () => void;
 }
 
-const suggestedQuestions: Question[] = [
+const defaultQuestions: Question[] = [
   {
     id: 'q1',
     text: 'What is the primary purpose of financial statements?',
@@ -77,6 +76,81 @@ const suggestedQuestions: Question[] = [
     correctAnswer: 'The allocation of the cost of an asset over its useful life'
   }
 ];
+
+// AI-generated questions based on employer input
+const generateAIQuestions = (topic: string): Question[] => {
+  const topicLower = topic.toLowerCase();
+  
+  if (topicLower.includes('excel') || topicLower.includes('spreadsheet')) {
+    return [
+      {
+        id: 'ai-excel-1',
+        text: 'Which Excel function is used to calculate the present value of an investment?',
+        type: 'multiple-choice',
+        options: ['NPV', 'PV', 'FV', 'PMT'],
+        correctAnswer: 'PV'
+      },
+      {
+        id: 'ai-excel-2',
+        text: 'What does the VLOOKUP function do in Excel?',
+        type: 'short-answer',
+        correctAnswer: 'Searches for a value in the first column of a table and returns a value in the same row from another column'
+      }
+    ];
+  }
+  
+  if (topicLower.includes('budget') || topicLower.includes('planning')) {
+    return [
+      {
+        id: 'ai-budget-1',
+        text: 'What is the first step in creating an annual budget?',
+        type: 'multiple-choice',
+        options: ['Set revenue targets', 'Analyze historical data', 'Define strategic goals', 'Calculate expenses'],
+        correctAnswer: 'Define strategic goals'
+      },
+      {
+        id: 'ai-budget-2',
+        text: 'A variance analysis compares actual results to budgeted amounts',
+        type: 'true-false',
+        correctAnswer: 'true'
+      }
+    ];
+  }
+  
+  if (topicLower.includes('tax') || topicLower.includes('compliance')) {
+    return [
+      {
+        id: 'ai-tax-1',
+        text: 'What is the deadline for filing corporate tax returns?',
+        type: 'multiple-choice',
+        options: ['March 15', 'April 15', 'May 15', 'June 15'],
+        correctAnswer: 'April 15'
+      },
+      {
+        id: 'ai-tax-2',
+        text: 'Explain the difference between tax avoidance and tax evasion',
+        type: 'short-answer',
+        correctAnswer: 'Tax avoidance is legal reduction of tax liability through proper planning, while tax evasion is illegal concealment of income or information'
+      }
+    ];
+  }
+  
+  // Default AI questions for general topics
+  return [
+    {
+      id: 'ai-general-1',
+      text: `What key skills are most important for ${topic}?`,
+      type: 'short-answer',
+      correctAnswer: 'Relevant skills and competencies for the specified area'
+    },
+    {
+      id: 'ai-general-2',
+      text: `Describe a challenging situation you might face in ${topic}`,
+      type: 'short-answer',
+      correctAnswer: 'Practical scenario and problem-solving approach'
+    }
+  ];
+};
 
 function SortableItem({ question, index, onUpdate, onRemove }: {
   question: Question;
@@ -145,8 +219,12 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
   const [quizDescription, setQuizDescription] = useState('');
   const [timeLimit, setTimeLimit] = useState({ hours: 0, minutes: 30, seconds: 0 });
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [availableQuestions, setAvailableQuestions] = useState<Question[]>(suggestedQuestions);
   const [activeId, setActiveId] = useState<string | null>(null);
+  
+  // AI question generation
+  const [aiTopic, setAiTopic] = useState('');
+  const [aiQuestions, setAiQuestions] = useState<Question[]>([]);
+  const [availableQuestions, setAvailableQuestions] = useState<Question[]>(defaultQuestions);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -172,6 +250,14 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
     }
 
     setActiveId(null);
+  };
+
+  const generateAIQuestionsHandler = () => {
+    if (!aiTopic.trim()) return;
+    
+    const newAiQuestions = generateAIQuestions(aiTopic);
+    setAiQuestions(newAiQuestions);
+    console.log('Generated AI questions for topic:', aiTopic, newAiQuestions);
   };
 
   const addSuggestedQuestion = (suggestedQuestion: Question) => {
@@ -297,12 +383,56 @@ export function QuizCreator({ onSave, onCancel }: QuizCreatorProps) {
             </CardContent>
           </Card>
 
-          {/* AI Suggested Questions */}
+          {/* AI Question Generator */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                AI Question Generator
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  What do you want to test?
+                </label>
+                <Input
+                  value={aiTopic}
+                  onChange={(e) => setAiTopic(e.target.value)}
+                  placeholder="e.g., Excel skills, budget planning, tax compliance"
+                />
+              </div>
+              <Button 
+                onClick={generateAIQuestionsHandler} 
+                disabled={!aiTopic.trim()}
+                className="w-full"
+                size="sm"
+              >
+                <Bot className="w-4 h-4 mr-2" />
+                Generate Questions
+              </Button>
+              
+              {aiQuestions.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-700">AI Generated:</p>
+                  {aiQuestions.map((question) => (
+                    <DraggableSuggestion
+                      key={question.id}
+                      question={question}
+                      onAddToQuiz={addSuggestedQuestion}
+                    />
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Default Suggested Questions */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bot className="w-5 h-5 text-accent" />
-                AI Suggested Questions
+                Finance & Accounting Questions
               </CardTitle>
             </CardHeader>
             <CardContent>
