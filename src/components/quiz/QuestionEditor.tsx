@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { GripVertical, Edit, Trash2, Save, X, Plus } from 'lucide-react';
 import { Question } from './types';
@@ -27,13 +28,18 @@ export function QuestionEditor({
   const [editedQuestion, setEditedQuestion] = useState(question);
 
   const handleSave = () => {
-    onUpdate(editedQuestion);
+    onUpdate({ ...editedQuestion, isEditing: false });
     setIsEditing(false);
   };
 
   const handleCancel = () => {
     setEditedQuestion(question);
     setIsEditing(false);
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedQuestion(question);
   };
 
   const handleTypeChange = (newType: string) => {
@@ -95,7 +101,7 @@ export function QuestionEditor({
               </Button>
             </>
           ) : (
-            <Button variant="ghost" size="sm" onClick={() => setIsEditing(true)}>
+            <Button variant="ghost" size="sm" onClick={handleEdit}>
               <Edit className="w-4 h-4" />
             </Button>
           )}
@@ -201,39 +207,47 @@ export function QuestionEditor({
         </div>
       ) : (
         <div className="border-t pt-3">
-          <p className="font-medium text-gray-900 mb-2">{question.text}</p>
-          {question.type === 'multiple-choice' && question.options && (
-            <div className="space-y-1">
-              {question.options.map((option, optionIndex) => (
-                <div key={optionIndex} className="flex items-center gap-2">
-                  <div className={`w-3 h-3 rounded-full border ${
-                    question.correctAnswer === option ? 'bg-green-500 border-green-500' : 'border-gray-300'
-                  }`} />
-                  <span className="text-sm text-gray-600">{option}</span>
+          {question.text ? (
+            <>
+              <p className="font-medium text-gray-900 mb-2">{question.text}</p>
+              {question.type === 'multiple-choice' && question.options && (
+                <div className="space-y-1">
+                  {question.options.map((option, optionIndex) => (
+                    <div key={optionIndex} className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full border ${
+                        question.correctAnswer === option ? 'bg-green-500 border-green-500' : 'border-gray-300'
+                      }`} />
+                      <span className="text-sm text-gray-600">{option}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-          {question.type === 'true-false' && (
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full border ${
-                  question.correctAnswer === 'true' ? 'bg-green-500 border-green-500' : 'border-gray-300'
-                }`} />
-                <span className="text-sm text-gray-600">True</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-full border ${
-                  question.correctAnswer === 'false' ? 'bg-green-500 border-green-500' : 'border-gray-300'
-                }`} />
-                <span className="text-sm text-gray-600">False</span>
-              </div>
-            </div>
-          )}
-          {question.type === 'short-answer' && question.correctAnswer && (
-            <div className="text-sm text-gray-600">
-              <span className="font-medium">Expected: </span>
-              {question.correctAnswer}
+              )}
+              {question.type === 'true-false' && (
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full border ${
+                      question.correctAnswer === 'True' ? 'bg-green-500 border-green-500' : 'border-gray-300'
+                    }`} />
+                    <span className="text-sm text-gray-600">True</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full border ${
+                      question.correctAnswer === 'False' ? 'bg-green-500 border-green-500' : 'border-gray-300'
+                    }`} />
+                    <span className="text-sm text-gray-600">False</span>
+                  </div>
+                </div>
+              )}
+              {question.type === 'short-answer' && question.correctAnswer && (
+                <div className="text-sm text-gray-600">
+                  <span className="font-medium">Expected: </span>
+                  {question.correctAnswer}
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="text-gray-500 italic">
+              Click edit to add question content
             </div>
           )}
         </div>

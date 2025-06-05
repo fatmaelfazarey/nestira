@@ -4,19 +4,35 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { QuizCreator } from '@/components/QuizCreator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Settings, Play, ArrowLeft } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Plus, Settings, Play, ArrowLeft, Share, Copy } from 'lucide-react';
+import { toast } from 'sonner';
 
 const QuizBuilder = () => {
   const [showCreator, setShowCreator] = useState(false);
   const [quizzes, setQuizzes] = useState([
-    { id: 1, title: 'Financial Analysis Basics', questions: 15, duration: '30 min', status: 'Active' },
-    { id: 2, title: 'Excel for Finance', questions: 20, duration: '45 min', status: 'Draft' },
-    { id: 3, title: 'Risk Management', questions: 12, duration: '25 min', status: 'Active' },
+    { id: 1, title: 'Financial Analysis Basics', questions: 15, duration: '30 min', status: 'Active', isActive: true },
+    { id: 2, title: 'Excel for Finance', questions: 20, duration: '45 min', status: 'Draft', isActive: false },
+    { id: 3, title: 'Risk Management', questions: 12, duration: '25 min', status: 'Active', isActive: true },
   ]);
 
   const handleSaveQuiz = (newQuiz: any) => {
-    setQuizzes(prev => [...prev, newQuiz]);
+    setQuizzes(prev => [...prev, { ...newQuiz, isActive: false }]);
     setShowCreator(false);
+  };
+
+  const toggleQuizActive = (quizId: number) => {
+    setQuizzes(prev => prev.map(quiz => 
+      quiz.id === quizId 
+        ? { ...quiz, isActive: !quiz.isActive, status: !quiz.isActive ? 'Active' : 'Draft' }
+        : quiz
+    ));
+  };
+
+  const shareQuiz = (quiz: any) => {
+    const shareUrl = `${window.location.origin}/quiz/${quiz.id}`;
+    navigator.clipboard.writeText(shareUrl);
+    toast.success(`Quiz link copied to clipboard!`);
   };
 
   if (showCreator) {
@@ -51,7 +67,18 @@ const QuizBuilder = () => {
           {quizzes.map((quiz) => (
             <Card key={quiz.id} className="hover:shadow-md transition-shadow">
               <CardHeader>
-                <CardTitle className="text-lg">{quiz.title}</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg">{quiz.title}</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={quiz.isActive}
+                      onCheckedChange={() => toggleQuizActive(quiz.id)}
+                    />
+                    <span className="text-xs text-gray-500">
+                      {quiz.isActive ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                </div>
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   <span>{quiz.questions} questions</span>
                   <span>{quiz.duration}</span>
@@ -63,7 +90,7 @@ const QuizBuilder = () => {
                 </div>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap">
                   <Button variant="outline" size="sm">
                     <Settings className="w-4 h-4 mr-1" />
                     Edit
@@ -71,6 +98,14 @@ const QuizBuilder = () => {
                   <Button variant="outline" size="sm">
                     <Play className="w-4 h-4 mr-1" />
                     Preview
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => shareQuiz(quiz)}
+                  >
+                    <Share className="w-4 h-4 mr-1" />
+                    Share
                   </Button>
                 </div>
               </CardContent>
