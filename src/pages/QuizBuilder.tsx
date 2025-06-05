@@ -1,15 +1,34 @@
 
+import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
+import { QuizCreator } from '@/components/QuizCreator';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Settings, Play } from 'lucide-react';
+import { Plus, Settings, Play, ArrowLeft } from 'lucide-react';
 
 const QuizBuilder = () => {
-  const quizzes = [
+  const [showCreator, setShowCreator] = useState(false);
+  const [quizzes, setQuizzes] = useState([
     { id: 1, title: 'Financial Analysis Basics', questions: 15, duration: '30 min', status: 'Active' },
     { id: 2, title: 'Excel for Finance', questions: 20, duration: '45 min', status: 'Draft' },
     { id: 3, title: 'Risk Management', questions: 12, duration: '25 min', status: 'Active' },
-  ];
+  ]);
+
+  const handleSaveQuiz = (newQuiz: any) => {
+    setQuizzes(prev => [...prev, newQuiz]);
+    setShowCreator(false);
+  };
+
+  if (showCreator) {
+    return (
+      <DashboardLayout>
+        <QuizCreator 
+          onSave={handleSaveQuiz}
+          onCancel={() => setShowCreator(false)}
+        />
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -19,7 +38,10 @@ const QuizBuilder = () => {
             <h1 className="text-3xl font-bold text-gray-900">Quiz Builder</h1>
             <p className="text-gray-600">Create and manage assessment quizzes</p>
           </div>
-          <Button className="bg-accent hover:bg-accent/90 text-white">
+          <Button 
+            className="bg-accent hover:bg-accent/90 text-white"
+            onClick={() => setShowCreator(true)}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Create New Quiz
           </Button>
