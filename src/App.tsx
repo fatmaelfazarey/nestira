@@ -11,6 +11,7 @@ import JobListings from "./pages/JobListings";
 import RecruitmentBoard from "./pages/RecruitmentBoard";
 import Interviews from "./pages/Interviews";
 import QuizBuilder from "./pages/QuizBuilder";
+import QuizTaking from "./pages/QuizTaking";
 import InterviewQuestions from "./pages/InterviewQuestions";
 import OfferTemplates from "./pages/OfferTemplates";
 import Billing from "./pages/Billing";
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/recruitment-board" element={<RecruitmentBoard />} />
           <Route path="/interviews" element={<Interviews />} />
           <Route path="/quiz-builder" element={<QuizBuilder />} />
+          <Route path="/quiz/:quizId" element={<QuizTaking />} />
           <Route path="/interview-questions" element={<InterviewQuestions />} />
           <Route path="/offer-templates" element={<OfferTemplates />} />
           <Route path="/billing" element={<Billing />} />
