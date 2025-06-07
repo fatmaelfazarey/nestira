@@ -41,7 +41,8 @@ const kpiData = [
     icon: Briefcase,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
-    isPositive: true
+    isPositive: true,
+    clickAction: "job-listings"
   },
   {
     title: "Active Jobs",
@@ -50,7 +51,8 @@ const kpiData = [
     icon: Activity,
     color: "text-green-600", 
     bgColor: "bg-green-50",
-    isPositive: true
+    isPositive: true,
+    clickAction: "recruitment-board"
   },
   {
     title: "Closed Jobs",
@@ -59,7 +61,8 @@ const kpiData = [
     icon: CheckCircle,
     color: "text-gray-600",
     bgColor: "bg-gray-50", 
-    isPositive: true
+    isPositive: true,
+    clickAction: "job-listings"
   },
   {
     title: "Total Applications",
@@ -68,7 +71,8 @@ const kpiData = [
     icon: FileText,
     color: "text-purple-600",
     bgColor: "bg-purple-50",
-    isPositive: true
+    isPositive: true,
+    clickAction: "recruitment-board"
   },
   {
     title: "Avg Applications",
@@ -77,7 +81,8 @@ const kpiData = [
     icon: TrendingUp,
     color: "text-orange-600",
     bgColor: "bg-orange-50",
-    isPositive: true
+    isPositive: true,
+    clickAction: "recruitment-board"
   },
   {
     title: "Unlocked Candidates",
@@ -86,7 +91,8 @@ const kpiData = [
     icon: Unlock,
     color: "text-indigo-600",
     bgColor: "bg-indigo-50",
-    isPositive: true
+    isPositive: true,
+    clickAction: "unlocked-talents"
   },
   {
     title: "Avg Daily Unlocks",
@@ -95,7 +101,8 @@ const kpiData = [
     icon: Calendar,
     color: "text-teal-600",
     bgColor: "bg-teal-50",
-    isPositive: false
+    isPositive: false,
+    clickAction: "talent-pool"
   }
 ];
 
@@ -193,63 +200,61 @@ const chartConfig = {
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
 
+  const handleKpiClick = (action: string) => {
+    console.log(`Navigating to ${action}`);
+    // In a real app, this would use router navigation
+    // For now, we'll just log the action
+  };
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-primary to-primary/90 rounded-lg p-6 text-white">
         <h1 className="text-2xl font-bold mb-2">Welcome back, Nestira Finance Team!</h1>
         <p className="text-white/80">Here's what's happening with your hiring pipeline today.</p>
       </div>
 
-      {/* KPI Cards Grid with Recent Profile Views */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Compact KPI Cards Grid */}
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
         {kpiData.map((kpi) => (
-          <Card key={kpi.title} className="p-6 hover:shadow-lg transition-shadow duration-200">
-            <div className="flex items-center justify-between mb-4">
-              <div className={`p-3 rounded-lg ${kpi.bgColor}`}>
-                <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+          <Card 
+            key={kpi.title} 
+            className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
+            onClick={() => handleKpiClick(kpi.clickAction)}
+          >
+            <div className="flex flex-col items-center text-center space-y-2">
+              <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
+                <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
               </div>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-3xl font-bold text-gray-900">{kpi.value}</h3>
-              <p className="text-sm font-medium text-gray-600">{kpi.title}</p>
-              <p className="text-xs text-gray-500">{kpi.subtitle}</p>
+              <div className="space-y-1">
+                <h3 className="text-xl font-bold text-gray-900">{kpi.value}</h3>
+                <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
+              </div>
             </div>
           </Card>
         ))}
 
-        {/* Recent Profile Views Card */}
-        <Card className="p-6 hover:shadow-lg transition-shadow duration-200">
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-3 rounded-lg bg-indigo-50">
-              <Eye className="w-6 h-6 text-indigo-600" />
+        {/* Recent Profile Views Compact Card */}
+        <Card 
+          className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
+          onClick={() => setShowProfileViewsModal(true)}
+        >
+          <div className="flex flex-col items-center text-center space-y-2">
+            <div className="p-2 rounded-lg bg-indigo-50">
+              <Eye className="w-4 h-4 text-indigo-600" />
             </div>
-            <Button 
-              variant="ghost" 
-              size="sm"
-              onClick={() => setShowProfileViewsModal(true)}
-              className="h-8 w-8 p-0"
-            >
-              <Eye className="w-4 h-4" />
-            </Button>
-          </div>
-          <div className="space-y-2">
-            <h3 className="text-lg font-semibold text-gray-900">Recent Profile Views</h3>
-            <div className="space-y-3">
-              {recentProfileViews.slice(0, 3).map((profile, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                    {profile.avatar}
+            <div className="space-y-1">
+              <h3 className="text-xs font-medium text-gray-600">Recent Profile Views</h3>
+              <div className="space-y-1">
+                {recentProfileViews.slice(0, 3).map((profile, index) => (
+                  <div key={index} className="flex items-center justify-between text-xs">
+                    <div className="w-3 h-3 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                      {profile.avatar}
+                    </div>
+                    <span className="font-semibold text-gray-900">{profile.views}</span>
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
-                  </div>
-                  <div className="text-xs font-semibold text-gray-900">{profile.views}</div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </Card>
