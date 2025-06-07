@@ -255,125 +255,191 @@ const TalentPool = () => {
       return `${years} year${years > 1 ? 's' : ''} ago`;
     }
   };
-  const renderGridView = () => <TooltipProvider>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  const renderGridView = () => (
+    <TooltipProvider>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredCandidates.map(candidate => {
-        const isUnlocked = unlockedCandidates.has(candidate.id);
-        return <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative">
-              <CardHeader>
+          const isUnlocked = unlockedCandidates.has(candidate.id);
+          return (
+            <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative max-w-80 rounded-lg border border-gray-200">
+              {/* Top Section */}
+              <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <Avatar className={`w-12 h-12 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                      <Avatar className={`w-10 h-10 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
                         <AvatarImage src={candidate.photo} alt={candidate.name} />
-                        <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="text-sm">{candidate.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      {!isUnlocked && <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                          <Unlock className="w-4 h-4 text-gray-600" />
-                        </div>}
+                      {!isUnlocked && (
+                        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                          <Unlock className="w-3 h-3 text-gray-600" />
+                        </div>
+                      )}
                     </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <span className="transition-all duration-500">
-                          {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
-                        </span>
-                        <span className="text-lg">{getCountryFlag(candidate.country)}</span>
-                        {isUnlocked && <CheckCircle className="w-4 h-4 text-green-500 animate-fade-in" />}
-                      </CardTitle>
-                      <p className="text-sm text-gray-600">{candidate.title}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-base text-gray-900 truncate transition-all duration-500">
+                          {isUnlocked ? candidate.name.split(' ')[0] : formatBlurredName(candidate.name)}
+                        </h3>
+                        <span className="text-base">{getCountryFlag(candidate.country)}</span>
+                        {isUnlocked && <CheckCircle className="w-3 h-3 text-green-500 animate-fade-in flex-shrink-0" />}
+                      </div>
+                      <p className="text-sm text-gray-600 truncate">{candidate.title}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex-shrink-0">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
-                          <CircularProgress value={candidate.score} size={60} strokeWidth={4} />
+                          <CircularProgress value={candidate.score} size={45} strokeWidth={3} />
                         </div>
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>Matching Score: {candidate.score}%</p>
                       </TooltipContent>
                     </Tooltip>
-                    <Button variant="ghost" size="sm" onClick={() => toggleFavorite(candidate.id)} className="text-yellow-500 hover:text-yellow-600 p-1">
-                      <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                    </Button>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <MapPin className="w-4 h-4" />
-                  {candidate.location}
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <Briefcase className="w-4 h-4" />
-                  {candidate.experience} experience
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <DollarSign className="w-4 h-4" />
-                  {candidate.salaryExpectation}
-                </div>
 
-                <div className="flex flex-wrap gap-1">
-                  {candidate.tags.map(tag => <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>)}
-                </div>
-
-                {/* Industry Experience Section */}
+              <CardContent className="space-y-4 pt-0">
+                {/* Quick Info Row */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Industry Experience</p>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <MapPin className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate">{candidate.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Briefcase className="w-3 h-3 flex-shrink-0" />
+                    <span>{candidate.experience} experience</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <DollarSign className="w-3 h-3 flex-shrink-0" />
+                    <span className="truncate text-xs">{candidate.salaryExpectation}</span>
+                  </div>
+                </div>
+
+                {/* Top Skills */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Top Skills</p>
                   <div className="flex flex-wrap gap-1">
-                    {candidate.industryExperience.map(industry => <Badge key={industry} variant="outline" className="text-xs">
+                    {candidate.tags.slice(0, 2).map(tag => (
+                      <Badge key={tag} variant="secondary" className="text-xs px-2 py-1">
+                        {tag}
+                      </Badge>
+                    ))}
+                    {candidate.tags.length > 2 && (
+                      <Badge variant="outline" className="text-xs px-2 py-1">
+                        +{candidate.tags.length - 2} more
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
+                {/* Industry Experience */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Industry</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.industryExperience.slice(0, 2).map(industry => (
+                      <Badge key={industry} variant="outline" className="text-xs px-2 py-1">
                         {industry}
-                      </Badge>)}
+                      </Badge>
+                    ))}
+                    {candidate.industryExperience.length > 2 && (
+                      <Badge variant="outline" className="text-xs px-2 py-1">
+                        +{candidate.industryExperience.length - 2} more
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
-                {/* Finance Subfields Section */}
+                {/* Finance Subfields */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Finance Subfields</p>
+                  <p className="text-xs font-medium text-gray-700">Subfields</p>
                   <div className="flex flex-wrap gap-1">
-                    {candidate.financeSubfields.map(subfield => <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                    {candidate.financeSubfields.slice(0, 2).map(subfield => (
+                      <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 px-2 py-1">
                         {subfield}
-                      </Badge>)}
+                      </Badge>
+                    ))}
+                    {candidate.financeSubfields.length > 2 && (
+                      <Badge variant="outline" className="text-xs px-2 py-1">
+                        +{candidate.financeSubfields.length - 2} more
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
-                {/* Software & Tools Section */}
+                {/* Software & Tools */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Software & Tools</p>
+                  <p className="text-xs font-medium text-gray-700">Tools</p>
                   <div className="flex flex-wrap gap-1">
-                    {candidate.softwareTools.map(tool => <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                    {candidate.softwareTools.slice(0, 2).map(tool => (
+                      <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200 px-2 py-1">
                         {tool}
-                      </Badge>)}
+                      </Badge>
+                    ))}
+                    {candidate.softwareTools.length > 2 && (
+                      <Badge variant="outline" className="text-xs px-2 py-1">
+                        +{candidate.softwareTools.length - 2} more
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
-                {/* Certifications Section */}
+                {/* Certifications */}
                 <div className="space-y-2">
                   <p className="text-xs font-medium text-gray-700">Certifications</p>
                   <div className="flex flex-wrap gap-1">
-                    {candidate.certifications.map(cert => <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                    {candidate.certifications.slice(0, 2).map(cert => (
+                      <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 px-2 py-1">
                         {cert}
-                      </Badge>)}
+                      </Badge>
+                    ))}
+                    {candidate.certifications.length > 2 && (
+                      <Badge variant="outline" className="text-xs px-2 py-1">
+                        +{candidate.certifications.length - 2} more
+                      </Badge>
+                    )}
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center gap-2">
-                  <Badge variant={candidate.status === 'Available' ? 'default' : 'secondary'} className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}>
-                    {candidate.status}
-                  </Badge>
-                  <Button size="sm" className="bg-accent hover:bg-accent/90" onClick={() => handleUnlock(candidate)}>
-                    <Unlock className="w-4 h-4 mr-1" />
-                    {isUnlocked ? 'View Profile' : 'Unlock'}
+                {/* Bottom Section */}
+                <div className="space-y-3 pt-2">
+                  <div className="flex justify-between items-center">
+                    <Badge 
+                      variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
+                      className={candidate.status === 'Available' ? 'bg-green-100 text-green-800 border-green-200' : ''}
+                    >
+                      {candidate.status}
+                    </Badge>
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => toggleFavorite(candidate.id)} 
+                      className="text-yellow-500 hover:text-yellow-600 p-1"
+                    >
+                      <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                    </Button>
+                  </div>
+                  
+                  <Button 
+                    className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-medium" 
+                    onClick={() => handleUnlock(candidate)}
+                  >
+                    <Unlock className="w-4 h-4 mr-2" />
+                    {isUnlocked ? 'View Profile' : 'View Profile'}
                   </Button>
                 </div>
               </CardContent>
-            </Card>;
-      })}
+            </Card>
+          );
+        })}
       </div>
-    </TooltipProvider>;
+    </TooltipProvider>
+  );
+
   const renderTableView = () => <TooltipProvider>
       <Card>
         <Table>
