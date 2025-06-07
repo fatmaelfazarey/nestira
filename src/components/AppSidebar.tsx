@@ -12,8 +12,6 @@ import {
   HelpCircle,
   CreditCard,
   Users,
-  PenTool,
-  FileSignature,
   Calendar
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -94,24 +92,6 @@ const navigationSections = [
         title: "Quiz Designer",
         url: "/quiz-builder",
         icon: Check,
-        badge: null
-      },
-      {
-        title: "Interview Preparation Designer",
-        url: "/interview-questions",
-        icon: File,
-        badge: null
-      },
-      {
-        title: "Job Offer Designer",
-        url: "/offer-templates",
-        icon: FileSignature,
-        badge: null
-      },
-      {
-        title: "Nesti-Sign",
-        url: "/nesti-sign",
-        icon: PenTool,
         badge: null
       },
       {
