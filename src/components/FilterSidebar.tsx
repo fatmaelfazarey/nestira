@@ -242,7 +242,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 h-[2px] bg-gray-300" />
 
           {/* Experience and Score Range */}
           <div className="space-y-4">
@@ -281,7 +281,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 h-[2px] bg-gray-300" />
 
           {/* Skills & Expertise */}
           <div className="space-y-4">
@@ -343,7 +343,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 h-[2px] bg-gray-300" />
 
           {/* Work Preferences */}
           <div className="space-y-4">
@@ -406,7 +406,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 h-[2px] bg-gray-300" />
 
           {/* Industry Experience */}
           <div className="space-y-4">
@@ -428,7 +428,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 h-[2px] bg-gray-300" />
 
           {/* Advanced Filters (Collapsible) */}
           <Collapsible open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
@@ -487,7 +487,7 @@ export const FilterSidebar = ({
             </div>
           </Collapsible>
 
-          <Separator className="my-6" />
+          <Separator className="my-6 h-[2px] bg-gray-300" />
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-4 sticky bottom-0 bg-white pb-4">
