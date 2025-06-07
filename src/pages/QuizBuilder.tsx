@@ -176,7 +176,14 @@ const QuizBuilder = () => {
             <Card key={quiz.id} className="hover:shadow-md transition-shadow">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-lg">{quiz.title}</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-lg">{quiz.title}</CardTitle>
+                    {quiz.assignedCandidates > 0 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {quiz.assignedCandidates} assigned
+                      </Badge>
+                    )}
+                  </div>
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={quiz.isActive}
@@ -200,13 +207,6 @@ const QuizBuilder = () => {
                 {/* Candidate Statistics */}
                 {quiz.assignedCandidates > 0 && (
                   <div className="space-y-2 pt-2 border-t">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-1 text-gray-600">
-                        <Users className="w-4 h-4" />
-                        <span>Assigned:</span>
-                      </div>
-                      <Badge variant="secondary">{quiz.assignedCandidates}</Badge>
-                    </div>
                     <div className="flex gap-4 text-xs">
                       <div className="flex items-center gap-1 text-green-600">
                         <CheckCircle className="w-3 h-3" />
