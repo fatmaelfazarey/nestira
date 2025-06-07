@@ -1,4 +1,3 @@
-
 import {
   Grid2X2,
   Inbox,
@@ -57,6 +56,12 @@ const navigationSections = [
         title: "Talent Pool",
         url: "/talent-pool",
         icon: User,
+        badge: null
+      },
+      {
+        title: "Unlocked Talents",
+        url: "/unlocked-talents",
+        icon: Users,
         badge: null
       },
       {
