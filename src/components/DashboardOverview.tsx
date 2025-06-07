@@ -279,12 +279,12 @@ export function DashboardOverview() {
               Unlocked Talents
             </Button>
             <Button variant="outline" className="justify-start h-12">
-              <PuzzleIcon className="w-4 h-4 mr-3" />
-              Quiz Builder
-            </Button>
-            <Button variant="outline" className="justify-start h-12">
               <FileText className="w-4 h-4 mr-3" />
               Create Job Post
+            </Button>
+            <Button variant="outline" className="justify-start h-12">
+              <PuzzleIcon className="w-4 h-4 mr-3" />
+              Quiz Builder
             </Button>
             <Button variant="outline" className="justify-start h-12">
               <TrendingUp className="w-4 h-4 mr-3" />
