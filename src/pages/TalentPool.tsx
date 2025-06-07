@@ -5,7 +5,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
 import { AICandidateSearch } from '@/components/AICandidateSearch';
@@ -122,6 +123,29 @@ const TalentPool = () => {
     
     return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore;
   });
+
+  // Progress bar component for candidate count
+  const CandidateCountProgress = ({ count, total }) => {
+    const percentage = (count / total) * 100;
+    let progressColor = 'bg-red-500';
+    
+    if (percentage > 70) {
+      progressColor = 'bg-green-500';
+    } else if (percentage > 30) {
+      progressColor = 'bg-orange-500';
+    }
+
+    return (
+      <div className="flex items-center gap-3">
+        <div className="flex-1">
+          <Progress value={percentage} className="h-2" />
+        </div>
+        <span className="text-sm font-medium text-gray-700">
+          {count} of {total}
+        </span>
+      </div>
+    );
+  };
 
   // Helper functions for multi-select
   const toggleMultiSelect = (item, selectedItems, setSelectedItems) => {
@@ -265,10 +289,6 @@ const TalentPool = () => {
               {candidate.experience} experience
             </div>
             <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Calendar className="w-4 h-4" />
-              Joined {formatDate(candidate.profileAdded)}
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
               <DollarSign className="w-4 h-4" />
               {candidate.salaryExpectation}
             </div>
@@ -330,7 +350,6 @@ const TalentPool = () => {
                       {candidate.name}
                       <span>{getCountryFlag(candidate.country)}</span>
                     </div>
-                    <div className="text-sm text-gray-500">{formatDate(candidate.profileAdded)}</div>
                   </div>
                 </div>
               </TableCell>
@@ -477,40 +496,55 @@ const TalentPool = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Talent Pool</h1>
             <p className="text-gray-600">Browse and filter finance professionals</p>
+            
+            {/* Progress Bar for Candidate Count */}
+            <div className="mt-4 max-w-md">
+              <p className="text-sm text-gray-600 mb-2">Matching Candidates</p>
+              <CandidateCountProgress count={filteredCandidates.length} total={candidates.length} />
+            </div>
           </div>
-          <div className="flex gap-2">
+          
+          {/* Enhanced Filters Button */}
+          <div className="flex flex-col items-end gap-4">
             <Button 
               variant="outline"
               onClick={() => setIsFilterSidebarOpen(true)}
-              className="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 text-blue-700 font-semibold"
+              className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 border-2 border-blue-300 text-blue-800 font-bold text-lg px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
             >
-              <Filter className="w-4 h-4" />
-              Filters ({filteredCandidates.length})
+              <SlidersHorizontal className="w-6 h-6" />
+              <div className="flex flex-col items-start">
+                <span>Advanced Filters</span>
+                <span className="text-xs font-normal">({filteredCandidates.length} results)</span>
+              </div>
             </Button>
-            <Button 
-              variant={currentView === 'grid' ? 'default' : 'outline'}
-              onClick={() => setCurrentView('grid')}
-              className="flex items-center gap-2"
-            >
-              <Grid2X2 className="w-4 h-4" />
-              Grid View
-            </Button>
-            <Button 
-              variant={currentView === 'table' ? 'default' : 'outline'}
-              onClick={() => setCurrentView('table')}
-              className="flex items-center gap-2"
-            >
-              <LayoutList className="w-4 h-4" />
-              Table View
-            </Button>
-            <Button 
-              variant={currentView === 'kanban' ? 'default' : 'outline'}
-              onClick={() => setCurrentView('kanban')}
-              className="flex items-center gap-2"
-            >
-              <Kanban className="w-4 h-4" />
-              Kanban
-            </Button>
+            
+            {/* View Controls */}
+            <div className="flex gap-2">
+              <Button 
+                variant={currentView === 'grid' ? 'default' : 'outline'}
+                onClick={() => setCurrentView('grid')}
+                className="flex items-center gap-2"
+              >
+                <Grid2X2 className="w-4 h-4" />
+                Grid
+              </Button>
+              <Button 
+                variant={currentView === 'table' ? 'default' : 'outline'}
+                onClick={() => setCurrentView('table')}
+                className="flex items-center gap-2"
+              >
+                <LayoutList className="w-4 h-4" />
+                Table
+              </Button>
+              <Button 
+                variant={currentView === 'kanban' ? 'default' : 'outline'}
+                onClick={() => setCurrentView('kanban')}
+                className="flex items-center gap-2"
+              >
+                <Kanban className="w-4 h-4" />
+                Kanban
+              </Button>
+            </div>
           </div>
         </div>
 
