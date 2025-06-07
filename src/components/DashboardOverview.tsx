@@ -30,6 +30,8 @@ import {
   BarChart,
   Bar
 } from "recharts";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const kpiData = [
   {
@@ -140,31 +142,36 @@ const recentProfileViews = [
     name: "Karim Ahmed",
     location: "Giza, Egypt",
     timeAgo: "3 days ago",
-    avatar: "K"
+    avatar: "K",
+    views: 12
   },
   {
     name: "Omar Fathy Ahmed Huss...",
     location: "Alexandria, Egypt", 
     timeAgo: "5 days ago",
-    avatar: "O"
+    avatar: "O",
+    views: 8
   },
   {
     name: "moamen abdulraouf",
     location: "Cairo, Egypt",
     timeAgo: "5 days ago", 
-    avatar: "M"
+    avatar: "M",
+    views: 15
   },
   {
     name: "Elsayed Kewan",
     location: "Cairo, Egypt",
     timeAgo: "5 days ago",
-    avatar: "E"
+    avatar: "E",
+    views: 6
   },
   {
     name: "Yasser Khairy",
     location: "Cairo, Egypt",
     timeAgo: "5 days ago",
-    avatar: "Y"
+    avatar: "Y",
+    views: 9
   }
 ];
 
@@ -184,6 +191,8 @@ const chartConfig = {
 };
 
 export function DashboardOverview() {
+  const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -272,6 +281,14 @@ export function DashboardOverview() {
               <Eye className="w-5 h-5 text-gray-600" />
               <h3 className="text-lg font-semibold text-gray-900">Recent Profile Views</h3>
             </div>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={() => setShowProfileViewsModal(true)}
+              className="text-gray-600 hover:text-gray-900"
+            >
+              <Eye className="w-4 h-4" />
+            </Button>
           </div>
           <div className="space-y-4">
             {recentProfileViews.map((profile, index) => (
@@ -283,9 +300,12 @@ export function DashboardOverview() {
                   <p className="font-medium text-gray-900 truncate">{profile.name}</p>
                   <p className="text-sm text-gray-600">{profile.location}</p>
                 </div>
-                <div className="text-xs text-gray-500 flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {profile.timeAgo}
+                <div className="text-right">
+                  <div className="text-sm font-semibold text-gray-900">{profile.views} views</div>
+                  <div className="text-xs text-gray-500 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    {profile.timeAgo}
+                  </div>
                 </div>
               </div>
             ))}
@@ -355,6 +375,55 @@ export function DashboardOverview() {
           </div>
         </Card>
       </div>
+
+      {/* Profile Views Modal */}
+      <Dialog open={showProfileViewsModal} onOpenChange={setShowProfileViewsModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Eye className="w-5 h-5" />
+              Profile Views Analytics
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">50</div>
+                <div className="text-sm text-blue-800">Total Views Today</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">348</div>
+                <div className="text-sm text-green-800">This Week</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">1,247</div>
+                <div className="text-sm text-purple-800">This Month</div>
+              </div>
+            </div>
+            
+            <div className="space-y-4">
+              <h4 className="font-semibold text-gray-900">Detailed Profile Views</h4>
+              {recentProfileViews.map((profile, index) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-semibold">
+                      {profile.avatar}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">{profile.name}</p>
+                      <p className="text-sm text-gray-600">{profile.location}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-gray-900">{profile.views}</div>
+                    <div className="text-xs text-gray-500">views</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
