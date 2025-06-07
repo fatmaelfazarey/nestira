@@ -6,12 +6,13 @@ import {
   TrendingUp, 
   Users, 
   FileText, 
-  Download,
   Briefcase,
   Clock,
   ArrowUpRight,
   ArrowDownRight,
-  MoreVertical
+  MoreVertical,
+  CheckCircle,
+  PuzzleIcon
 } from "lucide-react";
 import {
   ChartContainer,
@@ -274,16 +275,20 @@ export function DashboardOverview() {
               Browse Talent Pool
             </Button>
             <Button variant="outline" className="justify-start h-12">
+              <CheckCircle className="w-4 h-4 mr-3" />
+              Unlocked Talents
+            </Button>
+            <Button variant="outline" className="justify-start h-12">
+              <PuzzleIcon className="w-4 h-4 mr-3" />
+              Quiz Builder
+            </Button>
+            <Button variant="outline" className="justify-start h-12">
               <FileText className="w-4 h-4 mr-3" />
               Create Job Post
             </Button>
             <Button variant="outline" className="justify-start h-12">
               <TrendingUp className="w-4 h-4 mr-3" />
               View Analytics
-            </Button>
-            <Button variant="outline" className="justify-start h-12">
-              <Download className="w-4 h-4 mr-3" />
-              Export Reports
             </Button>
           </div>
         </Card>
