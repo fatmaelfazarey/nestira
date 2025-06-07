@@ -172,11 +172,11 @@ export const FilterSidebar = ({
         </SheetHeader>
 
         <div className="space-y-6 mt-6">
-          {/* Quick Search & Basic Filters */}
+          {/* Search Candidates & Basic Filters */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
               <Search className="w-4 h-4" />
-              Quick Search
+              Search candidates
             </h3>
             
             <div className="flex items-center gap-2">
