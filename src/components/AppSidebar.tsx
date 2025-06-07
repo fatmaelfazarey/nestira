@@ -47,12 +47,6 @@ const navigationSections = [
         url: "/inbox",
         icon: Inbox,
         badge: "3"
-      },
-      {
-        title: "Blog & Reports",
-        url: "/blog",
-        icon: BookOpen,
-        badge: null
       }
     ]
   },
@@ -92,6 +86,12 @@ const navigationSections = [
         title: "Quiz Builder",
         url: "/quiz-builder",
         icon: Check,
+        badge: null
+      },
+      {
+        title: "Blog & Reports",
+        url: "/blog",
+        icon: BookOpen,
         badge: null
       },
       {
