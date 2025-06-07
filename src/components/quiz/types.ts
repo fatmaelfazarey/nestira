@@ -1,3 +1,4 @@
+
 export interface Question {
   id: string;
   text: string;
@@ -6,6 +7,8 @@ export interface Question {
   correctAnswer?: string;
   explanation?: string;
   isEditing?: boolean;
+  category?: string;
+  difficulty?: 'easy' | 'medium' | 'hard';
 }
 
 export type QuestionType = 'multiple-choice' | 'true-false' | 'short-answer' | 'voice-note';
@@ -28,6 +31,8 @@ export interface PersonalizationParams {
   yearsOfExperience: number;
   industry: string;
   skills: string[];
+  role?: string;
+  seniorityLevel?: string;
 }
 
 export interface TimeLimit {
