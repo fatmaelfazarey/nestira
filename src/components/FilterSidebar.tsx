@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Slider } from '@/components/ui/slider';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
+import { Separator } from '@/components/ui/separator';
 import { Search, ChevronDown, X, Filter } from 'lucide-react';
 
 interface FilterSidebarProps {
@@ -241,8 +242,10 @@ export const FilterSidebar = ({
             </div>
           </div>
 
+          <Separator className="my-6" />
+
           {/* Experience and Score Range */}
-          <div className="space-y-4 border-t pt-4">
+          <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
               📊 Experience & Score
             </h3>
@@ -278,8 +281,10 @@ export const FilterSidebar = ({
             </div>
           </div>
 
+          <Separator className="my-6" />
+
           {/* Skills & Expertise */}
-          <div className="space-y-4 border-t pt-4">
+          <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
               💼 Skills & Expertise
             </h3>
@@ -291,8 +296,8 @@ export const FilterSidebar = ({
                 {financeSubfields.map((subfield) => (
                   <Badge
                     key={subfield}
-                    variant={selectedSubfields.includes(subfield) ? "default" : "secondary"}
-                    className="cursor-pointer text-xs"
+                    variant={selectedSubfields.includes(subfield) ? "default" : "outline"}
+                    className="cursor-pointer text-xs hover:bg-primary/10"
                     onClick={() => toggleMultiSelect(subfield, selectedSubfields, setSelectedSubfields)}
                   >
                     {subfield}
@@ -309,8 +314,8 @@ export const FilterSidebar = ({
                 {softwareTools.map((tool) => (
                   <Badge
                     key={tool}
-                    variant={selectedSoftware.includes(tool) ? "default" : "secondary"}
-                    className="cursor-pointer text-xs"
+                    variant={selectedSoftware.includes(tool) ? "default" : "outline"}
+                    className="cursor-pointer text-xs hover:bg-primary/10"
                     onClick={() => toggleMultiSelect(tool, selectedSoftware, setSelectedSoftware)}
                   >
                     {tool}
@@ -327,8 +332,8 @@ export const FilterSidebar = ({
                 {certifications.map((cert) => (
                   <Badge
                     key={cert}
-                    variant={selectedCertifications.includes(cert) ? "default" : "secondary"}
-                    className="cursor-pointer text-xs"
+                    variant={selectedCertifications.includes(cert) ? "default" : "outline"}
+                    className="cursor-pointer text-xs hover:bg-primary/10"
                     onClick={() => toggleMultiSelect(cert, selectedCertifications, setSelectedCertifications)}
                   >
                     {cert}
@@ -338,8 +343,10 @@ export const FilterSidebar = ({
             </div>
           </div>
 
+          <Separator className="my-6" />
+
           {/* Work Preferences */}
-          <div className="space-y-4 border-t pt-4">
+          <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
               🏢 Work Preferences
             </h3>
@@ -399,8 +406,10 @@ export const FilterSidebar = ({
             </div>
           </div>
 
+          <Separator className="my-6" />
+
           {/* Industry Experience */}
-          <div className="space-y-4 border-t pt-4">
+          <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
               🏭 Industry Experience
             </h3>
@@ -408,8 +417,8 @@ export const FilterSidebar = ({
               {industries.map((industry) => (
                 <Badge
                   key={industry}
-                  variant={selectedIndustries.includes(industry) ? "default" : "secondary"}
-                  className="cursor-pointer text-xs"
+                  variant={selectedIndustries.includes(industry) ? "default" : "outline"}
+                  className="cursor-pointer text-xs hover:bg-primary/10"
                   onClick={() => toggleMultiSelect(industry, selectedIndustries, setSelectedIndustries)}
                 >
                   {industry}
@@ -419,9 +428,11 @@ export const FilterSidebar = ({
             </div>
           </div>
 
+          <Separator className="my-6" />
+
           {/* Advanced Filters (Collapsible) */}
           <Collapsible open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
-            <div className="space-y-4 border-t pt-4">
+            <div className="space-y-4">
               <CollapsibleTrigger className="flex items-center justify-between w-full">
                 <h3 className="font-semibold text-gray-900 flex items-center gap-2">
                   ⚙️ Additional Filters
@@ -476,8 +487,10 @@ export const FilterSidebar = ({
             </div>
           </Collapsible>
 
+          <Separator className="my-6" />
+
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-4 border-t sticky bottom-0 bg-white pb-4">
+          <div className="flex justify-between items-center pt-4 sticky bottom-0 bg-white pb-4">
             <Button variant="outline" onClick={resetAllFilters}>
               Reset All Filters
             </Button>
