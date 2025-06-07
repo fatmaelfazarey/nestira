@@ -61,6 +61,7 @@ const TalentPool = () => {
       score: 92,
       status: "Available",
       tags: ["CPA", "Excel Expert", "Financial Analysis"],
+      industryExperience: ["Banking", "FMCG", "Tech"],
       photo: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop&crop=face",
       email: "sarah.johnson@email.com",
       phone: "+971 50 123 4567",
@@ -80,6 +81,7 @@ const TalentPool = () => {
       score: 88,
       status: "Interviewing",
       tags: ["Power BI", "SQL", "Risk Management"],
+      industryExperience: ["Oil & Gas", "Manufacturing"],
       photo: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=100&h=100&fit=crop&crop=face",
       email: "ahmed.hassan@email.com",
       phone: "+20 10 123 4567",
@@ -99,6 +101,7 @@ const TalentPool = () => {
       score: 90,
       status: "Shortlisted",
       tags: ["SAP", "IFRS", "Team Leadership"],
+      industryExperience: ["Real Estate", "Retail"],
       photo: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=100&h=100&fit=crop&crop=face",
       email: "fatima.alzahra@email.com",
       phone: "+966 50 123 4567",
@@ -302,7 +305,6 @@ const TalentPool = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    {/* Grid view - larger circular progress */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
@@ -310,7 +312,6 @@ const TalentPool = () => {
                             value={candidate.score} 
                             size={60}
                             strokeWidth={4}
-                            label="Great match"
                           />
                         </div>
                       </TooltipTrigger>
@@ -350,6 +351,19 @@ const TalentPool = () => {
                     </Badge>
                   ))}
                 </div>
+
+                {/* Industry Experience Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Industry Experience</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.industryExperience.map((industry) => (
+                      <Badge key={industry} variant="outline" className="text-xs">
+                        {industry}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="flex justify-between items-center gap-2">
                   <Badge 
                     variant={candidate.status === 'Available' ? 'default' : 'secondary'}
@@ -386,6 +400,7 @@ const TalentPool = () => {
               <TableHead>Experience</TableHead>
               <TableHead>Score</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Industry</TableHead>
               <TableHead>Salary</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -449,6 +464,20 @@ const TalentPool = () => {
                       {candidate.status}
                     </Badge>
                   </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {candidate.industryExperience.slice(0, 2).map((industry) => (
+                        <Badge key={industry} variant="outline" className="text-xs">
+                          {industry}
+                        </Badge>
+                      ))}
+                      {candidate.industryExperience.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{candidate.industryExperience.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                  </TableCell>
                   <TableCell className="text-sm">{candidate.salaryExpectation}</TableCell>
                   <TableCell>
                     <div className="flex gap-2">
@@ -478,124 +507,10 @@ const TalentPool = () => {
     </TooltipProvider>
   );
 
-  const renderKanbanView = () => (
-    <TooltipProvider>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {['Available', 'Interviewing', 'Shortlisted'].map((status) => (
-          <div key={status} className="space-y-4">
-            <h3 className="font-semibold text-lg text-gray-900 border-b pb-2">
-              {status} ({filteredCandidates.filter(c => c.status === status).length})
-            </h3>
-            <div className="space-y-3">
-              {filteredCandidates
-                .filter(candidate => candidate.status === status)
-                .map((candidate) => {
-                  const isUnlocked = unlockedCandidates.has(candidate.id);
-                  
-                  return (
-                    <Card key={candidate.id} className="hover:shadow-md transition-all duration-300">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-center gap-2">
-                            <div className="relative">
-                              <Avatar className={`w-8 h-8 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
-                                <AvatarImage src={candidate.photo} alt={candidate.name} />
-                                <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                              </Avatar>
-                              {!isUnlocked && (
-                                <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                                  <Unlock className="w-3 h-3 text-gray-600" />
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex-1">
-                              <div className="font-medium text-sm flex items-center gap-1 transition-all duration-500">
-                                {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
-                                <span className="text-xs">{getCountryFlag(candidate.country)}</span>
-                                {isUnlocked && (
-                                  <CheckCircle className="w-3 h-3 text-green-500 animate-fade-in" />
-                                )}
-                              </div>
-                              <div className="text-xs text-gray-500">{candidate.title}</div>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <div>
-                                  <CircularProgress 
-                                    value={candidate.score} 
-                                    size={35}
-                                    strokeWidth={3}
-                                    showPercentage={true}
-                                    compact={true}
-                                  />
-                                </div>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Matching Score: {candidate.score}%</p>
-                              </TooltipContent>
-                            </Tooltip>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => toggleFavorite(candidate.id)}
-                              className="text-yellow-500 hover:text-yellow-600 p-1 h-6 w-6"
-                            >
-                              <Star className={`w-3 h-3 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                            </Button>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2 text-xs text-gray-600">
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            {candidate.location}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <DollarSign className="w-3 h-3" />
-                            {candidate.salaryExpectation}
-                          </div>
-                        </div>
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {candidate.tags.slice(0, 2).map((tag) => (
-                            <Badge key={tag} variant="secondary" className="text-xs px-1 py-0">
-                              {tag}
-                            </Badge>
-                          ))}
-                          {candidate.tags.length > 2 && (
-                            <Badge variant="secondary" className="text-xs px-1 py-0">
-                              +{candidate.tags.length - 2}
-                            </Badge>
-                          )}
-                        </div>
-                        <div className="flex gap-1 mt-3">
-                          <Button 
-                            size="sm" 
-                            className="flex-1 text-xs h-6 bg-accent hover:bg-accent/90"
-                            onClick={() => handleUnlock(candidate)}
-                          >
-                            <Unlock className="w-3 h-3 mr-1" />
-                            {isUnlocked ? 'View' : 'Unlock'}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-            </div>
-          </div>
-        ))}
-      </div>
-    </TooltipProvider>
-  );
-
   const renderCurrentView = () => {
     switch (currentView) {
       case 'table':
         return renderTableView();
-      case 'kanban':
-        return renderKanbanView();
       default:
         return renderGridView();
     }
@@ -616,7 +531,7 @@ const TalentPool = () => {
             </div>
           </div>
           
-          <div className="flex flex-col items-end gap-4">
+          <div className="flex items-center gap-4">
             {/* View Controls */}
             <div className="flex gap-2">
               <Button 
@@ -635,29 +550,16 @@ const TalentPool = () => {
                 <LayoutList className="w-4 h-4" />
                 Table
               </Button>
-              <Button 
-                variant={currentView === 'kanban' ? 'default' : 'outline'}
-                onClick={() => setCurrentView('kanban')}
-                className="flex items-center gap-2"
-              >
-                <Kanban className="w-4 h-4" />
-                Kanban
-              </Button>
             </div>
 
-            {/* Enhanced Filters Button */}
-            <button 
+            {/* Enhanced Advanced Filters Button - Orange Styling */}
+            <Button 
               onClick={() => setIsFilterSidebarOpen(true)}
-              className="bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl px-6 py-4 transition-all duration-200 hover:shadow-lg"
+              className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg"
             >
-              <div className="flex items-center gap-3">
-                <SlidersHorizontal className="w-5 h-5 text-blue-600" />
-                <div className="text-left">
-                  <div className="text-blue-800 font-semibold text-lg">Advanced Filters</div>
-                  <div className="text-blue-600 text-sm">({filteredCandidates.length} results)</div>
-                </div>
-              </div>
-            </button>
+              <Filter className="w-5 h-5 mr-2" />
+              Advanced Filters ({filteredCandidates.length})
+            </Button>
           </div>
         </div>
 

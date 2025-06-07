@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,7 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
-import { Search, ChevronDown, X, Filter } from 'lucide-react';
+import { ChevronDown, X, Filter } from 'lucide-react';
 
 interface FilterSidebarProps {
   isOpen: boolean;
@@ -172,22 +173,11 @@ export const FilterSidebar = ({
         </SheetHeader>
 
         <div className="space-y-6 mt-6">
-          {/* Search Candidates & Basic Filters */}
+          {/* Basic Filters */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              <Search className="w-4 h-4" />
-              Search candidates
+              🔍 Basic Filters
             </h3>
-            
-            <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-gray-500" />
-              <Input
-                placeholder="Search candidates..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="flex-1"
-              />
-            </div>
             
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
@@ -237,7 +227,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6 h-[2px] bg-orange-500" />
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
           {/* Experience and Score Range */}
           <div className="space-y-4">
@@ -276,7 +266,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6 h-[2px] bg-orange-500" />
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
           {/* Skills & Expertise */}
           <div className="space-y-4">
@@ -341,7 +331,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6 h-[2px] bg-orange-500" />
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
           {/* Work Preferences */}
           <div className="space-y-4">
@@ -405,7 +395,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6 h-[2px] bg-orange-500" />
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
           {/* Industry Experience */}
           <div className="space-y-4">
@@ -428,7 +418,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6 h-[2px] bg-orange-500" />
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
           {/* Advanced Filters (Collapsible) */}
           <Collapsible open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
@@ -487,7 +477,7 @@ export const FilterSidebar = ({
             </div>
           </Collapsible>
 
-          <Separator className="my-6 h-[2px] bg-orange-500" />
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-4 sticky bottom-0 bg-white pb-4">
