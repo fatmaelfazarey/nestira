@@ -34,12 +34,6 @@ const CircularProgress = React.forwardRef<
     return 'stroke-red-500'
   }
 
-  const getBackgroundColor = (score: number) => {
-    if (score >= 80) return 'bg-green-50'
-    if (score >= 60) return 'bg-orange-50'
-    return 'bg-red-50'
-  }
-
   const getLabelColor = (score: number) => {
     if (score >= 80) return 'text-green-600'
     if (score >= 60) return 'text-orange-600'
@@ -49,57 +43,56 @@ const CircularProgress = React.forwardRef<
   return (
     <div 
       ref={ref}
-      className={cn(
-        "relative inline-flex items-center justify-center rounded-full",
-        getBackgroundColor(value),
-        className
-      )}
-      style={{ width: size, height: size }}
+      className={cn("relative inline-flex flex-col items-center justify-center", className)}
       {...props}
     >
-      <svg
-        width={size}
-        height={size}
-        className="transform -rotate-90"
-      >
-        {/* Background circle */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          fill="none"
-          className="text-gray-200"
-        />
-        {/* Progress circle */}
-        <circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="currentColor"
-          strokeWidth={strokeWidth}
-          fill="none"
-          strokeDasharray={strokeDasharray}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          className={cn("transition-all duration-500", getColor(value))}
-        />
-      </svg>
-      
-      {/* Content */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center">
+      <div className="relative" style={{ width: size, height: size }}>
+        <svg
+          width={size}
+          height={size}
+          className="transform -rotate-90"
+        >
+          {/* Background circle */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            fill="none"
+            className="text-gray-200"
+          />
+          {/* Progress circle */}
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
+            fill="none"
+            strokeDasharray={strokeDasharray}
+            strokeDashoffset={strokeDashoffset}
+            strokeLinecap="round"
+            className={cn("transition-all duration-500", getColor(value))}
+          />
+        </svg>
+        
+        {/* Percentage in center */}
         {showPercentage && (
-          <span className="text-lg font-bold text-gray-900">
-            {value}%
-          </span>
-        )}
-        {label && (
-          <span className={cn("text-xs font-medium", getLabelColor(value))}>
-            {label}
-          </span>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-lg font-bold text-gray-900">
+              {value}%
+            </span>
+          </div>
         )}
       </div>
+      
+      {/* Label below the circle */}
+      {label && (
+        <span className={cn("text-xs font-medium mt-1", getLabelColor(value))}>
+          {label}
+        </span>
+      )}
     </div>
   )
 })
