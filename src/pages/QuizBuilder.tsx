@@ -202,14 +202,16 @@ const QuizBuilder = () => {
                     <Play className="w-4 h-4 mr-1" />
                     Preview
                   </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => assignQuizHandler(quiz)}
-                  >
-                    <UserPlus className="w-4 h-4 mr-1" />
-                    Assign
-                  </Button>
+                  {quiz.isActive && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => assignQuizHandler(quiz)}
+                    >
+                      <UserPlus className="w-4 h-4 mr-1" />
+                      Assign
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>
