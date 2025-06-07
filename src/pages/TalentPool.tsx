@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
-import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
 import { AICandidateSearch } from '@/components/AICandidateSearch';
@@ -28,6 +29,7 @@ const TalentPool = () => {
   const [isAiSearching, setIsAiSearching] = useState(false);
   const [aiFilteredCandidates, setAiFilteredCandidates] = useState(null);
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
+  const [unlockedCandidates, setUnlockedCandidates] = useState(new Set());
 
   // New filter states
   const [selectedSubfields, setSelectedSubfields] = useState([]);
@@ -123,6 +125,27 @@ const TalentPool = () => {
     return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore;
   });
 
+  // New utility functions
+  const getScoreColor = (score) => {
+    if (score >= 80) return 'bg-green-500';
+    if (score >= 60) return 'bg-orange-500';
+    return 'bg-red-500';
+  };
+
+  const formatBlurredName = (name) => {
+    const nameParts = name.split(' ');
+    if (nameParts.length >= 2) {
+      return `${nameParts[0]} ${nameParts[1].charAt(0)}.${'*'.repeat(6)}`;
+    }
+    return `${nameParts[0].charAt(0)}.${'*'.repeat(6)}`;
+  };
+
+  const handleUnlock = (candidate) => {
+    setUnlockedCandidates(prev => new Set([...prev, candidate.id]));
+    // Immediately open expanded profile
+    setExpandedCandidate(candidate);
+  };
+
   // Progress bar component for candidate count
   const CandidateCountProgress = ({ count, total }) => {
     const percentage = (count / total) * 100;
@@ -198,10 +221,6 @@ const TalentPool = () => {
     setAiFilteredCandidates(null);
   };
 
-  const handleUnlock = (candidate) => {
-    setSelectedCandidate(candidate);
-  };
-
   const handleExpandProfile = (candidate) => {
     setSelectedCandidate(null); // Close the current modal first
     setExpandedCandidate(candidate);
@@ -244,236 +263,333 @@ const TalentPool = () => {
   };
 
   const renderGridView = () => (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {filteredCandidates.map((candidate) => (
-        <Card key={candidate.id} className="hover:shadow-lg transition-shadow relative">
-          <CardHeader>
-            <div className="flex justify-between items-start">
-              <div className="flex items-center gap-3">
-                <Avatar className="w-12 h-12">
-                  <AvatarImage src={candidate.photo} alt={candidate.name} />
-                  <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    {candidate.name}
-                    <span className="text-lg">{getCountryFlag(candidate.country)}</span>
-                  </CardTitle>
-                  <p className="text-sm text-gray-600">{candidate.title}</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => toggleFavorite(candidate.id)}
-                  className="text-yellow-500 hover:text-yellow-600 p-1"
-                >
-                  <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                </Button>
-                <div className="flex items-center justify-center w-10 h-10 rounded-full bg-accent text-white font-bold text-sm">
-                  {candidate.score}
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <MapPin className="w-4 h-4" />
-              {candidate.location}
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <Briefcase className="w-4 h-4" />
-              {candidate.experience} experience
-            </div>
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <DollarSign className="w-4 h-4" />
-              {candidate.salaryExpectation}
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {candidate.tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-            <div className="flex justify-between items-center gap-2">
-              <Badge 
-                variant={candidate.status === 'Available' ? 'default' : 'secondary'}
-                className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
-              >
-                {candidate.status}
-              </Badge>
-              <Button 
-                size="sm" 
-                className="bg-accent hover:bg-accent/90"
-                onClick={() => handleUnlock(candidate)}
-              >
-                <Unlock className="w-4 h-4 mr-1" />
-                Unlock
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  );
-
-  const renderTableView = () => (
-    <Card>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Candidate</TableHead>
-            <TableHead>Title</TableHead>
-            <TableHead>Location</TableHead>
-            <TableHead>Experience</TableHead>
-            <TableHead>Score</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Salary</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredCandidates.map((candidate) => (
-            <TableRow key={candidate.id}>
-              <TableCell>
-                <div className="flex items-center gap-3">
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={candidate.photo} alt={candidate.name} />
-                    <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <div className="font-medium flex items-center gap-2">
-                      {candidate.name}
-                      <span>{getCountryFlag(candidate.country)}</span>
+    <TooltipProvider>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {filteredCandidates.map((candidate) => {
+          const isUnlocked = unlockedCandidates.has(candidate.id);
+          
+          return (
+            <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="relative">
+                      <Avatar className={`w-12 h-12 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                        <AvatarImage src={candidate.photo} alt={candidate.name} />
+                        <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      {!isUnlocked && (
+                        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                          <Unlock className="w-4 h-4 text-gray-600" />
+                        </div>
+                      )}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg flex items-center gap-2">
+                        <span className={`transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                          {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+                        </span>
+                        <span className="text-lg">{getCountryFlag(candidate.country)}</span>
+                        {isUnlocked && (
+                          <CheckCircle className="w-4 h-4 text-green-500 animate-fade-in" />
+                        )}
+                      </CardTitle>
+                      <p className="text-sm text-gray-600">{candidate.title}</p>
                     </div>
                   </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => toggleFavorite(candidate.id)}
+                      className="text-yellow-500 hover:text-yellow-600 p-1"
+                    >
+                      <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                    </Button>
+                  </div>
                 </div>
-              </TableCell>
-              <TableCell>{candidate.title}</TableCell>
-              <TableCell>{candidate.location}</TableCell>
-              <TableCell>{candidate.experience}</TableCell>
-              <TableCell>
-                <div className="flex items-center justify-center w-8 h-8 rounded-full bg-accent text-white font-bold text-sm">
-                  {candidate.score}
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MapPin className="w-4 h-4" />
+                  {candidate.location}
                 </div>
-              </TableCell>
-              <TableCell>
-                <Badge 
-                  variant={candidate.status === 'Available' ? 'default' : 'secondary'}
-                  className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
-                >
-                  {candidate.status}
-                </Badge>
-              </TableCell>
-              <TableCell className="text-sm">{candidate.salaryExpectation}</TableCell>
-              <TableCell>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleFavorite(candidate.id)}
-                    className="text-yellow-500 hover:text-yellow-600 p-1"
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Briefcase className="w-4 h-4" />
+                  {candidate.experience} experience
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <DollarSign className="w-4 h-4" />
+                  {candidate.salaryExpectation}
+                </div>
+                
+                {/* Matching Score Progress Bar */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-medium text-gray-700">Matching Score</span>
+                    <span className="text-sm font-bold">{candidate.score}%</span>
+                  </div>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div>
+                        <Progress 
+                          value={candidate.score} 
+                          className="h-2"
+                          indicatorClassName={getScoreColor(candidate.score)}
+                        />
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Matching Score: {candidate.score}%</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </div>
+
+                <div className="flex flex-wrap gap-1">
+                  {candidate.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary" className="text-xs">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+                <div className="flex justify-between items-center gap-2">
+                  <Badge 
+                    variant={candidate.status === 'Available' ? 'default' : 'secondary'}
+                    className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
                   >
-                    <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                  </Button>
+                    {candidate.status}
+                  </Badge>
                   <Button 
                     size="sm" 
                     className="bg-accent hover:bg-accent/90"
                     onClick={() => handleUnlock(candidate)}
                   >
-                    <Unlock className="w-4 h-4" />
+                    <Unlock className="w-4 h-4 mr-1" />
+                    {isUnlocked ? 'View Profile' : 'Unlock'}
                   </Button>
                 </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </Card>
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </TooltipProvider>
   );
 
-  const renderKanbanView = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {['Available', 'Interviewing', 'Shortlisted'].map((status) => (
-        <div key={status} className="space-y-4">
-          <h3 className="font-semibold text-lg text-gray-900 border-b pb-2">
-            {status} ({filteredCandidates.filter(c => c.status === status).length})
-          </h3>
-          <div className="space-y-3">
-            {filteredCandidates
-              .filter(candidate => candidate.status === status)
-              .map((candidate) => (
-                <Card key={candidate.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex items-center gap-2">
-                        <Avatar className="w-8 h-8">
+  const renderTableView = () => (
+    <TooltipProvider>
+      <Card>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Candidate</TableHead>
+              <TableHead>Title</TableHead>
+              <TableHead>Location</TableHead>
+              <TableHead>Experience</TableHead>
+              <TableHead>Score</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Salary</TableHead>
+              <TableHead>Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredCandidates.map((candidate) => {
+              const isUnlocked = unlockedCandidates.has(candidate.id);
+              
+              return (
+                <TableRow key={candidate.id}>
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      <div className="relative">
+                        <Avatar className={`w-8 h-8 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
                           <AvatarImage src={candidate.photo} alt={candidate.name} />
                           <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                         </Avatar>
-                        <div>
-                          <div className="font-medium text-sm flex items-center gap-1">
-                            {candidate.name}
-                            <span className="text-xs">{getCountryFlag(candidate.country)}</span>
+                        {!isUnlocked && (
+                          <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                            <Unlock className="w-3 h-3 text-gray-600" />
                           </div>
-                          <div className="text-xs text-gray-500">{candidate.title}</div>
-                        </div>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => toggleFavorite(candidate.id)}
-                          className="text-yellow-500 hover:text-yellow-600 p-1 h-6 w-6"
-                        >
-                          <Star className={`w-3 h-3 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                        </Button>
-                        <div className="flex items-center justify-center w-6 h-6 rounded-full bg-accent text-white font-bold text-xs">
-                          {candidate.score}
+                      <div>
+                        <div className={`font-medium flex items-center gap-2 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                          {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+                          <span>{getCountryFlag(candidate.country)}</span>
+                          {isUnlocked && (
+                            <CheckCircle className="w-3 h-3 text-green-500 animate-fade-in" />
+                          )}
                         </div>
                       </div>
                     </div>
-                    <div className="space-y-2 text-xs text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {candidate.location}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <DollarSign className="w-3 h-3" />
-                        {candidate.salaryExpectation}
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-1 mt-2">
-                      {candidate.tags.slice(0, 2).map((tag) => (
-                        <Badge key={tag} variant="secondary" className="text-xs px-1 py-0">
-                          {tag}
-                        </Badge>
-                      ))}
-                      {candidate.tags.length > 2 && (
-                        <Badge variant="secondary" className="text-xs px-1 py-0">
-                          +{candidate.tags.length - 2}
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex gap-1 mt-3">
+                  </TableCell>
+                  <TableCell>{candidate.title}</TableCell>
+                  <TableCell>{candidate.location}</TableCell>
+                  <TableCell>{candidate.experience}</TableCell>
+                  <TableCell>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div className="w-24">
+                          <Progress 
+                            value={candidate.score} 
+                            className="h-2"
+                            indicatorClassName={getScoreColor(candidate.score)}
+                          />
+                          <span className="text-xs font-medium">{candidate.score}%</span>
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Matching Score: {candidate.score}%</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell>
+                    <Badge 
+                      variant={candidate.status === 'Available' ? 'default' : 'secondary'}
+                      className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
+                    >
+                      {candidate.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-sm">{candidate.salaryExpectation}</TableCell>
+                  <TableCell>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleFavorite(candidate.id)}
+                        className="text-yellow-500 hover:text-yellow-600 p-1"
+                      >
+                        <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                      </Button>
                       <Button 
                         size="sm" 
-                        className="flex-1 text-xs h-6 bg-accent hover:bg-accent/90"
+                        className="bg-accent hover:bg-accent/90"
                         onClick={() => handleUnlock(candidate)}
                       >
-                        <Unlock className="w-3 h-3 mr-1" />
-                        Unlock
+                        <Unlock className="w-4 h-4" />
                       </Button>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </Card>
+    </TooltipProvider>
+  );
+
+  const renderKanbanView = () => (
+    <TooltipProvider>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {['Available', 'Interviewing', 'Shortlisted'].map((status) => (
+          <div key={status} className="space-y-4">
+            <h3 className="font-semibold text-lg text-gray-900 border-b pb-2">
+              {status} ({filteredCandidates.filter(c => c.status === status).length})
+            </h3>
+            <div className="space-y-3">
+              {filteredCandidates
+                .filter(candidate => candidate.status === status)
+                .map((candidate) => {
+                  const isUnlocked = unlockedCandidates.has(candidate.id);
+                  
+                  return (
+                    <Card key={candidate.id} className="hover:shadow-md transition-all duration-300">
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <div className="relative">
+                              <Avatar className={`w-8 h-8 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                                <AvatarImage src={candidate.photo} alt={candidate.name} />
+                                <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                              </Avatar>
+                              {!isUnlocked && (
+                                <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                                  <Unlock className="w-3 h-3 text-gray-600" />
+                                </div>
+                              )}
+                            </div>
+                            <div>
+                              <div className={`font-medium text-sm flex items-center gap-1 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                                {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+                                <span className="text-xs">{getCountryFlag(candidate.country)}</span>
+                                {isUnlocked && (
+                                  <CheckCircle className="w-3 h-3 text-green-500 animate-fade-in" />
+                                )}
+                              </div>
+                              <div className="text-xs text-gray-500">{candidate.title}</div>
+                            </div>
+                          </div>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => toggleFavorite(candidate.id)}
+                            className="text-yellow-500 hover:text-yellow-600 p-1 h-6 w-6"
+                          >
+                            <Star className={`w-3 h-3 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                          </Button>
+                        </div>
+                        
+                        {/* Matching Score Progress Bar for Kanban */}
+                        <div className="mb-3">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <div>
+                                <Progress 
+                                  value={candidate.score} 
+                                  className="h-1.5"
+                                  indicatorClassName={getScoreColor(candidate.score)}
+                                />
+                                <span className="text-xs font-medium">{candidate.score}%</span>
+                              </div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Matching Score: {candidate.score}%</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+
+                        <div className="space-y-2 text-xs text-gray-600">
+                          <div className="flex items-center gap-1">
+                            <MapPin className="w-3 h-3" />
+                            {candidate.location}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <DollarSign className="w-3 h-3" />
+                            {candidate.salaryExpectation}
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap gap-1 mt-2">
+                          {candidate.tags.slice(0, 2).map((tag) => (
+                            <Badge key={tag} variant="secondary" className="text-xs px-1 py-0">
+                              {tag}
+                            </Badge>
+                          ))}
+                          {candidate.tags.length > 2 && (
+                            <Badge variant="secondary" className="text-xs px-1 py-0">
+                              +{candidate.tags.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex gap-1 mt-3">
+                          <Button 
+                            size="sm" 
+                            className="flex-1 text-xs h-6 bg-accent hover:bg-accent/90"
+                            onClick={() => handleUnlock(candidate)}
+                          >
+                            <Unlock className="w-3 h-3 mr-1" />
+                            {isUnlocked ? 'View' : 'Unlock'}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </TooltipProvider>
   );
 
   const renderCurrentView = () => {
