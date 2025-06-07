@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -195,6 +194,27 @@ export function ExpandedCandidateModal({
 
                 <Separator />
 
+                {/* Cover Letter - Moved to top */}
+                <div className="space-y-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full justify-start border-[#ff5f1b] text-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white"
+                    onClick={() => setShowCoverLetter(!showCoverLetter)}
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    View Cover Letter
+                  </Button>
+                  {showCoverLetter && (
+                    <div className="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
+                      Dear Hiring Manager,<br/><br/>
+                      I am writing to express my strong interest in the Senior Finance Manager position. With over 8 years of progressive experience...
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
                 {/* Contact Info */}
                 <div className="space-y-3">
                   <h4 className="font-semibold text-gray-900">Contact Information</h4>
@@ -246,35 +266,12 @@ export function ExpandedCandidateModal({
 
                 <Separator />
 
-                {/* Cover Letter */}
+                {/* Download CV - Updated */}
                 <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900">Cover Letter</h4>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start border-[#ff5f1b] text-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white"
-                    onClick={() => setShowCoverLetter(!showCoverLetter)}
-                  >
-                    <FileText className="w-4 h-4 mr-2" />
-                    View Cover Letter
+                  <Button variant="outline" size="sm" className="w-full justify-start">
+                    <Download className="w-4 h-4 mr-2" />
+                    Download CV
                   </Button>
-                  {showCoverLetter && (
-                    <div className="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
-                      Dear Hiring Manager,<br/><br/>
-                      I am writing to express my strong interest in the Senior Finance Manager position. With over 8 years of progressive experience...
-                    </div>
-                  )}
-                </div>
-
-                {/* Documents */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900">Documents</h4>
-                  <div className="space-y-2">
-                    <Button variant="outline" size="sm" className="w-full justify-start">
-                      <Download className="w-4 h-4 mr-2" />
-                      Download CV
-                    </Button>
-                  </div>
                 </div>
               </div>
             </div>
