@@ -255,82 +255,72 @@ const TalentPool = () => {
       return `${years} year${years > 1 ? 's' : ''} ago`;
     }
   };
+
   const renderGridView = () => (
     <TooltipProvider>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredCandidates.map(candidate => {
           const isUnlocked = unlockedCandidates.has(candidate.id);
           return (
-            <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative max-w-80 rounded-lg border border-gray-200">
-              {/* Top Section */}
-              <CardHeader className="pb-3">
+            <Card key={candidate.id} className="w-full max-w-[320px] rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 bg-white">
+              <CardContent className="p-6 space-y-4">
+                {/* Top Section */}
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <Avatar className={`w-10 h-10 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                      <Avatar className={`w-12 h-12 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
                         <AvatarImage src={candidate.photo} alt={candidate.name} />
-                        <AvatarFallback className="text-sm">{candidate.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback className="text-sm font-medium">{candidate.name.charAt(0)}</AvatarFallback>
                       </Avatar>
                       {!isUnlocked && (
                         <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                          <Unlock className="w-3 h-3 text-gray-600" />
+                          <Unlock className="w-4 h-4 text-gray-600" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-base text-gray-900 truncate transition-all duration-500">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-base text-gray-900 truncate">
                           {isUnlocked ? candidate.name.split(' ')[0] : formatBlurredName(candidate.name)}
                         </h3>
-                        <span className="text-base">{getCountryFlag(candidate.country)}</span>
-                        {isUnlocked && <CheckCircle className="w-3 h-3 text-green-500 animate-fade-in flex-shrink-0" />}
+                        <span className="text-lg">{getCountryFlag(candidate.country)}</span>
+                        {isUnlocked && <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />}
                       </div>
-                      <p className="text-sm text-gray-600 truncate">{candidate.title}</p>
+                      <p className="text-sm text-gray-600 truncate font-medium">{candidate.title}</p>
                     </div>
                   </div>
                   <div className="flex-shrink-0">
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div>
-                          <CircularProgress value={candidate.score} size={45} strokeWidth={3} />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>Matching Score: {candidate.score}%</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    <CircularProgress value={candidate.score} size={50} strokeWidth={4} />
                   </div>
                 </div>
-              </CardHeader>
 
-              <CardContent className="space-y-4 pt-0">
                 {/* Quick Info Row */}
-                <div className="space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin className="w-3 h-3 flex-shrink-0" />
+                    <MapPin className="w-4 h-4 flex-shrink-0" />
                     <span className="truncate">{candidate.location}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Briefcase className="w-3 h-3 flex-shrink-0" />
+                    <Briefcase className="w-4 h-4 flex-shrink-0" />
                     <span>{candidate.experience} experience</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <DollarSign className="w-3 h-3 flex-shrink-0" />
-                    <span className="truncate text-xs">{candidate.salaryExpectation}</span>
+                    <DollarSign className="w-4 h-4 flex-shrink-0" />
+                    <span className="truncate text-sm">{candidate.salaryExpectation}</span>
                   </div>
                 </div>
 
                 {/* Top Skills */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Top Skills</p>
+                  <p className="text-sm font-medium text-gray-700">Top Skills</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.tags.slice(0, 2).map(tag => (
-                      <Badge key={tag} variant="secondary" className="text-xs px-2 py-1">
+                      <Badge key={tag} variant="secondary" className="text-xs px-2 py-1 bg-gray-100 text-gray-700">
                         {tag}
                       </Badge>
                     ))}
                     {candidate.tags.length > 2 && (
-                      <Badge variant="outline" className="text-xs px-2 py-1">
+                      <Badge variant="outline" className="text-xs px-2 py-1 text-gray-500">
                         +{candidate.tags.length - 2} more
                       </Badge>
                     )}
@@ -339,15 +329,15 @@ const TalentPool = () => {
 
                 {/* Industry Experience */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Industry</p>
+                  <p className="text-sm font-medium text-gray-700">Industry</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.industryExperience.slice(0, 2).map(industry => (
-                      <Badge key={industry} variant="outline" className="text-xs px-2 py-1">
+                      <Badge key={industry} variant="outline" className="text-xs px-2 py-1 bg-gray-50 text-gray-600 border-gray-200">
                         {industry}
                       </Badge>
                     ))}
                     {candidate.industryExperience.length > 2 && (
-                      <Badge variant="outline" className="text-xs px-2 py-1">
+                      <Badge variant="outline" className="text-xs px-2 py-1 text-gray-500">
                         +{candidate.industryExperience.length - 2} more
                       </Badge>
                     )}
@@ -356,7 +346,7 @@ const TalentPool = () => {
 
                 {/* Finance Subfields */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Subfields</p>
+                  <p className="text-sm font-medium text-gray-700">Subfields</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.financeSubfields.slice(0, 2).map(subfield => (
                       <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 px-2 py-1">
@@ -364,7 +354,7 @@ const TalentPool = () => {
                       </Badge>
                     ))}
                     {candidate.financeSubfields.length > 2 && (
-                      <Badge variant="outline" className="text-xs px-2 py-1">
+                      <Badge variant="outline" className="text-xs px-2 py-1 text-gray-500">
                         +{candidate.financeSubfields.length - 2} more
                       </Badge>
                     )}
@@ -373,7 +363,7 @@ const TalentPool = () => {
 
                 {/* Software & Tools */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Tools</p>
+                  <p className="text-sm font-medium text-gray-700">Tools</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.softwareTools.slice(0, 2).map(tool => (
                       <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200 px-2 py-1">
@@ -381,7 +371,7 @@ const TalentPool = () => {
                       </Badge>
                     ))}
                     {candidate.softwareTools.length > 2 && (
-                      <Badge variant="outline" className="text-xs px-2 py-1">
+                      <Badge variant="outline" className="text-xs px-2 py-1 text-gray-500">
                         +{candidate.softwareTools.length - 2} more
                       </Badge>
                     )}
@@ -390,7 +380,7 @@ const TalentPool = () => {
 
                 {/* Certifications */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Certifications</p>
+                  <p className="text-sm font-medium text-gray-700">Certifications</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.certifications.slice(0, 2).map(cert => (
                       <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200 px-2 py-1">
@@ -398,7 +388,7 @@ const TalentPool = () => {
                       </Badge>
                     ))}
                     {candidate.certifications.length > 2 && (
-                      <Badge variant="outline" className="text-xs px-2 py-1">
+                      <Badge variant="outline" className="text-xs px-2 py-1 text-gray-500">
                         +{candidate.certifications.length - 2} more
                       </Badge>
                     )}
@@ -410,7 +400,9 @@ const TalentPool = () => {
                   <div className="flex justify-between items-center">
                     <Badge 
                       variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
-                      className={candidate.status === 'Available' ? 'bg-green-100 text-green-800 border-green-200' : ''}
+                      className={candidate.status === 'Available' ? 'bg-green-100 text-green-800 border-green-200' : 
+                                candidate.status === 'Interviewing' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                                'bg-orange-100 text-orange-800 border-orange-200'}
                     >
                       {candidate.status}
                     </Badge>
@@ -425,11 +417,11 @@ const TalentPool = () => {
                   </div>
                   
                   <Button 
-                    className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-medium" 
+                    className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-medium rounded-lg h-10" 
                     onClick={() => handleUnlock(candidate)}
                   >
                     <Unlock className="w-4 h-4 mr-2" />
-                    {isUnlocked ? 'View Profile' : 'View Profile'}
+                    View Profile
                   </Button>
                 </div>
               </CardContent>
