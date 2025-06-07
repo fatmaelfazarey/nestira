@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -236,10 +235,6 @@ export const FilterSidebar = ({
                 </Select>
               </div>
             </div>
-
-            <div className="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
-              {filteredCandidatesCount} candidates found
-            </div>
           </div>
 
           <Separator className="my-6 h-[2px] bg-gray-300" />
@@ -292,6 +287,7 @@ export const FilterSidebar = ({
             {/* Finance Subfields */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Finance Subfields</label>
+              <p className="text-xs text-gray-500">Pick all that apply</p>
               <div className="flex flex-wrap gap-2">
                 {financeSubfields.map((subfield) => (
                   <Badge
@@ -310,6 +306,7 @@ export const FilterSidebar = ({
             {/* Software & Tools */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Software & Tools</label>
+              <p className="text-xs text-gray-500">Pick all that apply</p>
               <div className="flex flex-wrap gap-2">
                 {softwareTools.map((tool) => (
                   <Badge
@@ -328,6 +325,7 @@ export const FilterSidebar = ({
             {/* Certifications */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Certifications</label>
+              <p className="text-xs text-gray-500">Pick all that apply</p>
               <div className="flex flex-wrap gap-1">
                 {certifications.map((cert) => (
                   <Badge
@@ -384,6 +382,7 @@ export const FilterSidebar = ({
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Visa Status</label>
+                <p className="text-xs text-gray-500">Pick all that apply</p>
                 <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
                   {visaStatuses.map((status) => (
                     <div key={status} className="flex items-center space-x-2">
@@ -413,6 +412,7 @@ export const FilterSidebar = ({
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
               🏭 Industry Experience
             </h3>
+            <p className="text-xs text-gray-500">Pick all that apply</p>
             <div className="flex flex-wrap gap-2">
               {industries.map((industry) => (
                 <Badge
