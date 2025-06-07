@@ -492,7 +492,7 @@ const TalentPool = () => {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-start">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Talent Pool</h1>
             <p className="text-gray-600">Browse and filter finance professionals</p>
@@ -504,20 +504,7 @@ const TalentPool = () => {
             </div>
           </div>
           
-          {/* Enhanced Filters Button */}
           <div className="flex flex-col items-end gap-4">
-            <Button 
-              variant="outline"
-              onClick={() => setIsFilterSidebarOpen(true)}
-              className="flex items-center gap-3 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 border-2 border-blue-300 text-blue-800 font-bold text-lg px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-            >
-              <SlidersHorizontal className="w-6 h-6" />
-              <div className="flex flex-col items-start">
-                <span>Advanced Filters</span>
-                <span className="text-xs font-normal">({filteredCandidates.length} results)</span>
-              </div>
-            </Button>
-            
             {/* View Controls */}
             <div className="flex gap-2">
               <Button 
@@ -545,6 +532,20 @@ const TalentPool = () => {
                 Kanban
               </Button>
             </div>
+
+            {/* Enhanced Filters Button */}
+            <button 
+              onClick={() => setIsFilterSidebarOpen(true)}
+              className="bg-blue-50 hover:bg-blue-100 border-2 border-blue-200 rounded-2xl px-6 py-4 transition-all duration-200 hover:shadow-lg"
+            >
+              <div className="flex items-center gap-3">
+                <SlidersHorizontal className="w-5 h-5 text-blue-600" />
+                <div className="text-left">
+                  <div className="text-blue-800 font-semibold text-lg">Advanced Filters</div>
+                  <div className="text-blue-600 text-sm">({filteredCandidates.length} results)</div>
+                </div>
+              </div>
+            </button>
           </div>
         </div>
 
