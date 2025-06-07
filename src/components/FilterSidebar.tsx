@@ -41,8 +41,6 @@ interface FilterSidebarProps {
   setEmploymentType: (value: string) => void;
   workMode: string;
   setWorkMode: (value: string) => void;
-  availability: string;
-  setAvailability: (value: string) => void;
   languageProficiency: string;
   setLanguageProficiency: (value: string) => void;
   genderFilter: string;
@@ -51,8 +49,6 @@ interface FilterSidebarProps {
   setEducationLevel: (value: string) => void;
   selectedSpecialNeeds: string[];
   setSelectedSpecialNeeds: (value: string[]) => void;
-  cvCompleteness: string;
-  setCvCompleteness: (value: string) => void;
   academicExcellence: boolean;
   setAcademicExcellence: (value: boolean) => void;
   selectedScreeningTags: string[];
@@ -92,8 +88,6 @@ export const FilterSidebar = ({
   setEmploymentType,
   workMode,
   setWorkMode,
-  availability,
-  setAvailability,
   languageProficiency,
   setLanguageProficiency,
   genderFilter,
@@ -102,8 +96,6 @@ export const FilterSidebar = ({
   setEducationLevel,
   selectedSpecialNeeds,
   setSelectedSpecialNeeds,
-  cvCompleteness,
-  setCvCompleteness,
   academicExcellence,
   setAcademicExcellence,
   selectedScreeningTags,
@@ -115,13 +107,20 @@ export const FilterSidebar = ({
 
   // Updated filter options
   const countries = [
-    "United Arab Emirates (UAE)",
-    "Egypt", 
-    "Kuwait",
+    "United Arab Emirates",
     "Saudi Arabia",
-    "Oman",
+    "Egypt",
+    "Kuwait",
+    "Qatar",
     "Bahrain",
-    "Qatar"
+    "Oman",
+    "Jordan",
+    "Lebanon",
+    "Morocco",
+    "Tunisia",
+    "Algeria",
+    "Iraq",
+    "Sudan"
   ];
 
   const careerLevels = [
@@ -150,7 +149,6 @@ export const FilterSidebar = ({
   const genderOptions = ["No Preference", "Males Only", "Females Only", "Male Preferred", "Female Preferred"];
   const educationLevels = ["High School", "Diploma", "Bachelor's", "Master's", "MBA", "Doctorate"];
   const specialNeeds = ["Cognitive Disabilities", "Physical Disabilities", "Hearing Disabilities", "Mobility Disabilities", "Learning Disability", "Communication Impairment"];
-  const cvCompletenessOptions = ["More than 20%", "More than 40%", "More than 60%", "More than 80%"];
   const screeningTags = ["Background Check", "Urgent Hiring", "Remote Ready", "Work Experience", "Language Fit", "Visa Status", "Custom Question", "Work Authorization"];
 
   // Helper functions for multi-select
@@ -174,11 +172,11 @@ export const FilterSidebar = ({
 
         <div className="space-y-6 mt-6">
           {/* Quick Search & Basic Filters */}
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🔍 Quick Search</h3>
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-background">
+            <h3 className="font-semibold text-foreground mb-3">🔍 Quick Search</h3>
             
             <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-gray-500" />
+              <Search className="w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search candidates..."
                 value={searchQuery}
@@ -189,7 +187,7 @@ export const FilterSidebar = ({
             
             <div className="grid grid-cols-1 gap-3">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Country</label>
+                <label className="text-sm font-medium text-foreground">Country</label>
                 <Select value={locationFilter} onValueChange={setLocationFilter}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Countries" />
@@ -204,7 +202,7 @@ export const FilterSidebar = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Career Level</label>
+                <label className="text-sm font-medium text-foreground">Career Level</label>
                 <Select value={skillsFilter} onValueChange={setSkillsFilter}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Career Levels" />
@@ -219,7 +217,7 @@ export const FilterSidebar = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Status</label>
+                <label className="text-sm font-medium text-foreground">Status</label>
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Status" />
@@ -234,18 +232,18 @@ export const FilterSidebar = ({
               </div>
             </div>
 
-            <div className="text-sm text-gray-600 bg-blue-50 px-3 py-2 rounded-lg">
+            <div className="text-sm text-muted-foreground bg-muted px-3 py-2 rounded-lg">
               {filteredCandidatesCount} candidates found
             </div>
           </div>
 
           {/* Experience and Score Range */}
-          <div className="space-y-4 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">📊 Experience & Score</h3>
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-background">
+            <h3 className="font-semibold text-foreground mb-3">📊 Experience & Score</h3>
             
             <div className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-foreground">
                   Years of Experience: {experienceRange[0]}+ years
                 </label>
                 <Slider
@@ -259,7 +257,7 @@ export const FilterSidebar = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">
+                <label className="text-sm font-medium text-foreground">
                   Minimum Score: {scoreRange[0]}%
                 </label>
                 <Slider
@@ -275,18 +273,18 @@ export const FilterSidebar = ({
           </div>
 
           {/* Skills & Expertise */}
-          <div className="space-y-4 p-4 bg-green-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">💼 Skills & Expertise</h3>
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-background">
+            <h3 className="font-semibold text-foreground mb-3">💼 Skills & Expertise</h3>
             
             {/* Finance Subfields */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Finance Subfields</label>
+              <label className="text-sm font-medium text-foreground">Finance Subfields</label>
               <div className="flex flex-wrap gap-2">
                 {financeSubfields.map((subfield) => (
                   <Badge
                     key={subfield}
-                    variant={selectedSubfields.includes(subfield) ? "default" : "secondary"}
-                    className="cursor-pointer text-xs"
+                    variant={selectedSubfields.includes(subfield) ? "default" : "outline"}
+                    className="cursor-pointer text-xs hover:bg-accent"
                     onClick={() => toggleMultiSelect(subfield, selectedSubfields, setSelectedSubfields)}
                   >
                     {subfield}
@@ -298,13 +296,13 @@ export const FilterSidebar = ({
 
             {/* Software & Tools */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Software & Tools</label>
+              <label className="text-sm font-medium text-foreground">Software & Tools</label>
               <div className="flex flex-wrap gap-2">
                 {softwareTools.map((tool) => (
                   <Badge
                     key={tool}
-                    variant={selectedSoftware.includes(tool) ? "default" : "secondary"}
-                    className="cursor-pointer text-xs"
+                    variant={selectedSoftware.includes(tool) ? "default" : "outline"}
+                    className="cursor-pointer text-xs hover:bg-accent"
                     onClick={() => toggleMultiSelect(tool, selectedSoftware, setSelectedSoftware)}
                   >
                     {tool}
@@ -316,13 +314,13 @@ export const FilterSidebar = ({
 
             {/* Certifications */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Certifications</label>
+              <label className="text-sm font-medium text-foreground">Certifications</label>
               <div className="flex flex-wrap gap-1">
                 {certifications.map((cert) => (
                   <Badge
                     key={cert}
-                    variant={selectedCertifications.includes(cert) ? "default" : "secondary"}
-                    className="cursor-pointer text-xs"
+                    variant={selectedCertifications.includes(cert) ? "default" : "outline"}
+                    className="cursor-pointer text-xs hover:bg-accent"
                     onClick={() => toggleMultiSelect(cert, selectedCertifications, setSelectedCertifications)}
                   >
                     {cert}
@@ -333,12 +331,12 @@ export const FilterSidebar = ({
           </div>
 
           {/* Work Preferences */}
-          <div className="space-y-4 p-4 bg-orange-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🏢 Work Preferences</h3>
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-background">
+            <h3 className="font-semibold text-foreground mb-3">🏢 Work Preferences</h3>
             
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Employment Type</label>
+                <label className="text-sm font-medium text-foreground">Employment Type</label>
                 <Select value={employmentType} onValueChange={setEmploymentType}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Types" />
@@ -353,7 +351,7 @@ export const FilterSidebar = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Work Mode</label>
+                <label className="text-sm font-medium text-foreground">Work Mode</label>
                 <Select value={workMode} onValueChange={setWorkMode}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Modes" />
@@ -368,7 +366,7 @@ export const FilterSidebar = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Visa Status</label>
+                <label className="text-sm font-medium text-foreground">Visa Status</label>
                 <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
                   {visaStatuses.map((status) => (
                     <div key={status} className="flex items-center space-x-2">
@@ -383,7 +381,7 @@ export const FilterSidebar = ({
                           }
                         }}
                       />
-                      <label htmlFor={status} className="text-sm text-gray-700">{status}</label>
+                      <label htmlFor={status} className="text-sm text-foreground">{status}</label>
                     </div>
                   ))}
                 </div>
@@ -392,14 +390,14 @@ export const FilterSidebar = ({
           </div>
 
           {/* Industry Experience */}
-          <div className="space-y-4 p-4 bg-purple-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🏭 Industry Experience</h3>
+          <div className="space-y-4 p-4 border border-border rounded-lg bg-background">
+            <h3 className="font-semibold text-foreground mb-3">🏭 Industry Experience</h3>
             <div className="flex flex-wrap gap-2">
               {industries.map((industry) => (
                 <Badge
                   key={industry}
-                  variant={selectedIndustries.includes(industry) ? "default" : "secondary"}
-                  className="cursor-pointer text-xs"
+                  variant={selectedIndustries.includes(industry) ? "default" : "outline"}
+                  className="cursor-pointer text-xs hover:bg-accent"
                   onClick={() => toggleMultiSelect(industry, selectedIndustries, setSelectedIndustries)}
                 >
                   {industry}
@@ -411,16 +409,16 @@ export const FilterSidebar = ({
 
           {/* Advanced Filters (Collapsible) */}
           <Collapsible open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
-            <div className="space-y-4 p-4 bg-red-50 rounded-lg">
+            <div className="space-y-4 p-4 border border-border rounded-lg bg-background">
               <CollapsibleTrigger className="flex items-center justify-between w-full">
-                <h3 className="font-semibold text-gray-900">⚙️ Additional Filters</h3>
+                <h3 className="font-semibold text-foreground">⚙️ Additional Filters</h3>
                 <ChevronDown className={`w-4 h-4 transition-transform ${isAdvancedFiltersOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
               
               <CollapsibleContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Language Proficiency</label>
+                    <label className="text-sm font-medium text-foreground">Language Proficiency</label>
                     <Select value={languageProficiency} onValueChange={setLanguageProficiency}>
                       <SelectTrigger>
                         <SelectValue placeholder="All Languages" />
@@ -435,7 +433,7 @@ export const FilterSidebar = ({
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Education Level</label>
+                    <label className="text-sm font-medium text-foreground">Education Level</label>
                     <Select value={educationLevel} onValueChange={setEducationLevel}>
                       <SelectTrigger>
                         <SelectValue placeholder="All Levels" />
@@ -448,21 +446,6 @@ export const FilterSidebar = ({
                       </SelectContent>
                     </Select>
                   </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">CV Completeness</label>
-                    <Select value={cvCompleteness} onValueChange={setCvCompleteness}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Any Completeness" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Any Completeness</SelectItem>
-                        {cvCompletenessOptions.map((option) => (
-                          <SelectItem key={option} value={option}>{option}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -471,7 +454,7 @@ export const FilterSidebar = ({
                     checked={academicExcellence}
                     onCheckedChange={(checked) => setAcademicExcellence(checked === true)}
                   />
-                  <label htmlFor="academic-excellence" className="text-sm font-medium text-gray-700">
+                  <label htmlFor="academic-excellence" className="text-sm font-medium text-foreground">
                     Show candidates with strong academic performance
                   </label>
                 </div>
@@ -480,12 +463,12 @@ export const FilterSidebar = ({
           </Collapsible>
 
           {/* Action Buttons */}
-          <div className="flex justify-between items-center pt-4 border-t sticky bottom-0 bg-white pb-4">
+          <div className="flex justify-between items-center pt-4 border-t sticky bottom-0 bg-background pb-4">
             <Button variant="outline" onClick={resetAllFilters}>
               Reset All Filters
             </Button>
             <div className="flex gap-2">
-              <Button className="bg-accent hover:bg-accent/90" onClick={onClose}>
+              <Button className="bg-primary hover:bg-primary/90" onClick={onClose}>
                 Apply Filters ({filteredCandidatesCount})
               </Button>
             </div>
