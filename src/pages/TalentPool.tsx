@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
@@ -135,9 +136,11 @@ const TalentPool = () => {
   const formatBlurredName = (name) => {
     const nameParts = name.split(' ');
     if (nameParts.length >= 2) {
-      return `${nameParts[0]} ${nameParts[1].charAt(0)}.${'*'.repeat(6)}`;
+      // Show first name clearly, blur only the last name
+      return `${nameParts[0]} ${'*'.repeat(nameParts[1].length)}`;
     }
-    return `${nameParts[0].charAt(0)}.${'*'.repeat(6)}`;
+    // If only one name, show it clearly
+    return nameParts[0];
   };
 
   const handleUnlock = (candidate) => {
@@ -286,7 +289,7 @@ const TalentPool = () => {
                     </div>
                     <div>
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <span className={`transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                        <span className="transition-all duration-500">
                           {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
                         </span>
                         <span className="text-lg">{getCountryFlag(candidate.country)}</span>
@@ -412,7 +415,7 @@ const TalentPool = () => {
                         )}
                       </div>
                       <div>
-                        <div className={`font-medium flex items-center gap-2 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                        <div className="font-medium flex items-center gap-2 transition-all duration-500">
                           {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
                           <span>{getCountryFlag(candidate.country)}</span>
                           {isUnlocked && (
@@ -510,7 +513,7 @@ const TalentPool = () => {
                               )}
                             </div>
                             <div>
-                              <div className={`font-medium text-sm flex items-center gap-1 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                              <div className="font-medium text-sm flex items-center gap-1 transition-all duration-500">
                                 {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
                                 <span className="text-xs">{getCountryFlag(candidate.country)}</span>
                                 {isUnlocked && (
