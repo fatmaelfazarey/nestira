@@ -14,6 +14,7 @@ import { AICandidateSearch } from '@/components/AICandidateSearch';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
 import { CircularProgress } from '@/components/ui/circular-progress';
+
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('all');
@@ -58,6 +59,9 @@ const TalentPool = () => {
     status: "Available",
     tags: ["CPA", "Excel Expert", "Financial Analysis"],
     industryExperience: ["Banking", "FMCG", "Tech"],
+    financeSubfields: ["Financial Planning", "Budget Management", "Cost Analysis"],
+    softwareTools: ["SAP", "Oracle", "QuickBooks", "Tableau"],
+    certifications: ["CPA", "CFA Level 2", "FRM"],
     photo: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop&crop=face",
     email: "sarah.johnson@email.com",
     phone: "+971 50 123 4567",
@@ -77,6 +81,9 @@ const TalentPool = () => {
     status: "Interviewing",
     tags: ["Power BI", "SQL", "Risk Management"],
     industryExperience: ["Oil & Gas", "Manufacturing"],
+    financeSubfields: ["Risk Assessment", "Financial Modeling", "Data Analysis"],
+    softwareTools: ["Power BI", "SQL Server", "Python", "R"],
+    certifications: ["FRM", "PMP"],
     photo: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=100&h=100&fit=crop&crop=face",
     email: "ahmed.hassan@email.com",
     phone: "+20 10 123 4567",
@@ -96,6 +103,9 @@ const TalentPool = () => {
     status: "Shortlisted",
     tags: ["SAP", "IFRS", "Team Leadership"],
     industryExperience: ["Real Estate", "Retail"],
+    financeSubfields: ["Management Accounting", "IFRS Compliance", "Team Leadership"],
+    softwareTools: ["SAP", "Microsoft Dynamics", "Excel Advanced"],
+    certifications: ["ACCA", "IFRS Certificate"],
     photo: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=100&h=100&fit=crop&crop=face",
     email: "fatima.alzahra@email.com",
     phone: "+966 50 123 4567",
@@ -267,7 +277,7 @@ const TalentPool = () => {
                         <span className="transition-all duration-500">
                           {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
                         </span>
-                        <span className="text-lg px-[35px]">{getCountryFlag(candidate.country)}</span>
+                        <span className="text-lg">{getCountryFlag(candidate.country)}</span>
                         {isUnlocked && <CheckCircle className="w-4 h-4 text-green-500 animate-fade-in" />}
                       </CardTitle>
                       <p className="text-sm text-gray-600">{candidate.title}</p>
@@ -320,6 +330,36 @@ const TalentPool = () => {
                   </div>
                 </div>
 
+                {/* Finance Subfields Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Finance Subfields</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.financeSubfields.map(subfield => <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        {subfield}
+                      </Badge>)}
+                  </div>
+                </div>
+
+                {/* Software & Tools Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Software & Tools</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.softwareTools.map(tool => <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                        {tool}
+                      </Badge>)}
+                  </div>
+                </div>
+
+                {/* Certifications Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Certifications</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.certifications.map(cert => <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                        {cert}
+                      </Badge>)}
+                  </div>
+                </div>
+
                 <div className="flex justify-between items-center gap-2">
                   <Badge variant={candidate.status === 'Available' ? 'default' : 'secondary'} className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}>
                     {candidate.status}
@@ -346,6 +386,9 @@ const TalentPool = () => {
               <TableHead>Score</TableHead>
               <TableHead>Status</TableHead>
               <TableHead>Industry</TableHead>
+              <TableHead>Subfields</TableHead>
+              <TableHead>Tools</TableHead>
+              <TableHead>Certifications</TableHead>
               <TableHead>Salary</TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
@@ -401,6 +444,36 @@ const TalentPool = () => {
                         </Badge>)}
                       {candidate.industryExperience.length > 2 && <Badge variant="outline" className="text-xs">
                           +{candidate.industryExperience.length - 2}
+                        </Badge>}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {candidate.financeSubfields.slice(0, 2).map(subfield => <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                          {subfield}
+                        </Badge>)}
+                      {candidate.financeSubfields.length > 2 && <Badge variant="outline" className="text-xs">
+                          +{candidate.financeSubfields.length - 2}
+                        </Badge>}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {candidate.softwareTools.slice(0, 2).map(tool => <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                          {tool}
+                        </Badge>)}
+                      {candidate.softwareTools.length > 2 && <Badge variant="outline" className="text-xs">
+                          +{candidate.softwareTools.length - 2}
+                        </Badge>}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex flex-wrap gap-1">
+                      {candidate.certifications.slice(0, 2).map(cert => <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                          {cert}
+                        </Badge>)}
+                      {candidate.certifications.length > 2 && <Badge variant="outline" className="text-xs">
+                          +{candidate.certifications.length - 2}
                         </Badge>}
                     </div>
                   </TableCell>
