@@ -433,7 +433,7 @@ const TalentPool = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Talent Pool</h1>
+            <h1 className="text-3xl font-bold text-gray-900 py-[10px]">Talent Pool</h1>
             <p className="text-gray-600">Browse and filter finance professionals</p>
             
             {/* Progress Bar for Candidate Count */}
