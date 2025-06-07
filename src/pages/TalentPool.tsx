@@ -267,7 +267,7 @@ const TalentPool = () => {
                         <span className="transition-all duration-500">
                           {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
                         </span>
-                        <span className="text-lg">{getCountryFlag(candidate.country)}</span>
+                        <span className="text-lg px-[35px]">{getCountryFlag(candidate.country)}</span>
                         {isUnlocked && <CheckCircle className="w-4 h-4 text-green-500 animate-fade-in" />}
                       </CardTitle>
                       <p className="text-sm text-gray-600">{candidate.title}</p>
