@@ -52,7 +52,7 @@ export function QuestionEditor({
       updatedQuestion.options = ['Option 1', 'Option 2', 'Option 3', 'Option 4'];
     } else if (newType === 'true-false') {
       updatedQuestion.options = ['True', 'False'];
-    } else if (newType === 'short-answer') {
+    } else if (newType === 'short-answer' || newType === 'voice-note') {
       updatedQuestion.options = undefined;
     }
     
@@ -146,6 +146,7 @@ export function QuestionEditor({
                 <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
                 <SelectItem value="true-false">True/False</SelectItem>
                 <SelectItem value="short-answer">Short Answer</SelectItem>
+                <SelectItem value="voice-note">Voice Note</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -193,17 +194,22 @@ export function QuestionEditor({
             </div>
           )}
 
-          {/* Correct Answer for Short Answer */}
-          {editedQuestion.type === 'short-answer' && (
+          {/* Correct Answer for Short Answer and Voice Note */}
+          {(editedQuestion.type === 'short-answer' || editedQuestion.type === 'voice-note') && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Expected Answer (for reference)
+                {editedQuestion.type === 'voice-note' ? 'Expected Answer/Keywords (for reference)' : 'Expected Answer (for reference)'}
               </label>
               <Input
                 value={editedQuestion.correctAnswer || ''}
                 onChange={(e) => setEditedQuestion({ ...editedQuestion, correctAnswer: e.target.value })}
-                placeholder="Enter expected answer"
+                placeholder={editedQuestion.type === 'voice-note' ? 'Enter keywords or expected response' : 'Enter expected answer'}
               />
+              {editedQuestion.type === 'voice-note' && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Voice responses will be recorded and can be manually reviewed by evaluators.
+                </p>
+              )}
             </div>
           )}
         </div>
@@ -244,6 +250,20 @@ export function QuestionEditor({
                 <div className="text-sm text-gray-600">
                   <span className="font-medium">Expected: </span>
                   {question.correctAnswer}
+                </div>
+              )}
+              {question.type === 'voice-note' && (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2 text-sm text-blue-600">
+                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                    <span>Voice response required</span>
+                  </div>
+                  {question.correctAnswer && (
+                    <div className="text-sm text-gray-600">
+                      <span className="font-medium">Expected keywords: </span>
+                      {question.correctAnswer}
+                    </div>
+                  )}
                 </div>
               )}
             </>

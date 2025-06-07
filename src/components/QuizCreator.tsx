@@ -70,7 +70,8 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
       isEditing: true
     };
-    setQuestions(prev => [...prev, newQuestion]);
+    // Add custom questions at the beginning of the list
+    setQuestions(prev => [newQuestion, ...prev]);
   };
 
   const handleUpdateQuestion = (questionId: string, updates: Partial<Question>) => {
