@@ -3,16 +3,18 @@ import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { QuizCreator } from '@/components/QuizCreator';
 import { QuizPreviewModal } from '@/components/quiz/QuizPreviewModal';
+import { QuizAssignModal } from '@/components/quiz/QuizAssignModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Settings, Play, ArrowLeft, Share, Copy } from 'lucide-react';
+import { Plus, Settings, Play, ArrowLeft, UserPlus } from 'lucide-react';
 import { toast } from 'sonner';
 
 const QuizBuilder = () => {
   const [showCreator, setShowCreator] = useState(false);
   const [editingQuiz, setEditingQuiz] = useState<any>(null);
   const [previewQuiz, setPreviewQuiz] = useState<any>(null);
+  const [assignQuiz, setAssignQuiz] = useState<any>(null);
   const [quizzes, setQuizzes] = useState([
     { 
       id: 1, 
@@ -102,10 +104,10 @@ const QuizBuilder = () => {
     ));
   };
 
-  const shareQuiz = (quiz: any) => {
-    const shareUrl = `${window.location.origin}/quiz/${quiz.id}`;
-    navigator.clipboard.writeText(shareUrl);
-    toast.success(`Quiz link copied to clipboard!`);
+  const assignQuizToCandidates = (quiz: any, candidateIds: string[]) => {
+    console.log('Assigning quiz:', quiz.title, 'to candidates:', candidateIds);
+    toast.success(`Quiz "${quiz.title}" assigned to ${candidateIds.length} candidate(s)!`);
+    setAssignQuiz(null);
   };
 
   const previewQuizHandler = (quiz: any) => {
@@ -117,6 +119,11 @@ const QuizBuilder = () => {
     console.log('Opening edit for quiz:', quiz);
     setEditingQuiz(quiz);
     setShowCreator(true);
+  };
+
+  const assignQuizHandler = (quiz: any) => {
+    console.log('Opening assign for quiz:', quiz);
+    setAssignQuiz(quiz);
   };
 
   if (showCreator) {
@@ -198,10 +205,10 @@ const QuizBuilder = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => shareQuiz(quiz)}
+                    onClick={() => assignQuizHandler(quiz)}
                   >
-                    <Share className="w-4 h-4 mr-1" />
-                    Share
+                    <UserPlus className="w-4 h-4 mr-1" />
+                    Assign
                   </Button>
                 </div>
               </CardContent>
@@ -215,6 +222,15 @@ const QuizBuilder = () => {
           isOpen={!!previewQuiz}
           onClose={() => setPreviewQuiz(null)}
           quiz={previewQuiz}
+        />
+      )}
+
+      {assignQuiz && (
+        <QuizAssignModal
+          isOpen={!!assignQuiz}
+          onClose={() => setAssignQuiz(null)}
+          quiz={assignQuiz}
+          onAssign={assignQuizToCandidates}
         />
       )}
     </DashboardLayout>
