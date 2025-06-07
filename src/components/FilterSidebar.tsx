@@ -113,7 +113,31 @@ export const FilterSidebar = ({
 }: FilterSidebarProps) => {
   const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
 
-  // Filter options
+  // Updated filter options
+  const countries = [
+    "United Arab Emirates (UAE)",
+    "Egypt", 
+    "Kuwait",
+    "Saudi Arabia",
+    "Oman",
+    "Bahrain",
+    "Qatar"
+  ];
+
+  const careerLevels = [
+    "Mid-Level",
+    "Executive-Level", 
+    "C-Suite / Top-Level Management",
+    "Entry-Level",
+    "Senior-Level"
+  ];
+
+  const statusOptions = [
+    "Available",
+    "Interviewing", 
+    "Shortlisted"
+  ];
+
   const financeSubfields = ["Audit", "Tax", "FP&A", "Treasury", "Fintech", "General Ledger (GL)", "Accounts Payable (AP)", "Accounts Receivable (AR)"];
   const softwareTools = ["Excel (Advanced)", "Power BI", "Tableau"];
   const erpVersions = ["SAP FICO v4", "SAP FICO v6", "Oracle Fusion", "NetSuite"];
@@ -122,7 +146,6 @@ export const FilterSidebar = ({
   const visaStatuses = ["Citizen", "Residency Visa (Transferable)", "Residency Visa (Non-Transferable)", "Visit Visa", "No Visa"];
   const employmentTypes = ["Full-time", "Part-time", "Contract", "Temporary", "Internship"];
   const workModes = ["Onsite", "Hybrid", "Remote"];
-  const availabilities = ["Immediate", "1 week", "2+ weeks"];
   const languages = ["Arabic", "English", "Bilingual"];
   const genderOptions = ["No Preference", "Males Only", "Females Only", "Male Preferred", "Female Preferred"];
   const educationLevels = ["High School", "Diploma", "Bachelor's", "Master's", "MBA", "Doctorate"];
@@ -150,8 +173,10 @@ export const FilterSidebar = ({
         </SheetHeader>
 
         <div className="space-y-6 mt-6">
-          {/* Basic Search */}
-          <div className="space-y-3">
+          {/* Quick Search & Basic Filters */}
+          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+            <h3 className="font-semibold text-gray-900 mb-3">🔍 Quick Search</h3>
+            
             <div className="flex items-center gap-2">
               <Search className="w-4 h-4 text-gray-500" />
               <Input
@@ -163,29 +188,50 @@ export const FilterSidebar = ({
             </div>
             
             <div className="grid grid-cols-1 gap-3">
-              <Select value={locationFilter} onValueChange={setLocationFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Location" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Locations</SelectItem>
-                  <SelectItem value="Dubai">Dubai, UAE</SelectItem>
-                  <SelectItem value="Cairo">Cairo, Egypt</SelectItem>
-                  <SelectItem value="Riyadh">Riyadh, Saudi Arabia</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Country</label>
+                <Select value={locationFilter} onValueChange={setLocationFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Countries" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Countries</SelectItem>
+                    {countries.map((country) => (
+                      <SelectItem key={country} value={country}>{country}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="Available">Available</SelectItem>
-                  <SelectItem value="Interviewing">Interviewing</SelectItem>
-                  <SelectItem value="Shortlisted">Shortlisted</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Career Level</label>
+                <Select value={skillsFilter} onValueChange={setSkillsFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Career Levels" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Career Levels</SelectItem>
+                    {careerLevels.map((level) => (
+                      <SelectItem key={level} value={level}>{level}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Status</label>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    {statusOptions.map((status) => (
+                      <SelectItem key={status} value={status}>{status}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
             <div className="text-sm text-gray-600 bg-blue-50 px-3 py-2 rounded-lg">
@@ -193,9 +239,44 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          {/* 1. Job & Skill Filters */}
+          {/* Experience and Score Range */}
           <div className="space-y-4 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🔵 Job & Skill Filters</h3>
+            <h3 className="font-semibold text-gray-900 mb-3">📊 Experience & Score</h3>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Years of Experience: {experienceRange[0]}+ years
+                </label>
+                <Slider
+                  value={experienceRange}
+                  onValueChange={setExperienceRange}
+                  max={15}
+                  min={0}
+                  step={1}
+                  className="w-full"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Minimum Score: {scoreRange[0]}%
+                </label>
+                <Slider
+                  value={scoreRange}
+                  onValueChange={setScoreRange}
+                  max={100}
+                  min={0}
+                  step={5}
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Skills & Expertise */}
+          <div className="space-y-4 p-4 bg-green-50 rounded-lg">
+            <h3 className="font-semibold text-gray-900 mb-3">💼 Skills & Expertise</h3>
             
             {/* Finance Subfields */}
             <div className="space-y-2">
@@ -205,7 +286,7 @@ export const FilterSidebar = ({
                   <Badge
                     key={subfield}
                     variant={selectedSubfields.includes(subfield) ? "default" : "secondary"}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-xs"
                     onClick={() => toggleMultiSelect(subfield, selectedSubfields, setSelectedSubfields)}
                   >
                     {subfield}
@@ -223,7 +304,7 @@ export const FilterSidebar = ({
                   <Badge
                     key={tool}
                     variant={selectedSoftware.includes(tool) ? "default" : "secondary"}
-                    className="cursor-pointer"
+                    className="cursor-pointer text-xs"
                     onClick={() => toggleMultiSelect(tool, selectedSoftware, setSelectedSoftware)}
                   >
                     {tool}
@@ -233,95 +314,34 @@ export const FilterSidebar = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-4">
-              {/* ERP Version */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">ERP Version</label>
-                <Select value={erpVersion} onValueChange={setErpVersion}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select ERP Version" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All ERP Systems</SelectItem>
-                    {erpVersions.map((erp) => (
-                      <SelectItem key={erp} value={erp}>{erp}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Certifications */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Certifications</label>
-                <div className="flex flex-wrap gap-1">
-                  {certifications.map((cert) => (
-                    <Badge
-                      key={cert}
-                      variant={selectedCertifications.includes(cert) ? "default" : "secondary"}
-                      className="cursor-pointer text-xs"
-                      onClick={() => toggleMultiSelect(cert, selectedCertifications, setSelectedCertifications)}
-                    >
-                      {cert}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 2. Industry Experience */}
-          <div className="space-y-4 p-4 bg-orange-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🟠 Industry Experience</h3>
-            <div className="flex flex-wrap gap-2">
-              {industries.map((industry) => (
-                <Badge
-                  key={industry}
-                  variant={selectedIndustries.includes(industry) ? "default" : "secondary"}
-                  className="cursor-pointer"
-                  onClick={() => toggleMultiSelect(industry, selectedIndustries, setSelectedIndustries)}
-                >
-                  {industry}
-                  {selectedIndustries.includes(industry) && <X className="w-3 h-3 ml-1" />}
-                </Badge>
-              ))}
-            </div>
-          </div>
-
-          {/* 3. Location & Visa */}
-          <div className="space-y-4 p-4 bg-green-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🟢 Location & Visa</h3>
+            {/* Certifications */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Visa Status</label>
-              <div className="grid grid-cols-1 gap-2">
-                {visaStatuses.map((status) => (
-                  <div key={status} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={status}
-                      checked={selectedVisaStatus.includes(status)}
-                      onCheckedChange={(checked) => {
-                        if (checked) {
-                          setSelectedVisaStatus([...selectedVisaStatus, status]);
-                        } else {
-                          setSelectedVisaStatus(selectedVisaStatus.filter(s => s !== status));
-                        }
-                      }}
-                    />
-                    <label htmlFor={status} className="text-sm text-gray-700">{status}</label>
-                  </div>
+              <label className="text-sm font-medium text-gray-700">Certifications</label>
+              <div className="flex flex-wrap gap-1">
+                {certifications.map((cert) => (
+                  <Badge
+                    key={cert}
+                    variant={selectedCertifications.includes(cert) ? "default" : "secondary"}
+                    className="cursor-pointer text-xs"
+                    onClick={() => toggleMultiSelect(cert, selectedCertifications, setSelectedCertifications)}
+                  >
+                    {cert}
+                  </Badge>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* 4. Work Type & Availability */}
-          <div className="space-y-4 p-4 bg-red-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🔴 Work Type & Availability</h3>
+          {/* Work Preferences */}
+          <div className="space-y-4 p-4 bg-orange-50 rounded-lg">
+            <h3 className="font-semibold text-gray-900 mb-3">🏢 Work Preferences</h3>
+            
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Employment Type</label>
                 <Select value={employmentType} onValueChange={setEmploymentType}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Type" />
+                    <SelectValue placeholder="All Types" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Types</SelectItem>
@@ -336,7 +356,7 @@ export const FilterSidebar = ({
                 <label className="text-sm font-medium text-gray-700">Work Mode</label>
                 <Select value={workMode} onValueChange={setWorkMode}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select Mode" />
+                    <SelectValue placeholder="All Modes" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Modes</SelectItem>
@@ -348,27 +368,52 @@ export const FilterSidebar = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Availability</label>
-                <Select value={availability} onValueChange={setAvailability}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Availability" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Timeframes</SelectItem>
-                    {availabilities.map((avail) => (
-                      <SelectItem key={avail} value={avail}>{avail}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <label className="text-sm font-medium text-gray-700">Visa Status</label>
+                <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto">
+                  {visaStatuses.map((status) => (
+                    <div key={status} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={status}
+                        checked={selectedVisaStatus.includes(status)}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSelectedVisaStatus([...selectedVisaStatus, status]);
+                          } else {
+                            setSelectedVisaStatus(selectedVisaStatus.filter(s => s !== status));
+                          }
+                        }}
+                      />
+                      <label htmlFor={status} className="text-sm text-gray-700">{status}</label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* 5. Advanced Filters (Collapsible) */}
+          {/* Industry Experience */}
+          <div className="space-y-4 p-4 bg-purple-50 rounded-lg">
+            <h3 className="font-semibold text-gray-900 mb-3">🏭 Industry Experience</h3>
+            <div className="flex flex-wrap gap-2">
+              {industries.map((industry) => (
+                <Badge
+                  key={industry}
+                  variant={selectedIndustries.includes(industry) ? "default" : "secondary"}
+                  className="cursor-pointer text-xs"
+                  onClick={() => toggleMultiSelect(industry, selectedIndustries, setSelectedIndustries)}
+                >
+                  {industry}
+                  {selectedIndustries.includes(industry) && <X className="w-3 h-3 ml-1" />}
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* Advanced Filters (Collapsible) */}
           <Collapsible open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
-            <div className="space-y-4 p-4 bg-purple-50 rounded-lg">
+            <div className="space-y-4 p-4 bg-red-50 rounded-lg">
               <CollapsibleTrigger className="flex items-center justify-between w-full">
-                <h3 className="font-semibold text-gray-900">🟣 Advanced Filters</h3>
+                <h3 className="font-semibold text-gray-900">⚙️ Additional Filters</h3>
                 <ChevronDown className={`w-4 h-4 transition-transform ${isAdvancedFiltersOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
               
@@ -378,7 +423,7 @@ export const FilterSidebar = ({
                     <label className="text-sm font-medium text-gray-700">Language Proficiency</label>
                     <Select value={languageProficiency} onValueChange={setLanguageProficiency}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select Language" />
+                        <SelectValue placeholder="All Languages" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Languages</SelectItem>
@@ -390,24 +435,10 @@ export const FilterSidebar = ({
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Gender Filter</label>
-                    <Select value={genderFilter} onValueChange={setGenderFilter}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select Gender Preference" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {genderOptions.map((option, index) => (
-                          <SelectItem key={option} value={index === 0 ? 'no-preference' : option.toLowerCase().replace(/\s+/g, '-')}>{option}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
                     <label className="text-sm font-medium text-gray-700">Education Level</label>
                     <Select value={educationLevel} onValueChange={setEducationLevel}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select Education" />
+                        <SelectValue placeholder="All Levels" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">All Levels</SelectItem>
@@ -422,7 +453,7 @@ export const FilterSidebar = ({
                     <label className="text-sm font-medium text-gray-700">CV Completeness</label>
                     <Select value={cvCompleteness} onValueChange={setCvCompleteness}>
                       <SelectTrigger>
-                        <SelectValue placeholder="Select Completeness" />
+                        <SelectValue placeholder="Any Completeness" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="all">Any Completeness</SelectItem>
@@ -431,28 +462,6 @@ export const FilterSidebar = ({
                         ))}
                       </SelectContent>
                     </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">Special Needs Accommodation</label>
-                  <div className="grid grid-cols-1 gap-2">
-                    {specialNeeds.map((need) => (
-                      <div key={need} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={need}
-                          checked={selectedSpecialNeeds.includes(need)}
-                          onCheckedChange={(checked) => {
-                            if (checked) {
-                              setSelectedSpecialNeeds([...selectedSpecialNeeds, need]);
-                            } else {
-                              setSelectedSpecialNeeds(selectedSpecialNeeds.filter(n => n !== need));
-                            }
-                          }}
-                        />
-                        <label htmlFor={need} className="text-sm text-gray-700">{need}</label>
-                      </div>
-                    ))}
                   </div>
                 </div>
 
@@ -469,58 +478,6 @@ export const FilterSidebar = ({
               </CollapsibleContent>
             </div>
           </Collapsible>
-
-          {/* 6. Screening Tags */}
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🧩 Screening Tags</h3>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Add Screening Criteria</label>
-              <div className="flex flex-wrap gap-2">
-                {screeningTags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant={selectedScreeningTags.includes(tag) ? "default" : "secondary"}
-                    className="cursor-pointer"
-                    onClick={() => toggleMultiSelect(tag, selectedScreeningTags, setSelectedScreeningTags)}
-                  >
-                    {tag}
-                    {selectedScreeningTags.includes(tag) && <X className="w-3 h-3 ml-1" />}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Experience and Score Sliders */}
-          <div className="grid grid-cols-1 gap-6 p-4 bg-gray-50 rounded-lg">
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Years of Experience: {experienceRange[0]}+ years
-              </label>
-              <Slider
-                value={experienceRange}
-                onValueChange={setExperienceRange}
-                max={15}
-                min={0}
-                step={1}
-                className="w-full"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Minimum Score: {scoreRange[0]}%
-              </label>
-              <Slider
-                value={scoreRange}
-                onValueChange={setScoreRange}
-                max={100}
-                min={0}
-                step={5}
-                className="w-full"
-              />
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="flex justify-between items-center pt-4 border-t sticky bottom-0 bg-white pb-4">

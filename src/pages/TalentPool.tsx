@@ -38,7 +38,6 @@ const TalentPool = () => {
   const [selectedVisaStatus, setSelectedVisaStatus] = useState([]);
   const [employmentType, setEmploymentType] = useState('all');
   const [workMode, setWorkMode] = useState('all');
-  const [availability, setAvailability] = useState('all');
   const [languageProficiency, setLanguageProficiency] = useState('all');
   const [genderFilter, setGenderFilter] = useState('no-preference');
   const [educationLevel, setEducationLevel] = useState('all');
@@ -171,7 +170,6 @@ const TalentPool = () => {
     setSelectedVisaStatus([]);
     setEmploymentType('all');
     setWorkMode('all');
-    setAvailability('all');
     setLanguageProficiency('all');
     setGenderFilter('no-preference');
     setEducationLevel('all');
@@ -596,8 +594,8 @@ const TalentPool = () => {
           setEmploymentType={setEmploymentType}
           workMode={workMode}
           setWorkMode={setWorkMode}
-          availability={availability}
-          setAvailability={setAvailability}
+          availability=""
+          setAvailability={() => {}}
           languageProficiency={languageProficiency}
           setLanguageProficiency={setLanguageProficiency}
           genderFilter={genderFilter}
