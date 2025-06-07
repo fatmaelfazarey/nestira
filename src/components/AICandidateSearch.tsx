@@ -29,7 +29,7 @@ export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
   };
   const exampleQueries = ["Finance manager with SAP experience in Dubai", "CPA certified analyst with 5+ years experience", "Accounting professional fluent in IFRS", "Senior finance role, team leadership skills"];
   return <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-dashed border-blue-200">
-      <CardContent className="p-6">
+      <CardContent className="p-6 px-[77px] py-[11px] my-0">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="w-5 h-5 text-blue-600" />
           <h3 className="text-lg font-semibold text-gray-900">AI Talent Search</h3>
