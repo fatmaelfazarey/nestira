@@ -7,7 +7,8 @@ import { QuizAssignModal } from '@/components/quiz/QuizAssignModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
-import { Plus, Settings, Play, ArrowLeft, UserPlus } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 
 const QuizBuilder = () => {
@@ -24,6 +25,10 @@ const QuizBuilder = () => {
       duration: '30 min', 
       status: 'Active', 
       isActive: true,
+      assignedCandidates: 12,
+      passedCandidates: 8,
+      failedCandidates: 3,
+      pendingCandidates: 1,
       questionsList: [
         { 
           id: 'q1', 
@@ -49,6 +54,10 @@ const QuizBuilder = () => {
       duration: '45 min', 
       status: 'Draft', 
       isActive: false,
+      assignedCandidates: 0,
+      passedCandidates: 0,
+      failedCandidates: 0,
+      pendingCandidates: 0,
       questionsList: [
         { 
           id: 'q3', 
@@ -68,6 +77,10 @@ const QuizBuilder = () => {
       duration: '25 min', 
       status: 'Active', 
       isActive: true,
+      assignedCandidates: 5,
+      passedCandidates: 4,
+      failedCandidates: 1,
+      pendingCandidates: 0,
       questionsList: [
         { 
           id: 'q4', 
@@ -183,6 +196,34 @@ const QuizBuilder = () => {
                     {quiz.status}
                   </span>
                 </div>
+                
+                {/* Candidate Statistics */}
+                {quiz.assignedCandidates > 0 && (
+                  <div className="space-y-2 pt-2 border-t">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-1 text-gray-600">
+                        <Users className="w-4 h-4" />
+                        <span>Assigned:</span>
+                      </div>
+                      <Badge variant="secondary">{quiz.assignedCandidates}</Badge>
+                    </div>
+                    <div className="flex gap-4 text-xs">
+                      <div className="flex items-center gap-1 text-green-600">
+                        <CheckCircle className="w-3 h-3" />
+                        <span>Passed: {quiz.passedCandidates}</span>
+                      </div>
+                      <div className="flex items-center gap-1 text-red-600">
+                        <XCircle className="w-3 h-3" />
+                        <span>Failed: {quiz.failedCandidates}</span>
+                      </div>
+                      {quiz.pendingCandidates > 0 && (
+                        <div className="flex items-center gap-1 text-orange-600">
+                          <span>Pending: {quiz.pendingCandidates}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="pt-0">
                 <div className="flex gap-2 flex-wrap">
