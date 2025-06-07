@@ -3,7 +3,7 @@ export interface Question {
   id: string;
   text: string;
   type: QuestionType;
-  options: string[];
+  options?: string[];
   correctAnswer?: string;
   explanation?: string;
   isEditing?: boolean;
