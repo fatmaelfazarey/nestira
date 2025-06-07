@@ -89,7 +89,7 @@ const navigationSections = [
     label: "Tools",
     items: [
       {
-        title: "Quiz Designer",
+        title: "Quiz Builder",
         url: "/quiz-builder",
         icon: Check,
         badge: null
