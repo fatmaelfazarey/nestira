@@ -150,7 +150,6 @@ export const FilterSidebar = ({
   const genderOptions = ["No Preference", "Males Only", "Females Only", "Male Preferred", "Female Preferred"];
   const educationLevels = ["High School", "Diploma", "Bachelor's", "Master's", "MBA", "Doctorate"];
   const specialNeeds = ["Cognitive Disabilities", "Physical Disabilities", "Hearing Disabilities", "Mobility Disabilities", "Learning Disability", "Communication Impairment"];
-  const cvCompletenessOptions = ["More than 20%", "More than 40%", "More than 60%", "More than 80%"];
   const screeningTags = ["Background Check", "Urgent Hiring", "Remote Ready", "Work Experience", "Language Fit", "Visa Status", "Custom Question", "Work Authorization"];
 
   // Helper functions for multi-select
@@ -174,8 +173,11 @@ export const FilterSidebar = ({
 
         <div className="space-y-6 mt-6">
           {/* Quick Search & Basic Filters */}
-          <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🔍 Quick Search</h3>
+          <div className="space-y-4">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Search className="w-4 h-4" />
+              Quick Search
+            </h3>
             
             <div className="flex items-center gap-2">
               <Search className="w-4 h-4 text-gray-500" />
@@ -187,7 +189,7 @@ export const FilterSidebar = ({
               />
             </div>
             
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Country</label>
                 <Select value={locationFilter} onValueChange={setLocationFilter}>
@@ -234,14 +236,16 @@ export const FilterSidebar = ({
               </div>
             </div>
 
-            <div className="text-sm text-gray-600 bg-blue-50 px-3 py-2 rounded-lg">
+            <div className="text-sm text-gray-600 bg-gray-50 px-3 py-2 rounded-lg">
               {filteredCandidatesCount} candidates found
             </div>
           </div>
 
           {/* Experience and Score Range */}
-          <div className="space-y-4 p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">📊 Experience & Score</h3>
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              📊 Experience & Score
+            </h3>
             
             <div className="space-y-4">
               <div className="space-y-2">
@@ -275,8 +279,10 @@ export const FilterSidebar = ({
           </div>
 
           {/* Skills & Expertise */}
-          <div className="space-y-4 p-4 bg-green-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">💼 Skills & Expertise</h3>
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              💼 Skills & Expertise
+            </h3>
             
             {/* Finance Subfields */}
             <div className="space-y-2">
@@ -333,8 +339,10 @@ export const FilterSidebar = ({
           </div>
 
           {/* Work Preferences */}
-          <div className="space-y-4 p-4 bg-orange-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🏢 Work Preferences</h3>
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              🏢 Work Preferences
+            </h3>
             
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
@@ -392,8 +400,10 @@ export const FilterSidebar = ({
           </div>
 
           {/* Industry Experience */}
-          <div className="space-y-4 p-4 bg-purple-50 rounded-lg">
-            <h3 className="font-semibold text-gray-900 mb-3">🏭 Industry Experience</h3>
+          <div className="space-y-4 border-t pt-4">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              🏭 Industry Experience
+            </h3>
             <div className="flex flex-wrap gap-2">
               {industries.map((industry) => (
                 <Badge
@@ -411,9 +421,11 @@ export const FilterSidebar = ({
 
           {/* Advanced Filters (Collapsible) */}
           <Collapsible open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
-            <div className="space-y-4 p-4 bg-red-50 rounded-lg">
+            <div className="space-y-4 border-t pt-4">
               <CollapsibleTrigger className="flex items-center justify-between w-full">
-                <h3 className="font-semibold text-gray-900">⚙️ Additional Filters</h3>
+                <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                  ⚙️ Additional Filters
+                </h3>
                 <ChevronDown className={`w-4 h-4 transition-transform ${isAdvancedFiltersOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
               
@@ -444,21 +456,6 @@ export const FilterSidebar = ({
                         <SelectItem value="all">All Levels</SelectItem>
                         {educationLevels.map((level) => (
                           <SelectItem key={level} value={level}>{level}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">CV Completeness</label>
-                    <Select value={cvCompleteness} onValueChange={setCvCompleteness}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Any Completeness" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Any Completeness</SelectItem>
-                        {cvCompletenessOptions.map((option) => (
-                          <SelectItem key={option} value={option}>{option}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
