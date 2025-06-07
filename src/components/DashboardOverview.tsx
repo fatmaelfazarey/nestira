@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -12,7 +11,10 @@ import {
   ArrowDownRight,
   MoreVertical,
   CheckCircle,
-  PuzzleIcon
+  PuzzleIcon,
+  Activity,
+  Unlock,
+  Eye
 } from "lucide-react";
 import {
   ChartContainer,
@@ -31,40 +33,67 @@ import {
 
 const kpiData = [
   {
-    title: "All Jobs",
-    value: "17",
-    change: "+2 this week",
+    title: "Total Jobs",
+    value: "2",
+    subtitle: "All jobs posted",
     icon: Briefcase,
     color: "text-blue-600",
     bgColor: "bg-blue-50",
     isPositive: true
   },
   {
-    title: "Total Candidates",
-    value: "9,011",
-    change: "+12% from last month",
-    icon: Users,
+    title: "Active Jobs",
+    value: "2",
+    subtitle: "Currently running",
+    icon: Activity,
     color: "text-green-600", 
     bgColor: "bg-green-50",
     isPositive: true
   },
   {
-    title: "Applications",
-    value: "130",
-    change: "8 new today",
-    icon: FileText,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50", 
+    title: "Closed Jobs",
+    value: "0",
+    subtitle: "Completed jobs",
+    icon: CheckCircle,
+    color: "text-gray-600",
+    bgColor: "bg-gray-50", 
     isPositive: true
   },
   {
-    title: "Interviews",
-    value: "26",
-    change: "3 scheduled today",
-    icon: Calendar,
+    title: "Total Applications",
+    value: "3",
+    subtitle: "All applications received",
+    icon: FileText,
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
+    isPositive: true
+  },
+  {
+    title: "Avg Applications",
+    value: "1.5",
+    subtitle: "Per job",
+    icon: TrendingUp,
     color: "text-orange-600",
     bgColor: "bg-orange-50",
     isPositive: true
+  },
+  {
+    title: "Unlocked Candidates",
+    value: "1",
+    subtitle: "Total unlocked profiles",
+    icon: Unlock,
+    color: "text-indigo-600",
+    bgColor: "bg-indigo-50",
+    isPositive: true
+  },
+  {
+    title: "Avg Daily Unlocks",
+    value: "0.0",
+    subtitle: "Last 30 days",
+    icon: Calendar,
+    color: "text-teal-600",
+    bgColor: "bg-teal-50",
+    isPositive: false
   }
 ];
 
@@ -106,6 +135,39 @@ const todayInterviews = [
   }
 ];
 
+const recentProfileViews = [
+  {
+    name: "Karim Ahmed",
+    location: "Giza, Egypt",
+    timeAgo: "3 days ago",
+    avatar: "K"
+  },
+  {
+    name: "Omar Fathy Ahmed Huss...",
+    location: "Alexandria, Egypt", 
+    timeAgo: "5 days ago",
+    avatar: "O"
+  },
+  {
+    name: "moamen abdulraouf",
+    location: "Cairo, Egypt",
+    timeAgo: "5 days ago", 
+    avatar: "M"
+  },
+  {
+    name: "Elsayed Kewan",
+    location: "Cairo, Egypt",
+    timeAgo: "5 days ago",
+    avatar: "E"
+  },
+  {
+    name: "Yasser Khairy",
+    location: "Cairo, Egypt",
+    timeAgo: "5 days ago",
+    avatar: "Y"
+  }
+];
+
 const chartConfig = {
   applications: {
     label: "Applications",
@@ -130,8 +192,8 @@ export function DashboardOverview() {
         <p className="text-white/80">Here's what's happening with your hiring pipeline today.</p>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {kpiData.map((kpi) => (
           <Card key={kpi.title} className="p-6 hover:shadow-lg transition-shadow duration-200">
             <div className="flex items-center justify-between mb-4">
@@ -145,25 +207,16 @@ export function DashboardOverview() {
             <div className="space-y-2">
               <h3 className="text-3xl font-bold text-gray-900">{kpi.value}</h3>
               <p className="text-sm font-medium text-gray-600">{kpi.title}</p>
-              <div className="flex items-center gap-1 text-sm">
-                {kpi.isPositive ? (
-                  <ArrowUpRight className="w-4 h-4 text-green-500" />
-                ) : (
-                  <ArrowDownRight className="w-4 h-4 text-red-500" />
-                )}
-                <span className={kpi.isPositive ? "text-green-600" : "text-red-600"}>
-                  {kpi.change}
-                </span>
-              </div>
+              <p className="text-xs text-gray-500">{kpi.subtitle}</p>
             </div>
           </Card>
         ))}
       </div>
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Activity Chart */}
-        <Card className="p-6">
+      {/* Charts and Quick Actions Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Weekly Activity Chart */}
+        <Card className="p-6 lg:col-span-2">
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Weekly Activity</h3>
             <div className="flex items-center gap-4">
@@ -212,57 +265,66 @@ export function DashboardOverview() {
           </div>
         </Card>
 
-        {/* Monthly Interviews */}
+        {/* Recent Profile Views */}
         <Card className="p-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Monthly Interviews</h3>
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-2">
-              <span className="text-sm text-green-600">+15%</span>
-              <span className="text-xs text-gray-500">vs last month</span>
+              <Eye className="w-5 h-5 text-gray-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Recent Profile Views</h3>
             </div>
           </div>
-          <div className="h-64">
-            <ChartContainer config={chartConfig}>
-              <BarChart data={interviewData}>
-                <XAxis 
-                  dataKey="month" 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
-                />
-                <YAxis hide />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="count" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ChartContainer>
+          <div className="space-y-4">
+            {recentProfileViews.map((profile, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-semibold">
+                  {profile.avatar}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-gray-900 truncate">{profile.name}</p>
+                  <p className="text-sm text-gray-600">{profile.location}</p>
+                </div>
+                <div className="text-xs text-gray-500 flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {profile.timeAgo}
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
 
-      {/* Bottom Section */}
+      {/* Resource Usage and Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Today's Interviews */}
+        {/* Resource Usage */}
         <Card className="p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-semibold text-gray-900">Today's Interviews</h3>
-            <Button variant="outline" size="sm">
-              <Calendar className="w-4 h-4 mr-2" />
-              View All
-            </Button>
-          </div>
-          <div className="space-y-4">
-            {todayInterviews.map((interview, index) => (
-              <div key={index} className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">Resource Usage</h3>
+          <div className="space-y-6">
+            <div>
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-gray-500" />
-                  <span className="font-medium text-sm">{interview.time}</span>
+                  <Briefcase className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm font-medium">Job Postings</span>
                 </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">{interview.candidate}</p>
-                  <p className="text-sm text-gray-600">{interview.position}</p>
-                </div>
+                <span className="text-sm text-gray-600">2/3</span>
               </div>
-            ))}
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-primary h-2 rounded-full" style={{ width: '66.7%' }}></div>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">66.7%</p>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-gray-600" />
+                  <span className="text-sm font-medium">Candidates Unlocked</span>
+                </div>
+                <span className="text-sm text-gray-600">1/5</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div className="bg-primary h-2 rounded-full" style={{ width: '20%' }}></div>
+              </div>
+              <p className="text-xs text-gray-500 mt-1">20.0%</p>
+            </div>
           </div>
         </Card>
 

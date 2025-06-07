@@ -27,10 +27,10 @@ export interface Quiz {
 }
 
 export interface PersonalizationParams {
-  jobTitle: string;
-  yearsOfExperience: number;
-  industry: string;
-  skills: string[];
+  jobTitle?: string;
+  yearsOfExperience?: number;
+  industry?: string;
+  skills?: string[];
   role?: string;
   seniorityLevel?: string;
 }
