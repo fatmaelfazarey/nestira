@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -214,50 +215,63 @@ export function DashboardOverview() {
         <p className="text-white/80">Here's what's happening with your hiring pipeline today.</p>
       </div>
 
-      {/* Compact KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
-        {kpiData.map((kpi) => (
-          <Card 
-            key={kpi.title} 
-            className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
-            onClick={() => handleKpiClick(kpi.clickAction)}
-          >
-            <div className="flex flex-col items-center text-center space-y-2">
-              <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
-                <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-xl font-bold text-gray-900">{kpi.value}</h3>
-                <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
-              </div>
-            </div>
-          </Card>
-        ))}
+      {/* KPI Cards and Recent Profile Views Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* KPI Cards Grid - 2 rows */}
+        <div className="lg:col-span-3">
+          <div className="grid grid-cols-4 gap-4">
+            {kpiData.map((kpi) => (
+              <Card 
+                key={kpi.title} 
+                className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
+                onClick={() => handleKpiClick(kpi.clickAction)}
+              >
+                <div className="flex flex-col items-center text-center space-y-2">
+                  <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
+                    <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-xl font-bold text-gray-900">{kpi.value}</h3>
+                    <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
+                  </div>
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
 
-        {/* Recent Profile Views Compact Card */}
-        <Card 
-          className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
-          onClick={() => setShowProfileViewsModal(true)}
-        >
-          <div className="flex flex-col items-center text-center space-y-2">
-            <div className="p-2 rounded-lg bg-indigo-50">
-              <Eye className="w-4 h-4 text-indigo-600" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-xs font-medium text-gray-600">Recent Profile Views</h3>
-              <div className="space-y-1">
-                {recentProfileViews.slice(0, 3).map((profile, index) => (
-                  <div key={index} className="flex items-center justify-between text-xs">
-                    <div className="w-3 h-3 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                      {profile.avatar}
+        {/* Recent Profile Views Section */}
+        <div className="lg:col-span-1">
+          <Card 
+            className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
+            onClick={() => setShowProfileViewsModal(true)}
+          >
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="p-2 rounded-lg bg-indigo-50">
+                  <Eye className="w-4 h-4 text-indigo-600" />
+                </div>
+                <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
+              </div>
+              <div className="space-y-2">
+                {recentProfileViews.slice(0, 5).map((profile, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                        {profile.avatar}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
+                        <p className="text-xs text-gray-500">{profile.timeAgo}</p>
+                      </div>
                     </div>
-                    <span className="font-semibold text-gray-900">{profile.views}</span>
+                    <span className="text-sm font-bold text-gray-900">{profile.views}</span>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </div>
 
       {/* Charts and Quick Actions Section */}
