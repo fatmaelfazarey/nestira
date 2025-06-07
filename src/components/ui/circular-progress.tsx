@@ -9,6 +9,7 @@ interface CircularProgressProps {
   className?: string
   showPercentage?: boolean
   label?: string
+  compact?: boolean
 }
 
 const CircularProgress = React.forwardRef<
@@ -21,6 +22,7 @@ const CircularProgress = React.forwardRef<
   className, 
   showPercentage = true,
   label,
+  compact = false,
   ...props 
 }, ref) => {
   const radius = (size - strokeWidth) / 2
@@ -38,6 +40,18 @@ const CircularProgress = React.forwardRef<
     if (score >= 80) return 'text-green-600'
     if (score >= 60) return 'text-orange-600'
     return 'text-red-600'
+  }
+
+  // Dynamic text sizing based on circle size
+  const getTextSize = () => {
+    if (size <= 40) return 'text-xs'
+    if (size <= 60) return 'text-sm'
+    return 'text-lg'
+  }
+
+  const getLabelSize = () => {
+    if (size <= 40) return 'text-xs'
+    return 'text-xs'
   }
 
   return (
@@ -80,16 +94,16 @@ const CircularProgress = React.forwardRef<
         {/* Percentage in center */}
         {showPercentage && (
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-lg font-bold text-gray-900">
+            <span className={cn("font-bold text-gray-900", getTextSize())}>
               {value}%
             </span>
           </div>
         )}
       </div>
       
-      {/* Label below the circle */}
-      {label && (
-        <span className={cn("text-xs font-medium mt-1", getLabelColor(value))}>
+      {/* Label below the circle - only show if not compact */}
+      {label && !compact && (
+        <span className={cn("font-medium mt-1", getLabelSize(), getLabelColor(value))}>
           {label}
         </span>
       )}

@@ -302,7 +302,7 @@ const TalentPool = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    {/* Circular Progress Score */}
+                    {/* Grid view - larger circular progress */}
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
@@ -432,7 +432,7 @@ const TalentPool = () => {
                             size={40}
                             strokeWidth={3}
                             showPercentage={true}
-                            label=""
+                            compact={true}
                           />
                         </div>
                       </TooltipTrigger>
@@ -528,7 +528,7 @@ const TalentPool = () => {
                                     size={35}
                                     strokeWidth={3}
                                     showPercentage={true}
-                                    label=""
+                                    compact={true}
                                   />
                                 </div>
                               </TooltipTrigger>
