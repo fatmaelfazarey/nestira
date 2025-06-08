@@ -2,16 +2,19 @@
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Search, Settings, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export function DashboardHeader() {
+  const navigate = useNavigate();
+
   const handleProfileClick = () => {
-    console.log('Profile clicked');
-    window.alert('Opening user profile...');
+    console.log('Profile clicked - navigating to settings');
+    navigate('/profile-settings');
   };
 
   const handleSettingsClick = () => {
-    console.log('Settings clicked');
-    window.alert('Opening settings...');
+    console.log('Settings clicked - navigating to settings');
+    navigate('/profile-settings');
   };
 
   return (
@@ -52,6 +55,7 @@ export function DashboardHeader() {
               onClick={handleSettingsClick}
               type="button"
               className="cursor-pointer"
+              title="Settings"
             >
               <Settings className="w-4 h-4" />
             </Button>
@@ -61,6 +65,7 @@ export function DashboardHeader() {
               onClick={handleProfileClick}
               type="button"
               className="cursor-pointer"
+              title="Profile & Settings"
             >
               <User className="w-4 h-4" />
             </Button>
