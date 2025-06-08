@@ -508,6 +508,16 @@ const TalentPool = () => {
         return renderGridView();
     }
   };
+
+  const handleJobPostSelected = (jobPost: any) => {
+    console.log('Selected job post:', jobPost);
+    setMatchedJobPost(jobPost);
+    
+    // Auto-populate AI search with job details
+    const searchQuery = `${jobPost.title}, ${jobPost.subfields.join(', ')}, ${jobPost.requirements.join(', ')}, ${jobPost.location}`;
+    handleAiSearch(searchQuery);
+  };
+
   return <DashboardLayout>
       <div className="space-y-6">
         <div className="flex justify-between items-start">
