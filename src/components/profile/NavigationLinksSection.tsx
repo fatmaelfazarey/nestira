@@ -8,7 +8,8 @@ import {
   PuzzleIcon, 
   CreditCard, 
   HelpCircle,
-  ArrowRight 
+  ArrowRight,
+  RotateCcw
 } from 'lucide-react';
 
 export function NavigationLinksSection() {
@@ -53,8 +54,9 @@ export function NavigationLinksSection() {
   return (
     <Card className="sticky top-6 shadow-md border-0 bg-white/90 backdrop-blur-sm">
       <CardHeader className="border-b border-gray-100">
-        <CardTitle className="text-lg font-semibold text-gray-900">
-          🔄 Quick Navigation
+        <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+          <RotateCcw className="w-5 h-5 text-accent" />
+          Quick Navigation
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-2 p-4">

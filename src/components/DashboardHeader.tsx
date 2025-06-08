@@ -1,7 +1,7 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Search, Settings, User } from "lucide-react";
+import { Search, Settings, User, Building2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function DashboardHeader() {
@@ -27,7 +27,7 @@ export function DashboardHeader() {
         <div className="flex items-center justify-center flex-1">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">N</span>
+              <Building2 className="text-white w-5 h-5" />
             </div>
             <div>
               <h1 className="font-semibold text-lg text-primary">Nestira Finance</h1>

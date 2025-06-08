@@ -14,7 +14,12 @@ import {
   PuzzleIcon,
   Activity,
   Unlock,
-  Eye
+  Eye,
+  Target,
+  Building2,
+  BarChart3,
+  UserCheck,
+  AlertCircle
 } from "lucide-react";
 import {
   ChartContainer,
@@ -212,7 +217,10 @@ export function DashboardOverview() {
     <div className="space-y-6">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-primary to-primary/90 rounded-lg p-6 text-white">
-        <h1 className="text-2xl font-bold mb-2">Welcome back, Nestira Finance Team!</h1>
+        <div className="flex items-center gap-3 mb-2">
+          <Building2 className="w-6 h-6" />
+          <h1 className="text-2xl font-bold">Welcome back, Nestira Finance Team!</h1>
+        </div>
         <p className="text-white/80">Here's what's happening with your hiring pipeline today.</p>
       </div>
 
@@ -280,7 +288,10 @@ export function DashboardOverview() {
         {/* Weekly Activity Chart */}
         <Card className="p-6">
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Weekly Activity</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-accent" />
+              Weekly Activity
+            </h3>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-primary"></div>
@@ -329,7 +340,10 @@ export function DashboardOverview() {
 
         {/* Quick Actions */}
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <Target className="w-5 h-5 text-accent" />
+            Quick Actions
+          </h3>
           <div className="grid grid-cols-1 gap-3">
             <Link to="/talent-pool">
               <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
@@ -339,7 +353,7 @@ export function DashboardOverview() {
             </Link>
             <Link to="/unlocked-talents">
               <Button variant="outline" className="justify-start h-12 w-full">
-                <CheckCircle className="w-4 h-4 mr-3" />
+                <UserCheck className="w-4 h-4 mr-3" />
                 Unlocked Talents
               </Button>
             </Link>
@@ -370,7 +384,10 @@ export function DashboardOverview() {
       {/* Resource Usage */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Resource Usage</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-accent" />
+            Resource Usage
+          </h3>
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-2">
@@ -488,7 +505,10 @@ export function DashboardOverview() {
             {/* Job Performance Analytics */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="p-4">
-                <h4 className="font-semibold text-gray-900 mb-4">Top Performing Jobs</h4>
+                <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <TrendingUp className="w-4 h-4" />
+                  Top Performing Jobs
+                </h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
@@ -524,7 +544,10 @@ export function DashboardOverview() {
               </Card>
 
               <Card className="p-4">
-                <h4 className="font-semibold text-gray-900 mb-4">Application Sources</h4>
+                <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <Target className="w-4 h-4" />
+                  Application Sources
+                </h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm font-medium">Direct Applications</span>
@@ -555,7 +578,10 @@ export function DashboardOverview() {
 
             {/* Time-to-Hire Analytics */}
             <Card className="p-4">
-              <h4 className="font-semibold text-gray-900 mb-4">Hiring Pipeline Performance</h4>
+              <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <Activity className="w-4 h-4" />
+                Hiring Pipeline Performance
+              </h4>
               <div className="grid grid-cols-5 gap-4">
                 <div className="text-center">
                   <div className="text-xl font-bold text-gray-900">156</div>

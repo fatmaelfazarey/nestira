@@ -3,7 +3,7 @@ import React from 'react';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { RotateCcw, Sparkles } from 'lucide-react';
+import { RotateCcw, Brain } from 'lucide-react';
 
 interface AIJobDescriptionGeneratorProps {
   description: string;
@@ -22,8 +22,8 @@ export function AIJobDescriptionGenerator({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <Label htmlFor="description" className="text-lg font-semibold flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-purple-600" />
-          📝 AI-Generated Job Description (Editable)
+          <Brain className="w-5 h-5 text-purple-600" />
+          AI-Generated Job Description (Editable)
         </Label>
         <Button
           type="button"
@@ -63,7 +63,7 @@ export function AIJobDescriptionGenerator({
 
       {description && !isGenerating && (
         <div className="text-sm text-muted-foreground flex items-center gap-2">
-          <Sparkles className="w-4 h-4" />
+          <Brain className="w-4 h-4" />
           This description was AI-generated and is fully editable
         </div>
       )}
