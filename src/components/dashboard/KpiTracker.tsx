@@ -89,20 +89,20 @@ interface KpiTrackerProps {
 
 export function KpiTracker({ onKpiClick }: KpiTrackerProps) {
   return (
-    <div className="w-full">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4 p-6 bg-white rounded-lg border shadow-sm">
+    <div className="w-full bg-white rounded-lg border shadow-sm p-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
         {kpiData.map((kpi) => {
           const IconComponent = kpi.icon;
           return (
             <div 
               key={kpi.title} 
-              className={`${kpi.bgColor} rounded-lg p-4 text-center cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 min-w-0 flex flex-col items-center justify-center min-h-[120px]`}
+              className={`${kpi.bgColor} rounded-lg p-3 text-center cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 flex flex-col items-center justify-center h-28`}
               onClick={() => onKpiClick(kpi.clickAction)}
             >
-              <IconComponent className={`w-6 h-6 mb-3 ${kpi.color}`} />
-              <p className="text-xs font-medium text-gray-700 mb-2 truncate w-full text-center leading-tight">{kpi.title}</p>
-              <p className={`text-xl font-bold ${kpi.color} mb-1`}>{kpi.value}</p>
-              <p className="text-xs text-gray-500 truncate w-full text-center">{kpi.subtitle}</p>
+              <IconComponent className={`w-5 h-5 mb-2 ${kpi.color}`} />
+              <p className="text-xs font-medium text-gray-700 mb-1 line-clamp-2 text-center leading-tight">{kpi.title}</p>
+              <p className={`text-lg font-bold ${kpi.color} mb-1`}>{kpi.value}</p>
+              <p className="text-xs text-gray-500 line-clamp-1 text-center">{kpi.subtitle}</p>
             </div>
           );
         })}

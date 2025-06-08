@@ -4,9 +4,9 @@ import { Briefcase, Users } from "lucide-react";
 
 export function ResourceUsageCard() {
   return (
-    <Card className="p-6 h-fit">
+    <Card className="p-6 h-full">
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Resource Usage</h3>
-      <div className="space-y-8">
+      <div className="space-y-6">
         <div>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">

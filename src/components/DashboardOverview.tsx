@@ -18,38 +18,43 @@ export function DashboardOverview() {
   };
 
   return (
-    <div className="space-y-8 pb-8">
+    <div className="space-y-6 min-h-screen">
       {/* Welcome Section */}
-      <div className="mb-8">
+      <section className="w-full">
         <WelcomeSection />
-      </div>
+      </section>
 
-      {/* KPI Tracker - Horizontal Layout */}
-      <div className="mb-8">
+      {/* KPI Tracker - Full Width */}
+      <section className="w-full">
         <KpiTracker onKpiClick={handleKpiClick} />
-      </div>
+      </section>
 
-      {/* Recent Profile Views and Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
-        {/* Recent Profile Views */}
-        <div className="lg:col-span-1">
-          <ProfileViewsCard onClick={() => setShowProfileViewsModal(true)} />
-        </div>
+      {/* Profile Views and Charts Section */}
+      <section className="w-full">
+        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+          {/* Recent Profile Views - Fixed width */}
+          <div className="xl:col-span-1">
+            <ProfileViewsCard onClick={() => setShowProfileViewsModal(true)} />
+          </div>
 
-        {/* Weekly Activity Chart */}
-        <div className="lg:col-span-3">
-          <WeeklyActivityChart />
+          {/* Weekly Activity Chart - Takes remaining space */}
+          <div className="xl:col-span-3">
+            <WeeklyActivityChart />
+          </div>
         </div>
-      </div>
+      </section>
 
       {/* Quick Actions and Resource Usage Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        {/* Quick Actions */}
-        <QuickActionsCard />
-
-        {/* Resource Usage */}
-        <ResourceUsageCard />
-      </div>
+      <section className="w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <QuickActionsCard />
+          </div>
+          <div>
+            <ResourceUsageCard />
+          </div>
+        </div>
+      </section>
 
       {/* Profile Views Modal */}
       <ProfileViewsModal 

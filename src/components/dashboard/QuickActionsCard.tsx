@@ -11,7 +11,7 @@ import {
 
 export function QuickActionsCard() {
   return (
-    <Card className="p-6">
+    <Card className="p-6 h-full">
       <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
       <div className="space-y-3">
         <Button className="w-full justify-start h-12 bg-accent hover:bg-accent/90 text-white">
