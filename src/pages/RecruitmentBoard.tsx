@@ -1,5 +1,5 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
+import { FilterSidebar } from '@/components/FilterSidebar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -11,7 +11,7 @@ import { Plus, Filter, MoreHorizontal, Eye, MessageSquare, ArrowRight, FileText,
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCenter, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 
 interface Candidate {
   id: number;
@@ -24,6 +24,21 @@ interface Candidate {
   lastAction?: string;
   salaryRange?: string;
   isLocked: boolean;
+  // Additional properties for filtering
+  location?: string;
+  experience?: number;
+  status?: string;
+  skills?: string;
+  subfields?: string[];
+  software?: string[];
+  certifications?: string[];
+  industries?: string[];
+  visaStatus?: string;
+  employmentType?: string;
+  workMode?: string;
+  languageProficiency?: string;
+  gender?: string;
+  educationLevel?: string;
 }
 
 interface Stage {
@@ -37,6 +52,31 @@ interface Stage {
 const RecruitmentBoard = () => {
   const [activeId, setActiveId] = useState<string | null>(null);
   const [selectedJob, setSelectedJob] = useState('financial-analyst');
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  // Filter state variables
+  const [searchQuery, setSearchQuery] = useState('');
+  const [locationFilter, setLocationFilter] = useState('all');
+  const [experienceRange, setExperienceRange] = useState([0]);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [skillsFilter, setSkillsFilter] = useState('all');
+  const [scoreRange, setScoreRange] = useState([0]);
+  const [selectedSubfields, setSelectedSubfields] = useState<string[]>([]);
+  const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
+  const [erpVersion, setErpVersion] = useState('all');
+  const [selectedCertifications, setSelectedCertifications] = useState<string[]>([]);
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+  const [selectedVisaStatus, setSelectedVisaStatus] = useState<string[]>([]);
+  const [employmentType, setEmploymentType] = useState('all');
+  const [workMode, setWorkMode] = useState('all');
+  const [availability, setAvailability] = useState('all');
+  const [languageProficiency, setLanguageProficiency] = useState('all');
+  const [genderFilter, setGenderFilter] = useState('all');
+  const [educationLevel, setEducationLevel] = useState('all');
+  const [selectedSpecialNeeds, setSelectedSpecialNeeds] = useState<string[]>([]);
+  const [cvCompleteness, setCvCompleteness] = useState('all');
+  const [academicExcellence, setAcademicExcellence] = useState(false);
+  const [selectedScreeningTags, setSelectedScreeningTags] = useState<string[]>([]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -65,8 +105,43 @@ const RecruitmentBoard = () => {
       color: 'border-blue-200',
       bgColor: 'bg-blue-50/30',
       candidates: [
-        { id: 1, firstName: 'Sarah', lastName: 'Johnson', flag: '🇺🇸', score: 92, tags: ['Cover Letter'], lastAction: 'Applied 2h ago', isLocked: false },
-        { id: 2, firstName: 'Ahmed', lastName: 'Hassan', flag: '🇪🇬', score: 88, tags: ['Assessment Quiz'], isLocked: true },
+        { 
+          id: 1, 
+          firstName: 'Sarah', 
+          lastName: 'Johnson', 
+          flag: '🇺🇸', 
+          score: 92, 
+          tags: ['Cover Letter'], 
+          lastAction: 'Applied 2h ago', 
+          isLocked: false,
+          location: 'United Arab Emirates (UAE)',
+          experience: 5,
+          status: 'Available',
+          skills: 'Mid-Level',
+          subfields: ['FP&A'],
+          software: ['Excel (Advanced)'],
+          certifications: ['CPA'],
+          industries: ['Tech'],
+          visaStatus: 'Citizen'
+        },
+        { 
+          id: 2, 
+          firstName: 'Ahmed', 
+          lastName: 'Hassan', 
+          flag: '🇪🇬', 
+          score: 88, 
+          tags: ['Assessment Quiz'], 
+          isLocked: true,
+          location: 'Egypt',
+          experience: 3,
+          status: 'Interviewing',
+          skills: 'Entry-Level',
+          subfields: ['Audit'],
+          software: ['Power BI'],
+          certifications: ['ACCA'],
+          industries: ['Manufacturing'],
+          visaStatus: 'Residency Visa (Transferable)'
+        },
       ]
     },
     {
@@ -75,8 +150,43 @@ const RecruitmentBoard = () => {
       color: 'border-sky-200',
       bgColor: 'bg-sky-50/30',
       candidates: [
-        { id: 3, firstName: 'Fatima', lastName: 'Al-Zahra', flag: '🇸🇦', score: 90, tags: ['Shortlisted'], lastAction: 'Screened yesterday', isLocked: false },
-        { id: 4, firstName: 'Omar', lastName: 'Khan', flag: '🇵🇰', score: 85, tags: ['Phone Screen'], isLocked: true },
+        { 
+          id: 3, 
+          firstName: 'Fatima', 
+          lastName: 'Al-Zahra', 
+          flag: '🇸🇦', 
+          score: 90, 
+          tags: ['Shortlisted'], 
+          lastAction: 'Screened yesterday', 
+          isLocked: false,
+          location: 'Saudi Arabia',
+          experience: 7,
+          status: 'Shortlisted',
+          skills: 'Senior-Level',
+          subfields: ['Treasury'],
+          software: ['Tableau'],
+          certifications: ['CMA'],
+          industries: ['Oil & Gas'],
+          visaStatus: 'Citizen'
+        },
+        { 
+          id: 4, 
+          firstName: 'Omar', 
+          lastName: 'Khan', 
+          flag: '🇵🇰', 
+          score: 85, 
+          tags: ['Phone Screen'], 
+          isLocked: true,
+          location: 'Kuwait',
+          experience: 4,
+          status: 'Available',
+          skills: 'Mid-Level',
+          subfields: ['Tax'],
+          software: ['Excel (Advanced)'],
+          certifications: ['SOCPA'],
+          industries: ['Real Estate'],
+          visaStatus: 'Visit Visa'
+        },
       ]
     },
     {
@@ -85,7 +195,25 @@ const RecruitmentBoard = () => {
       color: 'border-purple-200',
       bgColor: 'bg-purple-50/30',
       candidates: [
-        { id: 5, firstName: 'Layla', lastName: 'Mahmoud', flag: '🇱🇧', score: 93, tags: ['Interview Pending'], lastAction: 'Shortlisted 1d ago', isLocked: false },
+        { 
+          id: 5, 
+          firstName: 'Layla', 
+          lastName: 'Mahmoud', 
+          flag: '🇱🇧', 
+          score: 93, 
+          tags: ['Interview Pending'], 
+          lastAction: 'Shortlisted 1d ago', 
+          isLocked: false,
+          location: 'United Arab Emirates (UAE)',
+          experience: 6,
+          status: 'Shortlisted',
+          skills: 'Senior-Level',
+          subfields: ['Fintech'],
+          software: ['Power BI'],
+          certifications: ['MBA'],
+          industries: ['Tech'],
+          visaStatus: 'Residency Visa (Transferable)'
+        },
       ]
     },
     {
@@ -94,7 +222,25 @@ const RecruitmentBoard = () => {
       color: 'border-yellow-200',
       bgColor: 'bg-yellow-50/30',
       candidates: [
-        { id: 6, firstName: 'Sami', lastName: 'Yusuf', flag: '🇯🇴', score: 91, tags: ['In Interview'], lastAction: 'Interview Scheduled', isLocked: false },
+        { 
+          id: 6, 
+          firstName: 'Sami', 
+          lastName: 'Yusuf', 
+          flag: '🇯🇴', 
+          score: 91, 
+          tags: ['In Interview'], 
+          lastAction: 'Interview Scheduled', 
+          isLocked: false,
+          location: 'Oman',
+          experience: 8,
+          status: 'Interviewing',
+          skills: 'Executive-Level',
+          subfields: ['General Ledger (GL)'],
+          software: ['Tableau'],
+          certifications: ['CIA'],
+          industries: ['NGOs'],
+          visaStatus: 'Citizen'
+        },
       ]
     },
     {
@@ -103,10 +249,126 @@ const RecruitmentBoard = () => {
       color: 'border-green-200',
       bgColor: 'bg-green-50/30',
       candidates: [
-        { id: 7, firstName: 'Zainab', lastName: 'Ali', flag: '🇮🇶', score: 95, tags: ['Hired'], lastAction: 'Offer Accepted', isLocked: false },
+        { 
+          id: 7, 
+          firstName: 'Zainab', 
+          lastName: 'Ali', 
+          flag: '🇮🇶', 
+          score: 95, 
+          tags: ['Hired'], 
+          lastAction: 'Offer Accepted', 
+          isLocked: false,
+          location: 'Bahrain',
+          experience: 10,
+          status: 'Available',
+          skills: 'C-Suite / Top-Level Management',
+          subfields: ['Accounts Payable (AP)'],
+          software: ['Excel (Advanced)'],
+          certifications: ['DipIFR'],
+          industries: ['Retail'],
+          visaStatus: 'Residency Visa (Non-Transferable)'
+        },
       ]
     }
   ]);
+
+  // Filter candidates based on selected filters
+  const filteredStages = useMemo(() => {
+    return stages.map(stage => ({
+      ...stage,
+      candidates: stage.candidates.filter(candidate => {
+        // Search query filter
+        if (searchQuery && !`${candidate.firstName} ${candidate.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())) {
+          return false;
+        }
+
+        // Location filter
+        if (locationFilter !== 'all' && candidate.location !== locationFilter) {
+          return false;
+        }
+
+        // Experience filter
+        if (candidate.experience !== undefined && candidate.experience < experienceRange[0]) {
+          return false;
+        }
+
+        // Status filter
+        if (statusFilter !== 'all' && candidate.status !== statusFilter) {
+          return false;
+        }
+
+        // Skills/Career level filter
+        if (skillsFilter !== 'all' && candidate.skills !== skillsFilter) {
+          return false;
+        }
+
+        // Score filter
+        if (candidate.score < scoreRange[0]) {
+          return false;
+        }
+
+        // Subfields filter
+        if (selectedSubfields.length > 0 && !selectedSubfields.some(subfield => 
+          candidate.subfields?.includes(subfield))) {
+          return false;
+        }
+
+        // Software filter
+        if (selectedSoftware.length > 0 && !selectedSoftware.some(software => 
+          candidate.software?.includes(software))) {
+          return false;
+        }
+
+        // Certifications filter
+        if (selectedCertifications.length > 0 && !selectedCertifications.some(cert => 
+          candidate.certifications?.includes(cert))) {
+          return false;
+        }
+
+        // Industries filter
+        if (selectedIndustries.length > 0 && !selectedIndustries.some(industry => 
+          candidate.industries?.includes(industry))) {
+          return false;
+        }
+
+        // Visa status filter
+        if (selectedVisaStatus.length > 0 && !selectedVisaStatus.includes(candidate.visaStatus || '')) {
+          return false;
+        }
+
+        return true;
+      })
+    }));
+  }, [stages, searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, 
+      selectedSubfields, selectedSoftware, selectedCertifications, selectedIndustries, selectedVisaStatus]);
+
+  // Count filtered candidates
+  const filteredCandidatesCount = filteredStages.reduce((total, stage) => total + stage.candidates.length, 0);
+
+  const resetAllFilters = () => {
+    setSearchQuery('');
+    setLocationFilter('all');
+    setExperienceRange([0]);
+    setStatusFilter('all');
+    setSkillsFilter('all');
+    setScoreRange([0]);
+    setSelectedSubfields([]);
+    setSelectedSoftware([]);
+    setErpVersion('all');
+    setSelectedCertifications([]);
+    setSelectedIndustries([]);
+    setSelectedVisaStatus([]);
+    setEmploymentType('all');
+    setWorkMode('all');
+    setAvailability('all');
+    setLanguageProficiency('all');
+    setGenderFilter('all');
+    setEducationLevel('all');
+    setSelectedSpecialNeeds([]);
+    setCvCompleteness('all');
+    setAcademicExcellence(false);
+    setSelectedScreeningTags([]);
+  };
 
   const handleDragStart = (event: DragStartEvent) => {
     setActiveId(event.active.id as string);
@@ -302,7 +564,7 @@ const RecruitmentBoard = () => {
                 <SelectItem value="investment-manager">Investment Manager</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline" className="flex items-center gap-2">
+            <Button variant="outline" className="flex items-center gap-2" onClick={() => setIsFilterOpen(true)}>
               <Filter className="w-4 h-4" />
               Filter
             </Button>
@@ -337,8 +599,8 @@ const RecruitmentBoard = () => {
           onDragEnd={handleDragEnd}
         >
           <div className="flex gap-4 overflow-x-auto pb-6">
-            <SortableContext items={stages.map(s => s.id)}>
-              {stages.map((stage) => (
+            <SortableContext items={filteredStages.map(s => s.id)}>
+              {filteredStages.map((stage) => (
                 <DroppableStage key={stage.id} stage={stage} />
               ))}
             </SortableContext>
@@ -352,6 +614,58 @@ const RecruitmentBoard = () => {
             ) : null}
           </DragOverlay>
         </DndContext>
+
+        {/* Filter Sidebar */}
+        <FilterSidebar
+          isOpen={isFilterOpen}
+          onClose={() => setIsFilterOpen(false)}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          experienceRange={experienceRange}
+          setExperienceRange={setExperienceRange}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          skillsFilter={skillsFilter}
+          setSkillsFilter={setSkillsFilter}
+          scoreRange={scoreRange}
+          setScoreRange={setScoreRange}
+          selectedSubfields={selectedSubfields}
+          setSelectedSubfields={setSelectedSubfields}
+          selectedSoftware={selectedSoftware}
+          setSelectedSoftware={setSelectedSoftware}
+          erpVersion={erpVersion}
+          setErpVersion={setErpVersion}
+          selectedCertifications={selectedCertifications}
+          setSelectedCertifications={setSelectedCertifications}
+          selectedIndustries={selectedIndustries}
+          setSelectedIndustries={setSelectedIndustries}
+          selectedVisaStatus={selectedVisaStatus}
+          setSelectedVisaStatus={setSelectedVisaStatus}
+          employmentType={employmentType}
+          setEmploymentType={setEmploymentType}
+          workMode={workMode}
+          setWorkMode={setWorkMode}
+          availability={availability}
+          setAvailability={setAvailability}
+          languageProficiency={languageProficiency}
+          setLanguageProficiency={setLanguageProficiency}
+          genderFilter={genderFilter}
+          setGenderFilter={setGenderFilter}
+          educationLevel={educationLevel}
+          setEducationLevel={setEducationLevel}
+          selectedSpecialNeeds={selectedSpecialNeeds}
+          setSelectedSpecialNeeds={setSelectedSpecialNeeds}
+          cvCompleteness={cvCompleteness}
+          setCvCompleteness={setCvCompleteness}
+          academicExcellence={academicExcellence}
+          setAcademicExcellence={setAcademicExcellence}
+          selectedScreeningTags={selectedScreeningTags}
+          setSelectedScreeningTags={setSelectedScreeningTags}
+          resetAllFilters={resetAllFilters}
+          filteredCandidatesCount={filteredCandidatesCount}
+        />
       </div>
     </DashboardLayout>
   );
