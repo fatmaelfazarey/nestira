@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import { LoginSecuritySection } from './LoginSecuritySection';
 import { UserProfileSection } from './UserProfileSection';
 import { CompanyInfoSection } from './CompanyInfoSection';
-import { PlatformPreferencesSection } from './PlatformPreferencesSection';
 import { NavigationLinksSection } from './NavigationLinksSection';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -95,18 +94,6 @@ export function ProfileSettingsContent() {
                 </CardContent>
               </Card>
             )}
-
-            {/* Platform Preferences */}
-            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
-              <CardHeader className="border-b border-gray-100">
-                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  🌐 {t('platformPreferences')}
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <PlatformPreferencesSection onChange={handleFieldChange} />
-              </CardContent>
-            </Card>
 
             {/* Login & Security - Moved to the end */}
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
