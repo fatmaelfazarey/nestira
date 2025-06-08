@@ -7,12 +7,11 @@ import {
   File,
   List,
   Check,
-  Bell,
+  Calendar,
   BookOpen,
   HelpCircle,
   CreditCard,
   Users,
-  Calendar,
   Settings
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -99,12 +98,6 @@ const navigationSections = [
         title: "Blog & Reports",
         url: "/blog",
         icon: BookOpen,
-        badge: null
-      },
-      {
-        title: "Email Alerts",
-        url: "/email-alerts",
-        icon: Bell,
         badge: null
       }
     ]
