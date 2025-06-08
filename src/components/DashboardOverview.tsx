@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -215,32 +214,29 @@ export function DashboardOverview() {
         <p className="text-white/80">Here's what's happening with your hiring pipeline today.</p>
       </div>
 
-      {/* KPI Cards and Recent Profile Views Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* KPI Cards Grid - 2 rows */}
-        <div className="lg:col-span-3">
-          <div className="grid grid-cols-4 gap-4">
-            {kpiData.map((kpi) => (
-              <Card 
+      {/* KPI Tracker - Horizontal Layout */}
+      <Card className="p-4">
+        <div className="grid grid-cols-4 lg:grid-cols-7 gap-4">
+          {kpiData.map((kpi) => {
+            const IconComponent = kpi.icon;
+            return (
+              <div 
                 key={kpi.title} 
-                className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
+                className={`${kpi.bgColor} rounded-lg p-4 text-center cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105`}
                 onClick={() => handleKpiClick(kpi.clickAction)}
               >
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
-                    <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-gray-900">{kpi.value}</h3>
-                    <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                <IconComponent className={`w-6 h-6 mx-auto mb-2 ${kpi.color}`} />
+                <p className="text-xs font-medium text-gray-700 mb-1">{kpi.title}</p>
+                <p className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</p>
+              </div>
+            );
+          })}
         </div>
+      </Card>
 
-        {/* Recent Profile Views Section */}
+      {/* Recent Profile Views and Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Recent Profile Views */}
         <div className="lg:col-span-1">
           <Card 
             className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
@@ -272,60 +268,62 @@ export function DashboardOverview() {
             </div>
           </Card>
         </div>
-      </div>
 
-      {/* Charts and Quick Actions Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weekly Activity Chart */}
-        <Card className="p-6">
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Weekly Activity</h3>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-primary"></div>
-                <span className="text-sm text-gray-600">Applications</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-accent"></div>
-                <span className="text-sm text-gray-600">Interviews</span>
+        <div className="lg:col-span-3">
+          <Card className="p-6">
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Weekly Activity</h3>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-primary"></div>
+                  <span className="text-sm text-gray-600">Applications</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-3 h-3 rounded-full bg-accent"></div>
+                  <span className="text-sm text-gray-600">Interviews</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div className="h-64">
-            <ChartContainer config={chartConfig}>
-              <LineChart data={activityData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="day" 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
-                />
-                <YAxis 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
-                />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Line 
-                  type="monotone" 
-                  dataKey="applications" 
-                  stroke="hsl(var(--primary))" 
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="interviews" 
-                  stroke="hsl(var(--accent))" 
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
-                />
-              </LineChart>
-            </ChartContainer>
-          </div>
-        </Card>
+            <div className="h-64">
+              <ChartContainer config={chartConfig}>
+                <LineChart data={activityData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis 
+                    dataKey="day" 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: '#666' }}
+                  />
+                  <YAxis 
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: '#666' }}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Line 
+                    type="monotone" 
+                    dataKey="applications" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth={3}
+                    dot={{ r: 4 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="interviews" 
+                    stroke="hsl(var(--accent))" 
+                    strokeWidth={3}
+                    dot={{ r: 4 }}
+                  />
+                </LineChart>
+              </ChartContainer>
+            </div>
+          </Card>
+        </div>
+      </div>
 
+      {/* Quick Actions and Resource Usage Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
@@ -352,10 +350,8 @@ export function DashboardOverview() {
             </Button>
           </div>
         </Card>
-      </div>
 
-      {/* Resource Usage */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Resource Usage */}
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">Resource Usage</h3>
           <div className="space-y-6">
