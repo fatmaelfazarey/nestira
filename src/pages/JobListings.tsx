@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Eye, Pencil, BarChart2, Archive } from 'lucide-react';
 import { useState } from 'react';
 import { JobCreationModal } from '@/components/JobCreationModal';
+import { useToast } from '@/hooks/use-toast';
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([
@@ -41,13 +42,22 @@ const JobListings = () => {
   ]);
 
   const [isJobCreationModalOpen, setIsJobCreationModalOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleCreateNewJob = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('Create new job clicked');
     setIsJobCreationModalOpen(true);
-    alert('Redirecting to job creation form...');
+  };
+
+  const handleJobCreated = (newJob: any) => {
+    console.log('New job created:', newJob);
+    setJobs(prevJobs => [newJob, ...prevJobs]);
+    toast({
+      title: "Job Posted Successfully!",
+      description: `"${newJob.title}" has been posted and is now live.`,
+    });
   };
 
   const handleViewJob = (e: React.MouseEvent, jobId: number) => {
@@ -179,7 +189,8 @@ const JobListings = () => {
 
       <JobCreationModal 
         open={isJobCreationModalOpen} 
-        onOpenChange={setIsJobCreationModalOpen} 
+        onOpenChange={setIsJobCreationModalOpen}
+        onJobCreated={handleJobCreated}
       />
     </DashboardLayout>
   );

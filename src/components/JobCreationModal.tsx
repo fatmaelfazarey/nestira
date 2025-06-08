@@ -36,9 +36,10 @@ import { JobPreviewModal } from './JobPreviewModal';
 interface JobCreationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onJobCreated?: (job: any) => void;
 }
 
-export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) {
+export function JobCreationModal({ open, onOpenChange, onJobCreated }: JobCreationModalProps) {
   const [jobTitle, setJobTitle] = useState('');
   const [jobFunction, setJobFunction] = useState('');
   const [careerLevel, setCareerLevel] = useState('');
@@ -159,6 +160,42 @@ We offer a competitive compensation package and excellent career growth opportun
 
   const handleSubmit = () => {
     console.log('Posting job...');
+    
+    // Create new job object
+    const newJob = {
+      id: Date.now(), // Simple ID generation
+      title: jobTitle,
+      location: location,
+      type: employmentType,
+      status: 'Active',
+      applications: 0,
+      views: 0,
+      posted: 'Just now'
+    };
+
+    // Call the callback to add the job to the listings
+    if (onJobCreated) {
+      onJobCreated(newJob);
+    }
+
+    // Reset form
+    setJobTitle('');
+    setJobFunction('');
+    setCareerLevel('');
+    setIndustry('');
+    setLocation('');
+    setMinExperience('');
+    setMaxExperience('');
+    setSkills([]);
+    setCertifications([]);
+    setEmploymentType('');
+    setWorkMode('');
+    setVisaStatus([]);
+    setGender('');
+    setLanguages([]);
+    setDescription('');
+    
+    // Close modal
     onOpenChange(false);
   };
 
