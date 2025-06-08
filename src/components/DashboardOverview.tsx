@@ -1,4 +1,5 @@
 
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -216,19 +217,19 @@ export function DashboardOverview() {
       </div>
 
       {/* KPI Tracker - Horizontal Layout */}
-      <Card className="p-4">
-        <div className="grid grid-cols-4 lg:grid-cols-7 gap-4">
+      <Card className="p-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
           {kpiData.map((kpi) => {
             const IconComponent = kpi.icon;
             return (
               <div 
                 key={kpi.title} 
-                className={`${kpi.bgColor} rounded-lg p-4 text-center cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105`}
+                className={`${kpi.bgColor} rounded-lg p-4 text-center cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 min-w-0`}
                 onClick={() => handleKpiClick(kpi.clickAction)}
               >
                 <IconComponent className={`w-6 h-6 mx-auto mb-2 ${kpi.color}`} />
-                <p className="text-xs font-medium text-gray-700 mb-1">{kpi.title}</p>
-                <p className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</p>
+                <p className="text-xs font-medium text-gray-700 mb-1 truncate">{kpi.title}</p>
+                <p className={`text-xl lg:text-2xl font-bold ${kpi.color}`}>{kpi.value}</p>
               </div>
             );
           })}
@@ -437,3 +438,4 @@ export function DashboardOverview() {
     </div>
   );
 }
+
