@@ -136,10 +136,10 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
         </DialogHeader>
 
         <div className="space-y-8 mt-6">
-          {/* Job Basics Section */}
-          <Card className="shadow-sm border rounded-lg">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          {/* Job Basics Section - Blue Theme */}
+          <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/30">
+            <CardHeader className="pb-4 bg-blue-50/50">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-blue-800">
                 <Briefcase className="w-5 h-5 text-blue-600" />
                 Job Basics
               </CardTitle>
@@ -223,10 +223,10 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
             </CardContent>
           </Card>
 
-          {/* Experience & Skills Section */}
-          <Card className="shadow-sm border rounded-lg">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          {/* Experience & Skills Section - Green Theme */}
+          <Card className="shadow-sm border-l-4 border-l-green-500 bg-green-50/30">
+            <CardHeader className="pb-4 bg-green-50/50">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-green-800">
                 <Award className="w-5 h-5 text-green-600" />
                 Experience & Skills
               </CardTitle>
@@ -272,10 +272,10 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
             </CardContent>
           </Card>
 
-          {/* Work & Contract Preferences Section */}
-          <Card className="shadow-sm border rounded-lg">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          {/* Work & Contract Preferences Section - Purple Theme */}
+          <Card className="shadow-sm border-l-4 border-l-purple-500 bg-purple-50/30">
+            <CardHeader className="pb-4 bg-purple-50/50">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-800">
                 <Users className="w-5 h-5 text-purple-600" />
                 Work & Contract Preferences
               </CardTitle>
@@ -375,12 +375,12 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
             </CardContent>
           </Card>
 
-          {/* Scoring & Matching Section - Collapsible */}
+          {/* Scoring & Matching Section - Orange Theme - Collapsible */}
           <Collapsible open={isScoringOpen} onOpenChange={setIsScoringOpen}>
-            <Card className="shadow-sm border rounded-lg">
+            <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
               <CollapsibleTrigger asChild>
-                <CardHeader className="pb-4 cursor-pointer hover:bg-gray-50">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold">
+                <CardHeader className="pb-4 cursor-pointer hover:bg-orange-100/50 bg-orange-50/50">
+                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-orange-800">
                     <div className="flex items-center gap-2">
                       <Target className="w-5 h-5 text-orange-600" />
                       Scoring & Matching
@@ -420,14 +420,14 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
             </Card>
           </Collapsible>
 
-          {/* Compensation & Availability Section - Collapsible */}
+          {/* Compensation & Availability Section - Emerald Theme - Collapsible */}
           <Collapsible open={isCompensationOpen} onOpenChange={setIsCompensationOpen}>
-            <Card className="shadow-sm border rounded-lg">
+            <Card className="shadow-sm border-l-4 border-l-emerald-500 bg-emerald-50/30">
               <CollapsibleTrigger asChild>
-                <CardHeader className="pb-4 cursor-pointer hover:bg-gray-50">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold">
+                <CardHeader className="pb-4 cursor-pointer hover:bg-emerald-100/50 bg-emerald-50/50">
+                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-emerald-800">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-green-600" />
+                      <DollarSign className="w-5 h-5 text-emerald-600" />
                       Compensation & Availability
                     </div>
                     <ChevronDown className={`w-4 h-4 transition-transform ${isCompensationOpen ? 'rotate-180' : ''}`} />
@@ -505,11 +505,11 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
             </Card>
           </Collapsible>
 
-          {/* AI-Generated Job Description Section */}
-          <Card className="shadow-sm border rounded-lg">
-            <CardHeader className="pb-4">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold">
-                <Brain className="w-5 h-5 text-purple-600" />
+          {/* AI-Generated Job Description Section - Indigo Theme */}
+          <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
+            <CardHeader className="pb-4 bg-indigo-50/50">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-indigo-800">
+                <Brain className="w-5 h-5 text-indigo-600" />
                 AI-Generated Job Description
               </CardTitle>
             </CardHeader>
