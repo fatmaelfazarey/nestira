@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -322,29 +323,29 @@ export function DashboardOverview() {
         </div>
       </div>
 
-      {/* Quick Actions and Resource Usage Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Quick Actions and Resource Usage Section - Fixed Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Quick Actions */}
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
-          <div className="grid grid-cols-1 gap-3">
-            <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white">
+          <div className="space-y-3">
+            <Button className="w-full justify-start h-12 bg-accent hover:bg-accent/90 text-white">
               <Users className="w-4 h-4 mr-3" />
               Browse Talent Pool
             </Button>
-            <Button variant="outline" className="justify-start h-12">
+            <Button variant="outline" className="w-full justify-start h-12">
               <CheckCircle className="w-4 h-4 mr-3" />
               Unlocked Talents
             </Button>
-            <Button variant="outline" className="justify-start h-12">
+            <Button variant="outline" className="w-full justify-start h-12">
               <FileText className="w-4 h-4 mr-3" />
               Create Job Post
             </Button>
-            <Button variant="outline" className="justify-start h-12">
+            <Button variant="outline" className="w-full justify-start h-12">
               <PuzzleIcon className="w-4 h-4 mr-3" />
               Quiz Builder
             </Button>
-            <Button variant="outline" className="justify-start h-12">
+            <Button variant="outline" className="w-full justify-start h-12">
               <TrendingUp className="w-4 h-4 mr-3" />
               View Analytics
             </Button>
