@@ -322,7 +322,6 @@ const TalentPool = () => {
 
                 {/* Industry Experience Section */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Industry Experience</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.industryExperience.map(industry => <Badge key={industry} variant="outline" className="text-xs">
                         {industry}
@@ -332,7 +331,6 @@ const TalentPool = () => {
 
                 {/* Finance Subfields Section */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Finance Subfields</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.financeSubfields.map(subfield => <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
                         {subfield}
@@ -342,7 +340,6 @@ const TalentPool = () => {
 
                 {/* Software & Tools Section */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Software & Tools</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.softwareTools.map(tool => <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
                         {tool}
@@ -352,7 +349,6 @@ const TalentPool = () => {
 
                 {/* Certifications Section */}
                 <div className="space-y-2">
-                  <p className="text-xs font-medium text-gray-700">Certifications</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.certifications.map(cert => <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
                         {cert}
