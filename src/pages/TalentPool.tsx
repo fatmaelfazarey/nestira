@@ -321,7 +321,8 @@ const TalentPool = () => {
                 </div>
 
                 {/* Industry Experience Section */}
-                <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Industry:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.industryExperience.map(industry => <Badge key={industry} variant="outline" className="text-xs">
                         {industry}
@@ -330,7 +331,8 @@ const TalentPool = () => {
                 </div>
 
                 {/* Finance Subfields Section */}
-                <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Subfields:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.financeSubfields.map(subfield => <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
                         {subfield}
@@ -339,7 +341,8 @@ const TalentPool = () => {
                 </div>
 
                 {/* Software & Tools Section */}
-                <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Tools:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.softwareTools.map(tool => <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
                         {tool}
@@ -348,7 +351,8 @@ const TalentPool = () => {
                 </div>
 
                 {/* Certifications Section */}
-                <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Certs:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.certifications.map(cert => <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
                         {cert}
