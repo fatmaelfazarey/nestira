@@ -21,9 +21,8 @@ export function AIJobDescriptionGenerator({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <Label htmlFor="description" className="text-lg font-semibold flex items-center gap-2">
-          <Brain className="w-5 h-5 text-purple-600" />
-          AI-Generated Job Description (Editable)
+        <Label htmlFor="description" className="text-base font-medium flex items-center gap-2">
+          Job Description (Editable)
         </Label>
         <Button
           type="button"
@@ -41,7 +40,7 @@ export function AIJobDescriptionGenerator({
       {isGenerating ? (
         <div className="border rounded-md p-4 bg-gray-50">
           <div className="flex items-center gap-3">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600"></div>
             <span className="text-gray-600">AI is crafting your job description...</span>
           </div>
           <div className="mt-3 space-y-2">
