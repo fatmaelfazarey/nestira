@@ -18,15 +18,19 @@ export function DashboardOverview() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 pb-8">
       {/* Welcome Section */}
-      <WelcomeSection />
+      <div className="mb-8">
+        <WelcomeSection />
+      </div>
 
       {/* KPI Tracker - Horizontal Layout */}
-      <KpiTracker onKpiClick={handleKpiClick} />
+      <div className="mb-8">
+        <KpiTracker onKpiClick={handleKpiClick} />
+      </div>
 
       {/* Recent Profile Views and Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-8">
         {/* Recent Profile Views */}
         <div className="lg:col-span-1">
           <ProfileViewsCard onClick={() => setShowProfileViewsModal(true)} />
@@ -39,7 +43,7 @@ export function DashboardOverview() {
       </div>
 
       {/* Quick Actions and Resource Usage Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Quick Actions */}
         <QuickActionsCard />
 
