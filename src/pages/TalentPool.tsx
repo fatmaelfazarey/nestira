@@ -15,7 +15,6 @@ import { FilterSidebar } from '@/components/FilterSidebar';
 import { FindMyMatchModal } from '@/components/FindMyMatchModal';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
 import { CircularProgress } from '@/components/ui/circular-progress';
-
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('all');
@@ -51,7 +50,6 @@ const TalentPool = () => {
   const [cvCompleteness, setCvCompleteness] = useState('all');
   const [academicExcellence, setAcademicExcellence] = useState(false);
   const [selectedScreeningTags, setSelectedScreeningTags] = useState([]);
-
   const candidates = [{
     id: 1,
     name: "Sarah Johnson",
@@ -321,13 +319,11 @@ const TalentPool = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-1">
-                  {candidate.tags.map(tag => <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>)}
+                  {candidate.tags.map(tag => {})}
                 </div>
 
                 {/* Industry Experience Section */}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5 ">
                   <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Industry:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.industryExperience.map(industry => <Badge key={industry} variant="outline" className="text-xs">
@@ -508,16 +504,14 @@ const TalentPool = () => {
         return renderGridView();
     }
   };
-
   const handleJobPostSelected = (jobPost: any) => {
     console.log('Selected job post:', jobPost);
     setMatchedJobPost(jobPost);
-    
+
     // Auto-populate AI search with job details
     const searchQuery = `${jobPost.title}, ${jobPost.subfields.join(', ')}, ${jobPost.requirements.join(', ')}, ${jobPost.location}`;
     handleAiSearch(searchQuery);
   };
-
   return <DashboardLayout>
       <div className="space-y-6">
         <div className="flex justify-between items-start">
@@ -555,13 +549,7 @@ const TalentPool = () => {
         </div>
 
         {/* AI Search Component */}
-        <AICandidateSearch 
-          onSearch={handleAiSearch} 
-          isSearching={isAiSearching} 
-          currentQuery={aiSearchQuery} 
-          onClear={handleClearAiSearch}
-          onFindMyMatch={() => setIsFindMyMatchOpen(true)}
-        />
+        <AICandidateSearch onSearch={handleAiSearch} isSearching={isAiSearching} currentQuery={aiSearchQuery} onClear={handleClearAiSearch} onFindMyMatch={() => setIsFindMyMatchOpen(true)} />
 
         {renderCurrentView()}
 
@@ -571,11 +559,7 @@ const TalentPool = () => {
 
         <FilterSidebar isOpen={isFilterSidebarOpen} onClose={() => setIsFilterSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} locationFilter={locationFilter} setLocationFilter={setLocationFilter} experienceRange={experienceRange} setExperienceRange={setExperienceRange} statusFilter={statusFilter} setStatusFilter={setStatusFilter} skillsFilter={skillsFilter} setSkillsFilter={setSkillsFilter} scoreRange={scoreRange} setScoreRange={setScoreRange} selectedSubfields={selectedSubfields} setSelectedSubfields={setSelectedSubfields} selectedSoftware={selectedSoftware} setSelectedSoftware={setSelectedSoftware} erpVersion={erpVersion} setErpVersion={setErpVersion} selectedCertifications={selectedCertifications} setSelectedCertifications={setSelectedCertifications} selectedIndustries={selectedIndustries} setSelectedIndustries={setSelectedIndustries} selectedVisaStatus={selectedVisaStatus} setSelectedVisaStatus={setSelectedVisaStatus} employmentType={employmentType} setEmploymentType={setEmploymentType} workMode={workMode} setWorkMode={setWorkMode} availability="" setAvailability={() => {}} languageProficiency={languageProficiency} setLanguageProficiency={setLanguageProficiency} genderFilter={genderFilter} setGenderFilter={setGenderFilter} educationLevel={educationLevel} setEducationLevel={setEducationLevel} selectedSpecialNeeds={selectedSpecialNeeds} setSelectedSpecialNeeds={setSelectedSpecialNeeds} cvCompleteness={cvCompleteness} setCvCompleteness={setCvCompleteness} academicExcellence={academicExcellence} setAcademicExcellence={setAcademicExcellence} selectedScreeningTags={selectedScreeningTags} setSelectedScreeningTags={setSelectedScreeningTags} resetAllFilters={resetAllFilters} filteredCandidatesCount={filteredCandidates.length} />
 
-        <FindMyMatchModal 
-          isOpen={isFindMyMatchOpen}
-          onClose={() => setIsFindMyMatchOpen(false)}
-          onJobSelected={handleJobPostSelected}
-        />
+        <FindMyMatchModal isOpen={isFindMyMatchOpen} onClose={() => setIsFindMyMatchOpen(false)} onJobSelected={handleJobPostSelected} />
 
         <CandidateDetailModal candidate={selectedCandidate} isOpen={!!selectedCandidate} onClose={() => setSelectedCandidate(null)} isFavorite={selectedCandidate ? favorites.has(selectedCandidate.id) : false} onToggleFavorite={() => selectedCandidate && toggleFavorite(selectedCandidate.id)} onExpandProfile={() => selectedCandidate && handleExpandProfile(selectedCandidate)} />
 
@@ -583,5 +567,4 @@ const TalentPool = () => {
       </div>
     </DashboardLayout>;
 };
-
 export default TalentPool;
