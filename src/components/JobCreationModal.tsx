@@ -63,8 +63,8 @@ export function JobCreationModal({ open, onOpenChange, onJobCreated }: JobCreati
   const [languages, setLanguages] = useState<string[]>([]);
   const [description, setDescription] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isScoringOpen, setIsScoringOpen] = useState(false);
-  const [isCompensationOpen, setIsCompensationOpen] = useState(false);
+  const [isScoringOpen, setIsScoringOpen] = useState(true);
+  const [isCompensationOpen, setIsCompensationOpen] = useState(true);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Auto-generate description when key fields are filled
@@ -487,135 +487,117 @@ We offer a competitive compensation package and excellent career growth opportun
               </CardContent>
             </Card>
 
-            {/* Scoring & Matching Section - Orange Theme - Collapsible */}
-            <Collapsible open={isScoringOpen} onOpenChange={setIsScoringOpen}>
-              <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
-                <CollapsibleTrigger asChild>
-                  <CardHeader className="pb-4 cursor-pointer hover:bg-orange-100/50 bg-orange-50/50">
-                    <CardTitle className="flex items-center justify-between text-lg font-semibold text-orange-800">
-                      <div className="flex items-center gap-2">
-                        <Target className="w-5 h-5 text-orange-600" />
-                        Scoring & Matching
-                      </div>
-                      <ChevronDown className={`w-4 h-4 transition-transform ${isScoringOpen ? 'rotate-180' : ''}`} />
-                    </CardTitle>
-                  </CardHeader>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <Label htmlFor="minScore" className="font-medium mb-2 block">
-                        Minimum Matching Score (%)
-                      </Label>
-                      <Input
-                        id="minScore"
-                        type="number"
-                        placeholder="e.g., 75"
-                        value={minScore}
-                        onChange={(e) => setMinScore(e.target.value)}
-                        className="w-32"
-                      />
-                    </div>
+            {/* Scoring & Matching Section - Orange Theme - Now Always Open */}
+            <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
+              <CardHeader className="pb-4 bg-orange-50/50">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-orange-800">
+                  <Target className="w-5 h-5 text-orange-600" />
+                  Scoring & Matching
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="minScore" className="font-medium mb-2 block">
+                    Minimum Matching Score (%)
+                  </Label>
+                  <Input
+                    id="minScore"
+                    type="number"
+                    placeholder="e.g., 75"
+                    value={minScore}
+                    onChange={(e) => setMinScore(e.target.value)}
+                    className="w-32"
+                  />
+                </div>
 
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="assessment"
+                    checked={assessmentRequired}
+                    onCheckedChange={setAssessmentRequired}
+                  />
+                  <Label htmlFor="assessment" className="font-medium">
+                    Assessment Required?
+                  </Label>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Compensation & Availability Section - Emerald Theme - Now Always Open */}
+            <Card className="shadow-sm border-l-4 border-l-emerald-500 bg-emerald-50/30">
+              <CardHeader className="pb-4 bg-emerald-50/50">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-emerald-800">
+                  <DollarSign className="w-5 h-5 text-emerald-600" />
+                  Compensation & Availability
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div>
+                  <Label className="font-medium mb-3 block">Salary Option</Label>
+                  <RadioGroup value={salaryMode} onValueChange={setSalaryMode}>
                     <div className="flex items-center space-x-2">
-                      <Switch
-                        id="assessment"
-                        checked={assessmentRequired}
-                        onCheckedChange={setAssessmentRequired}
+                      <RadioGroupItem value="negotiable" id="negotiable" />
+                      <Label htmlFor="negotiable">Negotiable</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="range" id="range" />
+                      <Label htmlFor="range">Between</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="fixed" id="fixed" />
+                      <Label htmlFor="fixed">Fixed</Label>
+                    </div>
+                  </RadioGroup>
+
+                  {salaryMode === 'range' && (
+                    <div className="flex gap-2 items-center mt-3">
+                      <Input
+                        type="number"
+                        placeholder="Min"
+                        value={salaryMin}
+                        onChange={(e) => setSalaryMin(e.target.value)}
+                        className="flex-1"
                       />
-                      <Label htmlFor="assessment" className="font-medium">
-                        Assessment Required?
-                      </Label>
+                      <span className="text-gray-500">to</span>
+                      <Input
+                        type="number"
+                        placeholder="Max"
+                        value={salaryMax}
+                        onChange={(e) => setSalaryMax(e.target.value)}
+                        className="flex-1"
+                      />
                     </div>
-                  </CardContent>
-                </CollapsibleContent>
-              </Card>
-            </Collapsible>
+                  )}
 
-            {/* Compensation & Availability Section - Emerald Theme - Collapsible */}
-            <Collapsible open={isCompensationOpen} onOpenChange={setIsCompensationOpen}>
-              <Card className="shadow-sm border-l-4 border-l-emerald-500 bg-emerald-50/30">
-                <CollapsibleTrigger asChild>
-                  <CardHeader className="pb-4 cursor-pointer hover:bg-emerald-100/50 bg-emerald-50/50">
-                    <CardTitle className="flex items-center justify-between text-lg font-semibold text-emerald-800">
-                      <div className="flex items-center gap-2">
-                        <DollarSign className="w-5 h-5 text-emerald-600" />
-                        Compensation & Availability
-                      </div>
-                      <ChevronDown className={`w-4 h-4 transition-transform ${isCompensationOpen ? 'rotate-180' : ''}`} />
-                    </CardTitle>
-                  </CardHeader>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <CardContent className="space-y-6">
-                    <div>
-                      <Label className="font-medium mb-3 block">Salary Option</Label>
-                      <RadioGroup value={salaryMode} onValueChange={setSalaryMode}>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="negotiable" id="negotiable" />
-                          <Label htmlFor="negotiable">Negotiable</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="range" id="range" />
-                          <Label htmlFor="range">Between</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="fixed" id="fixed" />
-                          <Label htmlFor="fixed">Fixed</Label>
-                        </div>
-                      </RadioGroup>
+                  {salaryMode === 'fixed' && (
+                    <Input
+                      type="number"
+                      placeholder="Fixed salary"
+                      value={salaryFixed}
+                      onChange={(e) => setSalaryFixed(e.target.value)}
+                      className="mt-3 w-48"
+                    />
+                  )}
+                </div>
 
-                      {salaryMode === 'range' && (
-                        <div className="flex gap-2 items-center mt-3">
-                          <Input
-                            type="number"
-                            placeholder="Min"
-                            value={salaryMin}
-                            onChange={(e) => setSalaryMin(e.target.value)}
-                            className="flex-1"
-                          />
-                          <span className="text-gray-500">to</span>
-                          <Input
-                            type="number"
-                            placeholder="Max"
-                            value={salaryMax}
-                            onChange={(e) => setSalaryMax(e.target.value)}
-                            className="flex-1"
-                          />
-                        </div>
-                      )}
-
-                      {salaryMode === 'fixed' && (
-                        <Input
-                          type="number"
-                          placeholder="Fixed salary"
-                          value={salaryFixed}
-                          onChange={(e) => setSalaryFixed(e.target.value)}
-                          className="mt-3 w-48"
-                        />
-                      )}
-                    </div>
-
-                    <div>
-                      <Label htmlFor="noticePeriod" className="font-medium mb-2 block">
-                        Notice Period
-                      </Label>
-                      <Select value={noticePeriod} onValueChange={setNoticePeriod}>
-                        <SelectTrigger className="w-48">
-                          <SelectValue placeholder="Select period" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="immediate">Immediate</SelectItem>
-                          <SelectItem value="1month">&lt;1 Month</SelectItem>
-                          <SelectItem value="1-2months">1–2 Months</SelectItem>
-                          <SelectItem value="flexible">Flexible</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </CardContent>
-                </CollapsibleContent>
-              </Card>
-            </Collapsible>
+                <div>
+                  <Label htmlFor="noticePeriod" className="font-medium mb-2 block">
+                    Notice Period
+                  </Label>
+                  <Select value={noticePeriod} onValueChange={setNoticePeriod}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue placeholder="Select period" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="immediate">Immediate</SelectItem>
+                      <SelectItem value="1month">&lt;1 Month</SelectItem>
+                      <SelectItem value="1-2months">1–2 Months</SelectItem>
+                      <SelectItem value="flexible">Flexible</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* AI-Generated Job Description Section - Indigo Theme */}
             <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
