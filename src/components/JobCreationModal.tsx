@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -18,7 +18,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { X, Plus } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { X, Plus, RotateCcw } from 'lucide-react';
+import { JobTitleSuggestions } from './job-creation/JobTitleSuggestions';
+import { SkillsSelector } from './job-creation/SkillsSelector';
+import { AIJobDescriptionGenerator } from './job-creation/AIJobDescriptionGenerator';
 
 interface JobCreationModalProps {
   open: boolean;
@@ -28,222 +33,509 @@ interface JobCreationModalProps {
 export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) {
   const [formData, setFormData] = useState({
     title: '',
+    jobFunction: '',
+    careerLevel: '',
+    industry: '',
     location: '',
-    department: '',
+    city: '',
+    experienceMin: '',
+    experienceMax: '',
     employmentType: '',
+    workMode: '',
+    salaryOption: 'negotiable',
     salaryMin: '',
     salaryMax: '',
+    salaryFixed: '',
+    noticePeriod: '',
+    minMatchingScore: '',
+    assessmentRequired: false,
+    genderPreference: 'both',
     description: '',
-    requirements: '',
-    benefits: '',
   });
 
   const [skills, setSkills] = useState<string[]>([]);
-  const [newSkill, setNewSkill] = useState('');
+  const [certifications, setCertifications] = useState<string[]>([]);
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [visaStatus, setVisaStatus] = useState<string[]>([]);
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: string | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const addSkill = () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills(prev => [...prev, newSkill.trim()]);
-      setNewSkill('');
-    }
+  const handleJobTitleSelect = async (title: string) => {
+    setFormData(prev => ({ ...prev, title }));
+    
+    // Simulate AI auto-population
+    setTimeout(() => {
+      const aiSuggestions = getAISuggestions(title);
+      setFormData(prev => ({
+        ...prev,
+        jobFunction: aiSuggestions.jobFunction,
+        careerLevel: aiSuggestions.careerLevel,
+        industry: aiSuggestions.industry,
+        experienceMin: aiSuggestions.experienceMin,
+        experienceMax: aiSuggestions.experienceMax,
+        employmentType: aiSuggestions.employmentType,
+        workMode: aiSuggestions.workMode,
+      }));
+      setSkills(aiSuggestions.skills);
+      setCertifications(aiSuggestions.certifications);
+      setLanguages(aiSuggestions.languages);
+      setVisaStatus(aiSuggestions.visaStatus);
+      generateJobDescription();
+    }, 500);
   };
 
-  const removeSkill = (skillToRemove: string) => {
-    setSkills(prev => prev.filter(skill => skill !== skillToRemove));
+  const getAISuggestions = (title: string) => {
+    // Simulate AI logic based on job title
+    const titleLower = title.toLowerCase();
+    
+    if (titleLower.includes('finance') || titleLower.includes('financial')) {
+      return {
+        jobFunction: 'Finance & Accounting',
+        careerLevel: 'Mid-Level',
+        industry: 'Financial Services',
+        experienceMin: '3',
+        experienceMax: '7',
+        employmentType: 'full-time',
+        workMode: 'hybrid',
+        skills: ['Excel', 'Financial Modeling', 'SAP', 'PowerBI'],
+        certifications: ['CFA', 'ACCA', 'CPA'],
+        languages: ['English', 'Arabic'],
+        visaStatus: ['citizen', 'residency-transferable'],
+      };
+    }
+    
+    return {
+      jobFunction: 'General',
+      careerLevel: 'Entry Level',
+      industry: 'Technology',
+      experienceMin: '1',
+      experienceMax: '3',
+      employmentType: 'full-time',
+      workMode: 'on-site',
+      skills: ['Communication', 'Problem Solving'],
+      certifications: [],
+      languages: ['English'],
+      visaStatus: ['citizen'],
+    };
+  };
+
+  const generateJobDescription = async () => {
+    setIsGeneratingDescription(true);
+    
+    // Simulate AI description generation
+    setTimeout(() => {
+      const description = `We are seeking a qualified ${formData.title} to join our ${formData.industry} team. The ideal candidate will have ${formData.experienceMin}-${formData.experienceMax} years of experience in ${formData.jobFunction}.
+
+Key Responsibilities:
+• Lead and manage key financial processes
+• Develop and maintain financial models
+• Collaborate with cross-functional teams
+• Ensure compliance with regulatory requirements
+
+Requirements:
+• ${formData.experienceMin}-${formData.experienceMax} years of relevant experience
+• Strong proficiency in ${skills.join(', ')}
+• ${certifications.length > 0 ? `Professional certifications: ${certifications.join(', ')}` : ''}
+• Excellent communication skills in ${languages.join(' and ')}
+
+We offer competitive compensation, comprehensive benefits, and opportunities for professional growth.`;
+      
+      setFormData(prev => ({ ...prev, description }));
+      setIsGeneratingDescription(false);
+    }, 2000);
+  };
+
+  const handleVisaStatusChange = (value: string, checked: boolean) => {
+    setVisaStatus(prev => 
+      checked 
+        ? [...prev, value]
+        : prev.filter(v => v !== value)
+    );
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Job creation data:', { ...formData, skills });
-    
-    // Here you would typically send the data to your backend
-    alert('Job posted successfully!');
-    
-    // Reset form and close modal
-    setFormData({
-      title: '',
-      location: '',
-      department: '',
-      employmentType: '',
-      salaryMin: '',
-      salaryMax: '',
-      description: '',
-      requirements: '',
-      benefits: '',
+    console.log('Job creation data:', { 
+      ...formData, 
+      skills, 
+      certifications, 
+      languages, 
+      visaStatus 
     });
-    setSkills([]);
+    
+    alert('Job posted successfully!');
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Create New Job Post</DialogTitle>
+          <DialogTitle className="text-2xl font-bold gradient-text">
+            🤖 AI-Powered Job Creation
+          </DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Basic Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="title">Job Title *</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleInputChange('title', e.target.value)}
-                placeholder="e.g. Senior Software Engineer"
-                required
-              />
-            </div>
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Job Basics */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-orange-600 flex items-center gap-2">
+              🟧 Job Basics
+            </h3>
             
-            <div className="space-y-2">
-              <Label htmlFor="location">Location *</Label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => handleInputChange('location', e.target.value)}
-                placeholder="e.g. Dubai, UAE"
-                required
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="title">Job Title *</Label>
+                <JobTitleSuggestions
+                  value={formData.title}
+                  onSelect={handleJobTitleSelect}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Job Function</Label>
+                <Select value={formData.jobFunction} onValueChange={(value) => handleInputChange('jobFunction', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Auto-filled by AI" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Finance & Accounting">Finance & Accounting</SelectItem>
+                    <SelectItem value="Human Resources">Human Resources</SelectItem>
+                    <SelectItem value="Marketing">Marketing</SelectItem>
+                    <SelectItem value="Sales">Sales</SelectItem>
+                    <SelectItem value="Technology">Technology</SelectItem>
+                    <SelectItem value="Operations">Operations</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Career Level</Label>
+                <Select value={formData.careerLevel} onValueChange={(value) => handleInputChange('careerLevel', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Auto-filled by AI" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Entry Level">Entry Level</SelectItem>
+                    <SelectItem value="Mid-Level">Mid-Level</SelectItem>
+                    <SelectItem value="Senior Level">Senior Level</SelectItem>
+                    <SelectItem value="Executive">Executive</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Industry</Label>
+                <Select value={formData.industry} onValueChange={(value) => handleInputChange('industry', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Auto-filled by AI" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Financial Services">Financial Services</SelectItem>
+                    <SelectItem value="Technology">Technology</SelectItem>
+                    <SelectItem value="Healthcare">Healthcare</SelectItem>
+                    <SelectItem value="Education">Education</SelectItem>
+                    <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                    <SelectItem value="Retail">Retail</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="location">Location (Country)</Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => handleInputChange('location', e.target.value)}
+                  placeholder="e.g. UAE"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="city">City</Label>
+                <Input
+                  id="city"
+                  value={formData.city}
+                  onChange={(e) => handleInputChange('city', e.target.value)}
+                  placeholder="e.g. Dubai"
+                />
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="department">Department</Label>
-              <Select value={formData.department} onValueChange={(value) => handleInputChange('department', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select department" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="engineering">Engineering</SelectItem>
-                  <SelectItem value="finance">Finance</SelectItem>
-                  <SelectItem value="marketing">Marketing</SelectItem>
-                  <SelectItem value="sales">Sales</SelectItem>
-                  <SelectItem value="hr">Human Resources</SelectItem>
-                  <SelectItem value="operations">Operations</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Experience & Skills */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-blue-600 flex items-center gap-2">
+              🟦 Experience & Skills
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Years of Experience (Min)</Label>
+                <Input
+                  type="number"
+                  value={formData.experienceMin}
+                  onChange={(e) => handleInputChange('experienceMin', e.target.value)}
+                  placeholder="Auto-filled by AI"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Years of Experience (Max)</Label>
+                <Input
+                  type="number"
+                  value={formData.experienceMax}
+                  onChange={(e) => handleInputChange('experienceMax', e.target.value)}
+                  placeholder="Auto-filled by AI"
+                />
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="employmentType">Employment Type *</Label>
-              <Select value={formData.employmentType} onValueChange={(value) => handleInputChange('employmentType', value)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="full-time">Full-time</SelectItem>
-                  <SelectItem value="part-time">Part-time</SelectItem>
-                  <SelectItem value="contract">Contract</SelectItem>
-                  <SelectItem value="internship">Internship</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <SkillsSelector
+              label="Mandatory Skills"
+              skills={skills}
+              onSkillsChange={setSkills}
+              placeholder="Auto-populated by AI"
+            />
+
+            <SkillsSelector
+              label="Preferred Certifications"
+              skills={certifications}
+              onSkillsChange={setCertifications}
+              placeholder="Auto-populated by AI"
+            />
           </div>
 
-          {/* Salary Range */}
-          <div className="space-y-2">
-            <Label>Salary Range (USD)</Label>
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                value={formData.salaryMin}
-                onChange={(e) => handleInputChange('salaryMin', e.target.value)}
-                placeholder="Minimum"
-                type="number"
-              />
-              <Input
-                value={formData.salaryMax}
-                onChange={(e) => handleInputChange('salaryMax', e.target.value)}
-                placeholder="Maximum"
-                type="number"
-              />
-            </div>
-          </div>
+          {/* Work & Contract Preferences */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-green-600 flex items-center gap-2">
+              🟩 Work & Contract Preferences
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Employment Type</Label>
+                <Select value={formData.employmentType} onValueChange={(value) => handleInputChange('employmentType', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Auto-filled by AI" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="full-time">Full-Time</SelectItem>
+                    <SelectItem value="part-time">Part-Time</SelectItem>
+                    <SelectItem value="internship">Internship</SelectItem>
+                    <SelectItem value="project-based">Project-based</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-          {/* Skills */}
-          <div className="space-y-2">
-            <Label>Required Skills</Label>
-            <div className="flex gap-2">
-              <Input
-                value={newSkill}
-                onChange={(e) => setNewSkill(e.target.value)}
-                placeholder="Add a skill"
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSkill())}
-              />
-              <Button type="button" onClick={addSkill} variant="outline" size="sm">
-                <Plus className="w-4 h-4" />
-              </Button>
+              <div className="space-y-2">
+                <Label>Work Mode</Label>
+                <Select value={formData.workMode} onValueChange={(value) => handleInputChange('workMode', value)}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Auto-filled by AI" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="on-site">On-site</SelectItem>
+                    <SelectItem value="remote">Remote</SelectItem>
+                    <SelectItem value="hybrid">Hybrid</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-            {skills.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-2">
-                {skills.map((skill) => (
-                  <Badge key={skill} variant="secondary" className="px-2 py-1">
-                    {skill}
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      className="ml-1 h-auto p-0"
-                      onClick={() => removeSkill(skill)}
-                    >
-                      <X className="w-3 h-3" />
-                    </Button>
-                  </Badge>
+
+            <div className="space-y-3">
+              <Label>Visa Status (Multi-select)</Label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                {[
+                  { value: 'citizen', label: 'Citizen' },
+                  { value: 'residency-transferable', label: 'Residency Visa (Transferable)' },
+                  { value: 'residency-non-transferable', label: 'Residency Visa (Non-Transferable)' },
+                  { value: 'visit-visa', label: 'Visit Visa' },
+                  { value: 'no-visa', label: 'No Visa' },
+                ].map((visa) => (
+                  <div key={visa.value} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={visa.value}
+                      checked={visaStatus.includes(visa.value)}
+                      onCheckedChange={(checked) => handleVisaStatusChange(visa.value, checked as boolean)}
+                    />
+                    <Label htmlFor={visa.value} className="text-sm">{visa.label}</Label>
+                  </div>
                 ))}
               </div>
-            )}
+            </div>
+
+            <div className="space-y-3">
+              <Label>Gender Preference</Label>
+              <RadioGroup 
+                value={formData.genderPreference} 
+                onValueChange={(value) => handleInputChange('genderPreference', value)}
+                className="flex gap-6"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="male" id="male" />
+                  <Label htmlFor="male">Male</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="female" id="female" />
+                  <Label htmlFor="female">Female</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="both" id="both" />
+                  <Label htmlFor="both">Both</Label>
+                </div>
+              </RadioGroup>
+            </div>
           </div>
 
-          {/* Job Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Job Description *</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder="Describe the role, responsibilities, and what you're looking for..."
-              className="min-h-[100px]"
-              required
-            />
+          {/* Scoring & Matching */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-yellow-600 flex items-center gap-2">
+              🟨 Scoring & Matching
+            </h3>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="minMatchingScore">Minimum Matching Score (%)</Label>
+                <Input
+                  id="minMatchingScore"
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={formData.minMatchingScore}
+                  onChange={(e) => handleInputChange('minMatchingScore', e.target.value)}
+                  placeholder="Optional"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Assessment Required?</Label>
+                <div className="flex items-center space-x-2 pt-2">
+                  <Checkbox
+                    id="assessment"
+                    checked={formData.assessmentRequired}
+                    onCheckedChange={(checked) => handleInputChange('assessmentRequired', checked as boolean)}
+                  />
+                  <Label htmlFor="assessment">Yes, require assessment</Label>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Requirements */}
-          <div className="space-y-2">
-            <Label htmlFor="requirements">Requirements</Label>
-            <Textarea
-              id="requirements"
-              value={formData.requirements}
-              onChange={(e) => handleInputChange('requirements', e.target.value)}
-              placeholder="List the required qualifications, experience, and skills..."
-              className="min-h-[80px]"
-            />
+          {/* Compensation & Availability */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-amber-600 flex items-center gap-2">
+              🟫 Compensation & Availability
+            </h3>
+            
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <Label>Salary Option</Label>
+                <RadioGroup 
+                  value={formData.salaryOption} 
+                  onValueChange={(value) => handleInputChange('salaryOption', value)}
+                  className="space-y-3"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="negotiable" id="negotiable" />
+                    <Label htmlFor="negotiable">✅ Negotiable</Label>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="range" id="range" />
+                      <Label htmlFor="range">🔘 Between (Min – Max)</Label>
+                    </div>
+                    {formData.salaryOption === 'range' && (
+                      <div className="grid grid-cols-2 gap-2 ml-6">
+                        <Input
+                          type="number"
+                          value={formData.salaryMin}
+                          onChange={(e) => handleInputChange('salaryMin', e.target.value)}
+                          placeholder="Minimum"
+                        />
+                        <Input
+                          type="number"
+                          value={formData.salaryMax}
+                          onChange={(e) => handleInputChange('salaryMax', e.target.value)}
+                          placeholder="Maximum"
+                        />
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="fixed" id="fixed" />
+                      <Label htmlFor="fixed">🔘 Fixed Amount</Label>
+                    </div>
+                    {formData.salaryOption === 'fixed' && (
+                      <div className="ml-6">
+                        <Input
+                          type="number"
+                          value={formData.salaryFixed}
+                          onChange={(e) => handleInputChange('salaryFixed', e.target.value)}
+                          placeholder="Fixed salary amount"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Notice Period</Label>
+                  <Select value={formData.noticePeriod} onValueChange={(value) => handleInputChange('noticePeriod', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select notice period" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="immediate">Immediate</SelectItem>
+                      <SelectItem value="less-than-1-month">&lt;1 Month</SelectItem>
+                      <SelectItem value="1-2-months">1–2 Months</SelectItem>
+                      <SelectItem value="flexible">Flexible</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Languages Required</Label>
+                  <SkillsSelector
+                    skills={languages}
+                    onSkillsChange={setLanguages}
+                    placeholder="Auto-populated by AI"
+                    suggestions={['Arabic', 'English', 'French', 'Spanish']}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Benefits */}
-          <div className="space-y-2">
-            <Label htmlFor="benefits">Benefits & Perks</Label>
-            <Textarea
-              id="benefits"
-              value={formData.benefits}
-              onChange={(e) => handleInputChange('benefits', e.target.value)}
-              placeholder="Describe the benefits, perks, and what makes your company great..."
-              className="min-h-[80px]"
-            />
-          </div>
+          {/* AI-Generated Job Description */}
+          <AIJobDescriptionGenerator
+            description={formData.description}
+            onDescriptionChange={(value) => handleInputChange('description', value)}
+            onRegenerate={generateJobDescription}
+            isGenerating={isGeneratingDescription}
+          />
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3 pt-4 border-t">
+          {/* Footer Actions */}
+          <div className="flex justify-between gap-3 pt-4 border-t">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
+              ← Back
             </Button>
-            <Button type="submit" className="bg-accent hover:bg-accent/90">
-              Post Job
-            </Button>
+            <div className="flex gap-3">
+              <Button type="button" variant="outline">
+                Preview Job
+              </Button>
+              <Button type="submit" className="bg-orange-600 hover:bg-orange-700">
+                🟧 Post Job
+              </Button>
+            </div>
           </div>
         </form>
       </DialogContent>
