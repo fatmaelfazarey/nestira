@@ -209,7 +209,7 @@ export function DashboardOverview() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Welcome Section */}
       <div className="bg-gradient-to-r from-primary to-primary/90 rounded-lg p-6 text-white">
         <h1 className="text-2xl font-bold mb-2">Welcome back, Nestira Finance Team!</h1>
@@ -217,24 +217,24 @@ export function DashboardOverview() {
       </div>
 
       {/* KPI Tracker - Horizontal Layout */}
-      <Card className="p-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+      <div className="w-full">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3 p-4 bg-white rounded-lg border">
           {kpiData.map((kpi) => {
             const IconComponent = kpi.icon;
             return (
               <div 
                 key={kpi.title} 
-                className={`${kpi.bgColor} rounded-lg p-4 text-center cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 min-w-0`}
+                className={`${kpi.bgColor} rounded-lg p-3 text-center cursor-pointer hover:shadow-md transition-all duration-200 hover:scale-105 min-w-0 flex flex-col items-center justify-center`}
                 onClick={() => handleKpiClick(kpi.clickAction)}
               >
-                <IconComponent className={`w-6 h-6 mx-auto mb-2 ${kpi.color}`} />
-                <p className="text-xs font-medium text-gray-700 mb-1 truncate">{kpi.title}</p>
-                <p className={`text-xl lg:text-2xl font-bold ${kpi.color}`}>{kpi.value}</p>
+                <IconComponent className={`w-5 h-5 mb-2 ${kpi.color}`} />
+                <p className="text-xs font-medium text-gray-700 mb-1 truncate w-full text-center">{kpi.title}</p>
+                <p className={`text-lg font-bold ${kpi.color}`}>{kpi.value}</p>
               </div>
             );
           })}
         </div>
-      </Card>
+      </div>
 
       {/* Recent Profile Views and Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -324,8 +324,8 @@ export function DashboardOverview() {
         </div>
       </div>
 
-      {/* Quick Actions and Resource Usage Section - Fixed Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Quick Actions and Resource Usage Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Quick Actions */}
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
