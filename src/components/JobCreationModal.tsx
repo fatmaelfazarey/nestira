@@ -31,6 +31,7 @@ import {
 import { JobTitleSuggestions } from './job-creation/JobTitleSuggestions';
 import { SkillsSelector } from './job-creation/SkillsSelector';
 import { AIJobDescriptionGenerator } from './job-creation/AIJobDescriptionGenerator';
+import { JobPreviewModal } from './JobPreviewModal';
 
 interface JobCreationModalProps {
   open: boolean;
@@ -63,6 +64,7 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
   const [isGenerating, setIsGenerating] = useState(false);
   const [isScoringOpen, setIsScoringOpen] = useState(false);
   const [isCompensationOpen, setIsCompensationOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   // Auto-generate description when key fields are filled
   useEffect(() => {
@@ -136,22 +138,7 @@ We offer a competitive compensation package and excellent career growth opportun
 
   const handlePreviewJob = () => {
     console.log('Opening job preview...');
-    const jobData = {
-      title: jobTitle,
-      function: jobFunction,
-      level: careerLevel,
-      industry,
-      location,
-      experience: `${minExperience}-${maxExperience} years`,
-      skills,
-      certifications,
-      employmentType,
-      workMode,
-      description,
-      salary: salaryMode === 'range' ? `${salaryMin}-${salaryMax}` : salaryMode === 'fixed' ? salaryFixed : 'Negotiable'
-    };
-    
-    alert(`Job Preview:\n\nTitle: ${jobData.title}\nLocation: ${jobData.location}\nType: ${jobData.employmentType}\nExperience: ${jobData.experience}\nSkills: ${jobData.skills.join(', ')}\n\nDescription:\n${jobData.description.substring(0, 200)}...`);
+    setIsPreviewOpen(true);
   };
 
   const handleVisaStatusChange = (status: string, checked: boolean) => {
@@ -175,426 +162,470 @@ We offer a competitive compensation package and excellent career growth opportun
     onOpenChange(false);
   };
 
+  const getJobPreviewData = () => {
+    const getSalaryText = () => {
+      if (salaryMode === 'range' && salaryMin && salaryMax) {
+        return `${salaryMin} - ${salaryMax}`;
+      } else if (salaryMode === 'fixed' && salaryFixed) {
+        return salaryFixed;
+      }
+      return 'Negotiable';
+    };
+
+    const getExperienceText = () => {
+      if (minExperience && maxExperience) {
+        return `${minExperience}-${maxExperience} years`;
+      } else if (minExperience) {
+        return `${minExperience}+ years`;
+      }
+      return '';
+    };
+
+    return {
+      title: jobTitle,
+      function: jobFunction,
+      level: careerLevel,
+      industry,
+      location,
+      experience: getExperienceText(),
+      skills,
+      certifications,
+      employmentType,
+      workMode,
+      description,
+      salary: getSalaryText(),
+      languages,
+      visaStatus
+    };
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
-            <Plus className="w-6 h-6 text-accent" />
-            Create New Job Post
-          </DialogTitle>
-        </DialogHeader>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
+              <Plus className="w-6 h-6 text-accent" />
+              Create New Job Post
+            </DialogTitle>
+          </DialogHeader>
 
-        <div className="space-y-8 mt-6">
-          {/* Job Basics Section - Blue Theme */}
-          <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/30">
-            <CardHeader className="pb-4 bg-blue-50/50">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-blue-800">
-                <Briefcase className="w-5 h-5 text-blue-600" />
-                Job Basics
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="jobTitle" className="flex items-center gap-2 font-medium mb-2">
-                    <Target className="w-4 h-4" />
-                    Job Title
-                  </Label>
-                  <JobTitleSuggestions value={jobTitle} onSelect={handleJobTitleChange} />
-                </div>
-                <div>
-                  <Label htmlFor="jobFunction" className="flex items-center gap-2 font-medium mb-2">
-                    <Settings className="w-4 h-4" />
-                    Job Function
-                  </Label>
-                  <Select value={jobFunction} onValueChange={setJobFunction}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select function" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Finance & Accounting">Finance & Accounting</SelectItem>
-                      <SelectItem value="Investment Banking">Investment Banking</SelectItem>
-                      <SelectItem value="Risk Management">Risk Management</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              {/* ... keep existing grid sections for career level, industry, location */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="careerLevel" className="flex items-center gap-2 font-medium mb-2">
-                    <TrendingUp className="w-4 h-4" />
-                    Career Level
-                  </Label>
-                  <Select value={careerLevel} onValueChange={setCareerLevel}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Entry Level">Entry Level</SelectItem>
-                      <SelectItem value="Mid-Level">Mid-Level</SelectItem>
-                      <SelectItem value="Senior Level">Senior Level</SelectItem>
-                      <SelectItem value="Executive">Executive</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="industry" className="flex items-center gap-2 font-medium mb-2">
-                    <Briefcase className="w-4 h-4" />
-                    Industry
-                  </Label>
-                  <Select value={industry} onValueChange={setIndustry}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select industry" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Financial Services">Financial Services</SelectItem>
-                      <SelectItem value="Banking">Banking</SelectItem>
-                      <SelectItem value="Insurance">Insurance</SelectItem>
-                      <SelectItem value="Consulting">Consulting</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="location" className="flex items-center gap-2 font-medium mb-2">
-                  <MapPin className="w-4 h-4" />
-                  Location
-                </Label>
-                <Input
-                  id="location"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g., Dubai, UAE"
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Experience & Skills Section - Green Theme */}
-          <Card className="shadow-sm border-l-4 border-l-green-500 bg-green-50/30">
-            <CardHeader className="pb-4 bg-green-50/50">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-green-800">
-                <Award className="w-5 h-5 text-green-600" />
-                Experience & Skills
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label className="font-medium mb-2 block">Years of Experience</Label>
-                  <div className="flex gap-2 items-center">
-                    <Input
-                      type="number"
-                      placeholder="Min"
-                      value={minExperience}
-                      onChange={(e) => setMinExperience(e.target.value)}
-                      className="flex-1"
-                    />
-                    <span className="text-gray-500">to</span>
-                    <Input
-                      type="number"
-                      placeholder="Max"
-                      value={maxExperience}
-                      onChange={(e) => setMaxExperience(e.target.value)}
-                      className="flex-1"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <SkillsSelector
-                label="Must-have Skills"
-                skills={skills}
-                onSkillsChange={setSkills}
-                placeholder="Add required skills"
-              />
-
-              <SkillsSelector
-                label="Preferred Certifications"
-                skills={certifications}
-                onSkillsChange={setCertifications}
-                placeholder="Add certifications"
-                suggestions={['CPA', 'CFA', 'FRM', 'ACCA', 'CIA', 'CISA']}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Work & Contract Preferences Section - Purple Theme */}
-          <Card className="shadow-sm border-l-4 border-l-purple-500 bg-purple-50/30">
-            <CardHeader className="pb-4 bg-purple-50/50">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-800">
-                <Users className="w-5 h-5 text-purple-600" />
-                Work & Contract Preferences
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <Label className="font-medium mb-3 block">Employment Type</Label>
-                  <RadioGroup value={employmentType} onValueChange={setEmploymentType}>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Full-time" id="full-time" />
-                      <Label htmlFor="full-time">Full-Time</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Part-time" id="part-time" />
-                      <Label htmlFor="part-time">Part-Time</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Internship" id="internship" />
-                      <Label htmlFor="internship">Internship</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Project-based" id="project" />
-                      <Label htmlFor="project">Project-based</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-
-                <div>
-                  <Label className="font-medium mb-3 block">Work Mode</Label>
-                  <RadioGroup value={workMode} onValueChange={setWorkMode}>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="On-site" id="onsite" />
-                      <Label htmlFor="onsite">On-site</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Remote" id="remote" />
-                      <Label htmlFor="remote">Remote</Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="Hybrid" id="hybrid" />
-                      <Label htmlFor="hybrid">Hybrid</Label>
-                    </div>
-                  </RadioGroup>
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-6">
-                <Label className="font-medium mb-3 block">Visa Status</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {['Citizen', 'Residency Visa (Transferable)', 'Residency Visa (Non-Transferable)', 'Visit Visa', 'No Visa'].map((status) => (
-                    <div key={status} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={status}
-                        checked={visaStatus.includes(status)}
-                        onCheckedChange={(checked) => handleVisaStatusChange(status, checked as boolean)}
-                      />
-                      <Label htmlFor={status} className="text-sm">{status}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="border-t border-gray-200 pt-6">
-                <Label className="font-medium mb-3 block">Gender Preference</Label>
-                <RadioGroup value={gender} onValueChange={setGender}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="male" id="male" />
-                    <Label htmlFor="male">Male</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="female" id="female" />
-                    <Label htmlFor="female">Female</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="both" id="both" />
-                    <Label htmlFor="both">Both</Label>
-                  </div>
-                </RadioGroup>
-              </div>
-
-              <div className="border-t border-gray-200 pt-6">
-                <Label className="font-medium mb-3 block">Languages Required</Label>
-                <div className="flex gap-4">
-                  {['Arabic', 'English', 'Bilingual'].map((language) => (
-                    <div key={language} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={language}
-                        checked={languages.includes(language)}
-                        onCheckedChange={(checked) => handleLanguageChange(language, checked as boolean)}
-                      />
-                      <Label htmlFor={language} className="text-sm">{language}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Scoring & Matching Section - Orange Theme - Collapsible */}
-          <Collapsible open={isScoringOpen} onOpenChange={setIsScoringOpen}>
-            <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
-              <CollapsibleTrigger asChild>
-                <CardHeader className="pb-4 cursor-pointer hover:bg-orange-100/50 bg-orange-50/50">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-orange-800">
-                    <div className="flex items-center gap-2">
-                      <Target className="w-5 h-5 text-orange-600" />
-                      Scoring & Matching
-                    </div>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isScoringOpen ? 'rotate-180' : ''}`} />
-                  </CardTitle>
-                </CardHeader>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="space-y-4">
+          <div className="space-y-8 mt-6">
+            {/* Job Basics Section - Blue Theme */}
+            <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/30">
+              <CardHeader className="pb-4 bg-blue-50/50">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-blue-800">
+                  <Briefcase className="w-5 h-5 text-blue-600" />
+                  Job Basics
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="minScore" className="font-medium mb-2 block">
-                      Minimum Matching Score (%)
+                    <Label htmlFor="jobTitle" className="flex items-center gap-2 font-medium mb-2">
+                      <Target className="w-4 h-4" />
+                      Job Title
                     </Label>
-                    <Input
-                      id="minScore"
-                      type="number"
-                      placeholder="e.g., 75"
-                      value={minScore}
-                      onChange={(e) => setMinScore(e.target.value)}
-                      className="w-32"
-                    />
+                    <JobTitleSuggestions value={jobTitle} onSelect={handleJobTitleChange} />
                   </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="assessment"
-                      checked={assessmentRequired}
-                      onCheckedChange={setAssessmentRequired}
-                    />
-                    <Label htmlFor="assessment" className="font-medium">
-                      Assessment Required?
-                    </Label>
-                  </div>
-                </CardContent>
-              </CollapsibleContent>
-            </Card>
-          </Collapsible>
-
-          {/* Compensation & Availability Section - Emerald Theme - Collapsible */}
-          <Collapsible open={isCompensationOpen} onOpenChange={setIsCompensationOpen}>
-            <Card className="shadow-sm border-l-4 border-l-emerald-500 bg-emerald-50/30">
-              <CollapsibleTrigger asChild>
-                <CardHeader className="pb-4 cursor-pointer hover:bg-emerald-100/50 bg-emerald-50/50">
-                  <CardTitle className="flex items-center justify-between text-lg font-semibold text-emerald-800">
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-emerald-600" />
-                      Compensation & Availability
-                    </div>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isCompensationOpen ? 'rotate-180' : ''}`} />
-                  </CardTitle>
-                </CardHeader>
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <CardContent className="space-y-6">
                   <div>
-                    <Label className="font-medium mb-3 block">Salary Option</Label>
-                    <RadioGroup value={salaryMode} onValueChange={setSalaryMode}>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="negotiable" id="negotiable" />
-                        <Label htmlFor="negotiable">Negotiable</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="range" id="range" />
-                        <Label htmlFor="range">Between</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="fixed" id="fixed" />
-                        <Label htmlFor="fixed">Fixed</Label>
-                      </div>
-                    </RadioGroup>
-
-                    {salaryMode === 'range' && (
-                      <div className="flex gap-2 items-center mt-3">
-                        <Input
-                          type="number"
-                          placeholder="Min"
-                          value={salaryMin}
-                          onChange={(e) => setSalaryMin(e.target.value)}
-                          className="flex-1"
-                        />
-                        <span className="text-gray-500">to</span>
-                        <Input
-                          type="number"
-                          placeholder="Max"
-                          value={salaryMax}
-                          onChange={(e) => setSalaryMax(e.target.value)}
-                          className="flex-1"
-                        />
-                      </div>
-                    )}
-
-                    {salaryMode === 'fixed' && (
-                      <Input
-                        type="number"
-                        placeholder="Fixed salary"
-                        value={salaryFixed}
-                        onChange={(e) => setSalaryFixed(e.target.value)}
-                        className="mt-3 w-48"
-                      />
-                    )}
-                  </div>
-
-                  <div>
-                    <Label htmlFor="noticePeriod" className="font-medium mb-2 block">
-                      Notice Period
+                    <Label htmlFor="jobFunction" className="flex items-center gap-2 font-medium mb-2">
+                      <Settings className="w-4 h-4" />
+                      Job Function
                     </Label>
-                    <Select value={noticePeriod} onValueChange={setNoticePeriod}>
-                      <SelectTrigger className="w-48">
-                        <SelectValue placeholder="Select period" />
+                    <Select value={jobFunction} onValueChange={setJobFunction}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select function" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="immediate">Immediate</SelectItem>
-                        <SelectItem value="1month">&lt;1 Month</SelectItem>
-                        <SelectItem value="1-2months">1–2 Months</SelectItem>
-                        <SelectItem value="flexible">Flexible</SelectItem>
+                        <SelectItem value="Finance & Accounting">Finance & Accounting</SelectItem>
+                        <SelectItem value="Investment Banking">Investment Banking</SelectItem>
+                        <SelectItem value="Risk Management">Risk Management</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                </CardContent>
-              </CollapsibleContent>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="careerLevel" className="flex items-center gap-2 font-medium mb-2">
+                      <TrendingUp className="w-4 h-4" />
+                      Career Level
+                    </Label>
+                    <Select value={careerLevel} onValueChange={setCareerLevel}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select level" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Entry Level">Entry Level</SelectItem>
+                        <SelectItem value="Mid-Level">Mid-Level</SelectItem>
+                        <SelectItem value="Senior Level">Senior Level</SelectItem>
+                        <SelectItem value="Executive">Executive</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="industry" className="flex items-center gap-2 font-medium mb-2">
+                      <Briefcase className="w-4 h-4" />
+                      Industry
+                    </Label>
+                    <Select value={industry} onValueChange={setIndustry}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select industry" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Financial Services">Financial Services</SelectItem>
+                        <SelectItem value="Banking">Banking</SelectItem>
+                        <SelectItem value="Insurance">Insurance</SelectItem>
+                        <SelectItem value="Consulting">Consulting</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <Label htmlFor="location" className="flex items-center gap-2 font-medium mb-2">
+                    <MapPin className="w-4 h-4" />
+                    Location
+                  </Label>
+                  <Input
+                    id="location"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g., Dubai, UAE"
+                  />
+                </div>
+              </CardContent>
             </Card>
-          </Collapsible>
 
-          {/* AI-Generated Job Description Section - Indigo Theme */}
-          <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
-            <CardHeader className="pb-4 bg-indigo-50/50">
-              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-indigo-800">
-                <Brain className="w-5 h-5 text-indigo-600" />
-                AI-Generated Job Description
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <AIJobDescriptionGenerator
-                description={description}
-                onDescriptionChange={setDescription}
-                onRegenerate={handleRegenerateDescription}
-                isGenerating={isGenerating}
-              />
-            </CardContent>
-          </Card>
-        </div>
+            {/* Experience & Skills Section - Green Theme */}
+            <Card className="shadow-sm border-l-4 border-l-green-500 bg-green-50/30">
+              <CardHeader className="pb-4 bg-green-50/50">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-green-800">
+                  <Award className="w-5 h-5 text-green-600" />
+                  Experience & Skills
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label className="font-medium mb-2 block">Years of Experience</Label>
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        type="number"
+                        placeholder="Min"
+                        value={minExperience}
+                        onChange={(e) => setMinExperience(e.target.value)}
+                        className="flex-1"
+                      />
+                      <span className="text-gray-500">to</span>
+                      <Input
+                        type="number"
+                        placeholder="Max"
+                        value={maxExperience}
+                        onChange={(e) => setMaxExperience(e.target.value)}
+                        className="flex-1"
+                      />
+                    </div>
+                  </div>
+                </div>
 
-        {/* Sticky Footer */}
-        <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6 mt-8 -mx-6 -mb-6">
-          <div className="flex justify-between items-center">
-            <Button variant="ghost" onClick={() => onOpenChange(false)} className="flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" />
-              Back
-            </Button>
-            <div className="flex gap-3">
-              <Button variant="outline" onClick={handlePreviewJob} className="flex items-center gap-2">
-                <Eye className="w-4 h-4" />
-                Preview Job
+                <SkillsSelector
+                  label="Must-have Skills"
+                  skills={skills}
+                  onSkillsChange={setSkills}
+                  placeholder="Add required skills"
+                />
+
+                <SkillsSelector
+                  label="Preferred Certifications"
+                  skills={certifications}
+                  onSkillsChange={setCertifications}
+                  placeholder="Add certifications"
+                  suggestions={['CPA', 'CFA', 'FRM', 'ACCA', 'CIA', 'CISA']}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Work & Contract Preferences Section - Purple Theme */}
+            <Card className="shadow-sm border-l-4 border-l-purple-500 bg-purple-50/30">
+              <CardHeader className="pb-4 bg-purple-50/50">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-800">
+                  <Users className="w-5 h-5 text-purple-600" />
+                  Work & Contract Preferences
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <Label className="font-medium mb-3 block">Employment Type</Label>
+                    <RadioGroup value={employmentType} onValueChange={setEmploymentType}>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="Full-time" id="full-time" />
+                        <Label htmlFor="full-time">Full-Time</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="Part-time" id="part-time" />
+                        <Label htmlFor="part-time">Part-Time</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="Internship" id="internship" />
+                        <Label htmlFor="internship">Internship</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="Project-based" id="project" />
+                        <Label htmlFor="project">Project-based</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div>
+                    <Label className="font-medium mb-3 block">Work Mode</Label>
+                    <RadioGroup value={workMode} onValueChange={setWorkMode}>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="On-site" id="onsite" />
+                        <Label htmlFor="onsite">On-site</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="Remote" id="remote" />
+                        <Label htmlFor="remote">Remote</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="Hybrid" id="hybrid" />
+                        <Label htmlFor="hybrid">Hybrid</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 pt-6">
+                  <Label className="font-medium mb-3 block">Visa Status</Label>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {['Citizen', 'Residency Visa (Transferable)', 'Residency Visa (Non-Transferable)', 'Visit Visa', 'No Visa'].map((status) => (
+                      <div key={status} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={status}
+                          checked={visaStatus.includes(status)}
+                          onCheckedChange={(checked) => handleVisaStatusChange(status, checked as boolean)}
+                        />
+                        <Label htmlFor={status} className="text-sm">{status}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="border-t border-gray-200 pt-6">
+                  <Label className="font-medium mb-3 block">Gender Preference</Label>
+                  <RadioGroup value={gender} onValueChange={setGender}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="male" id="male" />
+                      <Label htmlFor="male">Male</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="female" id="female" />
+                      <Label htmlFor="female">Female</Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="both" id="both" />
+                      <Label htmlFor="both">Both</Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+
+                <div className="border-t border-gray-200 pt-6">
+                  <Label className="font-medium mb-3 block">Languages Required</Label>
+                  <div className="flex gap-4">
+                    {['Arabic', 'English', 'Bilingual'].map((language) => (
+                      <div key={language} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={language}
+                          checked={languages.includes(language)}
+                          onCheckedChange={(checked) => handleLanguageChange(language, checked as boolean)}
+                        />
+                        <Label htmlFor={language} className="text-sm">{language}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Scoring & Matching Section - Orange Theme - Collapsible */}
+            <Collapsible open={isScoringOpen} onOpenChange={setIsScoringOpen}>
+              <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
+                <CollapsibleTrigger asChild>
+                  <CardHeader className="pb-4 cursor-pointer hover:bg-orange-100/50 bg-orange-50/50">
+                    <CardTitle className="flex items-center justify-between text-lg font-semibold text-orange-800">
+                      <div className="flex items-center gap-2">
+                        <Target className="w-5 h-5 text-orange-600" />
+                        Scoring & Matching
+                      </div>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isScoringOpen ? 'rotate-180' : ''}`} />
+                    </CardTitle>
+                  </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="minScore" className="font-medium mb-2 block">
+                        Minimum Matching Score (%)
+                      </Label>
+                      <Input
+                        id="minScore"
+                        type="number"
+                        placeholder="e.g., 75"
+                        value={minScore}
+                        onChange={(e) => setMinScore(e.target.value)}
+                        className="w-32"
+                      />
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="assessment"
+                        checked={assessmentRequired}
+                        onCheckedChange={setAssessmentRequired}
+                      />
+                      <Label htmlFor="assessment" className="font-medium">
+                        Assessment Required?
+                      </Label>
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+
+            {/* Compensation & Availability Section - Emerald Theme - Collapsible */}
+            <Collapsible open={isCompensationOpen} onOpenChange={setIsCompensationOpen}>
+              <Card className="shadow-sm border-l-4 border-l-emerald-500 bg-emerald-50/30">
+                <CollapsibleTrigger asChild>
+                  <CardHeader className="pb-4 cursor-pointer hover:bg-emerald-100/50 bg-emerald-50/50">
+                    <CardTitle className="flex items-center justify-between text-lg font-semibold text-emerald-800">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="w-5 h-5 text-emerald-600" />
+                        Compensation & Availability
+                      </div>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isCompensationOpen ? 'rotate-180' : ''}`} />
+                    </CardTitle>
+                  </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <CardContent className="space-y-6">
+                    <div>
+                      <Label className="font-medium mb-3 block">Salary Option</Label>
+                      <RadioGroup value={salaryMode} onValueChange={setSalaryMode}>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="negotiable" id="negotiable" />
+                          <Label htmlFor="negotiable">Negotiable</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="range" id="range" />
+                          <Label htmlFor="range">Between</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="fixed" id="fixed" />
+                          <Label htmlFor="fixed">Fixed</Label>
+                        </div>
+                      </RadioGroup>
+
+                      {salaryMode === 'range' && (
+                        <div className="flex gap-2 items-center mt-3">
+                          <Input
+                            type="number"
+                            placeholder="Min"
+                            value={salaryMin}
+                            onChange={(e) => setSalaryMin(e.target.value)}
+                            className="flex-1"
+                          />
+                          <span className="text-gray-500">to</span>
+                          <Input
+                            type="number"
+                            placeholder="Max"
+                            value={salaryMax}
+                            onChange={(e) => setSalaryMax(e.target.value)}
+                            className="flex-1"
+                          />
+                        </div>
+                      )}
+
+                      {salaryMode === 'fixed' && (
+                        <Input
+                          type="number"
+                          placeholder="Fixed salary"
+                          value={salaryFixed}
+                          onChange={(e) => setSalaryFixed(e.target.value)}
+                          className="mt-3 w-48"
+                        />
+                      )}
+                    </div>
+
+                    <div>
+                      <Label htmlFor="noticePeriod" className="font-medium mb-2 block">
+                        Notice Period
+                      </Label>
+                      <Select value={noticePeriod} onValueChange={setNoticePeriod}>
+                        <SelectTrigger className="w-48">
+                          <SelectValue placeholder="Select period" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="immediate">Immediate</SelectItem>
+                          <SelectItem value="1month">&lt;1 Month</SelectItem>
+                          <SelectItem value="1-2months">1–2 Months</SelectItem>
+                          <SelectItem value="flexible">Flexible</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </CardContent>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
+
+            {/* AI-Generated Job Description Section - Indigo Theme */}
+            <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
+              <CardHeader className="pb-4 bg-indigo-50/50">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-indigo-800">
+                  <Brain className="w-5 h-5 text-indigo-600" />
+                  AI-Generated Job Description
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AIJobDescriptionGenerator
+                  description={description}
+                  onDescriptionChange={setDescription}
+                  onRegenerate={handleRegenerateDescription}
+                  isGenerating={isGenerating}
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sticky Footer */}
+          <div className="sticky bottom-0 bg-white border-t border-gray-200 p-6 mt-8 -mx-6 -mb-6">
+            <div className="flex justify-between items-center">
+              <Button variant="ghost" onClick={() => onOpenChange(false)} className="flex items-center gap-2">
+                <ArrowLeft className="w-4 h-4" />
+                Back
               </Button>
-              <Button onClick={handleSubmit} className="bg-accent hover:bg-accent/90 flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Post Job
-              </Button>
+              <div className="flex gap-3">
+                <Button variant="outline" onClick={handlePreviewJob} className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  Preview Job
+                </Button>
+                <Button onClick={handleSubmit} className="bg-accent hover:bg-accent/90 flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  Post Job
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
+
+      <JobPreviewModal 
+        open={isPreviewOpen} 
+        onOpenChange={setIsPreviewOpen}
+        jobData={getJobPreviewData()}
+      />
+    </>
   );
 }
