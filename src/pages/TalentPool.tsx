@@ -7,11 +7,12 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle } from 'lucide-react';
+import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle, Target } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
 import { AICandidateSearch } from '@/components/AICandidateSearch';
 import { FilterSidebar } from '@/components/FilterSidebar';
+import { FindMyMatchModal } from '@/components/FindMyMatchModal';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
 import { CircularProgress } from '@/components/ui/circular-progress';
 
@@ -31,6 +32,8 @@ const TalentPool = () => {
   const [aiFilteredCandidates, setAiFilteredCandidates] = useState(null);
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
   const [unlockedCandidates, setUnlockedCandidates] = useState(new Set());
+  const [isFindMyMatchOpen, setIsFindMyMatchOpen] = useState(false);
+  const [matchedJobPost, setMatchedJobPost] = useState(null);
 
   // New filter states
   const [selectedSubfields, setSelectedSubfields] = useState([]);
@@ -48,6 +51,7 @@ const TalentPool = () => {
   const [cvCompleteness, setCvCompleteness] = useState('all');
   const [academicExcellence, setAcademicExcellence] = useState(false);
   const [selectedScreeningTags, setSelectedScreeningTags] = useState([]);
+
   const candidates = [{
     id: 1,
     name: "Sarah Johnson",
@@ -204,6 +208,7 @@ const TalentPool = () => {
     setSelectedScreeningTags([]);
     setAiFilteredCandidates(null);
     setAiSearchQuery('');
+    setMatchedJobPost(null);
   };
   const handleAiSearch = async (query: string) => {
     setIsAiSearching(true);
@@ -218,6 +223,7 @@ const TalentPool = () => {
   const handleClearAiSearch = () => {
     setAiSearchQuery('');
     setAiFilteredCandidates(null);
+    setMatchedJobPost(null);
   };
   const handleExpandProfile = candidate => {
     setSelectedCandidate(null); // Close the current modal first
@@ -511,13 +517,23 @@ const TalentPool = () => {
             
             {/* Progress Bar for Candidate Count */}
             <div className="mt-4 max-w-md">
-              <p className="text-sm text-gray-600 mb-2">Matching Candidates</p>
+              <p className="text-sm text-gray-600 mb-2">
+                {matchedJobPost ? `Matched for: ${matchedJobPost.title}` : 'Matching Candidates'}
+              </p>
               <CandidateCountProgress count={filteredCandidates.length} total={candidates.length} />
             </div>
           </div>
           
           <div className="flex items-center gap-4 py-[41px] mx-[43px]">
-            {/* View Controls */}
+            {/* Find My Match Button */}
+            <Button 
+              onClick={() => setIsFindMyMatchOpen(true)}
+              className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg"
+            >
+              <Target className="w-5 h-5 mr-2" />
+              🎯 Find My Match (Based on Job Post)
+            </Button>
+
             <div className="flex gap-2">
               <Button variant={currentView === 'grid' ? 'default' : 'outline'} onClick={() => setCurrentView('grid')} className="flex items-center gap-2">
                 <Grid2X2 className="w-4 h-4" />
@@ -548,10 +564,17 @@ const TalentPool = () => {
 
         <FilterSidebar isOpen={isFilterSidebarOpen} onClose={() => setIsFilterSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} locationFilter={locationFilter} setLocationFilter={setLocationFilter} experienceRange={experienceRange} setExperienceRange={setExperienceRange} statusFilter={statusFilter} setStatusFilter={setStatusFilter} skillsFilter={skillsFilter} setSkillsFilter={setSkillsFilter} scoreRange={scoreRange} setScoreRange={setScoreRange} selectedSubfields={selectedSubfields} setSelectedSubfields={setSelectedSubfields} selectedSoftware={selectedSoftware} setSelectedSoftware={setSelectedSoftware} erpVersion={erpVersion} setErpVersion={setErpVersion} selectedCertifications={selectedCertifications} setSelectedCertifications={setSelectedCertifications} selectedIndustries={selectedIndustries} setSelectedIndustries={setSelectedIndustries} selectedVisaStatus={selectedVisaStatus} setSelectedVisaStatus={setSelectedVisaStatus} employmentType={employmentType} setEmploymentType={setEmploymentType} workMode={workMode} setWorkMode={setWorkMode} availability="" setAvailability={() => {}} languageProficiency={languageProficiency} setLanguageProficiency={setLanguageProficiency} genderFilter={genderFilter} setGenderFilter={setGenderFilter} educationLevel={educationLevel} setEducationLevel={setEducationLevel} selectedSpecialNeeds={selectedSpecialNeeds} setSelectedSpecialNeeds={setSelectedSpecialNeeds} cvCompleteness={cvCompleteness} setCvCompleteness={setCvCompleteness} academicExcellence={academicExcellence} setAcademicExcellence={setAcademicExcellence} selectedScreeningTags={selectedScreeningTags} setSelectedScreeningTags={setSelectedScreeningTags} resetAllFilters={resetAllFilters} filteredCandidatesCount={filteredCandidates.length} />
 
+        <FindMyMatchModal 
+          isOpen={isFindMyMatchOpen}
+          onClose={() => setIsFindMyMatchOpen(false)}
+          onJobSelected={handleJobPostSelected}
+        />
+
         <CandidateDetailModal candidate={selectedCandidate} isOpen={!!selectedCandidate} onClose={() => setSelectedCandidate(null)} isFavorite={selectedCandidate ? favorites.has(selectedCandidate.id) : false} onToggleFavorite={() => selectedCandidate && toggleFavorite(selectedCandidate.id)} onExpandProfile={() => selectedCandidate && handleExpandProfile(selectedCandidate)} />
 
         <ExpandedCandidateModal candidate={expandedCandidate} isOpen={!!expandedCandidate} onClose={() => setExpandedCandidate(null)} isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false} onToggleFavorite={() => expandedCandidate && toggleFavorite(expandedCandidate.id)} />
       </div>
     </DashboardLayout>;
 };
+
 export default TalentPool;
