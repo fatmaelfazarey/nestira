@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -5,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Plus, Eye, Pencil, BarChart2, Archive } from 'lucide-react';
 import { useState } from 'react';
 import { JobCreationModal } from '@/components/JobCreationModal';
+import { JobPreviewModal } from '@/components/JobPreviewModal';
+import { JobAnalyticsModal } from '@/components/JobAnalyticsModal';
 import { useToast } from '@/hooks/use-toast';
 
 const JobListings = () => {
@@ -17,7 +20,19 @@ const JobListings = () => {
       status: "Active",
       applications: 23,
       views: 156,
-      posted: "3 days ago"
+      posted: "3 days ago",
+      function: "Finance",
+      level: "Senior",
+      industry: "Financial Services",
+      experience: "5+ years",
+      skills: ["Financial Analysis", "Budget Management", "Risk Assessment"],
+      certifications: ["CPA", "CFA"],
+      employmentType: "Full-time",
+      workMode: "Hybrid",
+      description: "We are seeking an experienced Senior Finance Manager to lead our financial operations in Dubai. The ideal candidate will have strong analytical skills and experience in budget management.",
+      salary: "$80,000 - $120,000",
+      languages: ["English", "Arabic"],
+      visaStatus: ["UAE Resident", "Work Permit Holder"]
     },
     {
       id: 2,
@@ -27,7 +42,19 @@ const JobListings = () => {
       status: "Paused",
       applications: 12,
       views: 89,
-      posted: "1 week ago"
+      posted: "1 week ago",
+      function: "Finance",
+      level: "Mid-level",
+      industry: "Banking",
+      experience: "3-5 years",
+      skills: ["Data Analysis", "Excel", "Financial Modeling"],
+      certifications: ["CFA Level 1"],
+      employmentType: "Full-time",
+      workMode: "On-site",
+      description: "Looking for a detail-oriented Financial Analyst to join our team in Riyadh. You will be responsible for financial modeling and data analysis.",
+      salary: "$50,000 - $70,000",
+      languages: ["English", "Arabic"],
+      visaStatus: ["Saudi National", "Iqama Holder"]
     },
     {
       id: 3,
@@ -37,11 +64,27 @@ const JobListings = () => {
       status: "Active",
       applications: 31,
       views: 203,
-      posted: "5 days ago"
+      posted: "5 days ago",
+      function: "Accounting",
+      level: "Entry-level",
+      industry: "Manufacturing",
+      experience: "1-3 years",
+      skills: ["Bookkeeping", "QuickBooks", "Financial Reporting"],
+      certifications: ["Certified Bookkeeper"],
+      employmentType: "Contract",
+      workMode: "Remote",
+      description: "We need an Accounting Specialist for a 6-month contract position. Experience with QuickBooks and financial reporting is essential.",
+      salary: "$30,000 - $45,000",
+      languages: ["English", "Arabic"],
+      visaStatus: ["Egyptian National", "Work Permit"]
     }
   ]);
 
   const [isJobCreationModalOpen, setIsJobCreationModalOpen] = useState(false);
+  const [isJobPreviewModalOpen, setIsJobPreviewModalOpen] = useState(false);
+  const [isJobEditModalOpen, setIsJobEditModalOpen] = useState(false);
+  const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState(null);
   const { toast } = useToast();
 
   const handleCreateNewJob = (e: React.MouseEvent) => {
@@ -64,21 +107,33 @@ const JobListings = () => {
     e.preventDefault();
     e.stopPropagation();
     console.log('View job:', jobId);
-    alert(`Opening job details for Job ID: ${jobId}`);
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      setSelectedJob(job);
+      setIsJobPreviewModalOpen(true);
+    }
   };
 
   const handleEditJob = (e: React.MouseEvent, jobId: number) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('Edit job:', jobId);
-    alert(`Opening job editor for Job ID: ${jobId}`);
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      setSelectedJob(job);
+      setIsJobEditModalOpen(true);
+    }
   };
 
   const handleViewAnalytics = (e: React.MouseEvent, jobId: number) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('View analytics for job:', jobId);
-    alert(`Opening analytics dashboard for Job ID: ${jobId}`);
+    const job = jobs.find(j => j.id === jobId);
+    if (job) {
+      setSelectedJob(job);
+      setIsAnalyticsModalOpen(true);
+    }
   };
 
   const handleArchiveJob = (e: React.MouseEvent, jobId: number) => {
@@ -88,12 +143,28 @@ const JobListings = () => {
     setJobs(prevJobs => 
       prevJobs.map(job => 
         job.id === jobId 
-          ? { ...job, status: job.status === 'Active' ? 'Archived' : 'Active' }
+          ? { ...job, status: job.status === 'Active' ? 'Paused' : 'Active' }
           : job
       )
     );
     const currentJob = jobs.find(job => job.id === jobId);
-    alert(`Job ${jobId} has been ${currentJob?.status === 'Active' ? 'archived' : 'reactivated'}`);
+    const newStatus = currentJob?.status === 'Active' ? 'paused' : 'activated';
+    toast({
+      title: "Job Status Updated",
+      description: `Job has been ${newStatus}.`,
+    });
+  };
+
+  const handleJobUpdated = (updatedJob: any) => {
+    setJobs(prevJobs => 
+      prevJobs.map(job => 
+        job.id === updatedJob.id ? { ...job, ...updatedJob } : job
+      )
+    );
+    toast({
+      title: "Job Updated Successfully!",
+      description: `"${updatedJob.title}" has been updated.`,
+    });
   };
 
   return (
@@ -137,8 +208,18 @@ const JobListings = () => {
                     </div>
                     <p className="text-gray-600 mb-3">{job.location} • {job.type}</p>
                     <div className="flex gap-6 text-sm text-gray-600">
-                      <span>{job.applications} applications</span>
-                      <span>{job.views} views</span>
+                      <button 
+                        onClick={(e) => handleViewAnalytics(e, job.id)}
+                        className="hover:text-primary cursor-pointer underline"
+                      >
+                        {job.applications} applications
+                      </button>
+                      <button 
+                        onClick={(e) => handleViewAnalytics(e, job.id)}
+                        className="hover:text-primary cursor-pointer underline"
+                      >
+                        {job.views} views
+                      </button>
                       <span>Posted {job.posted}</span>
                     </div>
                   </div>
@@ -147,7 +228,7 @@ const JobListings = () => {
                       variant="outline" 
                       size="sm"
                       onClick={(e) => handleViewJob(e, job.id)}
-                      title="View Job"
+                      title="Preview Job"
                       className="hover:bg-gray-50 active:bg-gray-100"
                     >
                       <Eye className="w-4 h-4" />
@@ -174,7 +255,7 @@ const JobListings = () => {
                       variant="outline" 
                       size="sm"
                       onClick={(e) => handleArchiveJob(e, job.id)}
-                      title={job.status === 'Active' ? 'Archive Job' : 'Unarchive Job'}
+                      title={job.status === 'Active' ? 'Pause Job' : 'Activate Job'}
                       className="hover:bg-gray-50 active:bg-gray-100"
                     >
                       <Archive className="w-4 h-4" />
@@ -192,6 +273,32 @@ const JobListings = () => {
         onOpenChange={setIsJobCreationModalOpen}
         onJobCreated={handleJobCreated}
       />
+
+      {selectedJob && (
+        <JobPreviewModal 
+          open={isJobPreviewModalOpen}
+          onOpenChange={setIsJobPreviewModalOpen}
+          jobData={selectedJob}
+        />
+      )}
+
+      {selectedJob && (
+        <JobCreationModal 
+          open={isJobEditModalOpen}
+          onOpenChange={setIsJobEditModalOpen}
+          onJobCreated={handleJobUpdated}
+          existingJob={selectedJob}
+          isEditing={true}
+        />
+      )}
+
+      {selectedJob && (
+        <JobAnalyticsModal 
+          open={isAnalyticsModalOpen}
+          onOpenChange={setIsAnalyticsModalOpen}
+          jobData={selectedJob}
+        />
+      )}
     </DashboardLayout>
   );
 };
