@@ -59,18 +59,6 @@ export function ProfileSettingsContent() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
-            {/* Login & Security */}
-            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
-              <CardHeader className="border-b border-gray-100">
-                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  🔐 Login & Security
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <LoginSecuritySection onChange={handleFieldChange} />
-              </CardContent>
-            </Card>
-
             {/* User Profile */}
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100">
@@ -79,25 +67,31 @@ export function ProfileSettingsContent() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
-                <UserProfileSection onChange={handleFieldChange} />
-              </CardContent>
-            </Card>
-
-            {/* Company Information */}
-            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
-              <CardHeader className="border-b border-gray-100">
-                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  🏢 Company Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-6">
-                <CompanyInfoSection 
+                <UserProfileSection 
                   isIndividualRecruiter={isIndividualRecruiter}
                   setIsIndividualRecruiter={setIsIndividualRecruiter}
-                  onChange={handleFieldChange}
+                  onChange={handleFieldChange} 
                 />
               </CardContent>
             </Card>
+
+            {/* Company Information - Only show if not individual recruiter */}
+            {!isIndividualRecruiter && (
+              <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+                <CardHeader className="border-b border-gray-100">
+                  <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                    🏢 Company Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <CompanyInfoSection 
+                    isIndividualRecruiter={isIndividualRecruiter}
+                    setIsIndividualRecruiter={setIsIndividualRecruiter}
+                    onChange={handleFieldChange}
+                  />
+                </CardContent>
+              </Card>
+            )}
 
             {/* Platform Preferences */}
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
@@ -108,6 +102,18 @@ export function ProfileSettingsContent() {
               </CardHeader>
               <CardContent className="p-6">
                 <PlatformPreferencesSection onChange={handleFieldChange} />
+              </CardContent>
+            </Card>
+
+            {/* Login & Security - Moved to the end */}
+            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  🔐 Login & Security
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <LoginSecuritySection onChange={handleFieldChange} />
               </CardContent>
             </Card>
           </div>
