@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { ArrowLeft, Save } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LoginSecuritySection } from './LoginSecuritySection';
@@ -10,10 +9,14 @@ import { UserProfileSection } from './UserProfileSection';
 import { CompanyInfoSection } from './CompanyInfoSection';
 import { PlatformPreferencesSection } from './PlatformPreferencesSection';
 import { NavigationLinksSection } from './NavigationLinksSection';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function ProfileSettingsContent() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isIndividualRecruiter, setIsIndividualRecruiter] = useState(false);
+  const { t } = useTranslation();
+  const { isRTL } = useLanguage();
 
   const handleSaveChanges = () => {
     console.log('Saving changes...');
@@ -26,20 +29,20 @@ export function ProfileSettingsContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50">
+    <div className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50 ${isRTL ? 'rtl' : 'ltr'}`}>
       <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Link to="/">
               <Button variant="ghost" size="sm" className="text-gray-600 hover:text-orange-600">
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
+                <ArrowLeft className={`w-4 h-4 ${isRTL ? 'ml-2 rotate-180' : 'mr-2'}`} />
+                {t('backToDashboard')}
               </Button>
             </Link>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Profile & Settings</h1>
-              <p className="text-gray-600 mt-1">Manage your account preferences and company information</p>
+            <div className={isRTL ? 'text-right' : ''}>
+              <h1 className="text-3xl font-bold text-gray-900">{t('profileAndSettings')}</h1>
+              <p className="text-gray-600 mt-1">{t('manageAccountPreferences')}</p>
             </div>
           </div>
           
@@ -50,8 +53,8 @@ export function ProfileSettingsContent() {
               disabled={!hasUnsavedChanges}
               className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg"
             >
-              <Save className="w-4 h-4 mr-2" />
-              Save Changes
+              <Save className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+              {t('saveChanges')}
             </Button>
           </div>
         </div>
@@ -62,8 +65,8 @@ export function ProfileSettingsContent() {
             {/* User Profile */}
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100">
-                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  👤 User Profile
+                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  👤 {t('userProfile')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -79,8 +82,8 @@ export function ProfileSettingsContent() {
             {!isIndividualRecruiter && (
               <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-gray-100">
-                  <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                    🏢 Company Information
+                  <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                    🏢 {t('companyInformation')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -96,8 +99,8 @@ export function ProfileSettingsContent() {
             {/* Platform Preferences */}
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100">
-                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  🌐 Platform Preferences
+                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  🌐 {t('platformPreferences')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -108,8 +111,8 @@ export function ProfileSettingsContent() {
             {/* Login & Security - Moved to the end */}
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100">
-                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  🔐 Login & Security
+                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  🔐 {t('loginAndSecurity')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -132,8 +135,8 @@ export function ProfileSettingsContent() {
             className="w-full bg-orange-600 hover:bg-orange-700 text-white shadow-xl"
             size="lg"
           >
-            <Save className="w-4 h-4 mr-2" />
-            Save Changes
+            <Save className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+            {t('saveChanges')}
           </Button>
         </div>
       </div>

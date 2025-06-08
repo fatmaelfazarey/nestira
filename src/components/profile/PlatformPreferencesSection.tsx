@@ -5,13 +5,16 @@ import { Switch } from '@/components/ui/switch';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Globe, Bell, Monitor, Moon, Sun } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface PlatformPreferencesSectionProps {
   onChange: () => void;
 }
 
 export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSectionProps) {
-  const [language, setLanguage] = useState('english');
+  const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
   const [interfaceMode, setInterfaceMode] = useState('light');
   const [emailUpdates, setEmailUpdates] = useState(true);
   const [reminders, setReminders] = useState(true);
@@ -24,19 +27,19 @@ export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSect
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <Globe className="w-4 h-4 text-orange-600" />
-          <Label className="text-sm font-medium text-gray-900">Language Preference</Label>
+          <Label className="text-sm font-medium text-gray-900">{t('languagePreference')}</Label>
         </div>
-        <RadioGroup value={language} onValueChange={(value) => {
+        <RadioGroup value={language} onValueChange={(value: 'english' | 'arabic') => {
           setLanguage(value);
           onChange();
         }}>
           <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:border-orange-200 transition-colors">
             <RadioGroupItem value="english" id="english" className="border-orange-600 text-orange-600" />
-            <Label htmlFor="english" className="cursor-pointer">English</Label>
+            <Label htmlFor="english" className="cursor-pointer">{t('english')}</Label>
           </div>
           <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:border-orange-200 transition-colors">
             <RadioGroupItem value="arabic" id="arabic" className="border-orange-600 text-orange-600" />
-            <Label htmlFor="arabic" className="cursor-pointer">العربية (Arabic)</Label>
+            <Label htmlFor="arabic" className="cursor-pointer">{t('arabic')}</Label>
           </div>
         </RadioGroup>
       </div>
@@ -47,7 +50,7 @@ export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSect
       <div className="space-y-3">
         <div className="flex items-center gap-2">
           <Monitor className="w-4 h-4 text-orange-600" />
-          <Label className="text-sm font-medium text-gray-900">Interface Mode</Label>
+          <Label className="text-sm font-medium text-gray-900">{t('interfaceMode')}</Label>
         </div>
         <RadioGroup value={interfaceMode} onValueChange={(value) => {
           setInterfaceMode(value);
@@ -56,12 +59,12 @@ export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSect
           <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:border-orange-200 transition-colors">
             <RadioGroupItem value="light" id="light" className="border-orange-600 text-orange-600" />
             <Sun className="w-4 h-4 text-orange-600 ml-2" />
-            <Label htmlFor="light" className="cursor-pointer">Light Mode</Label>
+            <Label htmlFor="light" className="cursor-pointer">{t('lightMode')}</Label>
           </div>
           <div className="flex items-center space-x-2 p-3 border border-gray-200 rounded-lg hover:border-orange-200 transition-colors">
             <RadioGroupItem value="dark" id="dark" className="border-orange-600 text-orange-600" />
             <Moon className="w-4 h-4 text-gray-600 ml-2" />
-            <Label htmlFor="dark" className="cursor-pointer">Dark Mode</Label>
+            <Label htmlFor="dark" className="cursor-pointer">{t('darkMode')}</Label>
           </div>
         </RadioGroup>
       </div>
@@ -72,14 +75,14 @@ export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSect
       <div className="space-y-4">
         <div className="flex items-center gap-2">
           <Bell className="w-4 h-4 text-orange-600" />
-          <Label className="text-sm font-medium text-gray-900">Notification Settings</Label>
+          <Label className="text-sm font-medium text-gray-900">{t('notificationSettings')}</Label>
         </div>
         
         <div className="space-y-4 pl-6">
           <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
             <div>
-              <Label htmlFor="email-updates" className="font-medium text-gray-900">Email Updates</Label>
-              <p className="text-sm text-gray-500">Receive platform updates, new features, and news</p>
+              <Label htmlFor="email-updates" className="font-medium text-gray-900">{t('emailUpdates')}</Label>
+              <p className="text-sm text-gray-500">{t('emailUpdatesDesc')}</p>
             </div>
             <Switch
               id="email-updates"
@@ -94,8 +97,8 @@ export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSect
 
           <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
             <div>
-              <Label htmlFor="reminders" className="font-medium text-gray-900">Reminders</Label>
-              <p className="text-sm text-gray-500">Interview reminders, application deadlines, and follow-ups</p>
+              <Label htmlFor="reminders" className="font-medium text-gray-900">{t('reminders')}</Label>
+              <p className="text-sm text-gray-500">{t('remindersDesc')}</p>
             </div>
             <Switch
               id="reminders"
@@ -110,8 +113,8 @@ export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSect
 
           <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
             <div>
-              <Label htmlFor="job-matches" className="font-medium text-gray-900">Job Matches</Label>
-              <p className="text-sm text-gray-500">Notifications for relevant candidates and job matching alerts</p>
+              <Label htmlFor="job-matches" className="font-medium text-gray-900">{t('jobMatches')}</Label>
+              <p className="text-sm text-gray-500">{t('jobMatchesDesc')}</p>
             </div>
             <Switch
               id="job-matches"
@@ -131,8 +134,8 @@ export function PlatformPreferencesSection({ onChange }: PlatformPreferencesSect
       {/* Autosave */}
       <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
         <div>
-          <Label htmlFor="autosave" className="font-medium text-gray-900">Autosave</Label>
-          <p className="text-sm text-gray-500">Automatically save changes as you type (Future feature)</p>
+          <Label htmlFor="autosave" className="font-medium text-gray-900">{t('autosave')}</Label>
+          <p className="text-sm text-gray-500">{t('autosaveDesc')}</p>
         </div>
         <Switch
           id="autosave"
