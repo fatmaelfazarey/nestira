@@ -83,7 +83,7 @@ export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
             <div className="flex justify-center">
               <Button
                 onClick={onFindMyMatch}
-                className="bg-gradient-to-r from-[#ff5f1b] to-[#ff7a3d] hover:from-[#e5551a] hover:to-[#e56829] text-white px-8 py-3 font-bold text-base border-0 shadow-xl transform hover:scale-105 transition-all duration-200 animate-pulse"
+                className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-8 py-3 font-bold text-base border-0 shadow-xl transform hover:scale-105 transition-all duration-200"
               >
                 <Target className="w-5 h-5 mr-2" />
                 🎯 Find My Match from JOB POST
