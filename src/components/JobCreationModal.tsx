@@ -37,9 +37,11 @@ interface JobCreationModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onJobCreated?: (job: any) => void;
+  existingJob?: any;
+  isEditing?: boolean;
 }
 
-export function JobCreationModal({ open, onOpenChange, onJobCreated }: JobCreationModalProps) {
+export function JobCreationModal({ open, onOpenChange, onJobCreated, existingJob, isEditing }: JobCreationModalProps) {
   const [jobTitle, setJobTitle] = useState('');
   const [jobFunction, setJobFunction] = useState('');
   const [careerLevel, setCareerLevel] = useState('');
@@ -67,18 +69,55 @@ export function JobCreationModal({ open, onOpenChange, onJobCreated }: JobCreati
   const [isCompensationOpen, setIsCompensationOpen] = useState(true);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  // Populate form with existing job data when editing
+  useEffect(() => {
+    if (isEditing && existingJob) {
+      setJobTitle(existingJob.title || '');
+      setJobFunction(existingJob.function || '');
+      setCareerLevel(existingJob.level || '');
+      setIndustry(existingJob.industry || '');
+      setLocation(existingJob.location || '');
+      setMinExperience(existingJob.experience?.split('-')[0] || '');
+      setMaxExperience(existingJob.experience?.split('-')[1]?.replace(' years', '') || '');
+      setSkills(existingJob.skills || []);
+      setCertifications(existingJob.certifications || []);
+      setEmploymentType(existingJob.employmentType || '');
+      setWorkMode(existingJob.workMode || '');
+      setVisaStatus(existingJob.visaStatus || []);
+      setLanguages(existingJob.languages || []);
+      setDescription(existingJob.description || '');
+    } else {
+      // Reset form when not editing
+      setJobTitle('');
+      setJobFunction('');
+      setCareerLevel('');
+      setIndustry('');
+      setLocation('');
+      setMinExperience('');
+      setMaxExperience('');
+      setSkills([]);
+      setCertifications([]);
+      setEmploymentType('');
+      setWorkMode('');
+      setVisaStatus([]);
+      setGender('');
+      setLanguages([]);
+      setDescription('');
+    }
+  }, [isEditing, existingJob, open]);
+
   // Auto-generate description when key fields are filled
   useEffect(() => {
-    if (jobTitle && jobFunction && careerLevel && minExperience) {
+    if (jobTitle && jobFunction && careerLevel && minExperience && !isEditing) {
       console.log('Triggering auto-generation for:', { jobTitle, jobFunction, careerLevel, minExperience });
       generateJobDescription();
     }
-  }, [jobTitle, jobFunction, careerLevel, minExperience]);
+  }, [jobTitle, jobFunction, careerLevel, minExperience, isEditing]);
 
   const handleJobTitleChange = (title: string) => {
     setJobTitle(title);
     console.log('Job title changed to:', title);
-    if (title.length > 2) {
+    if (title.length > 2 && !isEditing) {
       simulateAIAutoFill(title);
     }
   };
@@ -159,42 +198,36 @@ We offer a competitive compensation package and excellent career growth opportun
   };
 
   const handleSubmit = () => {
-    console.log('Posting job...');
+    console.log(isEditing ? 'Updating job...' : 'Posting job...');
     
-    // Create new job object
-    const newJob = {
-      id: Date.now(), // Simple ID generation
+    // Create job object
+    const jobData = {
+      id: isEditing ? existingJob.id : Date.now(),
       title: jobTitle,
       location: location,
       type: employmentType,
-      status: 'Active',
-      applications: 0,
-      views: 0,
-      posted: 'Just now'
+      status: isEditing ? existingJob.status : 'Active',
+      applications: isEditing ? existingJob.applications : 0,
+      views: isEditing ? existingJob.views : 0,
+      posted: isEditing ? existingJob.posted : 'Just now',
+      function: jobFunction,
+      level: careerLevel,
+      industry,
+      experience: `${minExperience}-${maxExperience} years`,
+      skills,
+      certifications,
+      employmentType,
+      workMode,
+      description,
+      languages,
+      visaStatus
     };
 
-    // Call the callback to add the job to the listings
+    // Call the callback
     if (onJobCreated) {
-      onJobCreated(newJob);
+      onJobCreated(jobData);
     }
 
-    // Reset form
-    setJobTitle('');
-    setJobFunction('');
-    setCareerLevel('');
-    setIndustry('');
-    setLocation('');
-    setMinExperience('');
-    setMaxExperience('');
-    setSkills([]);
-    setCertifications([]);
-    setEmploymentType('');
-    setWorkMode('');
-    setVisaStatus([]);
-    setGender('');
-    setLanguages([]);
-    setDescription('');
-    
     // Close modal
     onOpenChange(false);
   };
@@ -243,7 +276,7 @@ We offer a competitive compensation package and excellent career growth opportun
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
               <Plus className="w-6 h-6 text-accent" />
-              Create New Job Post
+              {isEditing ? 'Edit Job Post' : 'Create New Job Post'}
             </DialogTitle>
           </DialogHeader>
 
@@ -632,7 +665,7 @@ We offer a competitive compensation package and excellent career growth opportun
                 </Button>
                 <Button onClick={handleSubmit} className="bg-accent hover:bg-accent/90 flex items-center gap-2">
                   <Plus className="w-4 h-4" />
-                  Post Job
+                  {isEditing ? 'Update Job' : 'Post Job'}
                 </Button>
               </div>
             </div>
