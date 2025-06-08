@@ -535,15 +535,6 @@ const TalentPool = () => {
           </div>
           
           <div className="flex items-center gap-4 py-[41px] mx-[43px]">
-            {/* Find My Match Button */}
-            <Button 
-              onClick={() => setIsFindMyMatchOpen(true)}
-              className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg"
-            >
-              <Target className="w-5 h-5 mr-2" />
-              🎯 Find My Match (Based on Job Post)
-            </Button>
-
             <div className="flex gap-2">
               <Button variant={currentView === 'grid' ? 'default' : 'outline'} onClick={() => setCurrentView('grid')} className="flex items-center gap-2">
                 <Grid2X2 className="w-4 h-4" />
@@ -564,7 +555,13 @@ const TalentPool = () => {
         </div>
 
         {/* AI Search Component */}
-        <AICandidateSearch onSearch={handleAiSearch} isSearching={isAiSearching} currentQuery={aiSearchQuery} onClear={handleClearAiSearch} />
+        <AICandidateSearch 
+          onSearch={handleAiSearch} 
+          isSearching={isAiSearching} 
+          currentQuery={aiSearchQuery} 
+          onClear={handleClearAiSearch}
+          onFindMyMatch={() => setIsFindMyMatchOpen(true)}
+        />
 
         {renderCurrentView()}
 
