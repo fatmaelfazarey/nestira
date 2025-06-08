@@ -7,7 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle, Target, TrendingUp, ArrowUpDown } from 'lucide-react';
+import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle, Target, TrendingUp, ArrowUpDown, Eye, Users } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
 import { AICandidateSearch } from '@/components/AICandidateSearch';
@@ -36,13 +36,17 @@ const TalentPool = () => {
   const [isFindMyMatchOpen, setIsFindMyMatchOpen] = useState(false);
   const [matchedJobPost, setMatchedJobPost] = useState(null);
 
-  // New state for score visibility
+  // New state for reveal logic
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [revealTrigger, setRevealTrigger] = useState(null); // 'filters', 'ai-search', 'job-match'
+
+  // Score visibility state (keeping existing logic)
   const [scoreVisibility, setScoreVisibility] = useState({
     showScores: false,
-    triggerMethod: null, // 'ai-search', 'filters', 'job-match'
+    triggerMethod: null,
     isAnimating: false
   });
-  const [sortBy, setSortBy] = useState('score'); // 'score', 'experience', 'availability'
+  const [sortBy, setSortBy] = useState('score');
 
   // New filter states
   const [selectedSubfields, setSelectedSubfields] = useState([]);
@@ -144,8 +148,11 @@ const TalentPool = () => {
     return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore;
   });
 
+  // Show all candidates if not revealed, otherwise show filtered/matched candidates
+  const candidatesToShow = isRevealed ? filteredCandidates : candidates;
+
   // Sort candidates based on selected sorting method
-  const sortedCandidates = [...filteredCandidates].sort((a, b) => {
+  const sortedCandidates = [...candidatesToShow].sort((a, b) => {
     switch (sortBy) {
       case 'score':
         return b.score - a.score;
@@ -160,7 +167,7 @@ const TalentPool = () => {
     }
   });
 
-  // Check if any filters are applied that should reveal scores
+  // Check if any filters are applied that should reveal candidates
   const hasActiveFilters = () => {
     return searchQuery !== '' || 
            locationFilter !== 'all' || 
@@ -185,18 +192,18 @@ const TalentPool = () => {
            selectedScreeningTags.length > 0;
   };
 
-  // Trigger score reveal when filters are applied
-  const handleFiltersApplied = () => {
-    if (hasActiveFilters() && !scoreVisibility.showScores) {
-      setScoreVisibility({
-        showScores: true,
-        triggerMethod: 'filters',
-        isAnimating: true
-      });
-      setTimeout(() => {
-        setScoreVisibility(prev => ({ ...prev, isAnimating: false }));
-      }, 500);
-    }
+  // Trigger reveal when filters are applied
+  const triggerReveal = (trigger) => {
+    setIsRevealed(true);
+    setRevealTrigger(trigger);
+    setScoreVisibility({
+      showScores: true,
+      triggerMethod: trigger,
+      isAnimating: true
+    });
+    setTimeout(() => {
+      setScoreVisibility(prev => ({ ...prev, isAnimating: false }));
+    }, 500);
   };
 
   // New utility functions
@@ -275,7 +282,9 @@ const TalentPool = () => {
     setAiSearchQuery('');
     setMatchedJobPost(null);
     
-    // Reset score visibility
+    // Reset reveal state
+    setIsRevealed(false);
+    setRevealTrigger(null);
     setScoreVisibility({
       showScores: false,
       triggerMethod: null,
@@ -287,21 +296,13 @@ const TalentPool = () => {
     setIsAiSearching(true);
     setAiSearchQuery(query);
 
-    // Reveal scores when AI search is triggered
-    setScoreVisibility({
-      showScores: true,
-      triggerMethod: 'ai-search',
-      isAnimating: true
-    });
+    // Trigger reveal for AI search
+    triggerReveal('ai-search');
 
     await new Promise(resolve => setTimeout(resolve, 1000));
     const aiResults = aiSearchCandidates(candidates, query);
     setAiFilteredCandidates(aiResults);
     setIsAiSearching(false);
-    
-    setTimeout(() => {
-      setScoreVisibility(prev => ({ ...prev, isAnimating: false }));
-    }, 500);
   };
 
   const handleClearAiSearch = () => {
@@ -309,8 +310,10 @@ const TalentPool = () => {
     setAiFilteredCandidates(null);
     setMatchedJobPost(null);
     
-    // Hide scores when clearing AI search
-    if (scoreVisibility.triggerMethod === 'ai-search' && !hasActiveFilters()) {
+    // Reset reveal state if only AI search was active
+    if (revealTrigger === 'ai-search' && !hasActiveFilters()) {
+      setIsRevealed(false);
+      setRevealTrigger(null);
       setScoreVisibility({
         showScores: false,
         triggerMethod: null,
@@ -364,29 +367,28 @@ const TalentPool = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedCandidates.map(candidate => {
           const isUnlocked = unlockedCandidates.has(candidate.id);
+          const shouldBlur = !isRevealed;
+          
           return (
             <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative">
               <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <Avatar className={`w-12 h-12 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                      <Avatar className="w-12 h-12 blur-sm">
                         <AvatarImage src={candidate.photo} alt={candidate.name} />
                         <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      {!isUnlocked && (
-                        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                          <Unlock className="w-4 h-4 text-gray-600" />
-                        </div>
-                      )}
+                      <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                        <Unlock className="w-4 h-4 text-gray-600" />
+                      </div>
                     </div>
                     <div className="flex-1">
                       <CardTitle className="text-lg flex items-center gap-2">
                         <span className="transition-all duration-500">
-                          {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+                          {formatBlurredName(candidate.name)}
                         </span>
                         <span className="text-lg">{getCountryFlag(candidate.country)}</span>
-                        {isUnlocked && <CheckCircle className="w-4 h-4 text-green-500 animate-fade-in" />}
                       </CardTitle>
                       <p className="text-sm text-gray-600">{candidate.title}</p>
                     </div>
@@ -395,7 +397,7 @@ const TalentPool = () => {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
-                          {scoreVisibility.showScores ? (
+                          {isRevealed && scoreVisibility.showScores ? (
                             <div className={`transition-all duration-500 ${scoreVisibility.isAnimating ? 'animate-scale-in' : ''}`}>
                               <CircularProgress value={candidate.score} size={60} strokeWidth={4} />
                             </div>
@@ -411,9 +413,9 @@ const TalentPool = () => {
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
-                          {scoreVisibility.showScores 
+                          {isRevealed && scoreVisibility.showScores 
                             ? `Matching Score: ${candidate.score}%`
-                            : 'Matching score hidden – Use filters or AI search to reveal match'
+                            : 'Use filters, job post, or AI search to reveal match'
                           }
                         </p>
                       </TooltipContent>
@@ -443,15 +445,15 @@ const TalentPool = () => {
                   {candidate.salaryExpectation}
                 </div>
 
-                <div className="flex flex-wrap gap-1">
-                  {candidate.tags.map(tag => {})}
-                </div>
-
-                <div className="flex items-center gap-2.5 ">
+                <div className="flex items-center gap-2.5">
                   <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Industry:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.industryExperience.map(industry => (
-                      <Badge key={industry} variant="outline" className="text-xs">
+                      <Badge 
+                        key={industry} 
+                        variant="outline" 
+                        className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                      >
                         {industry}
                       </Badge>
                     ))}
@@ -462,7 +464,11 @@ const TalentPool = () => {
                   <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Subfields:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.financeSubfields.map(subfield => (
-                      <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                      <Badge 
+                        key={subfield} 
+                        variant="outline" 
+                        className={`text-xs bg-blue-50 text-blue-700 border-blue-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                      >
                         {subfield}
                       </Badge>
                     ))}
@@ -473,7 +479,11 @@ const TalentPool = () => {
                   <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Tools:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.softwareTools.map(tool => (
-                      <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                      <Badge 
+                        key={tool} 
+                        variant="outline" 
+                        className={`text-xs bg-purple-50 text-purple-700 border-purple-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                      >
                         {tool}
                       </Badge>
                     ))}
@@ -484,7 +494,11 @@ const TalentPool = () => {
                   <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Certs:</p>
                   <div className="flex flex-wrap gap-1">
                     {candidate.certifications.map(cert => (
-                      <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                      <Badge 
+                        key={cert} 
+                        variant="outline" 
+                        className={`text-xs bg-green-50 text-green-700 border-green-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                      >
                         {cert}
                       </Badge>
                     ))}
@@ -504,7 +518,7 @@ const TalentPool = () => {
                     onClick={() => handleUnlock(candidate)}
                   >
                     <Unlock className="w-4 h-4 mr-1" />
-                    {isUnlocked ? 'View Profile' : 'Unlock'}
+                    Unlock
                   </Button>
                 </div>
               </CardContent>
@@ -537,27 +551,25 @@ const TalentPool = () => {
           </TableHeader>
           <TableBody>
             {sortedCandidates.map(candidate => {
-              const isUnlocked = unlockedCandidates.has(candidate.id);
+              const shouldBlur = !isRevealed;
+              
               return (
                 <TableRow key={candidate.id}>
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <div className="relative">
-                        <Avatar className={`w-8 h-8 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
+                        <Avatar className="w-8 h-8 blur-sm">
                           <AvatarImage src={candidate.photo} alt={candidate.name} />
                           <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                         </Avatar>
-                        {!isUnlocked && (
-                          <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                            <Unlock className="w-3 h-3 text-gray-600" />
-                          </div>
-                        )}
+                        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                          <Unlock className="w-3 h-3 text-gray-600" />
+                        </div>
                       </div>
                       <div>
                         <div className="font-medium flex items-center gap-2 transition-all duration-500">
-                          {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+                          {formatBlurredName(candidate.name)}
                           <span>{getCountryFlag(candidate.country)}</span>
-                          {isUnlocked && <CheckCircle className="w-3 h-3 text-green-500 animate-fade-in" />}
                         </div>
                       </div>
                     </div>
@@ -569,7 +581,7 @@ const TalentPool = () => {
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
-                          {scoreVisibility.showScores ? (
+                          {isRevealed && scoreVisibility.showScores ? (
                             <div className={`transition-all duration-500 ${scoreVisibility.isAnimating ? 'animate-scale-in' : ''}`}>
                               <CircularProgress value={candidate.score} size={40} strokeWidth={3} showPercentage={true} compact={true} />
                             </div>
@@ -585,9 +597,9 @@ const TalentPool = () => {
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
-                          {scoreVisibility.showScores 
+                          {isRevealed && scoreVisibility.showScores 
                             ? `Matching Score: ${candidate.score}%`
-                            : 'Matching score hidden – Use filters or AI search to reveal match'
+                            : 'Use filters, job post, or AI search to reveal match'
                           }
                         </p>
                       </TooltipContent>
@@ -604,12 +616,16 @@ const TalentPool = () => {
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {candidate.industryExperience.slice(0, 2).map(industry => (
-                        <Badge key={industry} variant="outline" className="text-xs">
+                        <Badge 
+                          key={industry} 
+                          variant="outline" 
+                          className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                        >
                           {industry}
                         </Badge>
                       ))}
                       {candidate.industryExperience.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
                           +{candidate.industryExperience.length - 2}
                         </Badge>
                       )}
@@ -618,12 +634,16 @@ const TalentPool = () => {
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {candidate.financeSubfields.slice(0, 2).map(subfield => (
-                        <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        <Badge 
+                          key={subfield} 
+                          variant="outline" 
+                          className={`text-xs bg-blue-50 text-blue-700 border-blue-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                        >
                           {subfield}
                         </Badge>
                       ))}
                       {candidate.financeSubfields.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
                           +{candidate.financeSubfields.length - 2}
                         </Badge>
                       )}
@@ -632,12 +652,16 @@ const TalentPool = () => {
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {candidate.softwareTools.slice(0, 2).map(tool => (
-                        <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                        <Badge 
+                          key={tool} 
+                          variant="outline" 
+                          className={`text-xs bg-purple-50 text-purple-700 border-purple-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                        >
                           {tool}
                         </Badge>
                       ))}
                       {candidate.softwareTools.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
                           +{candidate.softwareTools.length - 2}
                         </Badge>
                       )}
@@ -646,12 +670,16 @@ const TalentPool = () => {
                   <TableCell>
                     <div className="flex flex-wrap gap-1">
                       {candidate.certifications.slice(0, 2).map(cert => (
-                        <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                        <Badge 
+                          key={cert} 
+                          variant="outline" 
+                          className={`text-xs bg-green-50 text-green-700 border-green-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}
+                        >
                           {cert}
                         </Badge>
                       ))}
                       {candidate.certifications.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
                           +{candidate.certifications.length - 2}
                         </Badge>
                       )}
@@ -699,12 +727,8 @@ const TalentPool = () => {
     console.log('Selected job post:', jobPost);
     setMatchedJobPost(jobPost);
 
-    // Reveal scores when job post is selected
-    setScoreVisibility({
-      showScores: true,
-      triggerMethod: 'job-match',
-      isAnimating: true
-    });
+    // Trigger reveal for job match
+    triggerReveal('job-match');
 
     const searchQuery = `${jobPost.title}, ${jobPost.subfields.join(', ')}, ${jobPost.requirements.join(', ')}, ${jobPost.location}`;
     handleAiSearch(searchQuery);
@@ -712,9 +736,11 @@ const TalentPool = () => {
 
   // Effect to handle filter changes
   React.useEffect(() => {
-    if (hasActiveFilters() && !scoreVisibility.showScores) {
-      handleFiltersApplied();
-    } else if (!hasActiveFilters() && scoreVisibility.showScores && scoreVisibility.triggerMethod === 'filters') {
+    if (hasActiveFilters() && !isRevealed) {
+      triggerReveal('filters');
+    } else if (!hasActiveFilters() && isRevealed && revealTrigger === 'filters') {
+      setIsRevealed(false);
+      setRevealTrigger(null);
       setScoreVisibility({
         showScores: false,
         triggerMethod: null,
@@ -731,11 +757,37 @@ const TalentPool = () => {
             <h1 className="text-3xl font-bold text-gray-900 py-[10px]">Talent Pool</h1>
             <p className="text-gray-600">Browse and filter finance professionals</p>
             
-            <div className="mt-4 max-w-md">
-              <p className="text-sm text-gray-600 mb-2">
-                {matchedJobPost ? `Matched for: ${matchedJobPost.title}` : 'Matching Candidates'}
-              </p>
-              <CandidateCountProgress count={sortedCandidates.length} total={candidates.length} />
+            {/* Matching Stats Bar */}
+            <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-6">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-5 h-5 text-blue-600" />
+                    <span className="text-sm font-medium text-gray-700">Total Talents in Nestira:</span>
+                    <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 font-bold">
+                      {candidates.length.toLocaleString()}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Target className="w-5 h-5 text-green-600" />
+                    <span className="text-sm font-medium text-gray-700">Matching Results:</span>
+                    <Badge 
+                      variant="outline" 
+                      className={`font-bold ${isRevealed 
+                        ? 'bg-green-100 text-green-800 border-green-300 animate-pulse' 
+                        : 'bg-gray-100 text-gray-600 border-gray-300'
+                      }`}
+                    >
+                      {isRevealed ? sortedCandidates.length : '-'}
+                    </Badge>
+                  </div>
+                </div>
+                {matchedJobPost && (
+                  <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+                    Matched for: {matchedJobPost.title}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           
@@ -777,8 +829,22 @@ const TalentPool = () => {
           onFindMyMatch={() => setIsFindMyMatchOpen(true)} 
         />
 
+        {/* Informational note for blurred state */}
+        {!isRevealed && (
+          <Card className="bg-orange-50 border-orange-200">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <Eye className="w-5 h-5 text-orange-600" />
+                <span className="text-orange-900 font-medium">
+                  🔒 Please use filters, job post selection, or AI search to see matching candidates.
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Score visibility status banner */}
-        {scoreVisibility.showScores && (
+        {isRevealed && scoreVisibility.showScores && (
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -788,9 +854,9 @@ const TalentPool = () => {
                     🎯 Results ranked by match relevance
                   </span>
                   <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-300">
-                    {scoreVisibility.triggerMethod === 'ai-search' && 'AI Search Active'}
-                    {scoreVisibility.triggerMethod === 'filters' && 'Filters Applied'}
-                    {scoreVisibility.triggerMethod === 'job-match' && 'Job Match Active'}
+                    {revealTrigger === 'ai-search' && 'AI Search Active'}
+                    {revealTrigger === 'filters' && 'Filters Applied'}
+                    {revealTrigger === 'job-match' && 'Job Match Active'}
                   </Badge>
                 </div>
                 <div className="flex items-center gap-2">
@@ -830,9 +896,9 @@ const TalentPool = () => {
 
         {renderCurrentView()}
 
-        {sortedCandidates.length === 0 && (
+        {sortedCandidates.length === 0 && isRevealed && (
           <div className="text-center py-12">
-            <p className="text-gray-500">No candidates found matching your filters.</p>
+            <p className="text-gray-500">No candidates found matching your criteria.</p>
           </div>
         )}
 
