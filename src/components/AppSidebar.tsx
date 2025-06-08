@@ -1,3 +1,4 @@
+
 import {
   Grid2X2,
   Inbox,
@@ -11,7 +12,8 @@ import {
   HelpCircle,
   CreditCard,
   Users,
-  Calendar
+  Calendar,
+  Settings
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -126,6 +128,12 @@ const navigationSections = [
         title: "Referrals",
         url: "/referrals",
         icon: Users,
+        badge: null
+      },
+      {
+        title: "Settings",
+        url: "/profile-settings",
+        icon: Settings,
         badge: null
       },
       {
