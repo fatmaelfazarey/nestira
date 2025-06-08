@@ -1,10 +1,10 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Eye, Pencil, BarChart2, Archive } from 'lucide-react';
 import { useState } from 'react';
+import { JobCreationModal } from '@/components/JobCreationModal';
 
 const JobListings = () => {
   const [jobs, setJobs] = useState([
@@ -40,10 +40,13 @@ const JobListings = () => {
     }
   ]);
 
+  const [isJobCreationModalOpen, setIsJobCreationModalOpen] = useState(false);
+
   const handleCreateNewJob = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     console.log('Create new job clicked');
+    setIsJobCreationModalOpen(true);
     alert('Redirecting to job creation form...');
   };
 
@@ -173,6 +176,11 @@ const JobListings = () => {
           ))}
         </div>
       </div>
+
+      <JobCreationModal 
+        open={isJobCreationModalOpen} 
+        onOpenChange={setIsJobCreationModalOpen} 
+      />
     </DashboardLayout>
   );
 };

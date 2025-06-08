@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -64,14 +64,24 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
   const [isScoringOpen, setIsScoringOpen] = useState(false);
   const [isCompensationOpen, setIsCompensationOpen] = useState(false);
 
+  // Auto-generate description when key fields are filled
+  useEffect(() => {
+    if (jobTitle && jobFunction && careerLevel && minExperience) {
+      console.log('Triggering auto-generation for:', { jobTitle, jobFunction, careerLevel, minExperience });
+      generateJobDescription();
+    }
+  }, [jobTitle, jobFunction, careerLevel, minExperience]);
+
   const handleJobTitleChange = (title: string) => {
     setJobTitle(title);
+    console.log('Job title changed to:', title);
     if (title.length > 2) {
       simulateAIAutoFill(title);
     }
   };
 
   const simulateAIAutoFill = (title: string) => {
+    console.log('Auto-filling fields for title:', title);
     setTimeout(() => {
       if (title.toLowerCase().includes('finance') || title.toLowerCase().includes('financial')) {
         setJobFunction('Finance & Accounting');
@@ -86,22 +96,62 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
         setWorkMode('Hybrid');
         setVisaStatus(['Citizen', 'Residency Visa (Transferable)']);
         setGender('both');
-        generateJobDescription(title);
       }
     }, 1000);
   };
 
-  const generateJobDescription = (title: string) => {
+  const generateJobDescription = () => {
+    console.log('Starting job description generation...');
     setIsGenerating(true);
     setTimeout(() => {
-      const desc = `We are seeking a highly skilled ${title} to join our dynamic finance team...`;
+      const desc = `We are seeking a highly skilled ${jobTitle} to join our dynamic ${jobFunction} team in ${location || 'our office'}. 
+
+The ideal candidate will have ${minExperience}-${maxExperience || minExperience} years of experience in ${jobFunction.toLowerCase()} and demonstrate expertise in the following areas:
+
+Key Requirements:
+• ${minExperience}-${maxExperience || minExperience} years of relevant experience in ${jobFunction.toLowerCase()}
+• Strong proficiency in: ${skills.join(', ')}
+• ${certifications.length > 0 ? `Professional certifications: ${certifications.join(', ')}` : 'Industry-relevant certifications preferred'}
+• Excellent ${languages.join(' and ')} communication skills
+• ${careerLevel} professional with proven track record
+
+Responsibilities:
+• Lead financial analysis and reporting initiatives
+• Collaborate with cross-functional teams to drive business results
+• Ensure compliance with industry regulations and standards
+• Mentor junior team members and contribute to process improvements
+
+We offer a competitive compensation package and excellent career growth opportunities in a ${workMode.toLowerCase()} work environment.`;
+      
       setDescription(desc);
       setIsGenerating(false);
+      console.log('Job description generated successfully');
     }, 2000);
   };
 
   const handleRegenerateDescription = () => {
-    generateJobDescription(jobTitle);
+    console.log('Regenerating job description...');
+    generateJobDescription();
+  };
+
+  const handlePreviewJob = () => {
+    console.log('Opening job preview...');
+    const jobData = {
+      title: jobTitle,
+      function: jobFunction,
+      level: careerLevel,
+      industry,
+      location,
+      experience: `${minExperience}-${maxExperience} years`,
+      skills,
+      certifications,
+      employmentType,
+      workMode,
+      description,
+      salary: salaryMode === 'range' ? `${salaryMin}-${salaryMax}` : salaryMode === 'fixed' ? salaryFixed : 'Negotiable'
+    };
+    
+    alert(`Job Preview:\n\nTitle: ${jobData.title}\nLocation: ${jobData.location}\nType: ${jobData.employmentType}\nExperience: ${jobData.experience}\nSkills: ${jobData.skills.join(', ')}\n\nDescription:\n${jobData.description.substring(0, 200)}...`);
   };
 
   const handleVisaStatusChange = (status: string, checked: boolean) => {
@@ -163,14 +213,15 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
                       <SelectValue placeholder="Select function" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="finance">Finance & Accounting</SelectItem>
-                      <SelectItem value="investment">Investment Banking</SelectItem>
-                      <SelectItem value="risk">Risk Management</SelectItem>
+                      <SelectItem value="Finance & Accounting">Finance & Accounting</SelectItem>
+                      <SelectItem value="Investment Banking">Investment Banking</SelectItem>
+                      <SelectItem value="Risk Management">Risk Management</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
 
+              {/* ... keep existing grid sections for career level, industry, location */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="careerLevel" className="flex items-center gap-2 font-medium mb-2">
@@ -182,10 +233,10 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
                       <SelectValue placeholder="Select level" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="entry">Entry Level</SelectItem>
-                      <SelectItem value="mid">Mid-Level</SelectItem>
-                      <SelectItem value="senior">Senior Level</SelectItem>
-                      <SelectItem value="executive">Executive</SelectItem>
+                      <SelectItem value="Entry Level">Entry Level</SelectItem>
+                      <SelectItem value="Mid-Level">Mid-Level</SelectItem>
+                      <SelectItem value="Senior Level">Senior Level</SelectItem>
+                      <SelectItem value="Executive">Executive</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -199,10 +250,10 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
                       <SelectValue placeholder="Select industry" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="financial">Financial Services</SelectItem>
-                      <SelectItem value="banking">Banking</SelectItem>
-                      <SelectItem value="insurance">Insurance</SelectItem>
-                      <SelectItem value="consulting">Consulting</SelectItem>
+                      <SelectItem value="Financial Services">Financial Services</SelectItem>
+                      <SelectItem value="Banking">Banking</SelectItem>
+                      <SelectItem value="Insurance">Insurance</SelectItem>
+                      <SelectItem value="Consulting">Consulting</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -286,19 +337,19 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
                   <Label className="font-medium mb-3 block">Employment Type</Label>
                   <RadioGroup value={employmentType} onValueChange={setEmploymentType}>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="full-time" id="full-time" />
+                      <RadioGroupItem value="Full-time" id="full-time" />
                       <Label htmlFor="full-time">Full-Time</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="part-time" id="part-time" />
+                      <RadioGroupItem value="Part-time" id="part-time" />
                       <Label htmlFor="part-time">Part-Time</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="internship" id="internship" />
+                      <RadioGroupItem value="Internship" id="internship" />
                       <Label htmlFor="internship">Internship</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="project" id="project" />
+                      <RadioGroupItem value="Project-based" id="project" />
                       <Label htmlFor="project">Project-based</Label>
                     </div>
                   </RadioGroup>
@@ -308,15 +359,15 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
                   <Label className="font-medium mb-3 block">Work Mode</Label>
                   <RadioGroup value={workMode} onValueChange={setWorkMode}>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="onsite" id="onsite" />
+                      <RadioGroupItem value="On-site" id="onsite" />
                       <Label htmlFor="onsite">On-site</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="remote" id="remote" />
+                      <RadioGroupItem value="Remote" id="remote" />
                       <Label htmlFor="remote">Remote</Label>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <RadioGroupItem value="hybrid" id="hybrid" />
+                      <RadioGroupItem value="Hybrid" id="hybrid" />
                       <Label htmlFor="hybrid">Hybrid</Label>
                     </div>
                   </RadioGroup>
@@ -532,7 +583,7 @@ export function JobCreationModal({ open, onOpenChange }: JobCreationModalProps) 
               Back
             </Button>
             <div className="flex gap-3">
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button variant="outline" onClick={handlePreviewJob} className="flex items-center gap-2">
                 <Eye className="w-4 h-4" />
                 Preview Job
               </Button>
