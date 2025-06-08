@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -33,6 +32,7 @@ import {
 } from "recharts";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Link } from "react-router-dom";
 
 const kpiData = [
   {
@@ -200,6 +200,7 @@ const chartConfig = {
 
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
 
   const handleKpiClick = (action: string) => {
     console.log(`Navigating to ${action}`);
@@ -330,23 +331,35 @@ export function DashboardOverview() {
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6">Quick Actions</h3>
           <div className="grid grid-cols-1 gap-3">
-            <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white">
-              <Users className="w-4 h-4 mr-3" />
-              Browse Talent Pool
-            </Button>
-            <Button variant="outline" className="justify-start h-12">
-              <CheckCircle className="w-4 h-4 mr-3" />
-              Unlocked Talents
-            </Button>
-            <Button variant="outline" className="justify-start h-12">
-              <FileText className="w-4 h-4 mr-3" />
-              Create Job Post
-            </Button>
-            <Button variant="outline" className="justify-start h-12">
-              <PuzzleIcon className="w-4 h-4 mr-3" />
-              Quiz Builder
-            </Button>
-            <Button variant="outline" className="justify-start h-12">
+            <Link to="/talent-pool">
+              <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
+                <Users className="w-4 h-4 mr-3" />
+                Browse Talent Pool
+              </Button>
+            </Link>
+            <Link to="/unlocked-talents">
+              <Button variant="outline" className="justify-start h-12 w-full">
+                <CheckCircle className="w-4 h-4 mr-3" />
+                Unlocked Talents
+              </Button>
+            </Link>
+            <Link to="/job-listings">
+              <Button variant="outline" className="justify-start h-12 w-full">
+                <FileText className="w-4 h-4 mr-3" />
+                Create Job Post
+              </Button>
+            </Link>
+            <Link to="/quiz-builder">
+              <Button variant="outline" className="justify-start h-12 w-full">
+                <PuzzleIcon className="w-4 h-4 mr-3" />
+                Quiz Builder
+              </Button>
+            </Link>
+            <Button 
+              variant="outline" 
+              className="justify-start h-12 w-full"
+              onClick={() => setShowAnalyticsModal(true)}
+            >
               <TrendingUp className="w-4 h-4 mr-3" />
               View Analytics
             </Button>
@@ -434,6 +447,143 @@ export function DashboardOverview() {
                 </div>
               ))}
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Analytics Modal */}
+      <Dialog open={showAnalyticsModal} onOpenChange={setShowAnalyticsModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5" />
+              Analytics Dashboard
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-6">
+            {/* Key Metrics Overview */}
+            <div className="grid grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">2,847</div>
+                <div className="text-sm text-blue-800">Total Profile Views</div>
+                <div className="text-xs text-green-600 mt-1">↑ 23% vs last month</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">156</div>
+                <div className="text-sm text-green-800">Applications Received</div>
+                <div className="text-xs text-green-600 mt-1">↑ 15% vs last month</div>
+              </div>
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">43</div>
+                <div className="text-sm text-orange-800">Interviews Scheduled</div>
+                <div className="text-xs text-red-600 mt-1">↓ 8% vs last month</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">12</div>
+                <div className="text-sm text-purple-800">Candidates Hired</div>
+                <div className="text-xs text-green-600 mt-1">↑ 33% vs last month</div>
+              </div>
+            </div>
+
+            {/* Job Performance Analytics */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="p-4">
+                <h4 className="font-semibold text-gray-900 mb-4">Top Performing Jobs</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Senior Financial Analyst</p>
+                      <p className="text-sm text-gray-600">Posted 5 days ago</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-gray-900">47</div>
+                      <div className="text-xs text-gray-500">applications</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Finance Manager</p>
+                      <p className="text-sm text-gray-600">Posted 3 days ago</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-gray-900">34</div>
+                      <div className="text-xs text-gray-500">applications</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div>
+                      <p className="font-medium text-gray-900">Investment Associate</p>
+                      <p className="text-sm text-gray-600">Posted 8 days ago</p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-bold text-gray-900">28</div>
+                      <div className="text-xs text-gray-500">applications</div>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+
+              <Card className="p-4">
+                <h4 className="font-semibold text-gray-900 mb-4">Application Sources</h4>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Direct Applications</span>
+                    <span className="text-sm text-gray-600">45%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Talent Pool Search</span>
+                    <span className="text-sm text-gray-600">32%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-green-500 h-2 rounded-full" style={{ width: '32%' }}></div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-medium">Referrals</span>
+                    <span className="text-sm text-gray-600">23%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="bg-orange-500 h-2 rounded-full" style={{ width: '23%' }}></div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Time-to-Hire Analytics */}
+            <Card className="p-4">
+              <h4 className="font-semibold text-gray-900 mb-4">Hiring Pipeline Performance</h4>
+              <div className="grid grid-cols-5 gap-4">
+                <div className="text-center">
+                  <div className="text-xl font-bold text-gray-900">156</div>
+                  <div className="text-xs text-gray-600">Applications</div>
+                  <div className="text-xs text-green-600">100%</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-gray-900">78</div>
+                  <div className="text-xs text-gray-600">Screening</div>
+                  <div className="text-xs text-gray-600">50%</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-gray-900">43</div>
+                  <div className="text-xs text-gray-600">Interviews</div>
+                  <div className="text-xs text-gray-600">27.6%</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-gray-900">18</div>
+                  <div className="text-xs text-gray-600">Final Round</div>
+                  <div className="text-xs text-gray-600">11.5%</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-xl font-bold text-gray-900">12</div>
+                  <div className="text-xs text-gray-600">Hired</div>
+                  <div className="text-xs text-green-600">7.7%</div>
+                </div>
+              </div>
+            </Card>
           </div>
         </DialogContent>
       </Dialog>
