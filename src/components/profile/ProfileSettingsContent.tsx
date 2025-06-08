@@ -26,108 +26,110 @@ export function ProfileSettingsContent() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link to="/">
-            <Button variant="ghost" size="sm">
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Dashboard
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50">
+      <div className="container mx-auto px-4 py-6 space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Link to="/">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-orange-600">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back to Dashboard
+              </Button>
+            </Link>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Profile & Settings</h1>
+              <p className="text-gray-600 mt-1">Manage your account preferences and company information</p>
+            </div>
+          </div>
+          
+          {/* Save Button - Desktop */}
+          <div className="hidden lg:block">
+            <Button 
+              onClick={handleSaveChanges}
+              disabled={!hasUnsavedChanges}
+              className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              Save Changes
             </Button>
-          </Link>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Profile & Settings</h1>
-            <p className="text-gray-600">Manage your account preferences and company information</p>
           </div>
         </div>
-        
-        {/* Save Button - Sticky on mobile */}
-        <div className="hidden lg:block">
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Main Content */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Login & Security */}
+            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  🔐 Login & Security
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <LoginSecuritySection onChange={handleFieldChange} />
+              </CardContent>
+            </Card>
+
+            {/* User Profile */}
+            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  👤 User Profile
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <UserProfileSection onChange={handleFieldChange} />
+              </CardContent>
+            </Card>
+
+            {/* Company Information */}
+            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  🏢 Company Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <CompanyInfoSection 
+                  isIndividualRecruiter={isIndividualRecruiter}
+                  setIsIndividualRecruiter={setIsIndividualRecruiter}
+                  onChange={handleFieldChange}
+                />
+              </CardContent>
+            </Card>
+
+            {/* Platform Preferences */}
+            <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="border-b border-gray-100">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  🌐 Platform Preferences
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <PlatformPreferencesSection onChange={handleFieldChange} />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1">
+            <NavigationLinksSection />
+          </div>
+        </div>
+
+        {/* Mobile Save Button - Sticky */}
+        <div className="lg:hidden fixed bottom-4 left-4 right-4 z-50">
           <Button 
             onClick={handleSaveChanges}
             disabled={!hasUnsavedChanges}
-            className="bg-orange-600 hover:bg-orange-700"
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white shadow-xl"
+            size="lg"
           >
             <Save className="w-4 h-4 mr-2" />
             Save Changes
           </Button>
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Main Content */}
-        <div className="lg:col-span-3 space-y-6">
-          {/* Login & Security */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                Login & Security
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <LoginSecuritySection onChange={handleFieldChange} />
-            </CardContent>
-          </Card>
-
-          {/* User Profile */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                User Profile
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <UserProfileSection onChange={handleFieldChange} />
-            </CardContent>
-          </Card>
-
-          {/* Company Information */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                Company Information
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <CompanyInfoSection 
-                isIndividualRecruiter={isIndividualRecruiter}
-                setIsIndividualRecruiter={setIsIndividualRecruiter}
-                onChange={handleFieldChange}
-              />
-            </CardContent>
-          </Card>
-
-          {/* Platform Preferences */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                Platform Preferences
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <PlatformPreferencesSection onChange={handleFieldChange} />
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <NavigationLinksSection />
-        </div>
-      </div>
-
-      {/* Mobile Save Button - Sticky */}
-      <div className="lg:hidden fixed bottom-4 left-4 right-4 z-50">
-        <Button 
-          onClick={handleSaveChanges}
-          disabled={!hasUnsavedChanges}
-          className="w-full bg-orange-600 hover:bg-orange-700 shadow-lg"
-          size="lg"
-        >
-          <Save className="w-4 h-4 mr-2" />
-          Save Changes
-        </Button>
       </div>
     </div>
   );

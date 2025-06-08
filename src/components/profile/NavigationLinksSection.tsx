@@ -51,18 +51,18 @@ export function NavigationLinksSection() {
   ];
 
   return (
-    <Card className="sticky top-6">
-      <CardHeader>
+    <Card className="sticky top-6 shadow-md border-0 bg-white/90 backdrop-blur-sm">
+      <CardHeader className="border-b border-gray-100">
         <CardTitle className="text-lg font-semibold text-gray-900">
-          Quick Navigation
+          🔄 Quick Navigation
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="space-y-2 p-4">
         {navigationLinks.map((link) => (
           <Link key={link.href} to={link.href}>
             <Button 
               variant="ghost" 
-              className="w-full justify-start h-auto p-3 hover:bg-gray-50"
+              className="w-full justify-start h-auto p-3 hover:bg-orange-50 hover:border-orange-200 border border-transparent transition-all duration-200"
             >
               <div className="flex items-center justify-between w-full">
                 <div className="flex items-center gap-3">

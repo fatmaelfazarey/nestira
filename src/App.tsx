@@ -22,6 +22,7 @@ import HelpCenter from "./pages/HelpCenter";
 import EmailAlertsSettings from "./pages/EmailAlertsSettings";
 import UserGuide from "./pages/UserGuide";
 import NestiSign from "./pages/NestiSign";
+import ProfileSettings from "./pages/ProfileSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/email-alerts" element={<EmailAlertsSettings />} />
           <Route path="/user-guide" element={<UserGuide />} />
           <Route path="/nesti-sign" element={<NestiSign />} />
+          <Route path="/profile-settings" element={<ProfileSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
