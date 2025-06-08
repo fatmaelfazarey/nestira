@@ -255,13 +255,12 @@ const TalentPool = () => {
       return `${years} year${years > 1 ? 's' : ''} ago`;
     }
   };
-
   const renderGridView = () => <TooltipProvider>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredCandidates.map(candidate => {
         const isUnlocked = unlockedCandidates.has(candidate.id);
         return <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative">
-              <CardHeader className="pb-3">
+              <CardHeader>
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="relative">
@@ -301,60 +300,73 @@ const TalentPool = () => {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {/* Basic Info - Simplified */}
-                <div className="space-y-2 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4" />
-                    {candidate.location}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Briefcase className="w-4 h-4" />
-                    {candidate.experience}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4" />
-                    {candidate.salaryExpectation}
-                  </div>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MapPin className="w-4 h-4" />
+                  {candidate.location}
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <Briefcase className="w-4 h-4" />
+                  {candidate.experience} experience
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <DollarSign className="w-4 h-4" />
+                  {candidate.salaryExpectation}
                 </div>
 
-                {/* Key Skills - Only top 3 */}
                 <div className="flex flex-wrap gap-1">
-                  {candidate.tags.slice(0, 3).map(tag => 
-                    <Badge key={tag} variant="secondary" className="text-xs">
+                  {candidate.tags.map(tag => <Badge key={tag} variant="secondary" className="text-xs">
                       {tag}
-                    </Badge>
-                  )}
-                  {candidate.tags.length > 3 && 
-                    <Badge variant="outline" className="text-xs">
-                      +{candidate.tags.length - 3}
-                    </Badge>
-                  }
+                    </Badge>)}
                 </div>
 
-                {/* Top Industries - Only 2 */}
-                <div className="flex flex-wrap gap-1">
-                  {candidate.industryExperience.slice(0, 2).map(industry => 
-                    <Badge key={industry} variant="outline" className="text-xs bg-blue-50 text-blue-700">
-                      {industry}
-                    </Badge>
-                  )}
-                  {candidate.industryExperience.length > 2 && 
-                    <Badge variant="outline" className="text-xs">
-                      +{candidate.industryExperience.length - 2}
-                    </Badge>
-                  }
+                {/* Industry Experience Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Industry Experience</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.industryExperience.map(industry => <Badge key={industry} variant="outline" className="text-xs">
+                        {industry}
+                      </Badge>)}
+                  </div>
                 </div>
 
-                {/* Action Bar */}
-                <div className="flex justify-between items-center gap-2 pt-2">
-                  <Badge variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
-                         className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}>
+                {/* Finance Subfields Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Finance Subfields</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.financeSubfields.map(subfield => <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        {subfield}
+                      </Badge>)}
+                  </div>
+                </div>
+
+                {/* Software & Tools Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Software & Tools</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.softwareTools.map(tool => <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                        {tool}
+                      </Badge>)}
+                  </div>
+                </div>
+
+                {/* Certifications Section */}
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-gray-700">Certifications</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.certifications.map(cert => <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                        {cert}
+                      </Badge>)}
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center gap-2">
+                  <Badge variant={candidate.status === 'Available' ? 'default' : 'secondary'} className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}>
                     {candidate.status}
                   </Badge>
                   <Button size="sm" className="bg-accent hover:bg-accent/90" onClick={() => handleUnlock(candidate)}>
                     <Unlock className="w-4 h-4 mr-1" />
-                    {isUnlocked ? 'View' : 'Unlock'}
+                    {isUnlocked ? 'View Profile' : 'Unlock'}
                   </Button>
                 </div>
               </CardContent>
@@ -362,7 +374,6 @@ const TalentPool = () => {
       })}
       </div>
     </TooltipProvider>;
-
   const renderTableView = () => <TooltipProvider>
       <Card>
         <Table>
@@ -483,7 +494,6 @@ const TalentPool = () => {
         </Table>
       </Card>
     </TooltipProvider>;
-
   const renderCurrentView = () => {
     switch (currentView) {
       case 'table':
@@ -492,7 +502,6 @@ const TalentPool = () => {
         return renderGridView();
     }
   };
-
   return <DashboardLayout>
       <div className="space-y-6">
         <div className="flex justify-between items-start">
