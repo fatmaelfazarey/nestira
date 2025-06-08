@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Search, X } from 'lucide-react';
+import { Sparkles, Search, X, ChevronRight, ChevronLeft } from 'lucide-react';
 
 interface AICandidateSearchProps {
   onSearch: (query: string) => void;
@@ -78,15 +77,17 @@ export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
             </Button>
           </div>
 
-          {/* Enhanced Find My Match Button */}
+          {/* Enhanced Find My Match Button with arrows and spacing */}
           {onFindMyMatch && (
-            <div className="flex justify-center">
+            <div className="flex items-center justify-center gap-4 px-8">
+              <ChevronRight className="w-6 h-6 text-[#86e5a1] animate-pulse" />
               <Button
                 onClick={onFindMyMatch}
                 className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-8 py-3 font-bold text-base border-0 shadow-xl transform hover:scale-105 transition-all duration-200 justify-center"
               >
                 Find My Match From Job Post
               </Button>
+              <ChevronLeft className="w-6 h-6 text-[#86e5a1] animate-pulse" />
             </div>
           )}
 
