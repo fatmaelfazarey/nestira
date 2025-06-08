@@ -18,43 +18,31 @@ export function DashboardOverview() {
   };
 
   return (
-    <div className="space-y-6 min-h-screen">
+    <div className="space-y-8 pb-8">
       {/* Welcome Section */}
-      <section className="w-full">
-        <WelcomeSection />
-      </section>
+      <WelcomeSection />
 
       {/* KPI Tracker - Full Width */}
-      <section className="w-full">
-        <KpiTracker onKpiClick={handleKpiClick} />
-      </section>
+      <KpiTracker onKpiClick={handleKpiClick} />
 
       {/* Profile Views and Charts Section */}
-      <section className="w-full">
-        <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-          {/* Recent Profile Views - Fixed width */}
-          <div className="xl:col-span-1">
-            <ProfileViewsCard onClick={() => setShowProfileViewsModal(true)} />
-          </div>
-
-          {/* Weekly Activity Chart - Takes remaining space */}
-          <div className="xl:col-span-3">
-            <WeeklyActivityChart />
-          </div>
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        {/* Recent Profile Views - Fixed width */}
+        <div className="xl:col-span-1">
+          <ProfileViewsCard onClick={() => setShowProfileViewsModal(true)} />
         </div>
-      </section>
+
+        {/* Weekly Activity Chart - Takes remaining space */}
+        <div className="xl:col-span-3">
+          <WeeklyActivityChart />
+        </div>
+      </div>
 
       {/* Quick Actions and Resource Usage Section */}
-      <section className="w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div>
-            <QuickActionsCard />
-          </div>
-          <div>
-            <ResourceUsageCard />
-          </div>
-        </div>
-      </section>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <QuickActionsCard />
+        <ResourceUsageCard />
+      </div>
 
       {/* Profile Views Modal */}
       <ProfileViewsModal 

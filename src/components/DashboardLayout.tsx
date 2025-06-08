@@ -16,7 +16,7 @@ export function DashboardLayout({
         <AppSidebar />
         <main className="flex-1 flex flex-col backdrop-blur-sm">
           <DashboardHeader />
-          <div className="flex-1 p-6 overflow-auto">
+          <div className="flex-1 p-8 overflow-auto">
             <div className="max-w-7xl mx-auto w-full">
               {children}
             </div>
