@@ -98,7 +98,7 @@ export const FindMyMatchModal: React.FC<FindMyMatchModalProps> = ({
           </div>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-4 mt-6">
+        <div className="flex-1 overflow-y-auto space-y-4 mt-6 my-0">
           {activeJobPosts.map(job => <Card key={job.id} className={`cursor-pointer transition-all duration-200 hover:shadow-md ${selectedJob?.id === job.id ? 'border-orange-500 bg-orange-50' : 'hover:border-gray-300'}`} onClick={() => handleJobSelect(job)}>
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
