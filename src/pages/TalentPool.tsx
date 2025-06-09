@@ -48,7 +48,7 @@ const TalentPool = () => {
   });
   const [sortBy, setSortBy] = useState('score');
 
-  // New filter states
+  // New filter states - properly initialized
   const [selectedSubfields, setSelectedSubfields] = useState([]);
   const [selectedSoftware, setSelectedSoftware] = useState([]);
   const [erpVersion, setErpVersion] = useState('all');
@@ -57,8 +57,9 @@ const TalentPool = () => {
   const [selectedVisaStatus, setSelectedVisaStatus] = useState([]);
   const [employmentType, setEmploymentType] = useState('all');
   const [workMode, setWorkMode] = useState('all');
+  const [availability, setAvailability] = useState('all');
   const [languageProficiency, setLanguageProficiency] = useState('all');
-  const [genderFilter, setGenderFilter] = useState('no-preference');
+  const [genderFilter, setGenderFilter] = useState('all');
   const [educationLevel, setEducationLevel] = useState('all');
   const [selectedSpecialNeeds, setSelectedSpecialNeeds] = useState([]);
   const [cvCompleteness, setCvCompleteness] = useState('all');
@@ -144,7 +145,14 @@ const TalentPool = () => {
     const matchesStatus = statusFilter === 'all' || candidate.status === statusFilter;
     const matchesSkills = skillsFilter === 'all' || candidate.tags.includes(skillsFilter);
     const matchesScore = scoreRange[0] === 0 || candidate.score >= scoreRange[0];
-    return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore;
+    
+    // Check new filters
+    const matchesSubfields = selectedSubfields.length === 0 || selectedSubfields.some(subfield => candidate.financeSubfields.includes(subfield));
+    const matchesSoftware = selectedSoftware.length === 0 || selectedSoftware.some(software => candidate.softwareTools.includes(software));
+    const matchesCertifications = selectedCertifications.length === 0 || selectedCertifications.some(cert => candidate.certifications.includes(cert));
+    const matchesIndustries = selectedIndustries.length === 0 || selectedIndustries.some(industry => candidate.industryExperience.includes(industry));
+    
+    return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore && matchesSubfields && matchesSoftware && matchesCertifications && matchesIndustries;
   });
 
   // Show all candidates if not revealed, otherwise show filtered/matched candidates
@@ -166,9 +174,30 @@ const TalentPool = () => {
     }
   });
 
-  // Check if any filters are applied that should reveal candidates
+  // Check if any filters are applied that should reveal candidates - FIXED
   const hasActiveFilters = () => {
-    return searchQuery !== '' || locationFilter !== 'all' || experienceRange[0] !== 0 || statusFilter !== 'all' || skillsFilter !== 'all' || scoreRange[0] !== 0 || selectedSubfields.length > 0 || selectedSoftware.length > 0 || erpVersion !== 'all' || selectedCertifications.length > 0 || selectedIndustries.length > 0 || selectedVisaStatus.length > 0 || employmentType !== 'all' || workMode !== 'all' || languageProficiency !== 'all' || genderFilter !== 'no-preference' || educationLevel !== 'all' || selectedSpecialNeeds.length > 0 || cvCompleteness !== 'all' || academicExcellence || selectedScreeningTags.length > 0;
+    return searchQuery !== '' || 
+           locationFilter !== 'all' || 
+           experienceRange[0] !== 0 || 
+           statusFilter !== 'all' || 
+           skillsFilter !== 'all' || 
+           scoreRange[0] !== 0 || 
+           selectedSubfields.length > 0 || 
+           selectedSoftware.length > 0 || 
+           erpVersion !== 'all' || 
+           selectedCertifications.length > 0 || 
+           selectedIndustries.length > 0 || 
+           selectedVisaStatus.length > 0 || 
+           employmentType !== 'all' || 
+           workMode !== 'all' || 
+           availability !== 'all' ||
+           languageProficiency !== 'all' || 
+           genderFilter !== 'all' || 
+           educationLevel !== 'all' || 
+           selectedSpecialNeeds.length > 0 || 
+           cvCompleteness !== 'all' || 
+           academicExcellence || 
+           selectedScreeningTags.length > 0;
   };
 
   // Trigger reveal when filters are applied
@@ -236,6 +265,7 @@ const TalentPool = () => {
       setSelectedItems([...selectedItems, item]);
     }
   };
+  // FIXED resetAllFilters function
   const resetAllFilters = () => {
     setSearchQuery('');
     setLocationFilter('all');
@@ -251,8 +281,9 @@ const TalentPool = () => {
     setSelectedVisaStatus([]);
     setEmploymentType('all');
     setWorkMode('all');
+    setAvailability('all');
     setLanguageProficiency('all');
-    setGenderFilter('no-preference');
+    setGenderFilter('all');
     setEducationLevel('all');
     setSelectedSpecialNeeds([]);
     setCvCompleteness('all');
@@ -611,14 +642,16 @@ const TalentPool = () => {
         isAnimating: false
       });
     }
-  }, [searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, selectedSubfields, selectedSoftware, erpVersion, selectedCertifications, selectedIndustries, selectedVisaStatus, employmentType, workMode, languageProficiency, genderFilter, educationLevel, selectedSpecialNeeds, cvCompleteness, academicExcellence, selectedScreeningTags]);
+  }, [searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, selectedSubfields, selectedSoftware, erpVersion, selectedCertifications, selectedIndustries, selectedVisaStatus, employmentType, workMode, availability, languageProficiency, genderFilter, educationLevel, selectedSpecialNeeds, cvCompleteness, academicExcellence, selectedScreeningTags]);
   return <DashboardLayout>
       <div className="space-y-6">
         {/* Page Title with View Toggle */}
         <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 py-[10px]">Talent Pool</h1>
-            <p className="text-gray-600">Browse and filter finance professionals</p>
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 py-[10px]">Talent Pool</h1>
+              <p className="text-gray-600">Browse and filter finance professionals</p>
+            </div>
           </div>
           <div className="flex gap-2">
             <Button 
@@ -758,7 +791,56 @@ const TalentPool = () => {
             <p className="text-gray-500">No candidates found matching your criteria.</p>
           </div>}
 
-        <FilterSidebar isOpen={isFilterSidebarOpen} onClose={() => setIsFilterSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} locationFilter={locationFilter} setLocationFilter={setLocationFilter} experienceRange={experienceRange} setExperienceRange={setExperienceRange} statusFilter={statusFilter} setStatusFilter={setStatusFilter} skillsFilter={skillsFilter} setSkillsFilter={setSkillsFilter} scoreRange={scoreRange} setScoreRange={setScoreRange} selectedSubfields={selectedSubfields} setSelectedSubfields={setSelectedSubfields} selectedSoftware={selectedSoftware} setSelectedSoftware={setSelectedSoftware} erpVersion={erpVersion} setErpVersion={setErpVersion} selectedCertifications={selectedCertifications} setSelectedCertifications={setSelectedCertifications} selectedIndustries={selectedIndustries} setSelectedIndustries={setSelectedIndustries} selectedVisaStatus={selectedVisaStatus} setSelectedVisaStatus={setSelectedVisaStatus} employmentType={employmentType} setEmploymentType={setEmploymentType} workMode={workMode} setWorkMode={setWorkMode} availability="" setAvailability={() => {}} languageProficiency={languageProficiency} setLanguageProficiency={setLanguageProficiency} genderFilter={genderFilter} setGenderFilter={setGenderFilter} educationLevel={educationLevel} setEducationLevel={setEducationLevel} selectedSpecialNeeds={selectedSpecialNeeds} setSelectedSpecialNeeds={setSelectedSpecialNeeds} cvCompleteness={cvCompleteness} setCvCompleteness={setCvCompleteness} academicExcellence={academicExcellence} setAcademicExcellence={setAcademicExcellence} selectedScreeningTags={selectedScreeningTags} setSelectedScreeningTags={setSelectedScreeningTags} resetAllFilters={resetAllFilters} filteredCandidatesCount={sortedCandidates.length} />
+        <FilterSidebar 
+          isOpen={isFilterSidebarOpen} 
+          onClose={() => setIsFilterSidebarOpen(false)} 
+          searchQuery={searchQuery} 
+          setSearchQuery={setSearchQuery} 
+          locationFilter={locationFilter} 
+          setLocationFilter={setLocationFilter} 
+          experienceRange={experienceRange} 
+          setExperienceRange={setExperienceRange} 
+          statusFilter={statusFilter} 
+          setStatusFilter={setStatusFilter} 
+          skillsFilter={skillsFilter} 
+          setSkillsFilter={setSkillsFilter} 
+          scoreRange={scoreRange} 
+          setScoreRange={setScoreRange} 
+          selectedSubfields={selectedSubfields} 
+          setSelectedSubfields={setSelectedSubfields} 
+          selectedSoftware={selectedSoftware} 
+          setSelectedSoftware={setSelectedSoftware} 
+          erpVersion={erpVersion} 
+          setErpVersion={setErpVersion} 
+          selectedCertifications={selectedCertifications} 
+          setSelectedCertifications={setSelectedCertifications} 
+          selectedIndustries={selectedIndustries} 
+          setSelectedIndustries={setSelectedIndustries} 
+          selectedVisaStatus={selectedVisaStatus} 
+          setSelectedVisaStatus={setSelectedVisaStatus} 
+          employmentType={employmentType} 
+          setEmploymentType={setEmploymentType} 
+          workMode={workMode} 
+          setWorkMode={setWorkMode} 
+          availability={availability} 
+          setAvailability={setAvailability} 
+          languageProficiency={languageProficiency} 
+          setLanguageProficiency={setLanguageProficiency} 
+          genderFilter={genderFilter} 
+          setGenderFilter={setGenderFilter} 
+          educationLevel={educationLevel} 
+          setEducationLevel={setEducationLevel} 
+          selectedSpecialNeeds={selectedSpecialNeeds} 
+          setSelectedSpecialNeeds={setSelectedSpecialNeeds} 
+          cvCompleteness={cvCompleteness} 
+          setCvCompleteness={setCvCompleteness} 
+          academicExcellence={academicExcellence} 
+          setAcademicExcellence={setAcademicExcellence} 
+          selectedScreeningTags={selectedScreeningTags} 
+          setSelectedScreeningTags={setSelectedScreeningTags} 
+          resetAllFilters={resetAllFilters} 
+          filteredCandidatesCount={sortedCandidates.length} 
+        />
 
         <FindMyMatchModal isOpen={isFindMyMatchOpen} onClose={() => setIsFindMyMatchOpen(false)} onJobSelected={handleJobPostSelected} />
 
