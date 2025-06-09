@@ -10,21 +10,21 @@ export const useTalentPoolState = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [skillsFilter, setSkillsFilter] = useState('all');
   const [scoreRange, setScoreRange] = useState([0]);
-  const [selectedCandidate, setSelectedCandidate] = useState(null);
-  const [expandedCandidate, setExpandedCandidate] = useState(null);
-  const [favorites, setFavorites] = useState(new Set());
+  const [selectedCandidate, setSelectedCandidate] = useState<any>(null);
+  const [expandedCandidate, setExpandedCandidate] = useState<any>(null);
+  const [favorites, setFavorites] = useState<Set<number>>(new Set<number>());
   const [currentView, setCurrentView] = useState('grid');
   const [aiSearchQuery, setAiSearchQuery] = useState('');
   const [isAiSearching, setIsAiSearching] = useState(false);
-  const [aiFilteredCandidates, setAiFilteredCandidates] = useState(null);
+  const [aiFilteredCandidates, setAiFilteredCandidates] = useState<any>(null);
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
-  const [unlockedCandidates, setUnlockedCandidates] = useState(new Set());
+  const [unlockedCandidates, setUnlockedCandidates] = useState<Set<number>>(new Set<number>());
   const [isFindMyMatchOpen, setIsFindMyMatchOpen] = useState(false);
-  const [matchedJobPost, setMatchedJobPost] = useState(null);
+  const [matchedJobPost, setMatchedJobPost] = useState<any>(null);
 
   // Reveal logic state
   const [isRevealed, setIsRevealed] = useState(false);
-  const [revealTrigger, setRevealTrigger] = useState(null);
+  const [revealTrigger, setRevealTrigger] = useState<string | null>(null);
 
   // Score visibility state
   const [scoreVisibility, setScoreVisibility] = useState({
@@ -35,22 +35,22 @@ export const useTalentPoolState = () => {
   const [sortBy, setSortBy] = useState('score');
 
   // Filter states
-  const [selectedSubfields, setSelectedSubfields] = useState([]);
-  const [selectedSoftware, setSelectedSoftware] = useState([]);
+  const [selectedSubfields, setSelectedSubfields] = useState<string[]>([]);
+  const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
   const [erpVersion, setErpVersion] = useState('all');
-  const [selectedCertifications, setSelectedCertifications] = useState([]);
-  const [selectedIndustries, setSelectedIndustries] = useState([]);
-  const [selectedVisaStatus, setSelectedVisaStatus] = useState([]);
+  const [selectedCertifications, setSelectedCertifications] = useState<string[]>([]);
+  const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+  const [selectedVisaStatus, setSelectedVisaStatus] = useState<string[]>([]);
   const [employmentType, setEmploymentType] = useState('all');
   const [workMode, setWorkMode] = useState('all');
   const [availability, setAvailability] = useState('all');
   const [languageProficiency, setLanguageProficiency] = useState('all');
   const [genderFilter, setGenderFilter] = useState('all');
   const [educationLevel, setEducationLevel] = useState('all');
-  const [selectedSpecialNeeds, setSelectedSpecialNeeds] = useState([]);
+  const [selectedSpecialNeeds, setSelectedSpecialNeeds] = useState<string[]>([]);
   const [cvCompleteness, setCvCompleteness] = useState('all');
   const [academicExcellence, setAcademicExcellence] = useState(false);
-  const [selectedScreeningTags, setSelectedScreeningTags] = useState([]);
+  const [selectedScreeningTags, setSelectedScreeningTags] = useState<string[]>([]);
 
   // Check if any filters are applied
   const hasActiveFilters = () => {
