@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, User, Building2, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LoginSecuritySection } from './LoginSecuritySection';
 import { UserProfileSection } from './UserProfileSection';
@@ -65,7 +65,8 @@ export function ProfileSettingsContent() {
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100">
                 <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  👤 {t('userProfile')}
+                  <User className="w-5 h-5 text-blue-600" />
+                  {t('userProfile')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
@@ -82,7 +83,8 @@ export function ProfileSettingsContent() {
               <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
                 <CardHeader className="border-b border-gray-100">
                   <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                    🏢 {t('companyInformation')}
+                    <Building2 className="w-5 h-5 text-green-600" />
+                    {t('companyInformation')}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
@@ -99,7 +101,8 @@ export function ProfileSettingsContent() {
             <Card className="shadow-md border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="border-b border-gray-100">
                 <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                  🔐 {t('loginAndSecurity')}
+                  <Shield className="w-5 h-5 text-orange-600" />
+                  {t('loginAndSecurity')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6">
