@@ -87,7 +87,7 @@ export const FindMyMatchModal: React.FC<FindMyMatchModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Target className="w-5 h-5 text-orange-500" />
@@ -96,7 +96,7 @@ export const FindMyMatchModal: React.FC<FindMyMatchModalProps> = ({
           <p className="text-gray-600">Choose an active job posting to find AI-matched candidates</p>
         </DialogHeader>
 
-        <div className="space-y-4 mt-6">
+        <div className="flex-1 overflow-y-auto space-y-4 mt-6">
           {activeJobPosts.map((job) => (
             <Card 
               key={job.id} 
@@ -158,14 +158,18 @@ export const FindMyMatchModal: React.FC<FindMyMatchModalProps> = ({
           ))}
         </div>
 
-        <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6 pt-4 border-t bg-white">
+          <Button 
+            variant="outline" 
+            onClick={onClose}
+            className="w-full sm:w-auto order-2 sm:order-1"
+          >
             Cancel
           </Button>
           <Button 
             onClick={handleUseJobPost}
             disabled={!selectedJob}
-            className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6"
+            className="w-full sm:w-auto bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 order-1 sm:order-2"
           >
             <CheckCircle className="w-4 h-4 mr-2" />
             Use This Job Post
