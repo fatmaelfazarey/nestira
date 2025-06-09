@@ -9,80 +9,45 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Star, MapPin, Briefcase, Calendar, DollarSign, Grid2X2, LayoutList, Download, Mail, Phone, CheckCircle } from 'lucide-react';
 import { CircularProgress } from '@/components/ui/circular-progress';
+import { getCountryFlag, formatDate } from '@/utils/talentPoolUtils';
 
 const UnlockedTalents = () => {
   const [currentView, setCurrentView] = useState('grid');
   const [favorites, setFavorites] = useState(new Set());
+  const [unlockedCandidates, setUnlockedCandidates] = useState([]);
 
-  // Mock data for unlocked candidates - in a real app this would come from your state management
-  const unlockedCandidates = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      title: "Senior Finance Manager",
-      location: "Dubai, UAE",
-      country: "AE",
-      experience: "8 years",
-      score: 92,
-      status: "Available",
-      tags: ["CPA", "Excel Expert", "Financial Analysis"],
-      industryExperience: ["Banking", "FMCG", "Tech"],
-      financeSubfields: ["Financial Planning", "Budget Management", "Cost Analysis"],
-      softwareTools: ["SAP", "Oracle", "QuickBooks", "Tableau"],
-      certifications: ["CPA", "CFA Level 2", "FRM"],
-      photo: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=100&h=100&fit=crop&crop=face",
-      email: "sarah.johnson@email.com",
-      phone: "+971 50 123 4567",
-      yearsOfExperience: 8,
-      education: "MBA Finance, American University of Dubai",
-      summary: "Experienced finance professional with 8+ years in financial planning, analysis, and team leadership.",
-      profileAdded: "2024-01-15",
-      salaryExpectation: "120,000 - 150,000 AED",
-      unlockedDate: "2024-01-20"
-    },
-    {
-      id: 3,
-      name: "Fatima Al-Zahra",
-      title: "Accounting Manager",
-      location: "Riyadh, Saudi Arabia",
-      country: "SA",
-      experience: "6 years",
-      score: 90,
-      status: "Shortlisted",
-      tags: ["SAP", "IFRS", "Team Leadership"],
-      industryExperience: ["Real Estate", "Retail"],
-      financeSubfields: ["Management Accounting", "IFRS Compliance", "Team Leadership"],
-      softwareTools: ["SAP", "Microsoft Dynamics", "Excel Advanced"],
-      certifications: ["ACCA", "IFRS Certificate"],
-      photo: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=100&h=100&fit=crop&crop=face",
-      email: "fatima.alzahra@email.com",
-      phone: "+966 50 123 4567",
-      yearsOfExperience: 6,
-      education: "Master's in Accounting, King Saud University",
-      summary: "Strategic accounting manager with expertise in SAP implementation and IFRS compliance.",
-      profileAdded: "2024-03-10",
-      salaryExpectation: "180,000 - 220,000 SAR",
-      unlockedDate: "2024-03-15"
-    }
-  ];
-
-  const getCountryFlag = (countryCode) => {
-    const flags = {
-      'AE': '🇦🇪',
-      'EG': '🇪🇬',
-      'SA': '🇸🇦'
+  // Load unlocked candidates from localStorage on component mount
+  useEffect(() => {
+    const loadUnlockedCandidates = () => {
+      const stored = localStorage.getItem('unlockedCandidates');
+      if (stored) {
+        setUnlockedCandidates(JSON.parse(stored));
+      }
     };
-    return flags[countryCode] || '🌍';
-  };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
-    });
-  };
+    loadUnlockedCandidates();
+
+    // Listen for storage changes to update when new candidates are unlocked
+    const handleStorageChange = (e) => {
+      if (e.key === 'unlockedCandidates') {
+        loadUnlockedCandidates();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Also listen for custom events from the same tab
+    const handleUnlockEvent = () => {
+      loadUnlockedCandidates();
+    };
+    
+    window.addEventListener('candidateUnlocked', handleUnlockEvent);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('candidateUnlocked', handleUnlockEvent);
+    };
+  }, []);
 
   const toggleFavorite = (candidateId) => {
     const newFavorites = new Set(favorites);
@@ -162,12 +127,48 @@ const UnlockedTalents = () => {
               </div>
 
               <div className="space-y-3">
-                <div className="flex flex-wrap gap-1">
-                  {candidate.tags.map(tag => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Industry:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.industryExperience?.map((industry) => (
+                      <Badge key={industry} variant="outline" className="text-xs">
+                        {industry}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Subfields:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.financeSubfields?.map((subfield) => (
+                      <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        {subfield}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Tools:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.softwareTools?.map((tool) => (
+                      <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                        {tool}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <p className="text-xs font-medium text-gray-700 whitespace-nowrap">Certs:</p>
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.certifications?.map((cert) => (
+                      <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                        {cert}
+                      </Badge>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="space-y-2">
@@ -207,99 +208,163 @@ const UnlockedTalents = () => {
 
   const renderTableView = () => (
     <TooltipProvider>
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Candidate</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Experience</TableHead>
-              <TableHead>Score</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Contact</TableHead>
-              <TableHead>Unlocked Date</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {unlockedCandidates.map(candidate => (
-              <TableRow key={candidate.id} className="bg-green-50/30">
-                <TableCell>
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <Avatar className="w-8 h-8">
-                        <AvatarImage src={candidate.photo} alt={candidate.name} />
-                        <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                      </Avatar>
-                      <CheckCircle className="w-3 h-3 text-green-500 absolute -bottom-1 -right-1 bg-white rounded-full" />
-                    </div>
-                    <div>
-                      <div className="font-medium flex items-center gap-2">
-                        {candidate.name}
-                        <span>{getCountryFlag(candidate.country)}</span>
+      <div className="w-full overflow-hidden">
+        <Card className="w-full">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[150px]">Candidate</TableHead>
+                  <TableHead className="min-w-[120px]">Title</TableHead>
+                  <TableHead className="min-w-[100px]">Location</TableHead>
+                  <TableHead className="min-w-[80px]">Experience</TableHead>
+                  <TableHead className="min-w-[80px]">Score</TableHead>
+                  <TableHead className="min-w-[80px]">Status</TableHead>
+                  <TableHead className="min-w-[120px]">Industry</TableHead>
+                  <TableHead className="min-w-[120px]">Subfields</TableHead>
+                  <TableHead className="min-w-[120px]">Tools</TableHead>
+                  <TableHead className="min-w-[120px]">Certifications</TableHead>
+                  <TableHead className="min-w-[120px]">Contact</TableHead>
+                  <TableHead className="min-w-[100px]">Unlocked Date</TableHead>
+                  <TableHead className="min-w-[100px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {unlockedCandidates.map(candidate => (
+                  <TableRow key={candidate.id} className="bg-green-50/30">
+                    <TableCell className="min-w-[150px]">
+                      <div className="flex items-center gap-3">
+                        <div className="relative">
+                          <Avatar className="w-8 h-8">
+                            <AvatarImage src={candidate.photo} alt={candidate.name} />
+                            <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                          </Avatar>
+                          <CheckCircle className="w-3 h-3 text-green-500 absolute -bottom-1 -right-1 bg-white rounded-full" />
+                        </div>
+                        <div>
+                          <div className="font-medium flex items-center gap-2">
+                            {candidate.name}
+                            <span>{getCountryFlag(candidate.country)}</span>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell>{candidate.title}</TableCell>
-                <TableCell>{candidate.location}</TableCell>
-                <TableCell>{candidate.experience}</TableCell>
-                <TableCell>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div>
-                        <CircularProgress value={candidate.score} size={40} strokeWidth={3} showPercentage={true} compact={true} />
+                    </TableCell>
+                    <TableCell className="min-w-[120px]">{candidate.title}</TableCell>
+                    <TableCell className="min-w-[100px]">{candidate.location}</TableCell>
+                    <TableCell className="min-w-[80px]">{candidate.experience}</TableCell>
+                    <TableCell className="min-w-[80px]">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div>
+                            <CircularProgress value={candidate.score} size={40} strokeWidth={3} showPercentage={true} compact={true} />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Matching Score: {candidate.score}%</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TableCell>
+                    <TableCell className="min-w-[80px]">
+                      <Badge 
+                        variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
+                        className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
+                      >
+                        {candidate.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="min-w-[120px]">
+                      <div className="flex flex-wrap gap-1">
+                        {candidate.industryExperience?.slice(0, 2).map((industry) => (
+                          <Badge key={industry} variant="outline" className="text-xs">
+                            {industry}
+                          </Badge>
+                        ))}
+                        {candidate.industryExperience?.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{candidate.industryExperience.length - 2}
+                          </Badge>
+                        )}
                       </div>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Matching Score: {candidate.score}%</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TableCell>
-                <TableCell>
-                  <Badge 
-                    variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
-                    className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
-                  >
-                    {candidate.status}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <div className="space-y-1">
-                    <div className="text-sm">
-                      <a href={`mailto:${candidate.email}`} className="hover:text-accent">
-                        {candidate.email}
-                      </a>
-                    </div>
-                    <div className="text-sm">
-                      <a href={`tel:${candidate.phone}`} className="hover:text-accent">
-                        {candidate.phone}
-                      </a>
-                    </div>
-                  </div>
-                </TableCell>
-                <TableCell className="text-sm">{formatDate(candidate.unlockedDate)}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => toggleFavorite(candidate.id)} 
-                      className="text-yellow-500 hover:text-yellow-600 p-1"
-                    >
-                      <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      View Profile
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Card>
+                    </TableCell>
+                    <TableCell className="min-w-[120px]">
+                      <div className="flex flex-wrap gap-1">
+                        {candidate.financeSubfields?.slice(0, 2).map((subfield) => (
+                          <Badge key={subfield} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                            {subfield}
+                          </Badge>
+                        ))}
+                        {candidate.financeSubfields?.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{candidate.financeSubfields.length - 2}
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="min-w-[120px]">
+                      <div className="flex flex-wrap gap-1">
+                        {candidate.softwareTools?.slice(0, 2).map((tool) => (
+                          <Badge key={tool} variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200">
+                            {tool}
+                          </Badge>
+                        ))}
+                        {candidate.softwareTools?.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{candidate.softwareTools.length - 2}
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="min-w-[120px]">
+                      <div className="flex flex-wrap gap-1">
+                        {candidate.certifications?.slice(0, 2).map((cert) => (
+                          <Badge key={cert} variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                            {cert}
+                          </Badge>
+                        ))}
+                        {candidate.certifications?.length > 2 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{candidate.certifications.length - 2}
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="min-w-[120px]">
+                      <div className="space-y-1">
+                        <div className="text-sm">
+                          <a href={`mailto:${candidate.email}`} className="hover:text-accent">
+                            {candidate.email}
+                          </a>
+                        </div>
+                        <div className="text-sm">
+                          <a href={`tel:${candidate.phone}`} className="hover:text-accent">
+                            {candidate.phone}
+                          </a>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className="min-w-[100px] text-sm">{formatDate(candidate.unlockedDate)}</TableCell>
+                    <TableCell className="min-w-[100px]">
+                      <div className="flex gap-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => toggleFavorite(candidate.id)} 
+                          className="text-yellow-500 hover:text-yellow-600 p-1"
+                        >
+                          <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                        </Button>
+                        <Button size="sm" variant="outline">
+                          View Profile
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </Card>
+      </div>
     </TooltipProvider>
   );
 

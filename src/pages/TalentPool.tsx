@@ -113,7 +113,22 @@ const TalentPool = () => {
   };
 
   const handleUnlock = (candidate: any) => {
-    setUnlockedCandidates(prev => new Set([...prev, candidate.id]));
+    const newUnlockedCandidates = new Set<number>([...unlockedCandidates, candidate.id]);
+    setUnlockedCandidates(newUnlockedCandidates);
+    
+    // Store the unlocked candidate with full details in localStorage
+    const existingUnlocked = JSON.parse(localStorage.getItem('unlockedCandidates') || '[]');
+    const candidateWithUnlockDate = {
+      ...candidate,
+      unlockedDate: new Date().toISOString()
+    };
+    
+    // Check if candidate is not already unlocked
+    if (!existingUnlocked.find((c: any) => c.id === candidate.id)) {
+      const updatedUnlocked = [...existingUnlocked, candidateWithUnlockDate];
+      localStorage.setItem('unlockedCandidates', JSON.stringify(updatedUnlocked));
+    }
+    
     setExpandedCandidate(candidate);
   };
 
@@ -127,7 +142,7 @@ const TalentPool = () => {
   };
 
   const toggleFavorite = (candidateId: number) => {
-    const newFavorites = new Set(favorites);
+    const newFavorites = new Set<number>(favorites);
     if (newFavorites.has(candidateId)) {
       newFavorites.delete(candidateId);
     } else {
@@ -140,15 +155,17 @@ const TalentPool = () => {
     switch (currentView) {
       case 'table':
         return (
-          <CandidateTableView
-            sortedCandidates={sortedCandidates}
-            isRevealed={isRevealed}
-            scoreVisibility={scoreVisibility}
-            favorites={favorites}
-            unlockedCandidates={unlockedCandidates}
-            onToggleFavorite={toggleFavorite}
-            onUnlock={handleUnlock}
-          />
+          <div className="w-full overflow-hidden">
+            <CandidateTableView
+              sortedCandidates={sortedCandidates}
+              isRevealed={isRevealed}
+              scoreVisibility={scoreVisibility}
+              favorites={favorites}
+              unlockedCandidates={unlockedCandidates}
+              onToggleFavorite={toggleFavorite}
+              onUnlock={handleUnlock}
+            />
+          </div>
         );
       default:
         return (
