@@ -16,7 +16,6 @@ import { FindMyMatchModal } from '@/components/FindMyMatchModal';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import React from 'react';
-
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('all');
@@ -612,8 +611,7 @@ const TalentPool = () => {
       });
     }
   }, [searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, selectedSubfields, selectedSoftware, erpVersion, selectedCertifications, selectedIndustries, selectedVisaStatus, employmentType, workMode, languageProficiency, genderFilter, educationLevel, selectedSpecialNeeds, cvCompleteness, academicExcellence, selectedScreeningTags]);
-  return (
-    <DashboardLayout>
+  return <DashboardLayout>
       <div className="space-y-6">
         {/* Page Title */}
         <div>
@@ -624,9 +622,7 @@ const TalentPool = () => {
         {/* Guidance Line */}
         <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-center gap-2">
           <Lock className="w-5 h-5 text-orange-600" />
-          <p className="text-orange-800 font-medium">
-            Please use filters, job post selection, or AI search to see matching candidates.
-          </p>
+          <p className="text-orange-800 font-medium">Search talents using one of the 3 methods below to show matching talents!</p>
         </div>
 
         {/* Search Section */}
@@ -635,29 +631,17 @@ const TalentPool = () => {
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Left Column - AI Search (75%) */}
             <div className="flex-1 lg:w-3/4">
-              <AICandidateSearch 
-                onSearch={handleAiSearch} 
-                isSearching={isAiSearching} 
-                currentQuery={aiSearchQuery} 
-                onClear={handleClearAiSearch} 
-                onFindMyMatch={null} 
-              />
+              <AICandidateSearch onSearch={handleAiSearch} isSearching={isAiSearching} currentQuery={aiSearchQuery} onClear={handleClearAiSearch} onFindMyMatch={null} />
             </div>
 
             {/* Right Column - Buttons (25%) */}
             <div className="lg:w-1/4 flex flex-col gap-4">
-              <Button
-                onClick={() => setIsFilterSidebarOpen(true)}
-                className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg w-full h-12"
-              >
+              <Button onClick={() => setIsFilterSidebarOpen(true)} className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg w-full h-12">
                 <Filter className="w-5 h-5 mr-2" />
                 Advanced Filters ({sortedCandidates.length})
               </Button>
               
-              <Button
-                onClick={() => setIsFindMyMatchOpen(true)}
-                className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-6 py-3 font-bold border-0 shadow-lg w-full h-12"
-              >
+              <Button onClick={() => setIsFindMyMatchOpen(true)} className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-6 py-3 font-bold border-0 shadow-lg w-full h-12">
                 From Job Post
               </Button>
             </div>
@@ -667,19 +651,11 @@ const TalentPool = () => {
         {/* View Toggle Buttons */}
         <div className="flex justify-end items-center gap-4">
           <div className="flex gap-2">
-            <Button
-              variant={currentView === 'grid' ? 'default' : 'outline'}
-              onClick={() => setCurrentView('grid')}
-              className="flex items-center gap-2"
-            >
+            <Button variant={currentView === 'grid' ? 'default' : 'outline'} onClick={() => setCurrentView('grid')} className="flex items-center gap-2">
               <Grid2X2 className="w-4 h-4" />
               Grid
             </Button>
-            <Button
-              variant={currentView === 'table' ? 'default' : 'outline'}
-              onClick={() => setCurrentView('table')}
-              className="flex items-center gap-2"
-            >
+            <Button variant={currentView === 'table' ? 'default' : 'outline'} onClick={() => setCurrentView('table')} className="flex items-center gap-2">
               <LayoutList className="w-4 h-4" />
               Table
             </Button>
@@ -705,17 +681,14 @@ const TalentPool = () => {
                 </Badge>
               </div>
             </div>
-            {matchedJobPost && (
-              <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+            {matchedJobPost && <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
                 Matched for: {matchedJobPost.title}
-              </div>
-            )}
+              </div>}
           </div>
         </div>
 
         {/* Score visibility status banner */}
-        {isRevealed && scoreVisibility.showScores && (
-          <Card className="bg-blue-50 border-blue-200">
+        {isRevealed && scoreVisibility.showScores && <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -731,46 +704,28 @@ const TalentPool = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-blue-700">Sort by:</span>
-                  <Button
-                    variant={sortBy === 'score' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setSortBy('score')}
-                    className="text-xs"
-                  >
+                  <Button variant={sortBy === 'score' ? 'default' : 'outline'} size="sm" onClick={() => setSortBy('score')} className="text-xs">
                     <ArrowUpDown className="w-3 h-3 mr-1" />
                     Score
                   </Button>
-                  <Button
-                    variant={sortBy === 'experience' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setSortBy('experience')}
-                    className="text-xs"
-                  >
+                  <Button variant={sortBy === 'experience' ? 'default' : 'outline'} size="sm" onClick={() => setSortBy('experience')} className="text-xs">
                     <ArrowUpDown className="w-3 h-3 mr-1" />
                     Experience
                   </Button>
-                  <Button
-                    variant={sortBy === 'availability' ? 'default' : 'outline'}
-                    size="sm"
-                    onClick={() => setSortBy('availability')}
-                    className="text-xs"
-                  >
+                  <Button variant={sortBy === 'availability' ? 'default' : 'outline'} size="sm" onClick={() => setSortBy('availability')} className="text-xs">
                     <ArrowUpDown className="w-3 h-3 mr-1" />
                     Availability
                   </Button>
                 </div>
               </div>
             </CardContent>
-          </Card>
-        )}
+          </Card>}
 
         {renderCurrentView()}
 
-        {sortedCandidates.length === 0 && isRevealed && (
-          <div className="text-center py-12">
+        {sortedCandidates.length === 0 && isRevealed && <div className="text-center py-12">
             <p className="text-gray-500">No candidates found matching your criteria.</p>
-          </div>
-        )}
+          </div>}
 
         <FilterSidebar isOpen={isFilterSidebarOpen} onClose={() => setIsFilterSidebarOpen(false)} searchQuery={searchQuery} setSearchQuery={setSearchQuery} locationFilter={locationFilter} setLocationFilter={setLocationFilter} experienceRange={experienceRange} setExperienceRange={setExperienceRange} statusFilter={statusFilter} setStatusFilter={setStatusFilter} skillsFilter={skillsFilter} setSkillsFilter={setSkillsFilter} scoreRange={scoreRange} setScoreRange={setScoreRange} selectedSubfields={selectedSubfields} setSelectedSubfields={setSelectedSubfields} selectedSoftware={selectedSoftware} setSelectedSoftware={setSelectedSoftware} erpVersion={erpVersion} setErpVersion={setErpVersion} selectedCertifications={selectedCertifications} setSelectedCertifications={setSelectedCertifications} selectedIndustries={selectedIndustries} setSelectedIndustries={setSelectedIndustries} selectedVisaStatus={selectedVisaStatus} setSelectedVisaStatus={setSelectedVisaStatus} employmentType={employmentType} setEmploymentType={setEmploymentType} workMode={workMode} setWorkMode={setWorkMode} availability="" setAvailability={() => {}} languageProficiency={languageProficiency} setLanguageProficiency={setLanguageProficiency} genderFilter={genderFilter} setGenderFilter={setGenderFilter} educationLevel={educationLevel} setEducationLevel={setEducationLevel} selectedSpecialNeeds={selectedSpecialNeeds} setSelectedSpecialNeeds={setSelectedSpecialNeeds} cvCompleteness={cvCompleteness} setCvCompleteness={setCvCompleteness} academicExcellence={academicExcellence} setAcademicExcellence={setAcademicExcellence} selectedScreeningTags={selectedScreeningTags} setSelectedScreeningTags={setSelectedScreeningTags} resetAllFilters={resetAllFilters} filteredCandidatesCount={sortedCandidates.length} />
 
@@ -780,8 +735,6 @@ const TalentPool = () => {
 
         <ExpandedCandidateModal candidate={expandedCandidate} isOpen={!!expandedCandidate} onClose={() => setExpandedCandidate(null)} isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false} onToggleFavorite={() => expandedCandidate && toggleFavorite(expandedCandidate.id)} />
       </div>
-    </DashboardLayout>
-  );
+    </DashboardLayout>;
 };
-
 export default TalentPool;
