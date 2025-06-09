@@ -6,7 +6,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Upload, HelpCircle } from 'lucide-react';
+import { useTranslation } from '@/hooks/useTranslation';
 
 interface CompanyInfoSectionProps {
   isIndividualRecruiter: boolean;
@@ -19,6 +21,7 @@ export function CompanyInfoSection({
   setIsIndividualRecruiter, 
   onChange 
 }: CompanyInfoSectionProps) {
+  const { t } = useTranslation();
   const [companyName, setCompanyName] = useState('Finance Gate Consulting');
   const [companyLogo, setCompanyLogo] = useState('');
   const [industry, setIndustry] = useState('');
@@ -27,6 +30,12 @@ export function CompanyInfoSection({
   const [companySize, setCompanySize] = useState('');
   const [yearFounded, setYearFounded] = useState('');
   const [companyType, setCompanyType] = useState('');
+  const [companyTypeOther, setCompanyTypeOther] = useState('');
+  const [industryOther, setIndustryOther] = useState('');
+  const [linkedinPersonal, setLinkedinPersonal] = useState('');
+  const [linkedinCompany, setLinkedinCompany] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
+  const [companyDocument, setCompanyDocument] = useState<File | null>(null);
 
   const industries = [
     'Accounting & Auditing',
@@ -70,6 +79,14 @@ export function CompanyInfoSection({
         onChange();
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDocumentUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setCompanyDocument(file);
+      onChange();
     }
   };
 
@@ -125,6 +142,57 @@ export function CompanyInfoSection({
         </div>
       </div>
 
+      {/* LinkedIn URLs and WhatsApp */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="space-y-2">
+          <Label htmlFor="linkedin-personal" className="text-sm font-medium text-gray-900">
+            LinkedIn Profile URL (Personal) *
+          </Label>
+          <Input
+            id="linkedin-personal"
+            value={linkedinPersonal}
+            onChange={(e) => {
+              setLinkedinPersonal(e.target.value);
+              onChange();
+            }}
+            placeholder="https://linkedin.com/in/yourname"
+            className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="linkedin-company" className="text-sm font-medium text-gray-900">
+            Company LinkedIn URL
+          </Label>
+          <Input
+            id="linkedin-company"
+            value={linkedinCompany}
+            onChange={(e) => {
+              setLinkedinCompany(e.target.value);
+              onChange();
+            }}
+            placeholder="https://linkedin.com/company/yourcompany"
+            className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="whatsapp-number" className="text-sm font-medium text-gray-900">
+            WhatsApp Number *
+          </Label>
+          <Input
+            id="whatsapp-number"
+            value={whatsappNumber}
+            onChange={(e) => {
+              setWhatsappNumber(e.target.value);
+              onChange();
+            }}
+            placeholder="+971 50 123 4567"
+            className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+          />
+        </div>
+      </div>
+
       {/* Industry & Website */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="space-y-2">
@@ -146,6 +214,20 @@ export function CompanyInfoSection({
               ))}
             </SelectContent>
           </Select>
+          {industry === 'Other Financial Services' && (
+            <div className="mt-2">
+              <Input
+                value={industryOther}
+                onChange={(e) => {
+                  setIndustryOther(e.target.value);
+                  onChange();
+                }}
+                placeholder="Please specify your industry"
+                className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+                required
+              />
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
@@ -243,30 +325,62 @@ export function CompanyInfoSection({
               ))}
             </SelectContent>
           </Select>
+          {companyType === 'Other' && (
+            <div className="mt-2">
+              <Input
+                value={companyTypeOther}
+                onChange={(e) => {
+                  setCompanyTypeOther(e.target.value);
+                  onChange();
+                }}
+                placeholder="Please specify company type"
+                className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+                required
+              />
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Company Profile Upload */}
+      {/* Company Profile Document Upload - Now Mandatory */}
       <div className="space-y-2">
-        <Label htmlFor="company-profile" className="text-sm font-medium text-gray-900">
-          Company Profile Document (Optional)
-        </Label>
+        <div className="flex items-center gap-2">
+          <Label htmlFor="company-profile" className="text-sm font-medium text-gray-900">
+            Company Profile or Verification Document *
+          </Label>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <HelpCircle className="w-4 h-4 text-gray-400" />
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Required for verification before posting jobs.</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" asChild className="border-orange-200 text-orange-600 hover:bg-orange-50">
             <label htmlFor="company-profile" className="cursor-pointer">
               <Upload className="w-4 h-4 mr-2" />
-              Upload Profile
+              {companyDocument ? 'Change Document' : 'Upload Document'}
             </label>
           </Button>
           <input
             id="company-profile"
             type="file"
-            accept=".pdf,.doc,.docx"
-            onChange={onChange}
+            accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+            onChange={handleDocumentUpload}
             className="hidden"
+            required
           />
-          <span className="text-sm text-gray-500">PDF, DOC, or DOCX format</span>
+          <span className="text-sm text-gray-500">PDF, DOC, DOCX, PNG, JPG format</span>
         </div>
+        {companyDocument && (
+          <p className="text-sm text-green-600 font-medium">
+            ✓ {companyDocument.name} uploaded
+          </p>
+        )}
         <p className="text-xs text-gray-500">Upload your company brochure, profile, or detailed information document</p>
       </div>
     </div>
