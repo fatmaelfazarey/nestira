@@ -139,7 +139,7 @@ const TalentPool = () => {
   // Use AI filtered candidates if available, otherwise use regular filtering
   const baseCandidates = aiFilteredCandidates || candidates;
   const filteredCandidates = baseCandidates.filter(candidate => {
-    const matchesSearch = candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) || candidate.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = searchQuery === '' || candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) || candidate.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesLocation = locationFilter === 'all' || candidate.location.includes(locationFilter);
     const matchesExperience = experienceRange[0] === 0 || candidate.yearsOfExperience >= experienceRange[0];
     const matchesStatus = statusFilter === 'all' || candidate.status === statusFilter;
@@ -174,14 +174,14 @@ const TalentPool = () => {
     }
   });
 
-  // Check if any filters are applied that should reveal candidates - FIXED
+  // FIXED: Check if any filters are applied that should reveal candidates
   const hasActiveFilters = () => {
     return searchQuery !== '' || 
            locationFilter !== 'all' || 
-           experienceRange[0] !== 0 || 
+           experienceRange[0] > 0 || 
            statusFilter !== 'all' || 
            skillsFilter !== 'all' || 
-           scoreRange[0] !== 0 || 
+           scoreRange[0] > 0 || 
            selectedSubfields.length > 0 || 
            selectedSoftware.length > 0 || 
            erpVersion !== 'all' || 
@@ -198,6 +198,14 @@ const TalentPool = () => {
            cvCompleteness !== 'all' || 
            academicExcellence || 
            selectedScreeningTags.length > 0;
+  };
+
+  // Get the actual filtered candidates count for display
+  const getFilteredCount = () => {
+    if (!hasActiveFilters() && !aiFilteredCandidates && !matchedJobPost) {
+      return candidates.length;
+    }
+    return filteredCandidates.length;
   };
 
   // Trigger reveal when filters are applied
@@ -217,7 +225,7 @@ const TalentPool = () => {
     }, 500);
   };
 
-  // New utility functions
+  // ... keep existing code (utility functions like getScoreColor, formatBlurredName, handleUnlock, etc.)
   const getScoreColor = score => {
     if (score >= 80) return 'bg-green-500';
     if (score >= 60) return 'bg-orange-500';
@@ -235,7 +243,7 @@ const TalentPool = () => {
     setExpandedCandidate(candidate);
   };
 
-  // Progress bar component for candidate count
+  // ... keep existing code (CandidateCountProgress component)
   const CandidateCountProgress = ({
     count,
     total
@@ -257,14 +265,6 @@ const TalentPool = () => {
       </div>;
   };
 
-  // Helper functions for multi-select
-  const toggleMultiSelect = (item, selectedItems, setSelectedItems) => {
-    if (selectedItems.includes(item)) {
-      setSelectedItems(selectedItems.filter(i => i !== item));
-    } else {
-      setSelectedItems([...selectedItems, item]);
-    }
-  };
   // FIXED resetAllFilters function
   const resetAllFilters = () => {
     setSearchQuery('');
@@ -302,6 +302,13 @@ const TalentPool = () => {
       isAnimating: false
     });
   };
+
+  // FIXED: Close filter sidebar after applying
+  const handleApplyFilters = () => {
+    setIsFilterSidebarOpen(false);
+  };
+
+  // ... keep existing code (handleAiSearch, handleClearAiSearch, other handlers)
   const handleAiSearch = async (query: string) => {
     setIsAiSearching(true);
     setAiSearchQuery(query);
@@ -365,6 +372,8 @@ const TalentPool = () => {
       return `${years} year${years > 1 ? 's' : ''} ago`;
     }
   };
+
+  // ... keep existing code (renderGridView and renderTableView functions)
   const renderGridView = () => <TooltipProvider>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedCandidates.map(candidate => {
@@ -483,6 +492,7 @@ const TalentPool = () => {
       })}
       </div>
     </TooltipProvider>;
+
   const renderTableView = () => <TooltipProvider>
       <Card>
         <Table>
@@ -611,6 +621,7 @@ const TalentPool = () => {
         </Table>
       </Card>
     </TooltipProvider>;
+
   const renderCurrentView = () => {
     switch (currentView) {
       case 'table':
@@ -619,6 +630,7 @@ const TalentPool = () => {
         return renderGridView();
     }
   };
+
   const handleJobPostSelected = (jobPost: any) => {
     console.log('Selected job post:', jobPost);
     setMatchedJobPost(jobPost);
@@ -643,6 +655,7 @@ const TalentPool = () => {
       });
     }
   }, [searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, selectedSubfields, selectedSoftware, erpVersion, selectedCertifications, selectedIndustries, selectedVisaStatus, employmentType, workMode, availability, languageProficiency, genderFilter, educationLevel, selectedSpecialNeeds, cvCompleteness, academicExcellence, selectedScreeningTags]);
+
   return <DashboardLayout>
       <div className="space-y-6">
         {/* Page Title with View Toggle */}
@@ -701,7 +714,7 @@ const TalentPool = () => {
                 className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg w-full h-12"
               >
                 <Filter className="w-5 h-5 mr-2" />
-                Advanced Filters ({sortedCandidates.length})
+                Advanced Filters ({getFilteredCount()})
               </Button>
               
               <Button 
@@ -793,7 +806,7 @@ const TalentPool = () => {
 
         <FilterSidebar 
           isOpen={isFilterSidebarOpen} 
-          onClose={() => setIsFilterSidebarOpen(false)} 
+          onClose={handleApplyFilters}
           searchQuery={searchQuery} 
           setSearchQuery={setSearchQuery} 
           locationFilter={locationFilter} 
@@ -839,7 +852,7 @@ const TalentPool = () => {
           selectedScreeningTags={selectedScreeningTags} 
           setSelectedScreeningTags={setSelectedScreeningTags} 
           resetAllFilters={resetAllFilters} 
-          filteredCandidatesCount={sortedCandidates.length} 
+          filteredCandidatesCount={getFilteredCount()} 
         />
 
         <FindMyMatchModal isOpen={isFindMyMatchOpen} onClose={() => setIsFindMyMatchOpen(false)} onJobSelected={handleJobPostSelected} />
