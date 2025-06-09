@@ -619,6 +619,20 @@ const TalentPool = () => {
           <p className="text-gray-600">Browse and filter finance professionals</p>
         </div>
 
+        {/* View Toggle Buttons */}
+        <div className="flex justify-end items-center">
+          <div className="flex gap-2">
+            <Button variant={currentView === 'grid' ? 'default' : 'outline'} onClick={() => setCurrentView('grid')} className="flex items-center gap-2">
+              <Grid2X2 className="w-4 h-4" />
+              Grid
+            </Button>
+            <Button variant={currentView === 'table' ? 'default' : 'outline'} onClick={() => setCurrentView('table')} className="flex items-center gap-2">
+              <LayoutList className="w-4 h-4" />
+              Table
+            </Button>
+          </div>
+        </div>
+
         {/* Guidance Line */}
         <div className="bg-orange-50 border border-orange-200 rounded-lg p-3 flex items-center gap-2">
           <Lock className="w-5 h-5 text-orange-600" />
@@ -645,20 +659,6 @@ const TalentPool = () => {
                 From Job Post
               </Button>
             </div>
-          </div>
-        </div>
-
-        {/* View Toggle Buttons */}
-        <div className="flex justify-end items-center gap-4">
-          <div className="flex gap-2">
-            <Button variant={currentView === 'grid' ? 'default' : 'outline'} onClick={() => setCurrentView('grid')} className="flex items-center gap-2">
-              <Grid2X2 className="w-4 h-4" />
-              Grid
-            </Button>
-            <Button variant={currentView === 'table' ? 'default' : 'outline'} onClick={() => setCurrentView('table')} className="flex items-center gap-2">
-              <LayoutList className="w-4 h-4" />
-              Table
-            </Button>
           </div>
         </div>
 
