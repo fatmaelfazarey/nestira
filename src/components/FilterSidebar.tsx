@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -165,8 +166,8 @@ export const FilterSidebar = ({
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent side="right" className="w-[500px] sm:w-[600px] overflow-y-auto">
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-2 text-accent">
-            <Filter className="w-5 h-5 text-accent" />
+          <SheetTitle className="flex items-center gap-2 text-primary">
+            <Filter className="w-5 h-5 text-primary" />
             Filter Candidates
           </SheetTitle>
         </SheetHeader>
@@ -174,8 +175,8 @@ export const FilterSidebar = ({
         <div className="space-y-6 mt-6">
           {/* Basic Filters */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-accent mb-3 flex items-center gap-2">
-              <Search className="w-4 h-4 text-accent" />
+            <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <Search className="w-4 h-4 text-primary" />
               Basic Filters
             </h3>
             
@@ -234,8 +235,8 @@ export const FilterSidebar = ({
 
           {/* Experience and Score Range */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-accent mb-3 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-accent" />
+            <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-primary" />
               Experience & Score
             </h3>
             
@@ -274,8 +275,8 @@ export const FilterSidebar = ({
 
           {/* Skills & Expertise */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-accent mb-3 flex items-center gap-2">
-              <Briefcase className="w-4 h-4 text-accent" />
+            <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-primary" />
               Skills & Expertise
             </h3>
             
@@ -340,8 +341,8 @@ export const FilterSidebar = ({
 
           {/* Work Preferences */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-accent mb-3 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-accent" />
+            <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-primary" />
               Work Preferences
             </h3>
             
@@ -405,8 +406,8 @@ export const FilterSidebar = ({
 
           {/* Industry Experience */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-accent mb-3 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-accent" />
+            <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-primary" />
               Industry Experience
             </h3>
             <p className="text-xs text-gray-500">Pick all that apply</p>
@@ -431,8 +432,8 @@ export const FilterSidebar = ({
           <Collapsible open={isAdvancedFiltersOpen} onOpenChange={setIsAdvancedFiltersOpen}>
             <div className="space-y-4">
               <CollapsibleTrigger className="flex items-center justify-between w-full">
-                <h3 className="font-semibold text-accent flex items-center gap-2">
-                  <Settings className="w-4 h-4 text-accent" />
+                <h3 className="font-semibold text-primary flex items-center gap-2">
+                  <Settings className="w-4 h-4 text-primary" />
                   Additional Filters
                 </h3>
                 <ChevronDown className={`w-4 h-4 transition-transform ${isAdvancedFiltersOpen ? 'rotate-180' : ''}`} />
