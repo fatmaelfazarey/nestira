@@ -9,7 +9,7 @@ import { Slider } from '@/components/ui/slider';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
-import { ChevronDown, X, Filter } from 'lucide-react';
+import { ChevronDown, X, Filter, Search, BarChart3, Briefcase, Building2, Settings, MapPin } from 'lucide-react';
 
 interface FilterSidebarProps {
   isOpen: boolean;
@@ -176,12 +176,16 @@ export const FilterSidebar = ({
           {/* Basic Filters */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              🔍 Basic Filters
+              <Search className="w-4 h-4" />
+              Basic Filters
             </h3>
             
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-gray-700">Country</label>
+                <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                  <MapPin className="w-3 h-3" />
+                  Country
+                </label>
                 <Select value={locationFilter} onValueChange={setLocationFilter}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Countries" />
@@ -232,7 +236,8 @@ export const FilterSidebar = ({
           {/* Experience and Score Range */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              📊 Experience & Score
+              <BarChart3 className="w-4 h-4" />
+              Experience & Score
             </h3>
             
             <div className="space-y-4">
@@ -271,7 +276,8 @@ export const FilterSidebar = ({
           {/* Skills & Expertise */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              💼 Skills & Expertise
+              <Briefcase className="w-4 h-4" />
+              Skills & Expertise
             </h3>
             
             {/* Finance Subfields */}
@@ -336,7 +342,8 @@ export const FilterSidebar = ({
           {/* Work Preferences */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              🏢 Work Preferences
+              <Building2 className="w-4 h-4" />
+              Work Preferences
             </h3>
             
             <div className="grid grid-cols-1 gap-4">
@@ -400,7 +407,8 @@ export const FilterSidebar = ({
           {/* Industry Experience */}
           <div className="space-y-4">
             <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-              🏭 Industry Experience
+              <Building2 className="w-4 h-4" />
+              Industry Experience
             </h3>
             <p className="text-xs text-gray-500">Pick all that apply</p>
             <div className="flex flex-wrap gap-2">
@@ -425,7 +433,8 @@ export const FilterSidebar = ({
             <div className="space-y-4">
               <CollapsibleTrigger className="flex items-center justify-between w-full">
                 <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-                  ⚙️ Additional Filters
+                  <Settings className="w-4 h-4" />
+                  Additional Filters
                 </h3>
                 <ChevronDown className={`w-4 h-4 transition-transform ${isAdvancedFiltersOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
