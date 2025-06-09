@@ -663,25 +663,25 @@ const TalentPool = () => {
         </div>
 
         {/* Matching Stats Bar */}
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-blue-600" />
-                <span className="text-sm font-medium text-gray-700">Total Talents in Nestira:</span>
-                <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 font-bold">
+                <Users className="w-5 h-5 text-orange-600" />
+                <span className="text-sm font-medium text-orange-800">Total Talents in Nestira:</span>
+                <Badge variant="outline" className="bg-orange-100 text-orange-800 border-orange-300 font-bold">
                   {candidates.length.toLocaleString()}
                 </Badge>
               </div>
               <div className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-green-600" />
-                <span className="text-sm font-medium text-gray-700">Matching Results:</span>
-                <Badge variant="outline" className={`font-bold ${isRevealed ? 'bg-green-100 text-green-800 border-green-300 animate-pulse' : 'bg-gray-100 text-gray-600 border-gray-300'}`}>
+                <Target className="w-5 h-5 text-orange-600" />
+                <span className="text-sm font-medium text-orange-800">Matching Results:</span>
+                <Badge variant="outline" className={`font-bold ${isRevealed ? 'bg-orange-100 text-orange-800 border-orange-300 animate-pulse' : 'bg-gray-100 text-gray-600 border-gray-300'}`}>
                   {isRevealed ? sortedCandidates.length : '-'}
                 </Badge>
               </div>
             </div>
-            {matchedJobPost && <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+            {matchedJobPost && <div className="text-sm text-orange-700 bg-orange-100 px-3 py-1 rounded-full">
                 Matched for: {matchedJobPost.title}
               </div>}
           </div>
