@@ -19,6 +19,8 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
   const [phoneNumber, setPhoneNumber] = useState('+20 123 456 7890');
   const [businessEmail, setBusinessEmail] = useState('ahmed@company.com');
   const [profilePhoto, setProfilePhoto] = useState('');
+  const [linkedinPersonal, setLinkedinPersonal] = useState('');
+  const [whatsappNumber, setWhatsappNumber] = useState('');
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -163,6 +165,43 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
               placeholder={isIndividualRecruiter ? 'your.email@domain.com' : 'your.email@company.com'}
             />
           </div>
+
+          {/* Individual Recruiter Specific Fields */}
+          {isIndividualRecruiter && (
+            <>
+              <div className="space-y-2">
+                <Label htmlFor="linkedin-personal" className="text-sm font-medium text-gray-900">
+                  LinkedIn Profile URL (Personal) *
+                </Label>
+                <Input
+                  id="linkedin-personal"
+                  value={linkedinPersonal}
+                  onChange={(e) => {
+                    setLinkedinPersonal(e.target.value);
+                    onChange();
+                  }}
+                  placeholder="https://linkedin.com/in/yourname"
+                  className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="whatsapp-number" className="text-sm font-medium text-gray-900">
+                  WhatsApp Number *
+                </Label>
+                <Input
+                  id="whatsapp-number"
+                  value={whatsappNumber}
+                  onChange={(e) => {
+                    setWhatsappNumber(e.target.value);
+                    onChange();
+                  }}
+                  placeholder="+971 50 123 4567"
+                  className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+                />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>
