@@ -89,11 +89,34 @@ export const FindMyMatchModal: React.FC<FindMyMatchModalProps> = ({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
-            <Target className="w-5 h-5 text-orange-500" />
-            Select a Job Post
-          </DialogTitle>
-          <p className="text-gray-600">Choose an active job posting to find AI-matched candidates</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <DialogTitle className="flex items-center gap-2 text-xl">
+                <Target className="w-5 h-5 text-orange-500" />
+                Select a Job Post
+              </DialogTitle>
+              <p className="text-gray-600">Choose an active job posting to find AI-matched candidates</p>
+            </div>
+            
+            {/* Header Action Buttons */}
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                onClick={onClose}
+                className="px-4"
+              >
+                Cancel
+              </Button>
+              <Button 
+                onClick={handleUseJobPost}
+                disabled={!selectedJob}
+                className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6"
+              >
+                <CheckCircle className="w-4 h-4 mr-2" />
+                Use This Job Post
+              </Button>
+            </div>
+          </div>
         </DialogHeader>
 
         {/* Top Action Buttons */}
