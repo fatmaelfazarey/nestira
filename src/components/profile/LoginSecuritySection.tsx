@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -77,16 +76,22 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
   };
 
   const handleTwoFactorToggle = (checked: boolean) => {
-    if (checked) {
+    console.log('Two-factor toggle clicked:', checked);
+    if (checked && !twoFactorEnabled) {
+      // Show setup when turning on
       setShowTwoFactorSetup(true);
-    } else {
+      setTwoFactorEnabled(false); // Keep false until setup is complete
+    } else if (!checked && twoFactorEnabled) {
+      // Turn off 2FA
       setTwoFactorEnabled(false);
       setShowTwoFactorSetup(false);
+      setRecoveryCode('');
     }
     onChange();
   };
 
   const setupTwoFactor = () => {
+    console.log('Setting up 2FA with method:', twoFactorMethod);
     // Simulate 2FA setup
     setTwoFactorEnabled(true);
     setShowTwoFactorSetup(false);
@@ -332,7 +337,10 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={() => setShowTwoFactorSetup(false)}
+                  onClick={() => {
+                    setShowTwoFactorSetup(false);
+                    setVerificationCode('');
+                  }}
                 >
                   Cancel
                 </Button>
