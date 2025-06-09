@@ -53,23 +53,27 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
               </TableHeader>
               <TableBody>
                 {sortedCandidates.map(candidate => {
-                  const shouldBlur = !isRevealed;
+                  const isUnlocked = unlockedCandidates.has(candidate.id);
+                  const shouldBlur = !isRevealed && !isUnlocked;
+                  
                   return (
                     <TableRow key={candidate.id}>
                       <TableCell className="min-w-[150px]">
                         <div className="flex items-center gap-3">
                           <div className="relative">
-                            <Avatar className="w-8 h-8 blur-sm">
+                            <Avatar className={`w-8 h-8 transition-all duration-500 ${shouldBlur ? 'blur-sm' : ''}`}>
                               <AvatarImage src={candidate.photo} alt={candidate.name} />
                               <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                             </Avatar>
-                            <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                              <Unlock className="w-3 h-3 text-gray-600" />
-                            </div>
+                            {shouldBlur && (
+                              <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                                <Unlock className="w-3 h-3 text-gray-600" />
+                              </div>
+                            )}
                           </div>
                           <div>
                             <div className="font-medium flex items-center gap-2 transition-all duration-500">
-                              {formatBlurredName(candidate.name)}
+                              {shouldBlur ? formatBlurredName(candidate.name) : candidate.name}
                               <span>{getCountryFlag(candidate.country)}</span>
                             </div>
                           </div>
@@ -180,13 +184,19 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                           >
                             <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
                           </Button>
-                          <Button 
-                            size="sm" 
-                            className="bg-accent hover:bg-accent/90" 
-                            onClick={() => onUnlock(candidate)}
-                          >
-                            <Unlock className="w-4 h-4" />
-                          </Button>
+                          {!isUnlocked ? (
+                            <Button 
+                              size="sm" 
+                              className="bg-accent hover:bg-accent/90" 
+                              onClick={() => onUnlock(candidate)}
+                            >
+                              <Unlock className="w-4 h-4" />
+                            </Button>
+                          ) : (
+                            <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300 text-xs">
+                              Unlocked
+                            </Badge>
+                          )}
                         </div>
                       </TableCell>
                     </TableRow>

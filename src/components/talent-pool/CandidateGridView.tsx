@@ -33,7 +33,7 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedCandidates.map(candidate => {
           const isUnlocked = unlockedCandidates.has(candidate.id);
-          const shouldBlur = !isRevealed;
+          const shouldBlur = !isRevealed && !isUnlocked;
           
           return (
             <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative">
@@ -41,18 +41,20 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <Avatar className="w-12 h-12 blur-sm">
+                      <Avatar className={`w-12 h-12 transition-all duration-500 ${shouldBlur ? 'blur-sm' : ''}`}>
                         <AvatarImage src={candidate.photo} alt={candidate.name} />
                         <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                        <Unlock className="w-4 h-4 text-gray-600" />
-                      </div>
+                      {shouldBlur && (
+                        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                          <Unlock className="w-4 h-4 text-gray-600" />
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1">
                       <CardTitle className="text-lg flex items-center gap-2">
                         <span className="transition-all duration-500">
-                          {formatBlurredName(candidate.name)}
+                          {shouldBlur ? formatBlurredName(candidate.name) : candidate.name}
                         </span>
                         <span className="text-lg">{getCountryFlag(candidate.country)}</span>
                       </CardTitle>
@@ -177,14 +179,20 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                   >
                     {candidate.status}
                   </Badge>
-                  <Button 
-                    size="sm" 
-                    className="bg-accent hover:bg-accent/90" 
-                    onClick={() => onUnlock(candidate)}
-                  >
-                    <Unlock className="w-4 h-4 mr-1" />
-                    Unlock
-                  </Button>
+                  {!isUnlocked ? (
+                    <Button 
+                      size="sm" 
+                      className="bg-accent hover:bg-accent/90" 
+                      onClick={() => onUnlock(candidate)}
+                    >
+                      <Unlock className="w-4 h-4 mr-1" />
+                      Unlock
+                    </Button>
+                  ) : (
+                    <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300">
+                      Unlocked
+                    </Badge>
+                  )}
                 </div>
               </CardContent>
             </Card>
