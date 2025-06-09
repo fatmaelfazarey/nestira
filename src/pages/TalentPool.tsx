@@ -631,9 +631,6 @@ const TalentPool = () => {
 
         {/* Search Section */}
         <div className="space-y-4">
-          {/* Optional Subtitle */}
-          <p className="text-gray-600 text-center">Search talents using one of the methods below.</p>
-
           {/* Main Flex Container */}
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Left Column - AI Search (75%) */}
