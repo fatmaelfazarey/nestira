@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -143,7 +144,7 @@ export function CompanyInfoSection({
       <div className="grid grid-cols-1 gap-6">
         <div className="space-y-2">
           <Label htmlFor="linkedin-company" className="text-sm font-medium text-gray-900">
-            Company LinkedIn URL
+            Company LinkedIn URL *
           </Label>
           <Input
             id="linkedin-company"
@@ -154,6 +155,7 @@ export function CompanyInfoSection({
             }}
             placeholder="https://linkedin.com/company/yourcompany"
             className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+            required
           />
         </div>
       </div>
