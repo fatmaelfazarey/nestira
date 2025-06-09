@@ -180,25 +180,6 @@ export const FindMyMatchModal: React.FC<FindMyMatchModalProps> = ({
             </Card>
           ))}
         </div>
-
-        {/* Bottom Action Buttons */}
-        <div className="flex flex-col sm:flex-row justify-end gap-3 mt-6 pt-4 border-t bg-white">
-          <Button 
-            variant="outline" 
-            onClick={onClose}
-            className="w-full sm:w-auto order-2 sm:order-1"
-          >
-            Cancel
-          </Button>
-          <Button 
-            onClick={handleUseJobPost}
-            disabled={!selectedJob}
-            className="w-full sm:w-auto bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 order-1 sm:order-2"
-          >
-            <CheckCircle className="w-4 h-4 mr-2" />
-            Use This Job Post
-          </Button>
-        </div>
       </DialogContent>
     </Dialog>
   );
