@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,9 +31,7 @@ export function CompanyInfoSection({
   const [companyType, setCompanyType] = useState('');
   const [companyTypeOther, setCompanyTypeOther] = useState('');
   const [industryOther, setIndustryOther] = useState('');
-  const [linkedinPersonal, setLinkedinPersonal] = useState('');
   const [linkedinCompany, setLinkedinCompany] = useState('');
-  const [whatsappNumber, setWhatsappNumber] = useState('');
   const [companyDocument, setCompanyDocument] = useState<File | null>(null);
 
   const industries = [
@@ -142,24 +139,8 @@ export function CompanyInfoSection({
         </div>
       </div>
 
-      {/* LinkedIn URLs and WhatsApp */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="linkedin-personal" className="text-sm font-medium text-gray-900">
-            LinkedIn Profile URL (Personal) *
-          </Label>
-          <Input
-            id="linkedin-personal"
-            value={linkedinPersonal}
-            onChange={(e) => {
-              setLinkedinPersonal(e.target.value);
-              onChange();
-            }}
-            placeholder="https://linkedin.com/in/yourname"
-            className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
-          />
-        </div>
-
+      {/* Company LinkedIn URL only */}
+      <div className="grid grid-cols-1 gap-6">
         <div className="space-y-2">
           <Label htmlFor="linkedin-company" className="text-sm font-medium text-gray-900">
             Company LinkedIn URL
@@ -172,22 +153,6 @@ export function CompanyInfoSection({
               onChange();
             }}
             placeholder="https://linkedin.com/company/yourcompany"
-            className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
-          />
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="whatsapp-number" className="text-sm font-medium text-gray-900">
-            WhatsApp Number *
-          </Label>
-          <Input
-            id="whatsapp-number"
-            value={whatsappNumber}
-            onChange={(e) => {
-              setWhatsappNumber(e.target.value);
-              onChange();
-            }}
-            placeholder="+971 50 123 4567"
             className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
           />
         </div>
