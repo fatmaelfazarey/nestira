@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -77,15 +78,15 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
 
   const handleTwoFactorToggle = (checked: boolean) => {
     console.log('Two-factor toggle clicked:', checked);
-    if (checked && !twoFactorEnabled) {
+    if (checked) {
       // Show setup when turning on
       setShowTwoFactorSetup(true);
-      setTwoFactorEnabled(false); // Keep false until setup is complete
-    } else if (!checked && twoFactorEnabled) {
+    } else {
       // Turn off 2FA
       setTwoFactorEnabled(false);
       setShowTwoFactorSetup(false);
       setRecoveryCode('');
+      setVerificationCode('');
     }
     onChange();
   };
@@ -97,6 +98,12 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
     setShowTwoFactorSetup(false);
     setRecoveryCode('ABC123-DEF456-GHI789');
     onChange();
+  };
+
+  const cancelTwoFactorSetup = () => {
+    setShowTwoFactorSetup(false);
+    setVerificationCode('');
+    setTwoFactorMethod('email');
   };
 
   return (
@@ -236,7 +243,7 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
           </div>
           <Switch
             id="two-factor"
-            checked={twoFactorEnabled}
+            checked={twoFactorEnabled || showTwoFactorSetup}
             onCheckedChange={handleTwoFactorToggle}
           />
         </div>
@@ -337,10 +344,7 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
                 </Button>
                 <Button 
                   variant="outline" 
-                  onClick={() => {
-                    setShowTwoFactorSetup(false);
-                    setVerificationCode('');
-                  }}
+                  onClick={cancelTwoFactorSetup}
                 >
                   Cancel
                 </Button>
