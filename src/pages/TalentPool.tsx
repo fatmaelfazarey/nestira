@@ -7,7 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle, Target, TrendingUp, ArrowUpDown, Eye, Users } from 'lucide-react';
+import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle, Target, TrendingUp, ArrowUpDown, Eye, Users, Lock } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
 import { AICandidateSearch } from '@/components/AICandidateSearch';
@@ -756,39 +756,6 @@ const TalentPool = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 py-[10px]">Talent Pool</h1>
             <p className="text-gray-600">Browse and filter finance professionals</p>
-            
-            {/* Matching Stats Bar */}
-            <div className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-6">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-blue-600" />
-                    <span className="text-sm font-medium text-gray-700">Total Talents in Nestira:</span>
-                    <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 font-bold">
-                      {candidates.length.toLocaleString()}
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Target className="w-5 h-5 text-green-600" />
-                    <span className="text-sm font-medium text-gray-700">Matching Results:</span>
-                    <Badge 
-                      variant="outline" 
-                      className={`font-bold ${isRevealed 
-                        ? 'bg-green-100 text-green-800 border-green-300 animate-pulse' 
-                        : 'bg-gray-100 text-gray-600 border-gray-300'
-                      }`}
-                    >
-                      {isRevealed ? sortedCandidates.length : '-'}
-                    </Badge>
-                  </div>
-                </div>
-                {matchedJobPost && (
-                  <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
-                    Matched for: {matchedJobPost.title}
-                  </div>
-                )}
-              </div>
-            </div>
           </div>
           
           <div className="flex items-center gap-4 py-[41px] mx-[43px]">
@@ -810,38 +777,91 @@ const TalentPool = () => {
                 Table
               </Button>
             </div>
-
-            <Button 
-              onClick={() => setIsFilterSidebarOpen(true)} 
-              className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg"
-            >
-              <Filter className="w-5 h-5 mr-2" />
-              Advanced Filters ({sortedCandidates.length})
-            </Button>
           </div>
         </div>
 
-        <AICandidateSearch 
-          onSearch={handleAiSearch} 
-          isSearching={isAiSearching} 
-          currentQuery={aiSearchQuery} 
-          onClear={handleClearAiSearch} 
-          onFindMyMatch={() => setIsFindMyMatchOpen(true)} 
-        />
+        {/* Guidance Line */}
+        <Card className="bg-orange-50 border-orange-200">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Lock className="w-5 h-5 text-orange-600" />
+              <span className="text-orange-900 font-medium">
+                🔒 Please use filters, job post selection, or AI search to see matching candidates.
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
-        {/* Informational note for blurred state */}
-        {!isRevealed && (
-          <Card className="bg-orange-50 border-orange-200">
-            <CardContent className="p-4">
+        {/* New Header Layout */}
+        <div className="space-y-4">
+          {/* Optional Subtitle */}
+          <p className="text-gray-600 text-center">Search talents using one of the methods below.</p>
+
+          {/* Main Flex Container */}
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Left Column - AI Search (66%) */}
+            <div className="flex-1 lg:w-2/3">
+              <AICandidateSearch 
+                onSearch={handleAiSearch} 
+                isSearching={isAiSearching} 
+                currentQuery={aiSearchQuery} 
+                onClear={handleClearAiSearch} 
+                onFindMyMatch={null}
+              />
+            </div>
+
+            {/* Right Column - Buttons (33%) */}
+            <div className="lg:w-1/3 flex flex-col gap-4">
+              <Button 
+                onClick={() => setIsFilterSidebarOpen(true)} 
+                className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg w-full h-12"
+              >
+                <Filter className="w-5 h-5 mr-2" />
+                Advanced Filters ({sortedCandidates.length})
+              </Button>
+              
+              <Button 
+                onClick={() => setIsFindMyMatchOpen(true)}
+                className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-6 py-3 font-bold border-0 shadow-lg w-full h-12"
+              >
+                From Job Post
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Matching Stats Bar */}
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <Eye className="w-5 h-5 text-orange-600" />
-                <span className="text-orange-900 font-medium">
-                  🔒 Please use filters, job post selection, or AI search to see matching candidates.
-                </span>
+                <Users className="w-5 h-5 text-blue-600" />
+                <span className="text-sm font-medium text-gray-700">Total Talents in Nestira:</span>
+                <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-300 font-bold">
+                  {candidates.length.toLocaleString()}
+                </Badge>
               </div>
-            </CardContent>
-          </Card>
-        )}
+              <div className="flex items-center gap-2">
+                <Target className="w-5 h-5 text-green-600" />
+                <span className="text-sm font-medium text-gray-700">Matching Results:</span>
+                <Badge 
+                  variant="outline" 
+                  className={`font-bold ${isRevealed 
+                    ? 'bg-green-100 text-green-800 border-green-300 animate-pulse' 
+                    : 'bg-gray-100 text-gray-600 border-gray-300'
+                  }`}
+                >
+                  {isRevealed ? sortedCandidates.length : '-'}
+                </Badge>
+              </div>
+            </div>
+            {matchedJobPost && (
+              <div className="text-sm text-blue-700 bg-blue-100 px-3 py-1 rounded-full">
+                Matched for: {matchedJobPost.title}
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Score visibility status banner */}
         {isRevealed && scoreVisibility.showScores && (
