@@ -7,7 +7,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle, Target, TrendingUp, ArrowUpDown, Eye, Users, Lock } from 'lucide-react';
+import { Star, MapPin, Briefcase, Unlock, Calendar, DollarSign, Grid2X2, LayoutList, Kanban, Filter, SlidersHorizontal, CheckCircle, Target, TrendingUp, ArrowUpDown, Eye, Users, Lock, FileText, RotateCcw } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
 import { AICandidateSearch } from '@/components/AICandidateSearch';
@@ -16,6 +16,7 @@ import { FindMyMatchModal } from '@/components/FindMyMatchModal';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import React from 'react';
+
 const TalentPool = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('all');
@@ -613,20 +614,26 @@ const TalentPool = () => {
   }, [searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, selectedSubfields, selectedSoftware, erpVersion, selectedCertifications, selectedIndustries, selectedVisaStatus, employmentType, workMode, languageProficiency, genderFilter, educationLevel, selectedSpecialNeeds, cvCompleteness, academicExcellence, selectedScreeningTags]);
   return <DashboardLayout>
       <div className="space-y-6">
-        {/* Page Title */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 py-[10px]">Talent Pool</h1>
-          <p className="text-gray-600">Browse and filter finance professionals</p>
-        </div>
-
-        {/* View Toggle Buttons */}
-        <div className="flex justify-end items-center">
+        {/* Page Title with View Toggle */}
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 py-[10px]">Talent Pool</h1>
+            <p className="text-gray-600">Browse and filter finance professionals</p>
+          </div>
           <div className="flex gap-2">
-            <Button variant={currentView === 'grid' ? 'default' : 'outline'} onClick={() => setCurrentView('grid')} className="flex items-center gap-2">
+            <Button 
+              variant={currentView === 'grid' ? 'default' : 'outline'} 
+              onClick={() => setCurrentView('grid')} 
+              className="flex items-center gap-2"
+            >
               <Grid2X2 className="w-4 h-4" />
               Grid
             </Button>
-            <Button variant={currentView === 'table' ? 'default' : 'outline'} onClick={() => setCurrentView('table')} className="flex items-center gap-2">
+            <Button 
+              variant={currentView === 'table' ? 'default' : 'outline'} 
+              onClick={() => setCurrentView('table')} 
+              className="flex items-center gap-2"
+            >
               <LayoutList className="w-4 h-4" />
               Table
             </Button>
@@ -645,18 +652,40 @@ const TalentPool = () => {
           <div className="flex flex-col lg:flex-row gap-6">
             {/* Left Column - AI Search (75%) */}
             <div className="flex-1 lg:w-3/4">
-              <AICandidateSearch onSearch={handleAiSearch} isSearching={isAiSearching} currentQuery={aiSearchQuery} onClear={handleClearAiSearch} onFindMyMatch={null} />
+              <AICandidateSearch 
+                onSearch={handleAiSearch} 
+                isSearching={isAiSearching} 
+                currentQuery={aiSearchQuery} 
+                onClear={handleClearAiSearch} 
+                onFindMyMatch={null} 
+              />
             </div>
 
             {/* Right Column - Buttons (25%) */}
             <div className="lg:w-1/4 flex flex-col gap-4">
-              <Button onClick={() => setIsFilterSidebarOpen(true)} className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg w-full h-12">
+              <Button 
+                onClick={() => setIsFilterSidebarOpen(true)} 
+                className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white px-6 py-3 font-bold border-0 shadow-lg w-full h-12"
+              >
                 <Filter className="w-5 h-5 mr-2" />
                 Advanced Filters ({sortedCandidates.length})
               </Button>
               
-              <Button onClick={() => setIsFindMyMatchOpen(true)} className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-6 py-3 font-bold border-0 shadow-lg w-full h-12">
+              <Button 
+                onClick={() => setIsFindMyMatchOpen(true)} 
+                className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-6 py-3 font-bold border-0 shadow-lg w-full h-12"
+              >
+                <FileText className="w-5 h-5 mr-2" />
                 From Job Post
+              </Button>
+
+              <Button 
+                onClick={resetAllFilters} 
+                variant="outline"
+                className="px-6 py-3 font-bold border-gray-300 hover:bg-gray-50 w-full h-12"
+              >
+                <RotateCcw className="w-5 h-5 mr-2" />
+                Reset
               </Button>
             </div>
           </div>
@@ -681,9 +710,11 @@ const TalentPool = () => {
                 </Badge>
               </div>
             </div>
-            {matchedJobPost && <div className="text-sm text-orange-700 bg-orange-100 px-3 py-1 rounded-full">
+            {matchedJobPost && (
+              <div className="text-sm text-orange-700 bg-orange-100 px-3 py-1 rounded-full">
                 Matched for: {matchedJobPost.title}
-              </div>}
+              </div>
+            )}
           </div>
         </div>
 
@@ -737,4 +768,5 @@ const TalentPool = () => {
       </div>
     </DashboardLayout>;
 };
+
 export default TalentPool;
