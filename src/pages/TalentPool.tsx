@@ -493,134 +493,176 @@ const TalentPool = () => {
       </div>
     </TooltipProvider>;
 
-  const renderTableView = () => <TooltipProvider>
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Candidate</TableHead>
-              <TableHead>Title</TableHead>
-              <TableHead>Location</TableHead>
-              <TableHead>Experience</TableHead>
-              <TableHead>Score</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Industry</TableHead>
-              <TableHead>Subfields</TableHead>
-              <TableHead>Tools</TableHead>
-              <TableHead>Certifications</TableHead>
-              <TableHead>Salary</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {sortedCandidates.map(candidate => {
-            const shouldBlur = !isRevealed;
-            return <TableRow key={candidate.id}>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <Avatar className="w-8 h-8 blur-sm">
-                          <AvatarImage src={candidate.photo} alt={candidate.name} />
-                          <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
-                        </Avatar>
-                        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                          <Unlock className="w-3 h-3 text-gray-600" />
+  const renderTableView = () => (
+    <TooltipProvider>
+      <div className="w-full overflow-hidden">
+        <Card className="w-full">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="min-w-[150px]">Candidate</TableHead>
+                  <TableHead className="min-w-[120px]">Title</TableHead>
+                  <TableHead className="min-w-[100px]">Location</TableHead>
+                  <TableHead className="min-w-[80px]">Experience</TableHead>
+                  <TableHead className="min-w-[80px]">Score</TableHead>
+                  <TableHead className="min-w-[80px]">Status</TableHead>
+                  <TableHead className="min-w-[120px]">Industry</TableHead>
+                  <TableHead className="min-w-[120px]">Subfields</TableHead>
+                  <TableHead className="min-w-[120px]">Tools</TableHead>
+                  <TableHead className="min-w-[120px]">Certifications</TableHead>
+                  <TableHead className="min-w-[120px]">Salary</TableHead>
+                  <TableHead className="min-w-[100px]">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {sortedCandidates.map(candidate => {
+                  const shouldBlur = !isRevealed;
+                  return (
+                    <TableRow key={candidate.id}>
+                      <TableCell className="min-w-[150px]">
+                        <div className="flex items-center gap-3">
+                          <div className="relative">
+                            <Avatar className="w-8 h-8 blur-sm">
+                              <AvatarImage src={candidate.photo} alt={candidate.name} />
+                              <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
+                              <Unlock className="w-3 h-3 text-gray-600" />
+                            </div>
+                          </div>
+                          <div>
+                            <div className="font-medium flex items-center gap-2 transition-all duration-500">
+                              {formatBlurredName(candidate.name)}
+                              <span>{getCountryFlag(candidate.country)}</span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <div className="font-medium flex items-center gap-2 transition-all duration-500">
-                          {formatBlurredName(candidate.name)}
-                          <span>{getCountryFlag(candidate.country)}</span>
+                      </TableCell>
+                      <TableCell className="min-w-[120px]">{candidate.title}</TableCell>
+                      <TableCell className="min-w-[100px]">{candidate.location}</TableCell>
+                      <TableCell className="min-w-[80px]">{candidate.experience}</TableCell>
+                      <TableCell className="min-w-[80px]">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div>
+                              {isRevealed && scoreVisibility.showScores ? (
+                                <div className={`transition-all duration-500 ${scoreVisibility.isAnimating ? 'animate-scale-in' : ''}`}>
+                                  <CircularProgress value={candidate.score} size={40} strokeWidth={3} showPercentage={true} compact={true} />
+                                </div>
+                              ) : (
+                                <div className="relative">
+                                  <CircularProgress value={0} size={40} strokeWidth={3} className="opacity-30" />
+                                  <div className="absolute inset-0 flex items-center justify-center">
+                                    <span className="text-xs text-gray-400">-</span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>
+                              {isRevealed && scoreVisibility.showScores 
+                                ? `Matching Score: ${candidate.score}%` 
+                                : 'Use filters, job post, or AI search to reveal match'}
+                            </p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TableCell>
+                      <TableCell className="min-w-[80px]">
+                        <Badge 
+                          variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
+                          className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
+                        >
+                          {candidate.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="min-w-[120px]">
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.industryExperience.slice(0, 2).map(industry => (
+                            <Badge key={industry} variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              {industry}
+                            </Badge>
+                          ))}
+                          {candidate.industryExperience.length > 2 && (
+                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              +{candidate.industryExperience.length - 2}
+                            </Badge>
+                          )}
                         </div>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{candidate.title}</TableCell>
-                  <TableCell>{candidate.location}</TableCell>
-                  <TableCell>{candidate.experience}</TableCell>
-                  <TableCell>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div>
-                          {isRevealed && scoreVisibility.showScores ? <div className={`transition-all duration-500 ${scoreVisibility.isAnimating ? 'animate-scale-in' : ''}`}>
-                              <CircularProgress value={candidate.score} size={40} strokeWidth={3} showPercentage={true} compact={true} />
-                            </div> : <div className="relative">
-                              <CircularProgress value={0} size={40} strokeWidth={3} className="opacity-30" />
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <span className="text-xs text-gray-400">-</span>
-                              </div>
-                            </div>}
+                      </TableCell>
+                      <TableCell className="min-w-[120px]">
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.financeSubfields.slice(0, 2).map(subfield => (
+                            <Badge key={subfield} variant="outline" className={`text-xs bg-blue-50 text-blue-700 border-blue-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              {subfield}
+                            </Badge>
+                          ))}
+                          {candidate.financeSubfields.length > 2 && (
+                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              +{candidate.financeSubfields.length - 2}
+                            </Badge>
+                          )}
                         </div>
-                      </TooltipTrigger>
-                      <TooltipContent>
-                        <p>
-                          {isRevealed && scoreVisibility.showScores ? `Matching Score: ${candidate.score}%` : 'Use filters, job post, or AI search to reveal match'}
-                        </p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={candidate.status === 'Available' ? 'default' : 'secondary'} className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}>
-                      {candidate.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {candidate.industryExperience.slice(0, 2).map(industry => <Badge key={industry} variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          {industry}
-                        </Badge>)}
-                      {candidate.industryExperience.length > 2 && <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          +{candidate.industryExperience.length - 2}
-                        </Badge>}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {candidate.financeSubfields.slice(0, 2).map(subfield => <Badge key={subfield} variant="outline" className={`text-xs bg-blue-50 text-blue-700 border-blue-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          {subfield}
-                        </Badge>)}
-                      {candidate.financeSubfields.length > 2 && <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          +{candidate.financeSubfields.length - 2}
-                        </Badge>}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {candidate.softwareTools.slice(0, 2).map(tool => <Badge key={tool} variant="outline" className={`text-xs bg-purple-50 text-purple-700 border-purple-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          {tool}
-                        </Badge>)}
-                      {candidate.softwareTools.length > 2 && <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          +{candidate.softwareTools.length - 2}
-                        </Badge>}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {candidate.certifications.slice(0, 2).map(cert => <Badge key={cert} variant="outline" className={`text-xs bg-green-50 text-green-700 border-green-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          {cert}
-                        </Badge>)}
-                      {candidate.certifications.length > 2 && <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
-                          +{candidate.certifications.length - 2}
-                        </Badge>}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm">{candidate.salaryExpectation}</TableCell>
-                  <TableCell>
-                    <div className="flex gap-2">
-                      <Button variant="ghost" size="sm" onClick={() => toggleFavorite(candidate.id)} className="text-yellow-500 hover:text-yellow-600 p-1">
-                        <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
-                      </Button>
-                      <Button size="sm" className="bg-accent hover:bg-accent/90" onClick={() => handleUnlock(candidate)}>
-                        <Unlock className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>;
-          })}
-          </TableBody>
-        </Table>
-      </Card>
-    </TooltipProvider>;
+                      </TableCell>
+                      <TableCell className="min-w-[120px]">
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.softwareTools.slice(0, 2).map(tool => (
+                            <Badge key={tool} variant="outline" className={`text-xs bg-purple-50 text-purple-700 border-purple-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              {tool}
+                            </Badge>
+                          ))}
+                          {candidate.softwareTools.length > 2 && (
+                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              +{candidate.softwareTools.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="min-w-[120px]">
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.certifications.slice(0, 2).map(cert => (
+                            <Badge key={cert} variant="outline" className={`text-xs bg-green-50 text-green-700 border-green-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              {cert}
+                            </Badge>
+                          ))}
+                          {candidate.certifications.length > 2 && (
+                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                              +{candidate.certifications.length - 2}
+                            </Badge>
+                          )}
+                        </div>
+                      </TableCell>
+                      <TableCell className="min-w-[120px] text-sm">{candidate.salaryExpectation}</TableCell>
+                      <TableCell className="min-w-[100px]">
+                        <div className="flex gap-2">
+                          <Button 
+                            variant="ghost" 
+                            size="sm" 
+                            onClick={() => toggleFavorite(candidate.id)} 
+                            className="text-yellow-500 hover:text-yellow-600 p-1"
+                          >
+                            <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
+                          </Button>
+                          <Button 
+                            size="sm" 
+                            className="bg-accent hover:bg-accent/90" 
+                            onClick={() => handleUnlock(candidate)}
+                          >
+                            <Unlock className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </div>
+        </Card>
+      </div>
+    </TooltipProvider>
+  );
 
   const renderCurrentView = () => {
     switch (currentView) {
