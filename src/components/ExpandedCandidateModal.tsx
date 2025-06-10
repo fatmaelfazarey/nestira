@@ -6,33 +6,9 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { 
-  Star, 
-  MapPin, 
-  Briefcase, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  Download, 
-  MessageSquare, 
-  Brain,
-  StickyNote,
-  X,
-  Shield,
-  Clock,
-  DollarSign,
-  Home,
-  Play,
-  FileText,
-  Eye,
-  CheckCircle,
-  AlertCircle,
-  ChevronDown,
-  ChevronUp
-} from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, Brain, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
-
 interface Candidate {
   id: number;
   name: string;
@@ -52,7 +28,6 @@ interface Candidate {
   profileAdded: string;
   salaryExpectation: string;
 }
-
 interface ExpandedCandidateModalProps {
   candidate: Candidate | null;
   isOpen: boolean;
@@ -60,13 +35,12 @@ interface ExpandedCandidateModalProps {
   isFavorite: boolean;
   onToggleFavorite: () => void;
 }
-
-export function ExpandedCandidateModal({ 
-  candidate, 
-  isOpen, 
-  onClose, 
-  isFavorite, 
-  onToggleFavorite 
+export function ExpandedCandidateModal({
+  candidate,
+  isOpen,
+  onClose,
+  isFavorite,
+  onToggleFavorite
 }: ExpandedCandidateModalProps) {
   const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showQuizModal, setShowQuizModal] = useState(false);
@@ -75,55 +49,58 @@ export function ExpandedCandidateModal({
     softwareTools: true,
     certifications: true
   });
-
   if (!candidate) return null;
-
   const getCountryFlag = (countryCode: string) => {
-    const flags: { [key: string]: string } = {
+    const flags: {
+      [key: string]: string;
+    } = {
       'AE': '🇦🇪',
       'EG': '🇪🇬',
       'SA': '🇸🇦'
     };
     return flags[countryCode] || '🌍';
   };
-
   const isUnlocked = true; // For demo purposes
 
-  const mockExperience = [
-    {
-      title: "Senior Financial Analyst",
-      company: "Emirates NBD",
-      duration: "2021 - Present",
-      bullets: ["Led quarterly financial reporting for $2B portfolio", "Implemented SAP FICO modules reducing processing time by 40%"]
-    },
-    {
-      title: "Financial Analyst",
-      company: "ADNOC",
-      duration: "2019 - 2021",
-      bullets: ["Managed budget planning for upstream operations", "Developed KPI dashboards using Power BI"]
-    }
-  ];
-
-  const mockAssessments = [
-    { name: "Financial Modeling", score: 92, status: "passed" },
-    { name: "Excel Advanced", score: 88, status: "passed" },
-    { name: "IFRS Knowledge", score: 76, status: "needs-improvement" },
-    { name: "Risk Analysis", score: 94, status: "passed" }
-  ];
-
+  const mockExperience = [{
+    title: "Senior Financial Analyst",
+    company: "Emirates NBD",
+    duration: "2021 - Present",
+    bullets: ["Led quarterly financial reporting for $2B portfolio", "Implemented SAP FICO modules reducing processing time by 40%"]
+  }, {
+    title: "Financial Analyst",
+    company: "ADNOC",
+    duration: "2019 - 2021",
+    bullets: ["Managed budget planning for upstream operations", "Developed KPI dashboards using Power BI"]
+  }];
+  const mockAssessments = [{
+    name: "Financial Modeling",
+    score: 92,
+    status: "passed"
+  }, {
+    name: "Excel Advanced",
+    score: 88,
+    status: "passed"
+  }, {
+    name: "IFRS Knowledge",
+    score: 76,
+    status: "needs-improvement"
+  }, {
+    name: "Risk Analysis",
+    score: 94,
+    status: "passed"
+  }];
   const skillCategories = {
     financeSubfields: ["Financial Planning", "Budget Management", "Cost Analysis", "Risk Assessment"],
     softwareTools: ["SAP", "Oracle", "QuickBooks", "Tableau", "Power BI", "Excel Advanced"],
     certifications: ["CPA", "CFA Level 2", "FRM", "ACCA"]
   };
-
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
   };
-
   const formatBlurredName = (name: string) => {
     const nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -131,9 +108,7 @@ export function ExpandedCandidateModal({
     }
     return nameParts[0];
   };
-
-  return (
-    <TooltipProvider>
+  return <TooltipProvider>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden p-0 bg-gray-50">
           {/* Header */}
@@ -144,12 +119,7 @@ export function ExpandedCandidateModal({
               <Badge variant="secondary" className="bg-green-100 text-green-800">Verified</Badge>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onToggleFavorite}
-                className="text-yellow-500 hover:text-yellow-600"
-              >
+              <Button variant="ghost" size="sm" onClick={onToggleFavorite} className="text-yellow-500 hover:text-yellow-600">
                 <Star className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
               </Button>
               <Button variant="ghost" size="sm" onClick={onClose}>
@@ -183,12 +153,7 @@ export function ExpandedCandidateModal({
 
                   {/* Matching Score */}
                   <div className="flex justify-center">
-                    <CircularProgress 
-                      value={candidate.score} 
-                      size={80} 
-                      strokeWidth={6}
-                      showPercentage={true}
-                    />
+                    <CircularProgress value={candidate.score} size={80} strokeWidth={6} showPercentage={true} />
                   </div>
                 </div>
 
@@ -196,21 +161,14 @@ export function ExpandedCandidateModal({
 
                 {/* Cover Letter - Moved to top */}
                 <div className="space-y-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-start border-[#ff5f1b] text-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white"
-                    onClick={() => setShowCoverLetter(!showCoverLetter)}
-                  >
+                  <Button variant="outline" size="sm" className="w-full justify-start border-[#ff5f1b] text-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white" onClick={() => setShowCoverLetter(!showCoverLetter)}>
                     <Eye className="w-4 h-4 mr-2" />
                     View Cover Letter
                   </Button>
-                  {showCoverLetter && (
-                    <div className="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
-                      Dear Hiring Manager,<br/><br/>
+                  {showCoverLetter && <div className="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
+                      Dear Hiring Manager,<br /><br />
                       I am writing to express my strong interest in the Senior Finance Manager position. With over 8 years of progressive experience...
-                    </div>
-                  )}
+                    </div>}
                 </div>
 
                 <Separator />
@@ -317,11 +275,9 @@ export function ExpandedCandidateModal({
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-2">
                         <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.financeSubfields.map(skill => (
-                            <Badge key={skill} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          {skillCategories.financeSubfields.map(skill => <Badge key={skill} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                               {skill}
-                            </Badge>
-                          ))}
+                            </Badge>)}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -334,11 +290,9 @@ export function ExpandedCandidateModal({
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-2">
                         <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.softwareTools.map(tool => (
-                            <Badge key={tool} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                          {skillCategories.softwareTools.map(tool => <Badge key={tool} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
                               {tool}
-                            </Badge>
-                          ))}
+                            </Badge>)}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -351,11 +305,9 @@ export function ExpandedCandidateModal({
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-2">
                         <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.certifications.map(cert => (
-                            <Badge key={cert} variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          {skillCategories.certifications.map(cert => <Badge key={cert} variant="outline" className="bg-green-50 text-green-700 border-green-200">
                               {cert}
-                            </Badge>
-                          ))}
+                            </Badge>)}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -369,8 +321,7 @@ export function ExpandedCandidateModal({
                     Experience Timeline
                   </h3>
                   <div className="space-y-6">
-                    {mockExperience.map((exp, index) => (
-                      <div key={index} className="relative pl-6 border-l-2 border-gray-200 last:border-l-0">
+                    {mockExperience.map((exp, index) => <div key={index} className="relative pl-6 border-l-2 border-gray-200 last:border-l-0">
                         <div className="absolute w-3 h-3 bg-[#ff5f1b] rounded-full -left-[7px] top-1"></div>
                         <div className="space-y-2">
                           <div className="flex justify-between items-start">
@@ -381,16 +332,13 @@ export function ExpandedCandidateModal({
                             <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">{exp.duration}</span>
                           </div>
                           <ul className="text-sm text-gray-700 space-y-1">
-                            {exp.bullets.map((bullet, i) => (
-                              <li key={i} className="flex items-start gap-2">
+                            {exp.bullets.map((bullet, i) => <li key={i} className="flex items-start gap-2">
                                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
                                 {bullet}
-                              </li>
-                            ))}
+                              </li>)}
                           </ul>
                         </div>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
                 </div>
 
@@ -405,7 +353,7 @@ export function ExpandedCandidateModal({
                 </div>
 
                 {/* Nestira Skill Insights */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+                <div className="rounded-lg shadow-sm border border-gray-200 p-6 bg-green-400">
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
                       <Brain className="w-5 h-5 text-[#ff5f1b]" />
@@ -414,33 +362,23 @@ export function ExpandedCandidateModal({
                   </div>
                   
                   <div className="space-y-4 mb-6">
-                    {mockAssessments.map((assessment, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                    {mockAssessments.map((assessment, index) => <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
                         <div className="flex items-center gap-3">
-                          {assessment.status === 'passed' ? (
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                          ) : (
-                            <AlertCircle className="w-5 h-5 text-yellow-500" />
-                          )}
+                          {assessment.status === 'passed' ? <CheckCircle className="w-5 h-5 text-green-500" /> : <AlertCircle className="w-5 h-5 text-yellow-500" />}
                           <span className="font-medium">{assessment.name}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Progress value={assessment.score} className="w-24" />
                           <span className="text-sm font-semibold w-12">{assessment.score}%</span>
-                          <Badge variant={assessment.status === 'passed' ? 'default' : 'secondary'} 
-                                 className={assessment.status === 'passed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                          <Badge variant={assessment.status === 'passed' ? 'default' : 'secondary'} className={assessment.status === 'passed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
                             {assessment.status === 'passed' ? 'Pass' : 'Needs Improvement'}
                           </Badge>
                         </div>
-                      </div>
-                    ))}
+                      </div>)}
                   </div>
 
                   {/* Assign Assessment Button */}
-                  <Button 
-                    className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3"
-                    onClick={() => setShowQuizModal(true)}
-                  >
+                  <Button className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3" onClick={() => setShowQuizModal(true)}>
                     <Brain className="w-5 h-5 mr-2" />
                     🧠 Assign an Assessment
                   </Button>
@@ -450,26 +388,10 @@ export function ExpandedCandidateModal({
           </div>
 
           {/* Sticky Action Bar */}
-          <div className="border-t bg-white p-4">
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" size="sm">
-                <StickyNote className="w-4 h-4 mr-2" />
-                Add Note
-              </Button>
-              <Button variant="outline" size="sm">
-                <MessageSquare className="w-4 h-4 mr-2" />
-                Send Message
-              </Button>
-              <Button className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white">
-                <Calendar className="w-4 h-4 mr-2" />
-                Schedule Interview
-              </Button>
-            </div>
-          </div>
+          
 
           {/* Quiz Selector Modal */}
-          {showQuizModal && (
-            <Dialog open={showQuizModal} onOpenChange={setShowQuizModal}>
+          {showQuizModal && <Dialog open={showQuizModal} onOpenChange={setShowQuizModal}>
               <DialogContent className="max-w-md">
                 <div className="space-y-4">
                   <div>
@@ -477,27 +399,18 @@ export function ExpandedCandidateModal({
                     <p className="text-sm text-gray-600">Choose a finance assessment for {candidate.name}</p>
                   </div>
                   <div className="space-y-2">
-                    {["FP&A Assessment", "Excel Proficiency Test", "IFRS Compliance Quiz", "Financial Modeling Challenge", "Risk Management Evaluation"].map((quiz) => (
-                      <Button
-                        key={quiz}
-                        variant="outline"
-                        className="w-full justify-start"
-                        onClick={() => {
-                          setShowQuizModal(false);
-                          // Handle quiz assignment
-                        }}
-                      >
+                    {["FP&A Assessment", "Excel Proficiency Test", "IFRS Compliance Quiz", "Financial Modeling Challenge", "Risk Management Evaluation"].map(quiz => <Button key={quiz} variant="outline" className="w-full justify-start" onClick={() => {
+                  setShowQuizModal(false);
+                  // Handle quiz assignment
+                }}>
                         <FileText className="w-4 h-4 mr-2" />
                         {quiz}
-                      </Button>
-                    ))}
+                      </Button>)}
                   </div>
                 </div>
               </DialogContent>
-            </Dialog>
-          )}
+            </Dialog>}
         </DialogContent>
       </Dialog>
-    </TooltipProvider>
-  );
+    </TooltipProvider>;
 }
