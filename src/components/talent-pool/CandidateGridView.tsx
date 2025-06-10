@@ -201,9 +201,8 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                       </Button>
                     ) : (
                       <Button 
-                        variant="ghost" 
                         size="sm" 
-                        className="flex-1 transition-all ease-in-out duration-300" 
+                        className="bg-success hover:bg-success/90 text-success-foreground flex-1 transition-all ease-in-out duration-300" 
                         onClick={() => handleShowProfile(candidate)}
                       >
                         <User className="w-4 h-4 mr-1" />
