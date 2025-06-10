@@ -128,8 +128,8 @@ const TalentPool = () => {
       localStorage.setItem('unlockedCandidates', JSON.stringify(updatedUnlocked));
     }
     
-    // Show the candidate detail modal
-    setSelectedCandidate(candidate);
+    // Show the expanded candidate modal directly
+    setExpandedCandidate(candidate);
   };
 
   const handleApplyFilters = () => {
