@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, Unlock } from 'lucide-react';
+import { Star, Unlock, User } from 'lucide-react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { formatBlurredName, getCountryFlag } from '@/utils/talentPoolUtils';
 
@@ -29,6 +29,11 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
   onToggleFavorite,
   onUnlock
 }) => {
+  const handleShowProfile = (candidate: any) => {
+    // This will be handled by the parent component through the existing expanded modal logic
+    onUnlock(candidate);
+  };
+
   return (
     <TooltipProvider>
       <div className="w-full overflow-hidden">
@@ -42,7 +47,7 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                   <TableHead className="min-w-[100px]">Location</TableHead>
                   <TableHead className="min-w-[80px]">Experience</TableHead>
                   <TableHead className="min-w-[80px]">Score</TableHead>
-                  <TableHead className="min-w-[80px]">Status</TableHead>
+                  <TableHead className="min-w-[100px]">Activity</TableHead>
                   <TableHead className="min-w-[120px]">Industry</TableHead>
                   <TableHead className="min-w-[120px]">Subfields</TableHead>
                   <TableHead className="min-w-[120px]">Tools</TableHead>
@@ -56,7 +61,7 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                   const isUnlocked = unlockedCandidates.has(candidate.id);
                   const shouldBlurProfile = !isUnlocked; // Profile only unblurs when unlocked
                   const shouldBlurTags = !isUnlocked; // Tags only unblur when unlocked
-                  const shouldShowScore = isRevealed && scoreVisibility.showScores; // Score shows after matching method
+                  const shouldShowScore = (isRevealed && scoreVisibility.showScores) || isUnlocked; // Score shows after matching method OR when unlocked
                   
                   return (
                     <TableRow key={candidate.id}>
@@ -111,13 +116,8 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                           </TooltipContent>
                         </Tooltip>
                       </TableCell>
-                      <TableCell className="min-w-[80px]">
-                        <Badge 
-                          variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
-                          className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
-                        >
-                          {candidate.status}
-                        </Badge>
+                      <TableCell className="min-w-[100px]">
+                        <span className="text-xs text-gray-500">Last active: 2 days ago</span>
                       </TableCell>
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
@@ -231,9 +231,14 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                               <Unlock className="w-4 h-4" />
                             </Button>
                           ) : (
-                            <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300 text-xs">
-                              Unlocked
-                            </Badge>
+                            <Button 
+                              variant="ghost" 
+                              size="sm" 
+                              className="transition-all ease-in-out duration-300" 
+                              onClick={() => handleShowProfile(candidate)}
+                            >
+                              <User className="w-4 h-4" />
+                            </Button>
                           )}
                         </div>
                       </TableCell>

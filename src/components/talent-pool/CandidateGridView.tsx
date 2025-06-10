@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, MapPin, Briefcase, Unlock, DollarSign } from 'lucide-react';
+import { Star, MapPin, Briefcase, Unlock, DollarSign, User } from 'lucide-react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { formatBlurredName, getCountryFlag } from '@/utils/talentPoolUtils';
 
@@ -28,6 +28,11 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
   onToggleFavorite,
   onUnlock
 }) => {
+  const handleShowProfile = (candidate: any) => {
+    // This will be handled by the parent component through the existing expanded modal logic
+    onUnlock(candidate);
+  };
+
   return (
     <TooltipProvider>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -35,7 +40,7 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
           const isUnlocked = unlockedCandidates.has(candidate.id);
           const shouldBlurProfile = !isUnlocked; // Profile only unblurs when unlocked
           const shouldBlurTags = !isUnlocked; // Tags only unblur when unlocked
-          const shouldShowScore = isRevealed && scoreVisibility.showScores; // Score shows after matching method
+          const shouldShowScore = (isRevealed && scoreVisibility.showScores) || isUnlocked; // Score shows after matching method OR when unlocked
           
           return (
             <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative">
@@ -178,27 +183,34 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                   </div>
                 </div>
 
-                <div className="flex justify-between items-center gap-2">
-                  <Badge 
-                    variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
-                    className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
-                  >
-                    {candidate.status}
-                  </Badge>
-                  {!isUnlocked ? (
-                    <Button 
-                      size="sm" 
-                      className="bg-accent hover:bg-accent/90 transition-all ease-in-out duration-300" 
-                      onClick={() => onUnlock(candidate)}
-                    >
-                      <Unlock className="w-4 h-4 mr-1" />
-                      Unlock
-                    </Button>
-                  ) : (
-                    <Badge variant="outline" className="bg-green-100 text-green-800 border-green-300">
-                      Unlocked
-                    </Badge>
-                  )}
+                <div className="flex flex-col gap-2">
+                  {/* Replace status badges with neutral activity indicator */}
+                  <div className="text-xs text-gray-500">
+                    Last active: 2 days ago
+                  </div>
+                  
+                  <div className="flex justify-between items-center gap-2">
+                    {!isUnlocked ? (
+                      <Button 
+                        size="sm" 
+                        className="bg-accent hover:bg-accent/90 transition-all ease-in-out duration-300 flex-1" 
+                        onClick={() => onUnlock(candidate)}
+                      >
+                        <Unlock className="w-4 h-4 mr-1" />
+                        Unlock
+                      </Button>
+                    ) : (
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="flex-1 transition-all ease-in-out duration-300" 
+                        onClick={() => handleShowProfile(candidate)}
+                      >
+                        <User className="w-4 h-4 mr-1" />
+                        Show Profile
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </CardContent>
             </Card>
