@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,7 +6,8 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, Brain, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 
@@ -48,6 +48,7 @@ export function ExpandedCandidateModal({
 }: ExpandedCandidateModalProps) {
   const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showQuizModal, setShowQuizModal] = useState(false);
+  const [selectedQuizzes, setSelectedQuizzes] = useState<number[]>([]);
   const [expandedSections, setExpandedSections] = useState({
     financeSubfields: true,
     softwareTools: true,
@@ -106,11 +107,11 @@ export function ExpandedCandidateModal({
   };
 
   const availableQuizzes = [
-    { id: 1, title: "FP&A Assessment", duration: "45 min", difficulty: "Intermediate" },
-    { id: 2, title: "Excel Proficiency Test", duration: "30 min", difficulty: "Advanced" },
-    { id: 3, title: "IFRS Compliance Quiz", duration: "25 min", difficulty: "Expert" },
-    { id: 4, title: "Financial Modeling Challenge", duration: "60 min", difficulty: "Advanced" },
-    { id: 5, title: "Risk Management Evaluation", duration: "40 min", difficulty: "Intermediate" }
+    { id: 1, title: "FP&A Assessment", duration: "45 min", difficulty: "Intermediate", category: "Core Finance" },
+    { id: 2, title: "Excel Proficiency Test", duration: "30 min", difficulty: "Advanced", category: "Tools" },
+    { id: 3, title: "IFRS Compliance Quiz", duration: "25 min", difficulty: "Expert", category: "Core Finance" },
+    { id: 4, title: "Financial Modeling Challenge", duration: "60 min", difficulty: "Advanced", category: "Thinking" },
+    { id: 5, title: "Risk Management Evaluation", duration: "40 min", difficulty: "Intermediate", category: "Core Finance" }
   ];
 
   const toggleSection = (section: keyof typeof expandedSections) => {
@@ -146,6 +147,32 @@ export function ExpandedCandidateModal({
   const handleAssignQuiz = (quizId: number) => {
     console.log('Assigning quiz', quizId, 'to candidate', candidate.id);
     setShowQuizModal(false);
+  };
+
+  const handleQuizSelection = (quizId: number, checked: boolean) => {
+    if (checked) {
+      setSelectedQuizzes(prev => [...prev, quizId]);
+    } else {
+      setSelectedQuizzes(prev => prev.filter(id => id !== quizId));
+    }
+  };
+
+  const handleSelectAll = () => {
+    setSelectedQuizzes(availableQuizzes.map(quiz => quiz.id));
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedQuizzes([]);
+  };
+
+  const handleAssignSelected = () => {
+    console.log('Assigning quizzes', selectedQuizzes, 'to candidate', candidate.id);
+    setShowQuizModal(false);
+    setSelectedQuizzes([]);
+  };
+
+  const removeSelectedQuiz = (quizId: number) => {
+    setSelectedQuizzes(prev => prev.filter(id => id !== quizId));
   };
 
   return (
@@ -440,11 +467,21 @@ export function ExpandedCandidateModal({
                 {/* Nestira Skill Insights */}
                 <div className="rounded-lg shadow-sm border border-gray-200 p-6 bg-green-400">
                   <div className="flex items-center justify-between mb-6">
-                    <h3 className="text-xl font-semibold flex items-center gap-2">
-                      <Brain className="w-5 h-5 text-[#ff5f1b]" />
-                      <TrendingUp className="w-5 h-5" />
-                      Nestira Skill Insights
-                    </h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-[#ff5f1b]" />
+                        <TrendingUp className="w-5 h-5" />
+                        Nestira Skill Insights
+                      </h3>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>These insights are based on the candidate's responses to the Nestira Insight Assessment.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
                   </div>
                   
                   <div className="space-y-4 mb-6">
@@ -479,58 +516,114 @@ export function ExpandedCandidateModal({
                   >
                     <Brain className="w-5 h-5 mr-2" />
                     <Award className="w-5 h-5 mr-2" />
-                    Assign an Assessment
+                    Assign Assessment
                   </Button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Quiz Selector Modal */}
+          {/* Enhanced Quiz Selector Modal */}
           {showQuizModal && (
             <Dialog open={showQuizModal} onOpenChange={setShowQuizModal}>
-              <DialogContent className="max-w-2xl">
+              <DialogContent className="max-w-3xl max-h-[90vh]">
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-lg font-semibold flex items-center gap-2">
                       <Brain className="w-5 h-5" />
-                      Select Assessment for {candidate.name}
+                      Assign Assessment to {candidate.name}
                     </h3>
-                    <p className="text-sm text-gray-600">Choose one or more finance assessments to assign</p>
+                    <p className="text-sm text-gray-600">Select one or more assessments to assign to this candidate</p>
                   </div>
+
+                  {/* Select All/Deselect All */}
+                  <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg border-t border-b">
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleSelectAll}
+                      disabled={selectedQuizzes.length === availableQuizzes.length}
+                    >
+                      Select All
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleDeselectAll}
+                      disabled={selectedQuizzes.length === 0}
+                    >
+                      Deselect All
+                    </Button>
+                    <span className="text-sm text-gray-600">
+                      {selectedQuizzes.length} of {availableQuizzes.length} selected
+                    </span>
+                  </div>
+
+                  {/* Selected Quizzes Preview */}
+                  {selectedQuizzes.length > 0 && (
+                    <div className="space-y-2">
+                      <h4 className="text-sm font-medium text-gray-700">Selected Assessments:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedQuizzes.map(quizId => {
+                          const quiz = availableQuizzes.find(q => q.id === quizId);
+                          return quiz ? (
+                            <Badge 
+                              key={quizId} 
+                              variant="secondary" 
+                              className="cursor-pointer hover:bg-red-100"
+                              onClick={() => removeSelectedQuiz(quizId)}
+                            >
+                              {quiz.title} <X className="w-3 h-3 ml-1" />
+                            </Badge>
+                          ) : null;
+                        })}
+                      </div>
+                    </div>
+                  )}
                   
+                  {/* Quiz List */}
                   <div className="space-y-3 max-h-96 overflow-y-auto">
                     {availableQuizzes.map(quiz => (
                       <div key={quiz.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <FileText className="w-4 h-4 text-gray-500" />
-                            <h4 className="font-medium">{quiz.title}</h4>
-                          </div>
-                          <div className="flex items-center gap-4 text-sm text-gray-600">
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {quiz.duration}
-                            </span>
-                            <Badge variant="outline" className="text-xs">
-                              {quiz.difficulty}
-                            </Badge>
+                        <div className="flex items-center gap-3">
+                          <Checkbox
+                            checked={selectedQuizzes.includes(quiz.id)}
+                            onCheckedChange={(checked) => handleQuizSelection(quiz.id, checked as boolean)}
+                          />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <FileText className="w-4 h-4 text-gray-500" />
+                              <h4 className="font-medium">{quiz.title}</h4>
+                            </div>
+                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                              <span className="flex items-center gap-1">
+                                <Clock className="w-3 h-3" />
+                                {quiz.duration}
+                              </span>
+                              <Badge variant="outline" className="text-xs">
+                                {quiz.difficulty}
+                              </Badge>
+                              <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
+                                {quiz.category}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
-                        <Button 
-                          size="sm" 
-                          className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white"
-                          onClick={() => handleAssignQuiz(quiz.id)}
-                        >
-                          Assign
-                        </Button>
                       </div>
                     ))}
                   </div>
                   
+                  {/* Footer Actions */}
                   <div className="flex justify-end gap-2 pt-4 border-t">
                     <Button variant="outline" onClick={() => setShowQuizModal(false)}>
                       Cancel
+                    </Button>
+                    <Button 
+                      className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white"
+                      onClick={handleAssignSelected}
+                      disabled={selectedQuizzes.length === 0}
+                    >
+                      Assign Selected ({selectedQuizzes.length})
                     </Button>
                   </div>
                 </div>
