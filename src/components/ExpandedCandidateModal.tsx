@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -6,9 +7,10 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, Brain, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, Brain, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
+
 interface Candidate {
   id: number;
   name: string;
@@ -28,6 +30,7 @@ interface Candidate {
   profileAdded: string;
   salaryExpectation: string;
 }
+
 interface ExpandedCandidateModalProps {
   candidate: Candidate | null;
   isOpen: boolean;
@@ -35,6 +38,7 @@ interface ExpandedCandidateModalProps {
   isFavorite: boolean;
   onToggleFavorite: () => void;
 }
+
 export function ExpandedCandidateModal({
   candidate,
   isOpen,
@@ -49,7 +53,9 @@ export function ExpandedCandidateModal({
     softwareTools: true,
     certifications: true
   });
+
   if (!candidate) return null;
+
   const getCountryFlag = (countryCode: string) => {
     const flags: {
       [key: string]: string;
@@ -60,6 +66,7 @@ export function ExpandedCandidateModal({
     };
     return flags[countryCode] || '🌍';
   };
+
   const isUnlocked = true; // For demo purposes
 
   const mockExperience = [{
@@ -73,6 +80,7 @@ export function ExpandedCandidateModal({
     duration: "2019 - 2021",
     bullets: ["Managed budget planning for upstream operations", "Developed KPI dashboards using Power BI"]
   }];
+
   const mockAssessments = [{
     name: "Financial Modeling",
     score: 92,
@@ -90,17 +98,28 @@ export function ExpandedCandidateModal({
     score: 94,
     status: "passed"
   }];
+
   const skillCategories = {
     financeSubfields: ["Financial Planning", "Budget Management", "Cost Analysis", "Risk Assessment"],
     softwareTools: ["SAP", "Oracle", "QuickBooks", "Tableau", "Power BI", "Excel Advanced"],
     certifications: ["CPA", "CFA Level 2", "FRM", "ACCA"]
   };
+
+  const availableQuizzes = [
+    { id: 1, title: "FP&A Assessment", duration: "45 min", difficulty: "Intermediate" },
+    { id: 2, title: "Excel Proficiency Test", duration: "30 min", difficulty: "Advanced" },
+    { id: 3, title: "IFRS Compliance Quiz", duration: "25 min", difficulty: "Expert" },
+    { id: 4, title: "Financial Modeling Challenge", duration: "60 min", difficulty: "Advanced" },
+    { id: 5, title: "Risk Management Evaluation", duration: "40 min", difficulty: "Intermediate" }
+  ];
+
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
       [section]: !prev[section]
     }));
   };
+
   const formatBlurredName = (name: string) => {
     const nameParts = name.split(' ');
     if (nameParts.length >= 2) {
@@ -108,7 +127,29 @@ export function ExpandedCandidateModal({
     }
     return nameParts[0];
   };
-  return <TooltipProvider>
+
+  const handleDownloadCV = () => {
+    // Generate and download CV PDF
+    console.log('Downloading CV PDF for', candidate.name);
+  };
+
+  const handleDownloadCoverLetter = () => {
+    // Generate and download cover letter PDF
+    console.log('Downloading Cover Letter PDF for', candidate.name);
+  };
+
+  const handleDownloadProfile = () => {
+    // Generate and download profile summary PDF
+    console.log('Downloading Profile PDF for', candidate.name);
+  };
+
+  const handleAssignQuiz = (quizId: number) => {
+    console.log('Assigning quiz', quizId, 'to candidate', candidate.id);
+    setShowQuizModal(false);
+  };
+
+  return (
+    <TooltipProvider>
       <Dialog open={isOpen} onOpenChange={onClose}>
         <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden p-0 bg-gray-50">
           {/* Header */}
@@ -159,16 +200,18 @@ export function ExpandedCandidateModal({
 
                 <Separator />
 
-                {/* Cover Letter - Moved to top */}
+                {/* Cover Letter */}
                 <div className="space-y-3">
                   <Button variant="outline" size="sm" className="w-full justify-start border-[#ff5f1b] text-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white" onClick={() => setShowCoverLetter(!showCoverLetter)}>
                     <Eye className="w-4 h-4 mr-2" />
                     View Cover Letter
                   </Button>
-                  {showCoverLetter && <div className="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
+                  {showCoverLetter && (
+                    <div className="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
                       Dear Hiring Manager,<br /><br />
                       I am writing to express my strong interest in the Senior Finance Manager position. With over 8 years of progressive experience...
-                    </div>}
+                    </div>
+                  )}
                 </div>
 
                 <Separator />
@@ -183,11 +226,21 @@ export function ExpandedCandidateModal({
                     </div>
                     <div className="flex items-center gap-2">
                       <Mail className="w-4 h-4 text-gray-500" />
-                      <span className={!isUnlocked ? 'blur-sm' : ''}>{candidate.email}</span>
+                      <a 
+                        href={`mailto:${candidate.email}`}
+                        className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
+                      >
+                        {candidate.email}
+                      </a>
                     </div>
                     <div className="flex items-center gap-2">
                       <Phone className="w-4 h-4 text-gray-500" />
-                      <span className={!isUnlocked ? 'blur-sm' : ''}>{candidate.phone}</span>
+                      <a 
+                        href={`tel:${candidate.phone}`}
+                        className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
+                      >
+                        {candidate.phone}
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -224,12 +277,22 @@ export function ExpandedCandidateModal({
 
                 <Separator />
 
-                {/* Download CV - Updated */}
+                {/* Download Buttons */}
                 <div className="space-y-3">
-                  <Button variant="outline" size="sm" className="w-full justify-start">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download CV
-                  </Button>
+                  <div className="flex flex-col gap-2">
+                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadCV}>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download CV
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadCoverLetter}>
+                      <FileText className="w-4 h-4 mr-2" />
+                      Download Cover Letter
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadProfile}>
+                      <User className="w-4 h-4 mr-2" />
+                      Download Profile
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -262,7 +325,7 @@ export function ExpandedCandidateModal({
                 {/* Skills & Expertise */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <Briefcase className="w-5 h-5" />
+                    <TrendingUp className="w-5 h-5" />
                     Skills & Expertise
                   </h3>
                   
@@ -270,14 +333,19 @@ export function ExpandedCandidateModal({
                     {/* Finance Subfields */}
                     <Collapsible open={expandedSections.financeSubfields} onOpenChange={() => toggleSection('financeSubfields')}>
                       <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                        <span className="font-medium text-blue-900">Finance Subfields</span>
+                        <span className="font-medium text-blue-900 flex items-center gap-2">
+                          <Building className="w-4 h-4" />
+                          Finance Subfields
+                        </span>
                         {expandedSections.financeSubfields ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-2">
                         <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.financeSubfields.map(skill => <Badge key={skill} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          {skillCategories.financeSubfields.map(skill => (
+                            <Badge key={skill} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
                               {skill}
-                            </Badge>)}
+                            </Badge>
+                          ))}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -285,14 +353,19 @@ export function ExpandedCandidateModal({
                     {/* Software & Tools */}
                     <Collapsible open={expandedSections.softwareTools} onOpenChange={() => toggleSection('softwareTools')}>
                       <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                        <span className="font-medium text-purple-900">Software & Tools</span>
+                        <span className="font-medium text-purple-900 flex items-center gap-2">
+                          <Code className="w-4 h-4" />
+                          Software & Tools
+                        </span>
                         {expandedSections.softwareTools ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-2">
                         <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.softwareTools.map(tool => <Badge key={tool} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                          {skillCategories.softwareTools.map(tool => (
+                            <Badge key={tool} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
                               {tool}
-                            </Badge>)}
+                            </Badge>
+                          ))}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -300,14 +373,19 @@ export function ExpandedCandidateModal({
                     {/* Certifications */}
                     <Collapsible open={expandedSections.certifications} onOpenChange={() => toggleSection('certifications')}>
                       <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                        <span className="font-medium text-green-900">Certifications</span>
+                        <span className="font-medium text-green-900 flex items-center gap-2">
+                          <Award className="w-4 h-4" />
+                          Certifications
+                        </span>
                         {expandedSections.certifications ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                       </CollapsibleTrigger>
                       <CollapsibleContent className="mt-2">
                         <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.certifications.map(cert => <Badge key={cert} variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          {skillCategories.certifications.map(cert => (
+                            <Badge key={cert} variant="outline" className="bg-green-50 text-green-700 border-green-200">
                               {cert}
-                            </Badge>)}
+                            </Badge>
+                          ))}
                         </div>
                       </CollapsibleContent>
                     </Collapsible>
@@ -321,7 +399,8 @@ export function ExpandedCandidateModal({
                     Experience Timeline
                   </h3>
                   <div className="space-y-6">
-                    {mockExperience.map((exp, index) => <div key={index} className="relative pl-6 border-l-2 border-gray-200 last:border-l-0">
+                    {mockExperience.map((exp, index) => (
+                      <div key={index} className="relative pl-6 border-l-2 border-gray-200 last:border-l-0">
                         <div className="absolute w-3 h-3 bg-[#ff5f1b] rounded-full -left-[7px] top-1"></div>
                         <div className="space-y-2">
                           <div className="flex justify-between items-start">
@@ -332,19 +411,25 @@ export function ExpandedCandidateModal({
                             <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">{exp.duration}</span>
                           </div>
                           <ul className="text-sm text-gray-700 space-y-1">
-                            {exp.bullets.map((bullet, i) => <li key={i} className="flex items-start gap-2">
+                            {exp.bullets.map((bullet, i) => (
+                              <li key={i} className="flex items-start gap-2">
                                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
                                 {bullet}
-                              </li>)}
+                              </li>
+                            ))}
                           </ul>
                         </div>
-                      </div>)}
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 {/* Education */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-xl font-semibold mb-4">Education</h3>
+                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                    <GraduationCap className="w-5 h-5" />
+                    Education
+                  </h3>
                   <div className="space-y-2">
                     <h4 className="font-semibold text-gray-900">{candidate.education}</h4>
                     <p className="text-[#ff5f1b] font-medium">American University of Dubai</p>
@@ -357,60 +442,103 @@ export function ExpandedCandidateModal({
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold flex items-center gap-2">
                       <Brain className="w-5 h-5 text-[#ff5f1b]" />
-                      📊 Nestira Skill Insights
+                      <TrendingUp className="w-5 h-5" />
+                      Nestira Skill Insights
                     </h3>
                   </div>
                   
                   <div className="space-y-4 mb-6">
-                    {mockAssessments.map((assessment, index) => <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                    {mockAssessments.map((assessment, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
                         <div className="flex items-center gap-3">
-                          {assessment.status === 'passed' ? <CheckCircle className="w-5 h-5 text-green-500" /> : <AlertCircle className="w-5 h-5 text-yellow-500" />}
+                          {assessment.status === 'passed' ? (
+                            <CheckCircle className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <AlertCircle className="w-5 h-5 text-yellow-500" />
+                          )}
                           <span className="font-medium">{assessment.name}</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <Progress value={assessment.score} className="w-24" />
                           <span className="text-sm font-semibold w-12">{assessment.score}%</span>
-                          <Badge variant={assessment.status === 'passed' ? 'default' : 'secondary'} className={assessment.status === 'passed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
+                          <Badge 
+                            variant={assessment.status === 'passed' ? 'default' : 'secondary'} 
+                            className={assessment.status === 'passed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
+                          >
                             {assessment.status === 'passed' ? 'Pass' : 'Needs Improvement'}
                           </Badge>
                         </div>
-                      </div>)}
+                      </div>
+                    ))}
                   </div>
 
                   {/* Assign Assessment Button */}
-                  <Button className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3" onClick={() => setShowQuizModal(true)}>
+                  <Button 
+                    className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3" 
+                    onClick={() => setShowQuizModal(true)}
+                  >
                     <Brain className="w-5 h-5 mr-2" />
-                    🧠 Assign an Assessment
+                    <Award className="w-5 h-5 mr-2" />
+                    Assign an Assessment
                   </Button>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Sticky Action Bar */}
-          
-
           {/* Quiz Selector Modal */}
-          {showQuizModal && <Dialog open={showQuizModal} onOpenChange={setShowQuizModal}>
-              <DialogContent className="max-w-md">
-                <div className="space-y-4">
+          {showQuizModal && (
+            <Dialog open={showQuizModal} onOpenChange={setShowQuizModal}>
+              <DialogContent className="max-w-2xl">
+                <div className="space-y-6">
                   <div>
-                    <h3 className="text-lg font-semibold">Select Assessment</h3>
-                    <p className="text-sm text-gray-600">Choose a finance assessment for {candidate.name}</p>
+                    <h3 className="text-lg font-semibold flex items-center gap-2">
+                      <Brain className="w-5 h-5" />
+                      Select Assessment for {candidate.name}
+                    </h3>
+                    <p className="text-sm text-gray-600">Choose one or more finance assessments to assign</p>
                   </div>
-                  <div className="space-y-2">
-                    {["FP&A Assessment", "Excel Proficiency Test", "IFRS Compliance Quiz", "Financial Modeling Challenge", "Risk Management Evaluation"].map(quiz => <Button key={quiz} variant="outline" className="w-full justify-start" onClick={() => {
-                  setShowQuizModal(false);
-                  // Handle quiz assignment
-                }}>
-                        <FileText className="w-4 h-4 mr-2" />
-                        {quiz}
-                      </Button>)}
+                  
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
+                    {availableQuizzes.map(quiz => (
+                      <div key={quiz.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <FileText className="w-4 h-4 text-gray-500" />
+                            <h4 className="font-medium">{quiz.title}</h4>
+                          </div>
+                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3 h-3" />
+                              {quiz.duration}
+                            </span>
+                            <Badge variant="outline" className="text-xs">
+                              {quiz.difficulty}
+                            </Badge>
+                          </div>
+                        </div>
+                        <Button 
+                          size="sm" 
+                          className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white"
+                          onClick={() => handleAssignQuiz(quiz.id)}
+                        >
+                          Assign
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="flex justify-end gap-2 pt-4 border-t">
+                    <Button variant="outline" onClick={() => setShowQuizModal(false)}>
+                      Cancel
+                    </Button>
                   </div>
                 </div>
               </DialogContent>
-            </Dialog>}
+            </Dialog>
+          )}
         </DialogContent>
       </Dialog>
-    </TooltipProvider>;
+    </TooltipProvider>
+  );
 }
