@@ -33,8 +33,9 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sortedCandidates.map(candidate => {
           const isUnlocked = unlockedCandidates.has(candidate.id);
-          const shouldBlurName = !isRevealed && !isUnlocked;
-          const shouldBlurSkills = !isRevealed && !isUnlocked;
+          const shouldBlurProfile = !isUnlocked; // Profile only unblurs when unlocked
+          const shouldBlurTags = !isUnlocked; // Tags only unblur when unlocked
+          const shouldShowScore = isRevealed && scoreVisibility.showScores; // Score shows after matching method
           
           return (
             <Card key={candidate.id} className="hover:shadow-lg transition-all duration-300 relative">
@@ -42,20 +43,20 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="relative">
-                      <Avatar className={`w-12 h-12 transition-all duration-500 ${shouldBlurName ? 'blur-sm' : ''}`}>
+                      <Avatar className={`w-12 h-12 transition-all ease-in-out duration-300 ${shouldBlurProfile ? 'blur-sm' : ''}`}>
                         <AvatarImage src={candidate.photo} alt={candidate.name} />
                         <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      {shouldBlurName && (
-                        <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
-                          <Unlock className="w-4 h-4 text-gray-600" />
+                      {shouldBlurProfile && (
+                        <div className="absolute inset-0 bg-blue-200 bg-opacity-40 rounded-full flex items-center justify-center">
+                          <Unlock className="w-4 h-4 text-blue-600" />
                         </div>
                       )}
                     </div>
                     <div className="flex-1">
                       <CardTitle className="text-lg flex items-center gap-2">
-                        <span className="transition-all duration-500">
-                          {shouldBlurName ? formatBlurredName(candidate.name) : candidate.name}
+                        <span className="transition-all ease-in-out duration-300">
+                          {shouldBlurProfile ? formatBlurredName(candidate.name) : candidate.name}
                         </span>
                         <span className="text-lg">{getCountryFlag(candidate.country)}</span>
                       </CardTitle>
@@ -66,8 +67,8 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <div>
-                          {isRevealed && scoreVisibility.showScores ? (
-                            <div className={`transition-all duration-500 ${scoreVisibility.isAnimating ? 'animate-scale-in' : ''}`}>
+                          {shouldShowScore ? (
+                            <div className={`transition-all ease-in-out duration-300 ${scoreVisibility.isAnimating ? 'animate-scale-in' : ''}`}>
                               <CircularProgress value={candidate.score} size={60} strokeWidth={4} />
                             </div>
                           ) : (
@@ -82,7 +83,7 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                       </TooltipTrigger>
                       <TooltipContent>
                         <p>
-                          {isRevealed && scoreVisibility.showScores 
+                          {shouldShowScore 
                             ? `Matching Score: ${candidate.score}%` 
                             : 'Use filters, job post, or AI search to reveal match'}
                         </p>
@@ -120,7 +121,8 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                       <Badge 
                         key={industry} 
                         variant="outline" 
-                        className={`text-xs ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}
+                        className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : ''}`}
+                        aria-hidden={shouldBlurTags}
                       >
                         {industry}
                       </Badge>
@@ -135,7 +137,8 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                       <Badge 
                         key={subfield} 
                         variant="outline" 
-                        className={`text-xs bg-blue-50 text-blue-700 border-blue-200 ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}
+                        className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}
+                        aria-hidden={shouldBlurTags}
                       >
                         {subfield}
                       </Badge>
@@ -150,7 +153,8 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                       <Badge 
                         key={tool} 
                         variant="outline" 
-                        className={`text-xs bg-purple-50 text-purple-700 border-purple-200 ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}
+                        className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : 'bg-purple-50 text-purple-700 border-purple-200'}`}
+                        aria-hidden={shouldBlurTags}
                       >
                         {tool}
                       </Badge>
@@ -165,7 +169,8 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                       <Badge 
                         key={cert} 
                         variant="outline" 
-                        className={`text-xs bg-green-50 text-green-700 border-green-200 ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}
+                        className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : 'bg-green-50 text-green-700 border-green-200'}`}
+                        aria-hidden={shouldBlurTags}
                       >
                         {cert}
                       </Badge>
@@ -183,7 +188,7 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                   {!isUnlocked ? (
                     <Button 
                       size="sm" 
-                      className="bg-accent hover:bg-accent/90" 
+                      className="bg-accent hover:bg-accent/90 transition-all ease-in-out duration-300" 
                       onClick={() => onUnlock(candidate)}
                     >
                       <Unlock className="w-4 h-4 mr-1" />
