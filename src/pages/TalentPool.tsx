@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -129,7 +128,8 @@ const TalentPool = () => {
       localStorage.setItem('unlockedCandidates', JSON.stringify(updatedUnlocked));
     }
     
-    setExpandedCandidate(candidate);
+    // Show the candidate detail modal
+    setSelectedCandidate(candidate);
   };
 
   const handleApplyFilters = () => {

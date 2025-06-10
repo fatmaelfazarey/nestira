@@ -54,18 +54,19 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
               <TableBody>
                 {sortedCandidates.map(candidate => {
                   const isUnlocked = unlockedCandidates.has(candidate.id);
-                  const shouldBlur = !isRevealed && !isUnlocked;
+                  const shouldBlurName = !isRevealed && !isUnlocked;
+                  const shouldBlurSkills = !isRevealed && !isUnlocked;
                   
                   return (
                     <TableRow key={candidate.id}>
                       <TableCell className="min-w-[150px]">
                         <div className="flex items-center gap-3">
                           <div className="relative">
-                            <Avatar className={`w-8 h-8 transition-all duration-500 ${shouldBlur ? 'blur-sm' : ''}`}>
+                            <Avatar className={`w-8 h-8 transition-all duration-500 ${shouldBlurName ? 'blur-sm' : ''}`}>
                               <AvatarImage src={candidate.photo} alt={candidate.name} />
                               <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
                             </Avatar>
-                            {shouldBlur && (
+                            {shouldBlurName && (
                               <div className="absolute inset-0 bg-gray-200 bg-opacity-50 rounded-full flex items-center justify-center">
                                 <Unlock className="w-3 h-3 text-gray-600" />
                               </div>
@@ -73,7 +74,7 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                           </div>
                           <div>
                             <div className="font-medium flex items-center gap-2 transition-all duration-500">
-                              {shouldBlur ? formatBlurredName(candidate.name) : candidate.name}
+                              {shouldBlurName ? formatBlurredName(candidate.name) : candidate.name}
                               <span>{getCountryFlag(candidate.country)}</span>
                             </div>
                           </div>
@@ -120,12 +121,12 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.industryExperience.slice(0, 2).map((industry: string) => (
-                            <Badge key={industry} variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge key={industry} variant="outline" className={`text-xs ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               {industry}
                             </Badge>
                           ))}
                           {candidate.industryExperience.length > 2 && (
-                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge variant="outline" className={`text-xs ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               +{candidate.industryExperience.length - 2}
                             </Badge>
                           )}
@@ -134,12 +135,12 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.financeSubfields.slice(0, 2).map((subfield: string) => (
-                            <Badge key={subfield} variant="outline" className={`text-xs bg-blue-50 text-blue-700 border-blue-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge key={subfield} variant="outline" className={`text-xs bg-blue-50 text-blue-700 border-blue-200 ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               {subfield}
                             </Badge>
                           ))}
                           {candidate.financeSubfields.length > 2 && (
-                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge variant="outline" className={`text-xs ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               +{candidate.financeSubfields.length - 2}
                             </Badge>
                           )}
@@ -148,12 +149,12 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.softwareTools.slice(0, 2).map((tool: string) => (
-                            <Badge key={tool} variant="outline" className={`text-xs bg-purple-50 text-purple-700 border-purple-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge key={tool} variant="outline" className={`text-xs bg-purple-50 text-purple-700 border-purple-200 ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               {tool}
                             </Badge>
                           ))}
                           {candidate.softwareTools.length > 2 && (
-                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge variant="outline" className={`text-xs ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               +{candidate.softwareTools.length - 2}
                             </Badge>
                           )}
@@ -162,12 +163,12 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.certifications.slice(0, 2).map((cert: string) => (
-                            <Badge key={cert} variant="outline" className={`text-xs bg-green-50 text-green-700 border-green-200 ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge key={cert} variant="outline" className={`text-xs bg-green-50 text-green-700 border-green-200 ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               {cert}
                             </Badge>
                           ))}
                           {candidate.certifications.length > 2 && (
-                            <Badge variant="outline" className={`text-xs ${shouldBlur ? 'blur-sm opacity-50' : ''}`}>
+                            <Badge variant="outline" className={`text-xs ${shouldBlurSkills ? 'blur-sm opacity-50' : ''}`}>
                               +{candidate.certifications.length - 2}
                             </Badge>
                           )}
