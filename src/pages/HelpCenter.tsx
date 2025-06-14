@@ -45,7 +45,7 @@ const HelpCenter = () => {
         <Card>
           <CardContent className="p-6">
             <div className="relative max-w-md mx-auto">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              
               <Input className="pl-10 py-3" placeholder="Search for help articles..." />
             </div>
           </CardContent>
