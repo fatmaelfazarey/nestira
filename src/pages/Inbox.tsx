@@ -222,12 +222,12 @@ const Inbox = () => {
                     </div>
                     <div>
                       <label className="text-sm font-medium mb-2 block">Color</label>
-                      <div className="flex gap-2 flex-wrap">
+                      <div className="flex gap-3 flex-wrap">
                         {colorOptions.map((color) => (
                           <button
                             key={color.value}
                             onClick={() => setNewLabelColor(color.value)}
-                            className={`w-8 h-8 rounded-full ${color.value} ${
+                            className={`w-12 h-12 rounded-full ${color.value} ${
                               newLabelColor === color.value ? 'ring-2 ring-gray-400 ring-offset-2' : ''
                             }`}
                             title={color.name}
