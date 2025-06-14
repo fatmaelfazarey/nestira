@@ -11,6 +11,12 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { 
   Mail, 
   Clock, 
@@ -26,7 +32,8 @@ import {
   Filter,
   ChevronLeft,
   ChevronRight,
-  Plus
+  Plus,
+  Tag
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -50,7 +57,7 @@ const Inbox = () => {
     { name: 'Trash', icon: Trash, count: 0 },
   ];
 
-  const messages = [
+  const [messages, setMessages] = useState([
     {
       id: 1,
       from: "Emily Carter",
@@ -60,7 +67,7 @@ const Inbox = () => {
       time: "Oct 14, 9:00 AM",
       unread: true,
       type: "team",
-      label: "Team",
+      labels: ["Nestira Team"],
       avatar: "EC",
       fullContent: "Dear Team,\n\nPlease see the new agenda for tomorrow's team meeting attached. We'll be discussing the quarterly reports and upcoming project timelines.\n\nBest regards,\nEmily Carter",
       attachments: ["Team_Meeting_Agenda_Q4.pdf"]
@@ -74,7 +81,7 @@ const Inbox = () => {
       time: "Oct 13, 5:15 PM",
       unread: true,
       type: "candidate",
-      label: "Candidate",
+      labels: ["Candidates"],
       avatar: "LG",
       fullContent: "Dear Hiring Team,\n\nThank you for the opportunity! I'm confirming my interview scheduled for the 20th at 2 PM. I'm looking forward to discussing how my experience in data analysis can contribute to your team.\n\nPlease let me know if you need any additional information before our meeting.\n\nBest regards,\nLucas Green",
       attachments: []
@@ -88,7 +95,7 @@ const Inbox = () => {
       time: "Oct 12, 3:00 PM",
       unread: false,
       type: "team",
-      label: "Team",
+      labels: ["Nestira Team"],
       avatar: "SJ",
       fullContent: "Hi Team,\n\nAttached is the monthly performance review file for your department. Please review the metrics and let me know if you have any questions or concerns.\n\nThe review covers performance indicators from September and includes recommendations for October.\n\nThanks,\nSarah Johnson",
       attachments: ["Monthly_Performance_Review_Sept.xlsx"]
@@ -102,7 +109,7 @@ const Inbox = () => {
       time: "Oct 11, 10:30 AM",
       unread: false,
       type: "candidate",
-      label: "Candidate",
+      labels: ["Candidates"],
       avatar: "MB",
       fullContent: "Dear Hiring Manager,\n\nI am writing to inquire about the status of my application for the position of Data Analyst that I submitted two weeks ago.\n\nI remain very interested in this opportunity and would appreciate any updates you can provide regarding the selection process.\n\nThank you for your time and consideration.\n\nSincerely,\nMichael Brown",
       attachments: []
@@ -116,12 +123,12 @@ const Inbox = () => {
       time: "Oct 10, 4:00 PM",
       unread: false,
       type: "system",
-      label: "System",
+      labels: [],
       avatar: "SY",
       fullContent: "Interview Reminder\n\nYou have an interview scheduled with:\n- Candidate: Lucas Green\n- Position: Data Analyst\n- Date: Tomorrow\n- Time: 2:00 PM\n- Location: Conference Room B\n\nPlease ensure you have reviewed the candidate's resume and prepared your questions.\n\nBest regards,\nHR System",
       attachments: ["Lucas_Green_Resume.pdf"]
     }
-  ];
+  ]);
 
   const handleAddLabel = () => {
     if (newLabelName.trim()) {
@@ -133,6 +140,46 @@ const Inbox = () => {
       setNewLabelName('');
       setNewLabelColor('bg-blue-500');
       setIsAddLabelOpen(false);
+    }
+  };
+
+  const toggleMessageLabel = (messageId, labelName) => {
+    setMessages(prevMessages => 
+      prevMessages.map(message => {
+        if (message.id === messageId) {
+          const hasLabel = message.labels.includes(labelName);
+          const updatedLabels = hasLabel
+            ? message.labels.filter(label => label !== labelName)
+            : [...message.labels, labelName];
+          
+          return { ...message, labels: updatedLabels };
+        }
+        return message;
+      })
+    );
+
+    // Update label counts
+    setLabels(prevLabels =>
+      prevLabels.map(label => {
+        if (label.name === labelName) {
+          const messageHasLabel = selectedMessage?.labels.includes(labelName);
+          return {
+            ...label,
+            count: messageHasLabel ? label.count - 1 : label.count + 1
+          };
+        }
+        return label;
+      })
+    );
+
+    // Update selected message if it's the one being modified
+    if (selectedMessage && selectedMessage.id === messageId) {
+      const hasLabel = selectedMessage.labels.includes(labelName);
+      const updatedLabels = hasLabel
+        ? selectedMessage.labels.filter(label => label !== labelName)
+        : [...selectedMessage.labels, labelName];
+      
+      setSelectedMessage({ ...selectedMessage, labels: updatedLabels });
     }
   };
 
@@ -152,13 +199,9 @@ const Inbox = () => {
     }
   };
 
-  const getLabelColor = (label) => {
-    switch (label) {
-      case 'Team': return 'bg-blue-500 text-white';
-      case 'Candidate': return 'bg-green-500 text-white';
-      case 'System': return 'bg-gray-500 text-white';
-      default: return 'bg-gray-200 text-gray-800';
-    }
+  const getLabelColor = (labelName) => {
+    const label = labels.find(l => l.name === labelName);
+    return label ? `${label.color} text-white` : 'bg-gray-200 text-gray-800';
   };
 
   return (
@@ -305,9 +348,13 @@ const Inbox = () => {
                         <span className={`font-medium text-sm ${message.unread ? 'text-gray-900' : 'text-gray-700'}`}>
                           {message.from}
                         </span>
-                        <Badge className={`text-xs px-2 py-0 ${getLabelColor(message.label)}`}>
-                          {message.label}
-                        </Badge>
+                        <div className="flex gap-1">
+                          {message.labels.map((labelName) => (
+                            <Badge key={labelName} className={`text-xs px-2 py-0 ${getLabelColor(labelName)}`}>
+                              {labelName}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                       <span className="text-xs text-gray-500">{message.time}</span>
                     </div>
@@ -331,6 +378,27 @@ const Inbox = () => {
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-lg font-medium text-gray-900">{selectedMessage.subject}</h2>
                   <div className="flex items-center gap-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="icon">
+                          <Tag className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="w-56 bg-white">
+                        {labels.map((label) => (
+                          <DropdownMenuCheckboxItem
+                            key={label.name}
+                            checked={selectedMessage.labels.includes(label.name)}
+                            onCheckedChange={() => toggleMessageLabel(selectedMessage.id, label.name)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className={`w-3 h-3 rounded-full ${label.color}`}></div>
+                              {label.name}
+                            </div>
+                          </DropdownMenuCheckboxItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                     <Button variant="outline" size="icon">
                       <Archive className="w-4 h-4" />
                     </Button>
@@ -349,9 +417,13 @@ const Inbox = () => {
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-gray-900">{selectedMessage.from}</span>
-                      <Badge className={`text-xs px-2 py-0 ${getLabelColor(selectedMessage.label)}`}>
-                        {selectedMessage.label}
-                      </Badge>
+                      <div className="flex gap-1">
+                        {selectedMessage.labels.map((labelName) => (
+                          <Badge key={labelName} className={`text-xs px-2 py-0 ${getLabelColor(labelName)}`}>
+                            {labelName}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                     <p className="text-sm text-gray-600">{selectedMessage.email}</p>
                     <p className="text-xs text-gray-500">{selectedMessage.time}</p>
