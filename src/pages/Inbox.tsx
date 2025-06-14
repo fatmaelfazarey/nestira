@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
 import { 
   Dialog,
   DialogContent,
@@ -14,7 +16,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuCheckboxItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { 
@@ -384,19 +385,25 @@ const Inbox = () => {
                           <Tag className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="w-56 bg-white">
-                        {labels.map((label) => (
-                          <DropdownMenuCheckboxItem
-                            key={label.name}
-                            checked={selectedMessage.labels.includes(label.name)}
-                            onCheckedChange={() => toggleMessageLabel(selectedMessage.id, label.name)}
-                          >
-                            <div className="flex items-center gap-2">
-                              <div className={`w-3 h-3 rounded-full ${label.color}`}></div>
-                              {label.name}
+                      <DropdownMenuContent className="w-56 bg-white p-3">
+                        <div className="space-y-3">
+                          {labels.map((label) => (
+                            <div key={label.name} className="flex items-center space-x-3">
+                              <Checkbox
+                                id={`label-${label.name}`}
+                                checked={selectedMessage.labels.includes(label.name)}
+                                onCheckedChange={() => toggleMessageLabel(selectedMessage.id, label.name)}
+                              />
+                              <Label 
+                                htmlFor={`label-${label.name}`}
+                                className="flex items-center gap-2 cursor-pointer"
+                              >
+                                <div className={`w-3 h-3 rounded-full ${label.color}`}></div>
+                                {label.name}
+                              </Label>
                             </div>
-                          </DropdownMenuCheckboxItem>
-                        ))}
+                          ))}
+                        </div>
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <Button variant="outline" size="icon">
