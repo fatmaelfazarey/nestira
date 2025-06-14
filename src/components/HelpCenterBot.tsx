@@ -68,37 +68,32 @@ const HelpCenterBot = () => {
     scrollToBottom();
   }, [messages]);
 
-  const addBotMessage = (text: string) => {
-    const botResponse: Message = {
-      id: Date.now().toString(),
-      text,
-      isBot: true,
-      timestamp: new Date()
-    };
-    setMessages(prev => [...prev, botResponse]);
-  };
-
   const handleFAQClick = (faq: FAQ) => {
     // Add user question
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: `user-${Date.now()}`,
       text: faq.question,
       isBot: false,
       timestamp: new Date()
     };
-    setMessages(prev => [...prev, userMessage]);
 
-    // Add bot response after a short delay
-    setTimeout(() => {
-      addBotMessage(faq.answer);
-    }, 500);
+    // Add bot response
+    const botMessage: Message = {
+      id: `bot-${Date.now()}`,
+      text: faq.answer,
+      isBot: true,
+      timestamp: new Date()
+    };
+
+    // Add both messages at once to prevent duplication
+    setMessages(prev => [...prev, userMessage, botMessage]);
   };
 
   const sendMessage = async () => {
     if (!inputValue.trim() || isLoading) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: `user-${Date.now()}`,
       text: inputValue,
       isBot: false,
       timestamp: new Date()
@@ -108,15 +103,15 @@ const HelpCenterBot = () => {
     setInputValue('');
     setIsLoading(true);
 
-    // Simulate AI response (replace with actual GPT API call)
+    // Simulate AI response
     setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
+      const botMessage: Message = {
+        id: `bot-${Date.now() + 1}`,
         text: getBotResponse(inputValue),
         isBot: true,
         timestamp: new Date()
       };
-      setMessages(prev => [...prev, botResponse]);
+      setMessages(prev => [...prev, botMessage]);
       setIsLoading(false);
     }, 1000);
   };
