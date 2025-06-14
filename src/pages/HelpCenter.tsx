@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Search, MessageCircle, Book, Mail, Phone } from 'lucide-react';
+import HelpCenterBot from '@/components/HelpCenterBot';
 
 const HelpCenter = () => {
   const faqCategories = [
@@ -63,33 +63,39 @@ const HelpCenter = () => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="text-center">
-            <CardContent className="p-6">
-              <Book className="w-8 h-8 text-accent mx-auto mb-3" />
-              <h3 className="font-semibold mb-2">Knowledge Base</h3>
-              <p className="text-sm text-gray-600 mb-4">Browse our comprehensive help articles</p>
-              <Button variant="outline" className="w-full">Browse Articles</Button>
-            </CardContent>
-          </Card>
-          
-          <Card className="text-center">
-            <CardContent className="p-6">
-              <MessageCircle className="w-8 h-8 text-accent mx-auto mb-3" />
-              <h3 className="font-semibold mb-2">Live Chat</h3>
-              <p className="text-sm text-gray-600 mb-4">Chat with our support team</p>
-              <Button className="bg-accent hover:bg-accent/90 text-white w-full">Start Chat</Button>
-            </CardContent>
-          </Card>
-          
-          <Card className="text-center">
-            <CardContent className="p-6">
-              <Mail className="w-8 h-8 text-accent mx-auto mb-3" />
-              <h3 className="font-semibold mb-2">Email Support</h3>
-              <p className="text-sm text-gray-600 mb-4">Send us a detailed message</p>
-              <Button variant="outline" className="w-full">Send Email</Button>
-            </CardContent>
-          </Card>
+        {/* AI Help Bot Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div>
+            <HelpCenterBot />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-4">
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <Book className="w-8 h-8 text-accent mx-auto mb-3" />
+                <h3 className="font-semibold mb-2">Knowledge Base</h3>
+                <p className="text-sm text-gray-600 mb-4">Browse our comprehensive help articles</p>
+                <Button variant="outline" className="w-full">Browse Articles</Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <MessageCircle className="w-8 h-8 text-accent mx-auto mb-3" />
+                <h3 className="font-semibold mb-2">Live Chat</h3>
+                <p className="text-sm text-gray-600 mb-4">Chat with our support team</p>
+                <Button className="bg-accent hover:bg-accent/90 text-white w-full">Start Chat</Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="text-center">
+              <CardContent className="p-6">
+                <Mail className="w-8 h-8 text-accent mx-auto mb-3" />
+                <h3 className="font-semibold mb-2">Email Support</h3>
+                <p className="text-sm text-gray-600 mb-4">Send us a detailed message</p>
+                <Button variant="outline" className="w-full">Send Email</Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
