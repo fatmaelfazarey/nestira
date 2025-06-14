@@ -264,15 +264,6 @@ const Inbox = () => {
 
           <div className="lg:col-span-3 space-y-6">
             <Card>
-              <CardContent className="p-6">
-                <div className="relative max-w-md mx-auto">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                  <Input className="pl-10 py-3" placeholder="Search for help articles..." />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-base font-medium">Messages</CardTitle>
                 <div className="flex items-center gap-2">
