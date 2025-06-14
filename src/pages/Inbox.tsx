@@ -19,7 +19,8 @@ import {
   Archive,
   Filter,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Plus
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -37,7 +38,7 @@ const Inbox = () => {
   ];
 
   const labels = [
-    { name: 'Team', color: 'bg-blue-500', count: 3 },
+    { name: 'Nestira Team', color: 'bg-blue-500', count: 3 },
     { name: 'Candidates', color: 'bg-green-500', count: 4 },
   ];
 
@@ -166,8 +167,13 @@ const Inbox = () => {
           </div>
 
           <div className="px-4">
-            <div className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
-              Labels
+            <div className="flex items-center justify-between mb-2">
+              <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Labels
+              </div>
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-400 hover:text-gray-600">
+                <Plus className="w-3 h-3" />
+              </Button>
             </div>
             <div className="space-y-1">
               {labels.map((label) => (
