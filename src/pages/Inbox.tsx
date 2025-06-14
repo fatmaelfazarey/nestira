@@ -1,10 +1,16 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { 
   Mail, 
   Clock, 
@@ -27,6 +33,13 @@ import { useState } from 'react';
 const Inbox = () => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [newLabelName, setNewLabelName] = useState('');
+  const [newLabelColor, setNewLabelColor] = useState('bg-blue-500');
+  const [isAddLabelOpen, setIsAddLabelOpen] = useState(false);
+  const [labels, setLabels] = useState([
+    { name: 'Nestira Team', color: 'bg-blue-500', count: 3 },
+    { name: 'Candidates', color: 'bg-green-500', count: 4 },
+  ]);
 
   const categories = [
     { name: 'Inbox', icon: Mail, count: 5, active: true },
@@ -35,11 +48,6 @@ const Inbox = () => {
     { name: 'Drafts', icon: Mail, count: 1 },
     { name: 'Spam', icon: Mail, count: 0 },
     { name: 'Trash', icon: Trash, count: 0 },
-  ];
-
-  const labels = [
-    { name: 'Nestira Team', color: 'bg-blue-500', count: 3 },
-    { name: 'Candidates', color: 'bg-green-500', count: 4 },
   ];
 
   const messages = [
@@ -115,6 +123,28 @@ const Inbox = () => {
     }
   ];
 
+  const handleAddLabel = () => {
+    if (newLabelName.trim()) {
+      setLabels([...labels, { 
+        name: newLabelName, 
+        color: newLabelColor, 
+        count: 0 
+      }]);
+      setNewLabelName('');
+      setNewLabelColor('bg-blue-500');
+      setIsAddLabelOpen(false);
+    }
+  };
+
+  const colorOptions = [
+    { name: 'Blue', value: 'bg-blue-500' },
+    { name: 'Green', value: 'bg-green-500' },
+    { name: 'Red', value: 'bg-red-500' },
+    { name: 'Purple', value: 'bg-purple-500' },
+    { name: 'Yellow', value: 'bg-yellow-500' },
+    { name: 'Pink', value: 'bg-pink-500' },
+  ];
+
   const handleReply = () => {
     if (replyText.trim()) {
       console.log('Sending reply:', replyText);
@@ -171,9 +201,51 @@ const Inbox = () => {
               <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Labels
               </div>
-              <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-400 hover:text-gray-600">
-                <Plus className="w-3 h-3" />
-              </Button>
+              <Dialog open={isAddLabelOpen} onOpenChange={setIsAddLabelOpen}>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-6 w-6 text-gray-400 hover:text-gray-600">
+                    <Plus className="w-3 h-3" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Add New Label</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Label Name</label>
+                      <Input
+                        placeholder="Enter label name"
+                        value={newLabelName}
+                        onChange={(e) => setNewLabelName(e.target.value)}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium mb-2 block">Color</label>
+                      <div className="flex gap-2 flex-wrap">
+                        {colorOptions.map((color) => (
+                          <button
+                            key={color.value}
+                            onClick={() => setNewLabelColor(color.value)}
+                            className={`w-8 h-8 rounded-full ${color.value} ${
+                              newLabelColor === color.value ? 'ring-2 ring-gray-400 ring-offset-2' : ''
+                            }`}
+                            title={color.name}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                      <Button variant="outline" onClick={() => setIsAddLabelOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleAddLabel}>
+                        Add Label
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
             <div className="space-y-1">
               {labels.map((label) => (
