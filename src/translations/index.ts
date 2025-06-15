@@ -1,4 +1,3 @@
-
 export const translations = {
   english: {
     // Dashboard
@@ -6,7 +5,7 @@ export const translations = {
     inbox: 'Inbox',
     talentPool: 'Talent Pool',
     unlockedTalents: 'Unlocked Talents',
-    jobListings: 'Job Listings',
+    jobPosts: 'Job Posts',
     recruitmentBoard: 'Recruitment Board',
     interviews: 'Interviews',
     quizBuilder: 'Quiz Builder',
@@ -89,7 +88,7 @@ export const translations = {
     inbox: 'صندوق الوارد',
     talentPool: 'مجموعة المواهب',
     unlockedTalents: 'المواهب المفتوحة',
-    jobListings: 'قوائم الوظائف',
+    jobPosts: 'منشورات الوظائف',
     recruitmentBoard: 'لوحة التوظيف',
     interviews: 'المقابلات',
     quizBuilder: 'منشئ الاختبارات',

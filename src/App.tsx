@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,7 +9,7 @@ import Index from "./pages/Index";
 import Inbox from "./pages/Inbox";
 import TalentPool from "./pages/TalentPool";
 import UnlockedTalents from "./pages/UnlockedTalents";
-import JobListings from "./pages/JobListings";
+import JobPosts from "./pages/JobPosts";
 import RecruitmentBoard from "./pages/RecruitmentBoard";
 import Interviews from "./pages/Interviews";
 import QuizBuilder from "./pages/QuizBuilder";
@@ -38,7 +39,7 @@ const App = () => (
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/talent-pool" element={<TalentPool />} />
             <Route path="/unlocked-talents" element={<UnlockedTalents />} />
-            <Route path="/job-listings" element={<JobListings />} />
+            <Route path="/job-posts" element={<JobPosts />} />
             <Route path="/recruitment-board" element={<RecruitmentBoard />} />
             <Route path="/interviews" element={<Interviews />} />
             <Route path="/quiz-builder" element={<QuizBuilder />} />
@@ -62,3 +63,4 @@ const App = () => (
 );
 
 export default App;
+
