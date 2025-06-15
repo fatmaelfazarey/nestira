@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -32,28 +33,28 @@ const Referrals = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card className="bg-blue-100 border-blue-200">
             <CardContent className="p-4 text-center">
-              <Users className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+              <Users className="w-4 h-4 text-blue-600 mx-auto mb-2" />
               <p className="text-sm text-gray-500 font-medium">Total Referrals</p>
               <p className="text-2xl font-bold text-blue-600">{referralStats.totalReferrals}</p>
             </CardContent>
           </Card>
           <Card className="bg-green-100 border-green-200">
             <CardContent className="p-4 text-center">
-              <CheckCircle className="w-12 h-12 text-green-600 mx-auto mb-4" />
+              <CheckCircle className="w-4 h-4 text-green-600 mx-auto mb-2" />
               <p className="text-sm text-gray-500 font-medium">Successful</p>
               <p className="text-2xl font-bold text-green-600">{referralStats.successfulReferrals}</p>
             </CardContent>
           </Card>
           <Card className="bg-purple-100 border-purple-200">
             <CardContent className="p-4 text-center">
-              <Hourglass className="w-12 h-12 text-purple-600 mx-auto mb-4" />
+              <Hourglass className="w-4 h-4 text-purple-600 mx-auto mb-2" />
               <p className="text-sm text-gray-500 font-medium">Pending</p>
               <p className="text-2xl font-bold text-purple-600">{referralStats.pendingReferrals}</p>
             </CardContent>
           </Card>
           <Card className="bg-orange-100 border-orange-200">
             <CardContent className="p-4 text-center">
-              <CircleDollarSign className="w-12 h-12 text-orange-600 mx-auto mb-4" />
+              <CircleDollarSign className="w-4 h-4 text-orange-600 mx-auto mb-2" />
               <p className="text-sm text-gray-500 font-medium">Total Earned</p>
               <p className="text-2xl font-bold text-orange-600">{referralStats.totalEarned}</p>
             </CardContent>
