@@ -1,3 +1,4 @@
+
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from "sonner";
@@ -280,7 +281,7 @@ const BlogReports = () => {
                     <p className="font-semibold text-gray-800 line-clamp-2 leading-tight">{item.title}</p>
                     {'downloadCount' in item && <span className="text-sm text-gray-500 font-medium">{item.downloadCount}</span>}
                   </div>
-                  <Button variant="ghost" size="icon" className="text-accent hover:text-accent/80 shrink-0" onClick={() => toast("Please check your email, we sent it there.")}>
+                  <Button variant="ghost" size="icon" className="text-accent hover:text-accent/80 shrink-0" onClick={() => toast.success("Report Sent!", { description: "We've dispatched the report to your inbox. It should arrive shortly." })}>
                     <Send className="w-5 h-5" />
                   </Button>
                 
