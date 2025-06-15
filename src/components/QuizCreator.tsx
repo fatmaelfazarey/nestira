@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -189,17 +190,8 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Panel: Details, Personalization, and Customization */}
-          <div className={`space-y-6 ${showAISuggestions ? 'lg:col-span-7' : 'lg:col-span-12'}`}>
-            <QuizDetailsCard 
-              title={quizTitle}
-              description={quizDescription}
-              timeLimit={timeLimit}
-              onTitleChange={setQuizTitle}
-              onDescriptionChange={setQuizDescription}
-              onTimeLimitChange={setTimeLimit}
-            />
-
+          {/* Left Panel: Personalization and Customization */}
+          <div className={`space-y-6 ${showAISuggestions ? 'lg:col-span-5' : 'lg:col-span-8'}`}>
             {/* Role-based Bundle Suggestion */}
             {!editingQuiz && (
               <div className="space-y-4">
@@ -242,9 +234,9 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
             />
           </div>
 
-          {/* Right Panel: AI Suggestions */}
+          {/* Middle Panel: AI Suggestions */}
           {showAISuggestions && (
-            <div className="lg:col-span-5">
+            <div className="lg:col-span-4">
               <AISuggestionPanel
                 questions={aiSuggestedQuestions}
                 onAddToQuiz={handleAddToQuiz}
@@ -252,6 +244,18 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
               />
             </div>
           )}
+
+          {/* Right Panel: Quiz Details */}
+          <div className={showAISuggestions ? 'lg:col-span-3' : 'lg:col-span-4'}>
+            <QuizDetailsCard 
+              title={quizTitle}
+              description={quizDescription}
+              timeLimit={timeLimit}
+              onTitleChange={setQuizTitle}
+              onDescriptionChange={setQuizDescription}
+              onTimeLimitChange={setTimeLimit}
+            />
+          </div>
         </div>
       </div>
 
@@ -275,3 +279,4 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
     </div>
   );
 }
+
