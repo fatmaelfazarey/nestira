@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import HelpCenterBot from '@/components/HelpCenterBot';
 import { useState } from 'react';
@@ -144,37 +143,42 @@ const HelpCenter = () => {
   return (
     <DashboardLayout>
       <div className="p-8 space-y-8">
-        <div className="flex flex-col space-y-4">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Help Center</h1>
-              <p className="text-gray-600 mt-2">Get help and support for your hiring needs</p>
-            </div>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Help Center</h1>
+            <p className="text-gray-600 mt-2">Get help and support for your hiring needs</p>
           </div>
+        </div>
 
-          {/* Search and Filter */}
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <Input
-                placeholder="Search tutorials and guides..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
-            </div>
-            <div className="flex gap-2 flex-wrap">
-              {categories.map((category) => (
-                <Button
-                  key={category.value}
-                  variant={selectedCategory === category.value ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category.value)}
-                >
-                  {category.label}
-                </Button>
-              ))}
-            </div>
+        {/* AI Help Bot Section - Responsive */}
+        <div className="w-full">
+          <HelpCenterBot />
+        </div>
+        
+        <Separator className="my-8" />
+
+        {/* Search and Filter */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Input
+              placeholder="Search tutorials and guides..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex gap-2 flex-wrap">
+            {categories.map((category) => (
+              <Button
+                key={category.value}
+                variant={selectedCategory === category.value ? "default" : "outline"}
+                size="sm"
+                onClick={() => setSelectedCategory(category.value)}
+              >
+                {category.label}
+              </Button>
+            ))}
           </div>
         </div>
         
@@ -241,13 +245,6 @@ const HelpCenter = () => {
             </div>
           </CardContent>
         </Card>
-
-        <Separator className="my-8" />
-        
-        {/* AI Help Bot Section - Responsive */}
-        <div className="w-full max-w-4xl mx-auto">
-          <HelpCenterBot />
-        </div>
       </div>
     </DashboardLayout>
   );
