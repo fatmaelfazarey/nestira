@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Users, Gift, Mail, BadgeDollarSign, Copy } from 'lucide-react';
+import { Users, CheckCircle, Hourglass, CircleDollarSign, Copy } from 'lucide-react';
 
 const Referrals = () => {
   const referralStats = {
@@ -40,21 +40,21 @@ const Referrals = () => {
           </Card>
           <Card className="bg-green-100 border-green-200">
             <CardContent className="p-4 text-center">
-              <Gift className="w-8 h-8 text-green-600 mx-auto mb-2" />
+              <CheckCircle className="w-8 h-8 text-green-600 mx-auto mb-2" />
               <p className="text-sm text-gray-500 font-medium">Successful</p>
               <p className="text-2xl font-bold text-green-600">{referralStats.successfulReferrals}</p>
             </CardContent>
           </Card>
           <Card className="bg-purple-100 border-purple-200">
             <CardContent className="p-4 text-center">
-              <Mail className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+              <Hourglass className="w-8 h-8 text-purple-600 mx-auto mb-2" />
               <p className="text-sm text-gray-500 font-medium">Pending</p>
               <p className="text-2xl font-bold text-purple-600">{referralStats.pendingReferrals}</p>
             </CardContent>
           </Card>
           <Card className="bg-orange-100 border-orange-200">
             <CardContent className="p-4 text-center">
-              <BadgeDollarSign className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+              <CircleDollarSign className="w-8 h-8 text-orange-600 mx-auto mb-2" />
               <p className="text-sm text-gray-500 font-medium">Total Earned</p>
               <p className="text-2xl font-bold text-orange-600">{referralStats.totalEarned}</p>
             </CardContent>
