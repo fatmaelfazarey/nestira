@@ -1,3 +1,4 @@
+
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Search, Settings, User } from "lucide-react";
@@ -24,7 +25,7 @@ export function DashboardHeader() {
         </div>
 
         <div className="flex items-center justify-center flex-1">
-          <img src="/lovable-uploads/56e3e265-35c1-4968-86ec-2a6c964c97ad.png" alt="Nestira Finance Logo" className="h-24" />
+          <img src="/lovable-uploads/56e3e265-35c1-4968-86ec-2a6c964c97ad.png" alt="Nestira Finance Logo" className="h-14" />
         </div>
 
         <div className="flex items-center gap-4">
