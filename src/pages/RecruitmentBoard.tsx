@@ -2,15 +2,13 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { Plus, Filter, MoreHorizontal, Eye, MessageSquare, ArrowRight, FileText, Users, Calendar, Award, UserCheck, UserX, UserMinus, Star } from 'lucide-react';
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCenter, useSensor, useSensors, PointerSensor } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { Plus, Filter, MoreVertical, FileText, Users, Calendar, Award, UserCheck, UserX, UserMinus, Star } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Checkbox } from '@/components/ui/checkbox';
 import { useState, useMemo } from 'react';
 
 interface Candidate {
@@ -20,10 +18,18 @@ interface Candidate {
   flag: string;
   score: number;
   profilePhoto?: string;
-  tags: string[];
-  lastAction?: string;
-  salaryRange?: string;
   isLocked: boolean;
+  skillScores: {
+    accounting: number;
+    negotiation: number;
+    communication: number;
+    timeManagement: number;
+    cultureFit: number;
+  };
+  detailedStatus: {
+    text: string;
+    color: 'green' | 'red' | 'yellow' | 'gray' | 'blue';
+  };
   // Additional properties for filtering
   location?: string;
   experience?: number;
@@ -50,7 +56,7 @@ interface Stage {
 }
 
 const RecruitmentBoard = () => {
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [selectedCandidates, setSelectedCandidates] = useState<Set<number>>(new Set());
   const [selectedJob, setSelectedJob] = useState('financial-analyst');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -78,14 +84,6 @@ const RecruitmentBoard = () => {
   const [academicExcellence, setAcademicExcellence] = useState(false);
   const [selectedScreeningTags, setSelectedScreeningTags] = useState<string[]>([]);
 
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
-  );
-
   // Funnel tracker data
   const trackerStages = [
     { id: 'inbox', name: 'CV Inbox', count: 24, icon: FileText, color: 'text-blue-600', bgColor: 'bg-blue-50' },
@@ -107,85 +105,67 @@ const RecruitmentBoard = () => {
       candidates: [
         { 
           id: 1, 
-          firstName: 'Sarah', 
+          firstName: 'Lupita', 
           lastName: 'Johnson', 
           flag: '🇺🇸', 
-          score: 92, 
-          tags: ['Cover Letter'], 
-          lastAction: 'Applied 2h ago', 
+          score: 74, 
           isLocked: false,
           location: 'United Arab Emirates (UAE)',
           experience: 5,
           status: 'Available',
           skills: 'Mid-Level',
-          subfields: ['FP&A'],
-          software: ['Excel (Advanced)'],
-          certifications: ['CPA'],
-          industries: ['Tech'],
-          visaStatus: 'Citizen'
+          skillScores: { accounting: 71, negotiation: 64, communication: 78, timeManagement: 76, cultureFit: 82 },
+          detailedStatus: { text: 'Assessed', color: 'green' },
         },
         { 
           id: 2, 
-          firstName: 'Ahmed', 
-          lastName: 'Hassan', 
+          firstName: 'Emma', 
+          lastName: 'Lopez', 
           flag: '🇪🇬', 
-          score: 88, 
-          tags: ['Assessment Quiz'], 
+          score: 40, 
           isLocked: true,
           location: 'Egypt',
           experience: 3,
           status: 'Interviewing',
           skills: 'Entry-Level',
-          subfields: ['Audit'],
-          software: ['Power BI'],
-          certifications: ['ACCA'],
-          industries: ['Manufacturing'],
-          visaStatus: 'Residency Visa (Transferable)'
+          skillScores: { accounting: 30, negotiation: 26, communication: 27, timeManagement: 34, cultureFit: 82 },
+          detailedStatus: { text: 'Assessed', color: 'green' },
         },
       ]
     },
     {
-      id: 'pre-screened',
-      title: 'Pre-Screened',
-      color: 'border-sky-200',
-      bgColor: 'bg-sky-50/30',
+      id: 'rejected',
+      title: 'Rejected',
+      color: 'border-red-200',
+      bgColor: 'bg-red-50/30',
       candidates: [
         { 
           id: 3, 
-          firstName: 'Fatima', 
-          lastName: 'Al-Zahra', 
+          firstName: 'Heath', 
+          lastName: 'Winslet', 
           flag: '🇸🇦', 
-          score: 90, 
-          tags: ['Shortlisted'], 
-          lastAction: 'Screened yesterday', 
+          score: 0,
           isLocked: false,
           location: 'Saudi Arabia',
           experience: 7,
-          status: 'Shortlisted',
+          status: 'Not Available',
           skills: 'Senior-Level',
-          subfields: ['Treasury'],
-          software: ['Tableau'],
-          certifications: ['CMA'],
-          industries: ['Oil & Gas'],
-          visaStatus: 'Citizen'
+          skillScores: { accounting: 0, negotiation: 0, communication: 0, timeManagement: 0, cultureFit: 82 },
+          detailedStatus: { text: 'Disqualified', color: 'red' },
         },
         { 
           id: 4, 
-          firstName: 'Omar', 
-          lastName: 'Khan', 
+          firstName: 'Johnny', 
+          lastName: 'Sinatra', 
           flag: '🇵🇰', 
-          score: 85, 
-          tags: ['Phone Screen'], 
+          score: 0, 
           isLocked: true,
           location: 'Kuwait',
           experience: 4,
-          status: 'Available',
+          status: 'Not Available',
           skills: 'Mid-Level',
-          subfields: ['Tax'],
-          software: ['Excel (Advanced)'],
-          certifications: ['SOCPA'],
-          industries: ['Real Estate'],
-          visaStatus: 'Visit Visa'
+          skillScores: { accounting: 29, negotiation: 24, communication: 25, timeManagement: 33, cultureFit: 82 },
+          detailedStatus: { text: 'Assessed', color: 'green' },
         },
       ]
     },
@@ -197,49 +177,59 @@ const RecruitmentBoard = () => {
       candidates: [
         { 
           id: 5, 
-          firstName: 'Layla', 
-          lastName: 'Mahmoud', 
+          firstName: 'Timothee', 
+          lastName: 'Kaluuya', 
           flag: '🇱🇧', 
-          score: 93, 
-          tags: ['Interview Pending'], 
-          lastAction: 'Shortlisted 1d ago', 
+          score: 0, 
           isLocked: false,
           location: 'United Arab Emirates (UAE)',
           experience: 6,
           status: 'Shortlisted',
           skills: 'Senior-Level',
-          subfields: ['Fintech'],
-          software: ['Power BI'],
-          certifications: ['MBA'],
-          industries: ['Tech'],
-          visaStatus: 'Residency Visa (Transferable)'
+          skillScores: { accounting: 0, negotiation: 0, communication: 0, timeManagement: 0, cultureFit: 82 },
+          detailedStatus: { text: 'Assessed', color: 'green' },
         },
-      ]
-    },
-    {
-      id: 'interviewing',
-      title: 'Interviewing',
-      color: 'border-yellow-200',
-      bgColor: 'bg-yellow-50/30',
-      candidates: [
-        { 
-          id: 6, 
-          firstName: 'Sami', 
-          lastName: 'Yusuf', 
-          flag: '🇯🇴', 
-          score: 91, 
-          tags: ['In Interview'], 
-          lastAction: 'Interview Scheduled', 
+        {
+          id: 6,
+          firstName: 'candidate18accountmanager',
+          lastName: '',
+          flag: '🇶🇦',
+          score: 0,
+          isLocked: true,
+          location: 'Qatar',
+          experience: 2,
+          status: 'Available',
+          skills: 'Entry-Level',
+          skillScores: { accounting: 0, negotiation: 0, communication: 0, timeManagement: 0, cultureFit: 0 },
+          detailedStatus: { text: 'Invited', color: 'yellow' },
+        },
+        {
+          id: 7,
+          firstName: 'Charlotte',
+          lastName: 'Cotillard',
+          flag: '🇯🇴',
+          score: 0,
+          isLocked: false,
+          location: 'Jordan',
+          experience: 8,
+          status: 'Available',
+          skills: 'Executive-Level',
+          skillScores: { accounting: 29, negotiation: 24, communication: 25, timeManagement: 33, cultureFit: 82 },
+          detailedStatus: { text: 'Assessed', color: 'green' },
+        },
+        {
+          id: 8,
+          firstName: 'Mia',
+          lastName: 'Williams',
+          flag: '🇴🇲',
+          score: 0,
           isLocked: false,
           location: 'Oman',
-          experience: 8,
-          status: 'Interviewing',
-          skills: 'Executive-Level',
-          subfields: ['General Ledger (GL)'],
-          software: ['Tableau'],
-          certifications: ['CIA'],
-          industries: ['NGOs'],
-          visaStatus: 'Citizen'
+          experience: 5,
+          status: 'Available',
+          skills: 'Mid-Level',
+          skillScores: { accounting: 46, negotiation: 34, communication: 74, timeManagement: 63, cultureFit: 82 },
+          detailedStatus: { text: 'Assessed', color: 'green' },
         },
       ]
     },
@@ -248,27 +238,7 @@ const RecruitmentBoard = () => {
       title: 'Hired',
       color: 'border-green-200',
       bgColor: 'bg-green-50/30',
-      candidates: [
-        { 
-          id: 7, 
-          firstName: 'Zainab', 
-          lastName: 'Ali', 
-          flag: '🇮🇶', 
-          score: 95, 
-          tags: ['Hired'], 
-          lastAction: 'Offer Accepted', 
-          isLocked: false,
-          location: 'Bahrain',
-          experience: 10,
-          status: 'Available',
-          skills: 'C-Suite / Top-Level Management',
-          subfields: ['Accounts Payable (AP)'],
-          software: ['Excel (Advanced)'],
-          certifications: ['DipIFR'],
-          industries: ['Retail'],
-          visaStatus: 'Residency Visa (Non-Transferable)'
-        },
-      ]
+      candidates: []
     }
   ]);
 
@@ -342,8 +312,35 @@ const RecruitmentBoard = () => {
   }, [stages, searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, 
       selectedSubfields, selectedSoftware, selectedCertifications, selectedIndustries, selectedVisaStatus]);
 
+  const allFilteredCandidates = useMemo(() => {
+    return filteredStages.flatMap(stage => 
+        stage.candidates.map(candidate => ({
+            ...candidate,
+            hiringStage: stage.title,
+        }))
+    );
+  }, [filteredStages]);
+
+  const handleSelectAll = (checked: boolean | 'indeterminate') => {
+    if (checked === true) {
+        setSelectedCandidates(new Set(allFilteredCandidates.map(c => c.id)));
+    } else {
+        setSelectedCandidates(new Set());
+    }
+  };
+
+  const handleSelectOne = (candidateId: number, checked: boolean) => {
+      const newSelected = new Set(selectedCandidates);
+      if(checked) {
+          newSelected.add(candidateId);
+      } else {
+          newSelected.delete(candidateId);
+      }
+      setSelectedCandidates(newSelected);
+  };
+  
   // Count filtered candidates
-  const filteredCandidatesCount = filteredStages.reduce((total, stage) => total + stage.candidates.length, 0);
+  const filteredCandidatesCount = allFilteredCandidates.length;
 
   const resetAllFilters = () => {
     setSearchQuery('');
@@ -370,179 +367,36 @@ const RecruitmentBoard = () => {
     setSelectedScreeningTags([]);
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id as string);
-  };
+  const HiringStageBadge = ({ stageTitle }: { stageTitle: string }) => {
+    let className = 'text-xs font-semibold h-auto py-1 px-2 border';
+    let text = stageTitle.toUpperCase();
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    const { active, over } = event;
+    switch (stageTitle) {
+      case 'Hired':
+        className += ' bg-teal-500 text-white border-teal-500';
+        break;
+      case 'Rejected':
+        className += ' bg-red-500 text-white border-red-500';
+        break;
+      default:
+        className += ' bg-gray-200 text-gray-700 border-gray-200';
+        text = 'NOT YET EVALUATED';
+    }
+
+    if (stageTitle === 'Shortlisted') {
+        text = 'EVALUATED';
+        className += ' bg-gray-600 text-white border-gray-600';
+    }
     
-    if (!over) return;
-
-    const activeId = active.id as string;
-    const overId = over.id as string;
-
-    // Find source and destination stages
-    const sourceStage = stages.find(stage => 
-      stage.candidates.some(candidate => candidate.id.toString() === activeId)
-    );
-    const destStage = stages.find(stage => stage.id === overId) || 
-                     stages.find(stage => 
-                       stage.candidates.some(candidate => candidate.id.toString() === overId)
-                     );
-
-    if (!sourceStage || !destStage || sourceStage.id === destStage.id) return;
-
-    const candidate = sourceStage.candidates.find(c => c.id.toString() === activeId);
-    if (!candidate) return;
-
-    setStages(prevStages => {
-      return prevStages.map(stage => {
-        if (stage.id === sourceStage.id) {
-          return {
-            ...stage,
-            candidates: stage.candidates.filter(c => c.id.toString() !== activeId)
-          };
-        }
-        if (stage.id === destStage.id) {
-          return {
-            ...stage,
-            candidates: [...stage.candidates, candidate]
-          };
-        }
-        return stage;
-      });
-    });
-
-    setActiveId(null);
-  };
-
-  const SortableCandidate = ({ candidate }: { candidate: Candidate }) => {
-    const {
-      attributes,
-      listeners,
-      setNodeRef,
-      transform,
-      transition,
-      isDragging,
-    } = useSortable({ id: candidate.id.toString() });
-
-    const style = {
-      transform: CSS.Transform.toString(transform),
-      transition,
-    };
-
     return (
-      <div
-        ref={setNodeRef}
-        style={style}
-        {...attributes}
-        {...listeners}
-        className={`${isDragging ? 'opacity-50' : ''}`}
-      >
-        <CandidateCard candidate={candidate} />
-      </div>
+        <Badge variant="outline" className={className}>
+            {text}
+        </Badge>
     );
   };
 
-  const CandidateCard = ({ candidate }: { candidate: Candidate }) => (
-    <Card className={`cursor-pointer hover:shadow-md transition-all duration-200 ${candidate.isLocked ? 'opacity-60' : ''}`}>
-      <CardContent className="p-3">
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-lg">{candidate.flag}</span>
-              <span className="font-medium text-sm">
-                {candidate.isLocked ? candidate.firstName : `${candidate.firstName} ${candidate.lastName}`}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Badge variant="secondary" className="text-xs px-1.5 py-0.5">
-                {candidate.score}
-              </Badge>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                    <MoreHorizontal className="h-3 w-3" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                  <DropdownMenuItem className="text-xs">
-                    <Eye className="w-3 h-3 mr-2" />
-                    View
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-xs">
-                    <MessageSquare className="w-3 h-3 mr-2" />
-                    Message
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="text-xs">
-                    <ArrowRight className="w-3 h-3 mr-2" />
-                    Move
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-          
-          <div className="flex flex-wrap gap-1">
-            {candidate.tags.map((tag, index) => (
-              <Badge key={index} variant="outline" className="text-xs px-1.5 py-0.5">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-          
-          {candidate.lastAction && (
-            <p className="text-xs text-gray-500">{candidate.lastAction}</p>
-          )}
-          
-          {!candidate.isLocked && candidate.salaryRange && (
-            <p className="text-xs font-medium text-green-600">{candidate.salaryRange}</p>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  const DroppableStage = ({ stage }: { stage: Stage }) => {
-    const {
-      setNodeRef,
-      isOver,
-    } = useSortable({ id: stage.id });
-
-    return (
-      <div
-        ref={setNodeRef}
-        className={`flex-shrink-0 w-80 ${stage.bgColor} border ${stage.color} rounded-lg transition-all duration-200 ${
-          isOver ? 'ring-2 ring-accent ring-opacity-50 border-accent' : ''
-        }`}
-      >
-        <div className="p-4 border-b border-gray-200 bg-white/50 rounded-t-lg">
-          <div className="flex items-center justify-between">
-            <h3 className="font-medium">{stage.title}</h3>
-            <Badge variant="secondary" className="text-xs">
-              {stage.candidates.length}
-            </Badge>
-          </div>
-        </div>
-        
-        <ScrollArea className="h-[calc(100vh-350px)]">
-          <div className="p-3 space-y-3">
-            <SortableContext items={stage.candidates.map(c => c.id.toString())} strategy={verticalListSortingStrategy}>
-              {stage.candidates.map((candidate) => (
-                <SortableCandidate key={candidate.id} candidate={candidate} />
-              ))}
-            </SortableContext>
-            
-            <Button variant="ghost" className="w-full border border-dashed border-gray-300 text-gray-500 hover:text-gray-700 text-xs py-2">
-              <Plus className="w-3 h-3 mr-2" />
-              Add Candidate
-            </Button>
-          </div>
-        </ScrollArea>
-      </div>
-    );
-  };
+  const isAllSelected = selectedCandidates.size > 0 && selectedCandidates.size === allFilteredCandidates.length;
+  const isIndeterminate = selectedCandidates.size > 0 && selectedCandidates.size < allFilteredCandidates.length;
 
   return (
     <DashboardLayout>
@@ -591,29 +445,85 @@ const RecruitmentBoard = () => {
           </div>
         </Card>
 
-        {/* Recruitment Funnel */}
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragStart={handleDragStart}
-          onDragEnd={handleDragEnd}
-        >
-          <div className="flex gap-4 overflow-x-auto pb-6">
-            <SortableContext items={filteredStages.map(s => s.id)}>
-              {filteredStages.map((stage) => (
-                <DroppableStage key={stage.id} stage={stage} />
-              ))}
-            </SortableContext>
-          </div>
-          
-          <DragOverlay>
-            {activeId ? (
-              <div className="rotate-3 opacity-90">
-                <CandidateCard candidate={stages.flatMap(s => s.candidates).find(c => c.id.toString() === activeId)!} />
-              </div>
-            ) : null}
-          </DragOverlay>
-        </DndContext>
+        {/* Recruitment Table */}
+        <Card>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-50 hover:bg-gray-50">
+                    <TableHead className="w-[50px] px-4">
+                      <Checkbox
+                        checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
+                        onCheckedChange={handleSelectAll}
+                      />
+                    </TableHead>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Avg. % score</TableHead>
+                    <TableHead>Account ...</TableHead>
+                    <TableHead>Negotiat...</TableHead>
+                    <TableHead>Communic...</TableHead>
+                    <TableHead>Time man...</TableHead>
+                    <TableHead>Culture ...</TableHead>
+                    <TableHead>Hiring stage</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="w-[50px]"></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {allFilteredCandidates.map(candidate => (
+                    <TableRow key={candidate.id} data-state={selectedCandidates.has(candidate.id) ? "selected" : ""}>
+                      <TableCell className="px-4">
+                        <Checkbox
+                          checked={selectedCandidates.has(candidate.id)}
+                          onCheckedChange={(checked) => handleSelectOne(candidate.id, !!checked)}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage src={candidate.profilePhoto} />
+                            <AvatarFallback>{candidate.firstName[0]}{candidate.lastName[0]}</AvatarFallback>
+                          </Avatar>
+                          <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="font-semibold">{candidate.score > 0 ? `${candidate.score}%` : '-'}</TableCell>
+                      <TableCell>{candidate.skillScores?.accounting > 0 ? `${candidate.skillScores.accounting}%` : '-'}</TableCell>
+                      <TableCell>{candidate.skillScores?.negotiation > 0 ? `${candidate.skillScores.negotiation}%` : '-'}</TableCell>
+                      <TableCell>{candidate.skillScores?.communication > 0 ? `${candidate.skillScores.communication}%` : '-'}</TableCell>
+                      <TableCell>{candidate.skillScores?.timeManagement > 0 ? `${candidate.skillScores.timeManagement}%` : '-'}</TableCell>
+                      <TableCell>{candidate.skillScores?.cultureFit > 0 ? `${candidate.skillScores.cultureFit}%` : '-'}</TableCell>
+                      <TableCell>
+                        <HiringStageBadge stageTitle={candidate.hiringStage} />
+                      </TableCell>
+                      <TableCell>
+                         <div className="flex items-center gap-2 text-sm">
+                            <span className={`w-2 h-2 rounded-full bg-${candidate.detailedStatus.color}-500`}></span>
+                            <span className="whitespace-nowrap">{candidate.detailedStatus.text}</span>
+                         </div>
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem>View profile</DropdownMenuItem>
+                            <DropdownMenuItem>Move to stage</DropdownMenuItem>
+                            <DropdownMenuItem className="text-red-600">Reject</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Filter Sidebar */}
         <FilterSidebar
