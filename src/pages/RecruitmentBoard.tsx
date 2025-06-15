@@ -62,6 +62,12 @@ const RecruitmentBoard = () => {
   const [selectedJob, setSelectedJob] = useState('financial-analyst');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  const jobTitles: { [key: string]: string } = {
+    'financial-analyst': 'Financial Analyst',
+    'senior-accountant': 'Senior Accountant',
+    'investment-manager': 'Investment Manager',
+  };
+
   // Filter state variables
   const [searchQuery, setSearchQuery] = useState('');
   const [locationFilter, setLocationFilter] = useState('all');
@@ -564,7 +570,10 @@ const RecruitmentBoard = () => {
                               <AvatarImage src={candidate.profilePhoto} />
                               <AvatarFallback>{candidate.firstName[0]}{candidate.lastName[0]}</AvatarFallback>
                             </Avatar>
-                            <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
+                            <div>
+                              <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
+                              <p className="text-sm text-muted-foreground">{jobTitles[selectedJob]}</p>
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>
