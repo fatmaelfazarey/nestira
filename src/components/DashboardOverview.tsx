@@ -191,15 +191,15 @@ const recentProfileViews = [
 const chartConfig = {
   applications: {
     label: "Applications",
-    color: "#3b82f6", // tailwind blue-500
+    color: "hsl(var(--primary))",
   },
   interviews: {
     label: "Interviews",
-    color: "#f97316", // tailwind orange-500
+    color: "hsl(28, 95%, 53%)",
   },
   count: {
     label: "Interviews",
-    color: "#3b82f6",
+    color: "hsl(var(--primary))",
   }
 };
 
@@ -303,7 +303,7 @@ export function DashboardOverview() {
             </h3>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-full bg-primary"></div>
                 <span className="text-sm text-gray-600">Applications</span>
               </div>
               <div className="flex items-center gap-2">
