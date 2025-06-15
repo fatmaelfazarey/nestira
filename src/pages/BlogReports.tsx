@@ -1,3 +1,4 @@
+
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from "sonner";
@@ -171,7 +172,7 @@ const BlogReports = () => {
   const reports = filteredContent.filter(item => item.type === 'report');
   const isFiltered = roleFilter !== 'Show All' || typeFilter.length > 0 || topicFilter.length > 0 || trendingFilter;
   return <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 px-4">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Blog & Reports</h1>
           <p className="text-gray-600">Finance hiring insights, trends, and resources</p>
