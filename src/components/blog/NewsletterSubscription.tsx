@@ -20,8 +20,8 @@ const NewsletterSubscription = () => {
 
     return (
         <div className="p-6 rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
-             <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/10 rounded-full opacity-50"></div>
-             <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/10 rounded-full opacity-50"></div>
+             <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/20 rounded-full opacity-50"></div>
+             <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/20 rounded-full opacity-50"></div>
              <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-3">
                     <div className="bg-accent/20 p-2 rounded-lg">
