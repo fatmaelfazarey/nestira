@@ -149,7 +149,7 @@ export function AppSidebar() {
             className="bg-gradient-to-r from-accent to-orange-600 hover:from-accent/90 hover:to-orange-600/90 text-white w-full shadow-lg hover:shadow-xl transition-all duration-200 font-semibold py-3"
             onClick={() => setIsJobModalOpen(true)}
           >
-            <Plus className="w-5 h-5 mr-3" />
+            <Plus className="w-4 h-4" />
             Create Job Post
           </Button>
         </SidebarHeader>
@@ -168,8 +168,8 @@ export function AppSidebar() {
                         asChild 
                         className="hover:bg-gradient-to-r hover:from-accent/10 hover:to-accent/5 hover:border-l-4 hover:border-accent transition-all duration-200 rounded-lg group py-3"
                       >
-                        <Link to={item.url} className="flex items-center gap-4 px-4 py-3 text-gray-700 hover:text-accent font-medium">
-                          <item.icon className="w-5 h-5 group-hover:scale-110 transition-transform duration-200" />
+                        <Link to={item.url} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-accent font-medium">
+                          <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
                           <span className="text-sm">{item.title}</span>
                           {item.badge && (
                             <span className="ml-auto bg-gradient-to-r from-accent to-orange-600 text-white text-xs px-2.5 py-1 rounded-full font-semibold shadow-sm">

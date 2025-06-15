@@ -27,7 +27,7 @@ export function DashboardHeader() {
         <div className="flex items-center justify-center flex-1">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-              <Building2 className="text-white w-5 h-5" />
+              <Building2 className="text-white w-4 h-4" />
             </div>
             <div>
               <h1 className="font-semibold text-lg text-primary">Nestira Finance</h1>

@@ -214,7 +214,7 @@ const HelpCenterBot = () => {
                 <span className="font-bold text-lg">Nestira Help Assistant</span>
               </div>
               <Button variant="ghost" size="icon" onClick={handleReset} className="text-white hover:bg-white/20 hover:text-white">
-                <RotateCcw className="w-5 h-5" />
+                <RotateCcw className="w-4 h-4" />
               </Button>
             </CardTitle>
           </CardHeader>
@@ -327,7 +327,7 @@ const HelpCenterBot = () => {
                                             onClick={() => handleFAQClick(faq)}
                                           >
                                             <div className="flex items-center gap-2">
-                                              <HelpCircle className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                                              <HelpCircle className="w-4 h-4 text-gray-400 flex-shrink-0" />
                                               <span className="text-sm font-medium text-gray-700">{faq.question}</span>
                                             </div>
                                           </AccordionTrigger>

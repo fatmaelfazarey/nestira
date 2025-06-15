@@ -24,7 +24,7 @@ const Referrals = () => {
     <DashboardLayout>
       <div className="space-y-8 p-4 md:p-6">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-gray-900">Referrals</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Referrals</h1>
           <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
             Whether it’s a company you trust or a manager in your network, send them our way. We’ll handle the hiring — you get the thank-you (in cash). Perfect for recruiters, HR consultants, and team leads.
           </p>
