@@ -1,19 +1,13 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import HelpCenterBot from '@/components/HelpCenterBot';
-import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { 
-  Search,
   BookOpen,
 } from "lucide-react";
 
 const HelpCenter = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
-
   const articles = [
     {
       id: 1,
@@ -77,20 +71,6 @@ const HelpCenter = () => {
     }
   ];
 
-  const categories = [
-    { value: "all", label: "All Topics" },
-    { value: "basics", label: "Getting Started" },
-    { value: "hiring", label: "Hiring Process" },
-    { value: "interviews", label: "Interviews" },
-    { value: "tools", label: "Tools & Features" }
-  ];
-
-  const filteredArticles = articles.filter(article => 
-    (selectedCategory === "all" || article.category === selectedCategory) &&
-    (article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-     article.purpose.toLowerCase().includes(searchQuery.toLowerCase()))
-  );
-
   return (
     <DashboardLayout>
       <div className="p-8 space-y-8">
@@ -99,38 +79,6 @@ const HelpCenter = () => {
         </div>
         
         <Separator className="my-8" />
-        
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Help Center</h1>
-            <p className="text-gray-600 mt-2">Get help and support for your hiring needs</p>
-          </div>
-        </div>
-
-        {/* Search and Filter */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <Input
-              placeholder="Search tutorials and guides..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10"
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {categories.map((category) => (
-              <Button
-                key={category.value}
-                variant={selectedCategory === category.value ? "default" : "outline"}
-                size="sm"
-                onClick={() => setSelectedCategory(category.value)}
-              >
-                {category.label}
-              </Button>
-            ))}
-          </div>
-        </div>
         
         {/* Help Articles */}
         <Card>
@@ -145,7 +93,7 @@ const HelpCenter = () => {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredArticles.length > 0 ? filteredArticles.map((article) => (
+              {articles.length > 0 ? articles.map((article) => (
                 <a key={article.id} href={article.url} target="_blank" rel="noopener noreferrer" className="block hover:shadow-lg transition-shadow duration-300 rounded-lg">
                   <Card className="overflow-hidden flex flex-col h-full">
                     <div className="relative">
@@ -162,7 +110,7 @@ const HelpCenter = () => {
                   </Card>
                 </a>
               )) : (
-                <p className="text-gray-500 md:col-span-2 lg:col-span-3 text-center">No articles found. Try a different search or filter.</p>
+                <p className="text-gray-500 md:col-span-2 lg:col-span-3 text-center">No articles available.</p>
               )}
             </div>
           </CardContent>
