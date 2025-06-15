@@ -21,6 +21,7 @@ const allAvailableTopics = [
 ];
 
 const BlogReports = () => {
+  const thumbnail = "/lovable-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
   const allContent = [
     {
       id: 'article-1',
@@ -30,7 +31,7 @@ const BlogReports = () => {
       topics: allAvailableTopics,
       readTime: "8 min read",
       publishedAt: "2024-05-15",
-      thumbnail: 'photo-1486312338219-ce68d2c6f44d',
+      thumbnail,
       isNew: true,
       targetAudience: "Hiring Manager",
     },
@@ -42,7 +43,7 @@ const BlogReports = () => {
       topics: allAvailableTopics,
       readTime: "6 min read",
       publishedAt: "2024-05-10",
-      thumbnail: 'photo-1488590528505-98d2b5aba04b',
+      thumbnail,
       isNew: true,
       targetAudience: "Finance Candidate",
     },
@@ -54,7 +55,7 @@ const BlogReports = () => {
       topics: allAvailableTopics,
       readTime: "5 min read",
       publishedAt: "2024-05-05",
-      thumbnail: 'photo-1518770660439-4636190af475',
+      thumbnail,
       isNew: false,
       targetAudience: "Finance Candidate",
     },
@@ -66,7 +67,7 @@ const BlogReports = () => {
       topics: ["Skills & Hiring", "MENA/GCC Focus"],
       downloadCount: "1.2K downloads",
       publishedAt: "2024-04-20",
-      thumbnail: 'photo-1461749280684-dccba630e2f6',
+      thumbnail,
       isNew: false,
       targetAudience: "Hiring Manager",
     },
@@ -78,7 +79,7 @@ const BlogReports = () => {
       topics: ["Skills & Hiring", "Career Growth"],
       downloadCount: "890 downloads",
       publishedAt: "2024-04-15",
-      thumbnail: 'photo-1486312338219-ce68d2c6f44d',
+      thumbnail,
       isNew: false,
       targetAudience: "Hiring Manager",
     },
@@ -90,7 +91,7 @@ const BlogReports = () => {
       topics: allAvailableTopics,
       readTime: '7 min read',
       publishedAt: '2024-04-28',
-      thumbnail: 'photo-1649972904349-6e44c42644a7',
+      thumbnail,
       isNew: false,
       targetAudience: "Hiring Manager",
     },
@@ -102,7 +103,7 @@ const BlogReports = () => {
       topics: allAvailableTopics,
       readTime: "4 min read",
       publishedAt: "2024-03-25",
-      thumbnail: 'photo-1488590528505-98d2b5aba04b',
+      thumbnail,
       isNew: false,
       targetAudience: "Finance Candidate",
     },
@@ -114,7 +115,7 @@ const BlogReports = () => {
       topics: allAvailableTopics,
       readTime: "9 min read",
       publishedAt: "2024-03-10",
-      thumbnail: 'photo-1454165804606-c3d57bc86b40',
+      thumbnail,
       isNew: false,
       targetAudience: 'Hiring Manager',
     }
@@ -252,7 +253,7 @@ const BlogReports = () => {
                   
                   <div className="relative">
                     <AspectRatio ratio={16 / 9}>
-                      <img src={`/${item.thumbnail}.jpg`} alt={item.title} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
+                      <img src={item.thumbnail} alt={item.title} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
                     </AspectRatio>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     {item.isNew && <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground border-accent-foreground/20">New</Badge>}
