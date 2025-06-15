@@ -21,6 +21,7 @@ const QuizBuilder = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSource, setFilterSource] = useState('all');
   const [trendingOnly, setTrendingOnly] = useState(false);
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [quizzes, setQuizzes] = useState([
     { 
       id: 1, 
@@ -37,6 +38,7 @@ const QuizBuilder = () => {
       source: 'Nestira',
       isTrending: true,
       personalizationParams: { jobTitle: 'Financial Analyst' },
+      skills: ['Financial Math', 'Financial Planning & Analysis (FP&A)'],
       questionsList: [
         { 
           id: 'q1', 
@@ -69,6 +71,7 @@ const QuizBuilder = () => {
       source: 'Nestira',
       isTrending: false,
       personalizationParams: { jobTitle: 'Financial Analyst' },
+      skills: ['Microsoft Excel (Advanced)', 'Financial Modeling in Excel'],
       questionsList: [
         { 
           id: 'q3', 
@@ -95,6 +98,7 @@ const QuizBuilder = () => {
       source: 'Me',
       isTrending: true,
       personalizationParams: { jobTitle: 'Risk Manager' },
+      skills: ['Internal Auditing / ISAs', 'Critical Thinking', 'Problem Solving'],
       questionsList: [
         { 
           id: 'q4', 
@@ -157,7 +161,8 @@ const QuizBuilder = () => {
     const titleMatch = (quiz.personalizationParams?.jobTitle ?? '').toLowerCase().includes(searchQuery.toLowerCase());
     const sourceMatch = filterSource === 'all' || quiz.source === filterSource;
     const trendingMatch = !trendingOnly || quiz.isTrending;
-    return titleMatch && sourceMatch && trendingMatch;
+    const skillMatch = selectedSkills.length === 0 || selectedSkills.every(skill => quiz.skills?.includes(skill));
+    return titleMatch && sourceMatch && trendingMatch && skillMatch;
   });
 
   const groupedQuizzes = filteredQuizzes.reduce((acc, quiz) => {
@@ -208,6 +213,8 @@ const QuizBuilder = () => {
           onFilterSourceChange={setFilterSource}
           trendingOnly={trendingOnly}
           onTrendingOnlyChange={setTrendingOnly}
+          selectedSkills={selectedSkills}
+          onSelectedSkillsChange={setSelectedSkills}
         />
 
         <div className="space-y-8">
