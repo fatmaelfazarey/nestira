@@ -178,7 +178,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
         <QuizStepper steps={steps} currentStep={currentStep} />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Main Flow */}
-          <div className={(currentStep > 1 && currentStep < 4) ? "lg:col-span-3 space-y-6" : "lg:col-span-4 space-y-6"}>
+          <div className={currentStep < 4 ? "lg:col-span-3 space-y-6" : "lg:col-span-4 space-y-6"}>
             {currentStep === 1 && <QuizPersonalization />}
             
             {currentStep === 2 && (
@@ -227,7 +227,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
           </div>
 
           {/* Right Column - Quiz Details */}
-          {(currentStep > 1 && currentStep < 4) && (
+          {currentStep < 4 && (
             <div className="lg:col-span-1">
               <QuizDetailsCard
                 title={quizTitle}
