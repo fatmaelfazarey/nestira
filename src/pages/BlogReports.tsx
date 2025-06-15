@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from "sonner";
@@ -12,6 +11,8 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import NewsletterSubscription from '@/components/blog/NewsletterSubscription';
+
 const allAvailableTopics = ["AI in Finance", "Career Growth", "MENA/GCC Focus", "Remote Work", "Salary Trends", "Skills & Hiring", "Survey Report"];
 const topicColorMap: {
   [key: string]: string;
@@ -286,6 +287,10 @@ const BlogReports = () => {
                   </Button>
                 
                 </Card>) : <p className="text-gray-500">No reports match your criteria.</p>}
+            </div>
+
+            <div className="px-2">
+              <NewsletterSubscription />
             </div>
           </div>
         </div>
