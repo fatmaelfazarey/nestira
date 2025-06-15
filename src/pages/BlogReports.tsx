@@ -295,7 +295,7 @@ const BlogReports = () => {
                       {(item as any).isTrending && <Badge className="bg-green-600 text-white border-transparent">🔥 Trending</Badge>}
                     </div>
                     <div className="absolute bottom-0 p-4">
-                        <Badge className={`mb-2 rounded-md ${audienceColorMap[item.targetAudience as keyof typeof audienceColorMap] || 'bg-gray-100 text-gray-800'}`}>{item.targetAudience}</Badge>
+                        <Badge className={`mb-2 rounded-md font-bold shadow hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 ${audienceColorMap[item.targetAudience as keyof typeof audienceColorMap] || 'bg-gray-100 text-gray-800'}`}>{item.targetAudience}</Badge>
                         <CardTitle className="text-lg font-bold leading-snug text-white group-hover:text-amber-300 transition-colors">{item.title}</CardTitle>
                     </div>
                   </div>
