@@ -5,6 +5,9 @@ import { Label } from '@/components/ui/label';
 import { Sparkles, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FindMyMatchModal } from '@/components/FindMyMatchModal';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 // This should ideally be shared, but defining it here to avoid modifying other files.
 interface JobPost {
@@ -20,6 +23,7 @@ interface JobPost {
 export function QuizPersonalization() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [jobDescription, setJobDescription] = useState('');
+  const [creationMethod, setCreationMethod] = useState('build-your-own');
 
   const handleJobSelected = (job: JobPost) => {
     const description = `Based on job post: ${job.title}\nLocation: ${job.location}\n\nKey skills and requirements:\n- ${job.requirements.join('\n- ')}\n\nSubfields:\n- ${job.subfields.join('\n- ')}`;
@@ -90,6 +94,58 @@ export function QuizPersonalization() {
                 </Select>
               </div>
             </div>
+          </div>
+
+          <div className="space-y-4 pt-4">
+            <h3 className="font-semibold text-lg">Creation method</h3>
+            <RadioGroup
+              value={creationMethod}
+              onValueChange={setCreationMethod}
+              className="grid grid-cols-1 md:grid-cols-2 gap-4"
+            >
+              <div>
+                <Label
+                  htmlFor="template"
+                  className={cn(
+                    "flex h-full flex-col justify-between rounded-lg border bg-card text-card-foreground p-4 transition-all hover:border-accent cursor-pointer",
+                    creationMethod === 'template' && "border-accent ring-2 ring-accent/20"
+                  )}
+                >
+                  <div className="flex items-start gap-4">
+                    <RadioGroupItem value="template" id="template" className="mt-1 shrink-0" />
+                    <div className="grid gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold">Using an Essential Skills Template</span>
+                        <Badge className="text-xs bg-green-100 text-green-800 border-green-200 hover:bg-green-100">Free</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Evaluate essential skills applicable across job roles and industries.
+                      </p>
+                      <Button variant="link" className="p-0 h-auto text-accent justify-start">See details</Button>
+                    </div>
+                  </div>
+                </Label>
+              </div>
+              <div>
+                <Label
+                  htmlFor="build-your-own"
+                  className={cn(
+                    "flex h-full flex-col justify-between rounded-lg border bg-card text-card-foreground p-4 transition-all hover:border-accent cursor-pointer",
+                    creationMethod === 'build-your-own' && "border-accent ring-2 ring-accent/20"
+                  )}
+                >
+                  <div className="flex items-start gap-4">
+                    <RadioGroupItem value="build-your-own" id="build-your-own" className="mt-1 shrink-0" />
+                    <div className="grid gap-1.5">
+                      <span className="font-semibold">Building your own</span>
+                      <p className="text-sm text-muted-foreground">
+                        Select your own tests and custom questions.
+                      </p>
+                    </div>
+                  </div>
+                </Label>
+              </div>
+            </RadioGroup>
           </div>
         </div>
       </div>
