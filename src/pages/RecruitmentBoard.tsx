@@ -395,6 +395,28 @@ const RecruitmentBoard = () => {
     );
   };
 
+  const handleStageChange = (candidateId: number, newStageId: string) => {
+    setStages(prevStages => {
+      const nextStages = prevStages.map(stage => ({ ...stage, candidates: [...stage.candidates] }));
+      let candidateToMove: Candidate | undefined;
+
+      for (const stage of nextStages) {
+        const candidateIndex = stage.candidates.findIndex(c => c.id === candidateId);
+        if (candidateIndex !== -1) {
+          [candidateToMove] = stage.candidates.splice(candidateIndex, 1);
+          break;
+        }
+      }
+
+      if (candidateToMove) {
+        const toStage = nextStages.find(stage => stage.id === newStageId);
+        toStage?.candidates.push(candidateToMove);
+      }
+
+      return nextStages;
+    });
+  };
+
   const isAllSelected = selectedCandidates.size > 0 && selectedCandidates.size === allFilteredCandidates.length;
   const isIndeterminate = selectedCandidates.size > 0 && selectedCandidates.size < allFilteredCandidates.length;
 
@@ -471,7 +493,11 @@ const RecruitmentBoard = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {allFilteredCandidates.map(candidate => (
+                  {allFilteredCandidates.map(candidate => {
+                    const currentStage = stages.find(s => s.title === candidate.hiringStage);
+                    const currentStageId = currentStage ? currentStage.id : '';
+
+                    return (
                     <TableRow key={candidate.id} data-state={selectedCandidates.has(candidate.id) ? "selected" : ""}>
                       <TableCell className="px-4">
                         <Checkbox
@@ -495,7 +521,21 @@ const RecruitmentBoard = () => {
                       <TableCell>{candidate.skillScores?.timeManagement > 0 ? `${candidate.skillScores.timeManagement}%` : '-'}</TableCell>
                       <TableCell>{candidate.skillScores?.cultureFit > 0 ? `${candidate.skillScores.cultureFit}%` : '-'}</TableCell>
                       <TableCell>
-                        <HiringStageBadge stageTitle={candidate.hiringStage} />
+                        <Select
+                          value={currentStageId}
+                          onValueChange={(newStageId) => handleStageChange(candidate.id, newStageId)}
+                        >
+                          <SelectTrigger className="w-[120px]">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {stages.map(stage => (
+                              <SelectItem key={stage.id} value={stage.id}>
+                                {stage.title}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </TableCell>
                       <TableCell>
                          <div className="flex items-center gap-2 text-sm">
@@ -518,7 +558,7 @@ const RecruitmentBoard = () => {
                         </DropdownMenu>
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )})}
                 </TableBody>
               </Table>
             </div>
