@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -275,96 +276,114 @@ const RecruitmentBoard = () => {
 
   const hiringStages = useMemo(() => stages.map(s => s.title), [stages]);
 
-  // Filter candidates based on selected filters
-  const filteredStages = useMemo(() => {
-    return stages.map(stage => ({
-      ...stage,
-      candidates: stage.candidates.filter(candidate => {
-        // Search query filter
-        if (searchQuery && !`${candidate.firstName} ${candidate.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())) {
-          return false;
-        }
+  const calculateAssessmentScore = (skillScores: Candidate['skillScores']) => {
+    const scores = Object.values(skillScores);
+    const validScores = scores.filter(s => s > 0);
+    if (validScores.length === 0) return 0;
+    const sum = validScores.reduce((a, b) => a + b, 0);
+    return Math.round(sum / validScores.length);
+  };
 
-        // Location filter
-        if (locationFilter !== 'all' && candidate.location !== locationFilter) {
-          return false;
-        }
-
-        // Experience filter
-        if (candidate.experience !== undefined && candidate.experience < experienceRange[0]) {
-          return false;
-        }
-
-        // Status filter
-        if (statusFilter !== 'all' && candidate.status !== statusFilter) {
-          return false;
-        }
-
-        // Skills/Career level filter
-        if (skillsFilter !== 'all' && candidate.skills !== skillsFilter) {
-          return false;
-        }
-
-        // Score filter
-        if (candidate.score < scoreRange[0]) {
-          return false;
-        }
-        
-        // Assessment score filter
-        const assessmentScore = calculateAssessmentScore(candidate.skillScores);
-        if (assessmentScore < assessmentScoreRange[0]) {
-          return false;
-        }
-
-        // Hiring stage filter
-        if (hiringStageFilter.length > 0 && !hiringStageFilter.includes(stage.title)) {
-          return false;
-        }
-
-        // Subfields filter
-        if (selectedSubfields.length > 0 && !selectedSubfields.some(subfield => 
-          candidate.subfields?.includes(subfield))) {
-          return false;
-        }
-
-        // Software filter
-        if (selectedSoftware.length > 0 && !selectedSoftware.some(software => 
-          candidate.software?.includes(software))) {
-          return false;
-        }
-
-        // Certifications filter
-        if (selectedCertifications.length > 0 && !selectedCertifications.some(cert => 
-          candidate.certifications?.includes(cert))) {
-          return false;
-        }
-
-        // Industries filter
-        if (selectedIndustries.length > 0 && !selectedIndustries.some(industry => 
-          candidate.industries?.includes(industry))) {
-          return false;
-        }
-
-        // Visa status filter
-        if (selectedVisaStatus.length > 0 && !selectedVisaStatus.includes(candidate.visaStatus || '')) {
-          return false;
-        }
-
-        return true;
-      })
-    }));
-  }, [stages, searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, 
-      assessmentScoreRange, hiringStageFilter,
-      selectedSubfields, selectedSoftware, selectedCertifications, selectedIndustries, selectedVisaStatus]);
-
-  const allFilteredCandidates = useMemo(() => {
-    return filteredStages.flatMap(stage => 
-        stage.candidates.map(candidate => ({
-            ...candidate,
-            hiringStage: stage.title,
-        }))
+  const allCandidatesFromStages = useMemo(() => {
+    return stages.flatMap(stage =>
+      stage.candidates.map(candidate => ({
+        ...candidate,
+        hiringStage: stage.title,
+      }))
     );
-  }, [filteredStages]);
+  }, [stages]);
+
+  // Filter candidates based on selected filters
+  const allFilteredCandidates = useMemo(() => {
+    return allCandidatesFromStages.filter(candidate => {
+      // Search query filter
+      if (searchQuery && !`${candidate.firstName} ${candidate.lastName}`.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return false;
+      }
+
+      // Location filter
+      if (locationFilter !== 'all' && candidate.location !== locationFilter) {
+        return false;
+      }
+
+      // Experience filter
+      if (candidate.experience !== undefined && candidate.experience < experienceRange[0]) {
+        return false;
+      }
+
+      // Status filter
+      if (statusFilter !== 'all' && candidate.status !== statusFilter) {
+        return false;
+      }
+
+      // Skills/Career level filter
+      if (skillsFilter !== 'all' && candidate.skills !== skillsFilter) {
+        return false;
+      }
+
+      // Score filter
+      if (candidate.score < scoreRange[0]) {
+        return false;
+      }
+
+      // Assessment score filter
+      const assessmentScore = calculateAssessmentScore(candidate.skillScores);
+      if (assessmentScore < assessmentScoreRange[0]) {
+        return false;
+      }
+
+      // Hiring stage filter
+      if (hiringStageFilter.length > 0 && !hiringStageFilter.includes(candidate.hiringStage)) {
+        return false;
+      }
+
+      // Subfields filter
+      if (selectedSubfields.length > 0 && !selectedSubfields.some(subfield =>
+        candidate.subfields?.includes(subfield))) {
+        return false;
+      }
+
+      // Software filter
+      if (selectedSoftware.length > 0 && !selectedSoftware.some(software =>
+        candidate.software?.includes(software))) {
+        return false;
+      }
+
+      // Certifications filter
+      if (selectedCertifications.length > 0 && !selectedCertifications.some(cert =>
+        candidate.certifications?.includes(cert))) {
+        return false;
+      }
+
+      // Industries filter
+      if (selectedIndustries.length > 0 && !selectedIndustries.some(industry =>
+        candidate.industries?.includes(industry))) {
+        return false;
+      }
+
+      // Visa status filter
+      if (selectedVisaStatus.length > 0 && !selectedVisaStatus.includes(candidate.visaStatus || '')) {
+        return false;
+      }
+
+      return true;
+    });
+  }, [
+    allCandidatesFromStages,
+    searchQuery,
+    locationFilter,
+    experienceRange,
+    statusFilter,
+    skillsFilter,
+    scoreRange,
+    assessmentScoreRange,
+    hiringStageFilter,
+    selectedSubfields,
+    selectedSoftware,
+    selectedCertifications,
+    selectedIndustries,
+    selectedVisaStatus
+  ]);
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
