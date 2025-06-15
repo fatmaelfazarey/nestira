@@ -33,6 +33,7 @@ export const translations = {
     companyInformation: 'Company Information',
     platformPreferences: 'Platform Preferences',
     loginAndSecurity: 'Login & Security',
+    integrations: 'Integrations',
     
     // User Profile
     individualRecruiter: "I'm hiring as an individual recruiter",
@@ -45,6 +46,11 @@ export const translations = {
     profilePicture: 'Profile Picture',
     uploadPicture: 'Upload Picture',
     
+    // Integrations
+    googleMeetDesc: 'Connect to schedule and manage video interviews.',
+    googleCalendarDesc: 'Sync interview schedules with your calendar.',
+    gmailDesc: 'Integrate your email for seamless communication.',
+
     // Platform Preferences
     languagePreference: 'Language Preference',
     interfaceMode: 'Interface Mode',
@@ -84,6 +90,8 @@ export const translations = {
     delete: 'Delete',
     add: 'Add',
     remove: 'Remove',
+    connect: 'Connect',
+    disconnect: 'Disconnect',
   },
   
   arabic: {
@@ -119,6 +127,7 @@ export const translations = {
     companyInformation: 'معلومات الشركة',
     platformPreferences: 'تفضيلات المنصة',
     loginAndSecurity: 'تسجيل الدخول والأمان',
+    integrations: 'التكاملات',
     
     // User Profile
     individualRecruiter: 'أقوم بالتوظيف كمُوظِف فردي',
@@ -130,6 +139,11 @@ export const translations = {
     location: 'الموقع',
     profilePicture: 'صورة الملف الشخصي',
     uploadPicture: 'رفع صورة',
+
+    // Integrations
+    googleMeetDesc: 'اتصل لجدولة وإدارة مقابلات الفيديو.',
+    googleCalendarDesc: 'مزامنة جداول المقابلات مع تقويمك.',
+    gmailDesc: 'دمج بريدك الإلكتروني لتواصل سلس.',
     
     // Platform Preferences
     languagePreference: 'تفضيل اللغة',
@@ -170,6 +184,8 @@ export const translations = {
     delete: 'حذف',
     add: 'إضافة',
     remove: 'إزالة',
+    connect: 'اتصال',
+    disconnect: 'قطع الاتصال',
   },
 };
 

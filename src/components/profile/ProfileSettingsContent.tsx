@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Save, User, Building2, Shield } from 'lucide-react';
+import { ArrowLeft, Save, User, Building2, Shield, Puzzle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { LoginSecuritySection } from './LoginSecuritySection';
 import { UserProfileSection } from './UserProfileSection';
@@ -10,6 +10,7 @@ import { CompanyInfoSection } from './CompanyInfoSection';
 import { NavigationLinksSection } from './NavigationLinksSection';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { IntegrationsSection } from './IntegrationsSection';
 
 export function ProfileSettingsContent() {
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -96,6 +97,19 @@ export function ProfileSettingsContent() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Integrations */}
+            <Card className="shadow-md bg-purple-50/30 backdrop-blur-sm border-l-4 border-purple-600">
+              <CardHeader className="border-b border-gray-100 bg-purple-50/50">
+                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                  <Puzzle className="w-5 h-5 text-purple-600" />
+                  {t('integrations')}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <IntegrationsSection onChange={handleFieldChange} />
+              </CardContent>
+            </Card>
 
             {/* Login & Security - Moved to the end */}
             <Card className="shadow-md bg-orange-50/30 backdrop-blur-sm border-l-4 border-orange-600">
