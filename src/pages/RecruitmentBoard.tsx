@@ -13,6 +13,7 @@ import { Plus, Filter, MoreVertical, FileText, Users, Calendar, Award, UserCheck
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useState, useMemo } from 'react';
+import { FunnelFilters } from '@/components/FunnelFilters';
 
 interface Candidate {
   id: number;
@@ -448,6 +449,13 @@ const RecruitmentBoard = () => {
     setHiringStageFilter([]);
   };
 
+  const resetFunnelFilters = () => {
+    setSelectedJob('all');
+    setScoreRange([0]);
+    setAssessmentScoreRange([0]);
+    setHiringStageFilter([]);
+  };
+
   const HiringStageBadge = ({ stageTitle }: { stageTitle: string }) => {
     let className = 'text-xs font-semibold h-auto py-1 px-2 border';
     let text = stageTitle.toUpperCase();
@@ -548,6 +556,21 @@ const RecruitmentBoard = () => {
               })}
             </div>
           </Card>
+
+          {/* Funnel Filters */}
+          <FunnelFilters
+            jobTitles={jobTitles}
+            selectedJob={selectedJob}
+            setSelectedJob={setSelectedJob}
+            scoreRange={scoreRange}
+            setScoreRange={setScoreRange}
+            assessmentScoreRange={assessmentScoreRange}
+            setAssessmentScoreRange={setAssessmentScoreRange}
+            hiringStages={hiringStages}
+            hiringStageFilter={hiringStageFilter}
+            setHiringStageFilter={setHiringStageFilter}
+            resetFunnelFilters={resetFunnelFilters}
+          />
 
           {/* Recruitment Table */}
           <Card>
