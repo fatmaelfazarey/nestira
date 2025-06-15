@@ -20,8 +20,8 @@ const NewsletterSubscription = () => {
 
     return (
         <div className="p-6 rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
-             <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/20 rounded-full opacity-50"></div>
-             <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/20 rounded-full opacity-50"></div>
+             <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
+             <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/30 rounded-full opacity-60"></div>
              <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-3">
                     <div className="bg-accent/20 p-2 rounded-lg">
@@ -39,7 +39,7 @@ const NewsletterSubscription = () => {
                         placeholder="Your email address" 
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="flex-grow bg-white/10 border-white/20 placeholder:text-slate-400 focus:bg-white/10 ring-offset-primary focus:ring-accent text-base"
+                        className="flex-grow bg-white/20 border-white/30 placeholder:text-slate-400 focus:bg-white/20 ring-offset-primary focus:ring-accent text-base"
                         aria-label="Email for newsletter"
                     />
                     <Button type="submit" variant="default" className="bg-accent text-accent-foreground hover:bg-accent/90 shrink-0">Subscribe</Button>
