@@ -187,14 +187,14 @@ export function AppSidebar() {
         </SidebarContent>
 
         <SidebarFooter className="p-6 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-slate-50">
-          <div className="mb-6 p-4 rounded-lg bg-gradient-to-br from-accent to-orange-600 text-white shadow-lg text-center">
+          <div className="mb-6 p-4 rounded-lg bg-gradient-to-br from-green-500 to-green-700 text-white shadow-lg text-center">
             <h4 className="font-semibold mb-2 text-sm">
               🤝 Know someone hiring? Send them our way.
             </h4>
-            <p className="text-xs text-orange-100 mb-3">
+            <p className="text-xs text-green-100 mb-3">
               We’ll handle the hiring. You get the thank-you (in cash). Perfect for recruiters, HR consultants, and team leads.
             </p>
-            <Button size="sm" className="w-full bg-white text-orange-600 hover:bg-white/90 font-semibold">
+            <Button size="sm" className="w-full bg-white text-green-700 hover:bg-white/90 font-semibold">
                 Refer & Earn
             </Button>
           </div>
