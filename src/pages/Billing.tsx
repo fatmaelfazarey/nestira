@@ -58,31 +58,6 @@ const Billing = () => {
           <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>Current Plan</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h3 className="text-2xl font-bold">{currentPlan.name}</h3>
-                    <p className="text-gray-600">
-                      {currentPlan.price}/{currentPlan.period}
-                    </p>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800">Active</Badge>
-                </div>
-                <ul className="space-y-2">
-                  {currentPlan.features.map((feature, index) => (
-                    <li key={index} className="flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-green-600" />
-                      <span className="text-sm">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
                 <CardTitle>Usage This Month</CardTitle>
               </CardHeader>
               <CardContent>
@@ -103,6 +78,31 @@ const Billing = () => {
                     <div className="text-xs text-gray-500">Unlimited</div>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Current Plan</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 className="text-2xl font-bold">{currentPlan.name}</h3>
+                    <p className="text-gray-600">
+                      {currentPlan.price}/{currentPlan.period}
+                    </p>
+                  </div>
+                  <Badge className="bg-green-100 text-green-800">Active</Badge>
+                </div>
+                <ul className="space-y-2">
+                  {currentPlan.features.map((feature, index) => (
+                    <li key={index} className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
             </Card>
           </div>
