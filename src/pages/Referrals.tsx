@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -81,6 +82,7 @@ const Referrals = () => {
                     Send Invite
                   </Button>
                 </div>
+              </div>
               
               <div className="border-t pt-4">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
