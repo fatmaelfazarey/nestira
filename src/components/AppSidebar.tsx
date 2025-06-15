@@ -1,4 +1,3 @@
-
 import {
   Grid2X2,
   Inbox,
@@ -188,14 +187,14 @@ export function AppSidebar() {
         </SidebarContent>
 
         <SidebarFooter className="p-6 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-slate-50">
-          <div className="mb-6 p-4 rounded-lg bg-white shadow-sm border border-gray-200/80 text-center">
-            <h4 className="font-semibold mb-2 text-sm text-gray-800">
+          <div className="mb-6 p-4 rounded-lg bg-gradient-to-br from-accent to-orange-600 text-white shadow-lg text-center">
+            <h4 className="font-semibold mb-2 text-sm">
               🤝 Know someone hiring?
             </h4>
-            <p className="text-xs text-gray-600 mb-3">
+            <p className="text-xs text-orange-100 mb-3">
               Help them out — and get rewarded. Whether it’s a company you trust or a manager in your network, send them our way. We’ll handle the hiring — you get the thank-you (in cash). Perfect for recruiters, HR consultants, and team leads.
             </p>
-            <Button variant="outline" size="sm" className="w-full text-accent border-accent/50 hover:bg-accent/10 hover:text-accent font-semibold">
+            <Button size="sm" className="w-full bg-white text-orange-600 hover:bg-white/90 font-semibold">
                 Refer & Earn
             </Button>
           </div>
