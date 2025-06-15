@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Bot, Send, User, HelpCircle, Rocket, Users, CreditCard, ClipboardList } from 'lucide-react';
+import { Bot, Send, User, HelpCircle, Rocket, Users, CreditCard, ClipboardList, RotateCcw } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -24,11 +24,13 @@ interface FAQCategory {
   faqs: FAQ[];
 }
 
+const WELCOME_TEXT = "Hi! I'm Nestira's Help Assistant. I can answer questions about using the platform, billing, candidate management, and more. You can ask me anything or click on the FAQs below for quick answers!";
+
 const HelpCenterBot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
-      text: "Hi! I'm Nestira's Help Assistant. I can answer questions about using the platform, billing, candidate management, and more. You can ask me anything or click on the FAQs below for quick answers!",
+      text: WELCOME_TEXT,
       isBot: true,
       timestamp: new Date()
     }
@@ -99,6 +101,17 @@ const HelpCenterBot = () => {
       ]
     }
   ];
+
+  const handleReset = () => {
+    setMessages([
+      {
+        id: `bot-${Date.now()}`,
+        text: WELCOME_TEXT,
+        isBot: true,
+        timestamp: new Date()
+      }
+    ]);
+  };
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -193,17 +206,22 @@ const HelpCenterBot = () => {
       <div className="relative z-0">
         <Card className="h-full flex flex-col">
           <CardHeader className="flex-shrink-0 border-b bg-gradient-to-r from-primary to-slate-800 text-white">
-            <CardTitle className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <Bot className="w-6 h-6 text-white" />
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
+                  <Bot className="w-6 h-6 text-white" />
+                </div>
+                <span className="font-bold text-lg">Nestira Help Assistant</span>
               </div>
-              <span className="font-bold text-lg">Nestira Help Assistant</span>
+              <Button variant="ghost" size="icon" onClick={handleReset} className="text-white hover:bg-white/20 hover:text-white">
+                <RotateCcw className="w-5 h-5" />
+              </Button>
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 flex flex-col p-0 relative">
             {/* Chat Messages Area */}
-            <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
-              <div className="space-y-4 pb-4">
+            <ScrollArea className="flex-1" ref={scrollAreaRef}>
+              <div className="p-4 space-y-4 pb-24">
                 {messages.map((message) => (
                   <div
                     key={message.id}
