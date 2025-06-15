@@ -134,40 +134,18 @@ const RecruitmentBoard = () => {
       ]
     },
     {
-      id: 'rejected',
-      title: 'Rejected',
-      color: 'border-red-200',
-      bgColor: 'bg-red-50/30',
-      candidates: [
-        { 
-          id: 3, 
-          firstName: 'Heath', 
-          lastName: 'Winslet', 
-          flag: '🇸🇦', 
-          score: 0,
-          isLocked: false,
-          location: 'Saudi Arabia',
-          experience: 7,
-          status: 'Not Available',
-          skills: 'Senior-Level',
-          skillScores: { accounting: 0, negotiation: 0, communication: 0, timeManagement: 0, cultureFit: 82 },
-          detailedStatus: { text: 'Disqualified', color: 'red' },
-        },
-        { 
-          id: 4, 
-          firstName: 'Johnny', 
-          lastName: 'Sinatra', 
-          flag: '🇵🇰', 
-          score: 0, 
-          isLocked: true,
-          location: 'Kuwait',
-          experience: 4,
-          status: 'Not Available',
-          skills: 'Mid-Level',
-          skillScores: { accounting: 29, negotiation: 24, communication: 25, timeManagement: 33, cultureFit: 82 },
-          detailedStatus: { text: 'Assessed', color: 'green' },
-        },
-      ]
+      id: 'assessed',
+      title: 'Assessed',
+      color: 'border-yellow-200',
+      bgColor: 'bg-yellow-50/30',
+      candidates: []
+    },
+    {
+      id: 'invited',
+      title: 'Invited',
+      color: 'border-orange-200',
+      bgColor: 'bg-orange-50/30',
+      candidates: []
     },
     {
       id: 'shortlisted',
@@ -238,6 +216,49 @@ const RecruitmentBoard = () => {
       title: 'Hired',
       color: 'border-green-200',
       bgColor: 'bg-green-50/30',
+      candidates: []
+    },
+    {
+      id: 'rejected',
+      title: 'Rejected',
+      color: 'border-red-200',
+      bgColor: 'bg-red-50/30',
+      candidates: [
+        { 
+          id: 3, 
+          firstName: 'Heath', 
+          lastName: 'Winslet', 
+          flag: '🇸🇦', 
+          score: 0,
+          isLocked: false,
+          location: 'Saudi Arabia',
+          experience: 7,
+          status: 'Not Available',
+          skills: 'Senior-Level',
+          skillScores: { accounting: 0, negotiation: 0, communication: 0, timeManagement: 0, cultureFit: 82 },
+          detailedStatus: { text: 'Disqualified', color: 'red' },
+        },
+        { 
+          id: 4, 
+          firstName: 'Johnny', 
+          lastName: 'Sinatra', 
+          flag: '🇵🇰', 
+          score: 0, 
+          isLocked: true,
+          location: 'Kuwait',
+          experience: 4,
+          status: 'Not Available',
+          skills: 'Mid-Level',
+          skillScores: { accounting: 29, negotiation: 24, communication: 25, timeManagement: 33, cultureFit: 82 },
+          detailedStatus: { text: 'Assessed', color: 'green' },
+        },
+      ]
+    },
+    {
+      id: 'disqualified',
+      title: 'Disqualified',
+      color: 'border-red-400',
+      bgColor: 'bg-red-100/30',
       candidates: []
     }
   ]);
