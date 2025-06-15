@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -10,6 +9,12 @@ import { Clock, Download, FileText, Filter, X } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const allAvailableTopics = [
   "AI in Finance",
@@ -181,69 +186,80 @@ const BlogReports = () => {
         </div>
 
         {/* Filters */}
-        <div className="p-4 space-y-4 rounded-lg border bg-gray-50 shadow-sm">
-          <div className="flex flex-wrap items-center gap-4">
-            <h3 className="text-md font-semibold flex items-center gap-2"><Filter className="w-4 h-4" /> Filters</h3>
-            {isFiltered && (
-                <Button variant="ghost" size="sm" className="h-auto px-2 py-1 text-xs" onClick={() => setSearchParams({}, { replace: true })}>
-                  <X className="w-3 h-3 mr-1" />
-                  Clear Filters
-                </Button>
-            )}
-          </div>
-          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Label htmlFor="trending-switch" className="font-medium whitespace-nowrap">🔥 Trending</Label>
-              <Switch 
-                id="trending-switch" 
-                checked={trendingFilter} 
-                onCheckedChange={(checked) => updateSearchParams('trending', checked ? 'true' : null)}
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label className="font-medium">I am a...</Label>
-            <ToggleGroup
-              type="single"
-              variant="outline"
-              value={roleFilter}
-              onValueChange={(value) => updateSearchParams('role', value === 'Show All' ? null : value)}
-              className="justify-start flex-wrap"
-            >
-              {audiences.map(audience => (
-                <ToggleGroupItem key={audience} value={audience} className="text-xs sm:text-sm">{audience}</ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
-          <div className="space-y-2">
-            <Label className="font-medium">Content Type</Label>
-            <ToggleGroup
-              type="multiple"
-              variant="outline"
-              value={typeFilter}
-              onValueChange={(value) => updateSearchParams('types', value.join(','))}
-              className="justify-start flex-wrap"
-            >
-              {contentTypes.map(type => (
-                <ToggleGroupItem key={type} value={type} className="text-xs sm:text-sm">{typeDisplayNames[type]}</ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
-          <div className="space-y-2">
-             <Label className="font-medium">Topic Focus</Label>
-             <ToggleGroup
-                type="multiple"
-                variant="outline"
-                value={topicFilter}
-                onValueChange={(value) => updateSearchParams('topics', value.join(','))}
-                className="justify-start flex-wrap"
-              >
-                {allTopics.map(topic => (
-                  <ToggleGroupItem key={topic} value={topic} className="text-xs sm:text-sm">{topic}</ToggleGroupItem>
-                ))}
-              </ToggleGroup>
-          </div>
-        </div>
+        <Accordion type="single" collapsible defaultValue="item-1" className="w-full">
+          <AccordionItem value="item-1" className="border bg-white border-orange-400 rounded-lg shadow-sm">
+            <AccordionTrigger className="p-4 hover:no-underline">
+              <div className="flex items-center gap-3">
+                <div className="bg-orange-100 p-2 rounded-lg">
+                  <Filter className="w-5 h-5 text-orange-600" />
+                </div>
+                <span className="font-semibold text-gray-800">Filters & Sorting</span>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent>
+              <div className="px-4 pb-4 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex items-center gap-2">
+                    <Label htmlFor="trending-switch" className="font-medium whitespace-nowrap">🔥 Trending</Label>
+                    <Switch 
+                      id="trending-switch" 
+                      checked={trendingFilter} 
+                      onCheckedChange={(checked) => updateSearchParams('trending', checked ? 'true' : null)}
+                    />
+                  </div>
+                  {isFiltered && (
+                      <Button variant="ghost" size="sm" className="h-auto px-2 py-1 text-xs self-end sm:self-center" onClick={() => setSearchParams({}, { replace: true })}>
+                        <X className="w-3 h-3 mr-1" />
+                        Clear Filters
+                      </Button>
+                  )}
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-medium">I am a...</Label>
+                  <ToggleGroup
+                    type="single"
+                    variant="outline"
+                    value={roleFilter}
+                    onValueChange={(value) => updateSearchParams('role', value === 'Show All' ? null : value)}
+                    className="justify-start flex-wrap"
+                  >
+                    {audiences.map(audience => (
+                      <ToggleGroupItem key={audience} value={audience} className="text-xs sm:text-sm">{audience}</ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-medium">Content Type</Label>
+                  <ToggleGroup
+                    type="multiple"
+                    variant="outline"
+                    value={typeFilter}
+                    onValueChange={(value) => updateSearchParams('types', value.join(','))}
+                    className="justify-start flex-wrap"
+                  >
+                    {contentTypes.map(type => (
+                      <ToggleGroupItem key={type} value={type} className="text-xs sm:text-sm">{typeDisplayNames[type]}</ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
+                </div>
+                <div className="space-y-2">
+                  <Label className="font-medium">Topic Focus</Label>
+                  <ToggleGroup
+                      type="multiple"
+                      variant="outline"
+                      value={topicFilter}
+                      onValueChange={(value) => updateSearchParams('topics', value.join(','))}
+                      className="justify-start flex-wrap"
+                    >
+                      {allTopics.map(topic => (
+                        <ToggleGroupItem key={topic} value={topic} className="text-xs sm:text-sm">{topic}</ToggleGroupItem>
+                      ))}
+                    </ToggleGroup>
+                </div>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-12 pt-6">
           {/* Left Column: Articles */}
