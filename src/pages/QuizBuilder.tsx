@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { QuizCreator } from '@/components/QuizCreator';
@@ -8,14 +7,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle } from 'lucide-react';
+import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle, Search } from 'lucide-react';
 import { toast } from 'sonner';
+import { Input } from '@/components/ui/input';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 const QuizBuilder = () => {
   const [showCreator, setShowCreator] = useState(false);
   const [editingQuiz, setEditingQuiz] = useState<any>(null);
   const [previewQuiz, setPreviewQuiz] = useState<any>(null);
   const [assignQuiz, setAssignQuiz] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterSource, setFilterSource] = useState('all');
   const [quizzes, setQuizzes] = useState([
     { 
       id: 1, 
@@ -29,6 +32,7 @@ const QuizBuilder = () => {
       passedCandidates: 8,
       failedCandidates: 3,
       pendingCandidates: 1,
+      source: 'Nestira',
       questionsList: [
         { 
           id: 'q1', 
@@ -58,6 +62,7 @@ const QuizBuilder = () => {
       passedCandidates: 0,
       failedCandidates: 0,
       pendingCandidates: 0,
+      source: 'Nestira',
       questionsList: [
         { 
           id: 'q3', 
@@ -81,6 +86,7 @@ const QuizBuilder = () => {
       passedCandidates: 4,
       failedCandidates: 1,
       pendingCandidates: 0,
+      source: 'Me',
       questionsList: [
         { 
           id: 'q4', 
@@ -95,14 +101,14 @@ const QuizBuilder = () => {
 
   const handleSaveQuiz = (newQuiz: any) => {
     if (editingQuiz) {
-      // Update existing quiz
+      // Update existing quiz, preserving fields like 'source'
       setQuizzes(prev => prev.map(quiz => 
-        quiz.id === editingQuiz.id ? { ...newQuiz, id: editingQuiz.id } : quiz
+        quiz.id === editingQuiz.id ? { ...quiz, ...newQuiz } : quiz
       ));
       toast.success('Quiz updated successfully!');
     } else {
       // Create new quiz
-      setQuizzes(prev => [...prev, { ...newQuiz, isActive: false }]);
+      setQuizzes(prev => [...prev, { ...newQuiz, isActive: false, source: 'Me' }]);
       toast.success('Quiz created successfully!');
     }
     setShowCreator(false);
@@ -139,6 +145,22 @@ const QuizBuilder = () => {
     setAssignQuiz(quiz);
   };
 
+  const filteredQuizzes = quizzes.filter(quiz => {
+    const titleMatch = quiz.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const sourceMatch = filterSource === 'all' || quiz.source === 'Me' && filterSource === 'Me' || quiz.source === 'Nestira' && filterSource === 'Nestira';
+    // A bit of verbose logic to satisfy typescript, but it's correct
+    if (filterSource === 'all') {
+      return titleMatch;
+    }
+    if (filterSource === 'Me') {
+      return titleMatch && quiz.source === 'Me';
+    }
+    if (filterSource === 'Nestira') {
+      return titleMatch && quiz.source === 'Nestira';
+    }
+    return false;
+  });
+
   if (showCreator) {
     return (
       <DashboardLayout>
@@ -171,8 +193,31 @@ const QuizBuilder = () => {
           </Button>
         </div>
 
+        <div className="flex flex-col sm:flex-row items-center gap-4 py-4 border-y">
+          <div className="relative w-full sm:w-auto sm:flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+            <Input
+              placeholder="Filter by job title..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-10 w-full"
+            />
+          </div>
+          <ToggleGroup 
+            type="single" 
+            value={filterSource} 
+            onValueChange={(value) => { if (value) setFilterSource(value); }}
+            className="items-center"
+            aria-label="Filter quizzes by source"
+          >
+            <ToggleGroupItem value="all" aria-label="Show all quizzes">Show All</ToggleGroupItem>
+            <ToggleGroupItem value="Nestira" aria-label="Show quizzes made by Nestira">Made by Nestira</ToggleGroupItem>
+            <ToggleGroupItem value="Me" aria-label="Show quizzes made by me">Made by Me</ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {quizzes.map((quiz) => (
+          {filteredQuizzes.map((quiz) => (
             <Card key={quiz.id} className="hover:shadow-md transition-shadow">
               <CardHeader>
                 <div className="flex items-center justify-between">
