@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
@@ -112,30 +111,6 @@ const BlogReports = () => {
             <h1 className="text-3xl font-bold text-gray-900">Blog & Reports</h1>
             <p className="text-gray-600">Finance hiring insights, trends, and resources</p>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <BookOpen className="w-8 h-8 text-accent mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{articles.length}</div>
-              <div className="text-sm text-gray-600">Articles Published</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">12K</div>
-              <div className="text-sm text-gray-600">Monthly Readers</div>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-6 text-center">
-              <FileText className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{reports.length}</div>
-              <div className="text-sm text-gray-600">Research Reports</div>
-            </CardContent>
-          </Card>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-12 pt-6">
