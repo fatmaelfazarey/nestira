@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -94,7 +93,7 @@ const Billing = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4 mb-4 p-4 rounded-lg bg-white/60 border border-black/5 shadow-sm">
-                <CreditCard className="w-12 h-12 text-blue-600" />
+                <CreditCard className="w-8 h-8 text-blue-600" />
                 <div>
                   <p className="font-semibold text-lg text-gray-800">•••• •••• •••• 4242</p>
                   <p className="text-sm text-gray-600">Expires 12/25</p>
