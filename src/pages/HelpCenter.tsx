@@ -5,11 +5,11 @@ import HelpCenterBot from '@/components/HelpCenterBot';
 const HelpCenter = () => {
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="p-8 space-y-6">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Help Center</h1>
-            <p className="text-gray-600">Get help and support for your hiring needs</p>
+            <p className="text-gray-600 mt-2">Get help and support for your hiring needs</p>
           </div>
         </div>
 

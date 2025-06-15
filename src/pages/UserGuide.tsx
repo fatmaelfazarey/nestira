@@ -149,7 +149,7 @@ const UserGuide = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="p-8 space-y-8">
         {/* Header */}
         <div className="flex flex-col space-y-4">
           <div>
