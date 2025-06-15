@@ -6,7 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { Plus, Filter, MoreVertical, FileText, Users, Calendar, Award, UserCheck, UserX, UserMinus, Star } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import { Plus, Filter, MoreVertical, FileText, Users, Calendar, Award, UserCheck, UserX, UserMinus, Star, Info } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useState, useMemo } from 'react';
@@ -416,6 +418,14 @@ const RecruitmentBoard = () => {
     );
   };
 
+  const calculateAssessmentScore = (skillScores: Candidate['skillScores']) => {
+    const scores = Object.values(skillScores);
+    const validScores = scores.filter(s => s > 0);
+    if (validScores.length === 0) return 0;
+    const sum = validScores.reduce((a, b) => a + b, 0);
+    return Math.round(sum / validScores.length);
+  };
+
   const handleStageChange = (candidateId: number, newStageId: string) => {
     setStages(prevStages => {
       const nextStages = prevStages.map(stage => ({ ...stage, candidates: [...stage.candidates] }));
@@ -443,201 +453,259 @@ const RecruitmentBoard = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Recruitment Funnel</h1>
-            <p className="text-gray-600">Nestira Finance - Manage your hiring pipeline</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Select value={selectedJob} onValueChange={setSelectedJob}>
-              <SelectTrigger className="w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="financial-analyst">Financial Analyst</SelectItem>
-                <SelectItem value="senior-accountant">Senior Accountant</SelectItem>
-                <SelectItem value="investment-manager">Investment Manager</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button variant="outline" className="flex items-center gap-2" onClick={() => setIsFilterOpen(true)}>
-              <Filter className="w-4 h-4" />
-              Filter
-            </Button>
-            <Button className="bg-accent hover:bg-accent/90 text-white">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Candidate
-            </Button>
-          </div>
-        </div>
-
-        {/* Funnel Tracker */}
-        <Card className="p-4">
-          <div className="grid grid-cols-4 lg:grid-cols-8 gap-4">
-            {trackerStages.map((stage) => {
-              const IconComponent = stage.icon;
-              return (
-                <div key={stage.id} className={`${stage.bgColor} rounded-lg p-3 text-center`}>
-                  <IconComponent className={`w-5 h-5 mx-auto mb-1 ${stage.color}`} />
-                  <p className="text-xs font-medium text-gray-700">{stage.name}</p>
-                  <p className={`text-lg font-bold ${stage.color}`}>{stage.count}</p>
-                </div>
-              );
-            })}
-          </div>
-        </Card>
-
-        {/* Recruitment Table */}
-        <Card>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-gray-50 hover:bg-gray-50">
-                    <TableHead className="w-[50px] px-4">
-                      <Checkbox
-                        checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
-                        onCheckedChange={handleSelectAll}
-                      />
-                    </TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Avg. % score</TableHead>
-                    <TableHead>Account ...</TableHead>
-                    <TableHead>Negotiat...</TableHead>
-                    <TableHead>Communic...</TableHead>
-                    <TableHead>Time man...</TableHead>
-                    <TableHead>Culture ...</TableHead>
-                    <TableHead>Hiring stage</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="w-[50px]"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {allFilteredCandidates.map(candidate => {
-                    const currentStage = stages.find(s => s.title === candidate.hiringStage);
-                    const currentStageId = currentStage ? currentStage.id : '';
-
-                    return (
-                    <TableRow key={candidate.id} data-state={selectedCandidates.has(candidate.id) ? "selected" : ""}>
-                      <TableCell className="px-4">
-                        <Checkbox
-                          checked={selectedCandidates.has(candidate.id)}
-                          onCheckedChange={(checked) => handleSelectOne(candidate.id, !!checked)}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar className="h-8 w-8">
-                            <AvatarImage src={candidate.profilePhoto} />
-                            <AvatarFallback>{candidate.firstName[0]}{candidate.lastName[0]}</AvatarFallback>
-                          </Avatar>
-                          <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-semibold">{candidate.score > 0 ? `${candidate.score}%` : '-'}</TableCell>
-                      <TableCell>{candidate.skillScores?.accounting > 0 ? `${candidate.skillScores.accounting}%` : '-'}</TableCell>
-                      <TableCell>{candidate.skillScores?.negotiation > 0 ? `${candidate.skillScores.negotiation}%` : '-'}</TableCell>
-                      <TableCell>{candidate.skillScores?.communication > 0 ? `${candidate.skillScores.communication}%` : '-'}</TableCell>
-                      <TableCell>{candidate.skillScores?.timeManagement > 0 ? `${candidate.skillScores.timeManagement}%` : '-'}</TableCell>
-                      <TableCell>{candidate.skillScores?.cultureFit > 0 ? `${candidate.skillScores.cultureFit}%` : '-'}</TableCell>
-                      <TableCell>
-                        <Select
-                          value={currentStageId}
-                          onValueChange={(newStageId) => handleStageChange(candidate.id, newStageId)}
-                        >
-                          <SelectTrigger className="w-[120px]">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {stages.map(stage => (
-                              <SelectItem key={stage.id} value={stage.id}>
-                                {stage.title}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </TableCell>
-                      <TableCell>
-                         <div className="flex items-center gap-2 text-sm">
-                            <span className={`w-2 h-2 rounded-full bg-${candidate.detailedStatus.color}-500`}></span>
-                            <span className="whitespace-nowrap">{candidate.detailedStatus.text}</span>
-                         </div>
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem>View profile</DropdownMenuItem>
-                            <DropdownMenuItem>Move to stage</DropdownMenuItem>
-                            <DropdownMenuItem className="text-red-600">Reject</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  )})}
-                </TableBody>
-              </Table>
+      <TooltipProvider>
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Recruitment Funnel</h1>
+              <p className="text-gray-600">Nestira Finance - Manage your hiring pipeline</p>
             </div>
-          </CardContent>
-        </Card>
+            <div className="flex items-center gap-2">
+              <Select value={selectedJob} onValueChange={setSelectedJob}>
+                <SelectTrigger className="w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="financial-analyst">Financial Analyst</SelectItem>
+                  <SelectItem value="senior-accountant">Senior Accountant</SelectItem>
+                  <SelectItem value="investment-manager">Investment Manager</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" className="flex items-center gap-2" onClick={() => setIsFilterOpen(true)}>
+                <Filter className="w-4 h-4" />
+                Filter
+              </Button>
+              <Button className="bg-accent hover:bg-accent/90 text-white">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Candidate
+              </Button>
+            </div>
+          </div>
 
-        {/* Filter Sidebar */}
-        <FilterSidebar
-          isOpen={isFilterOpen}
-          onClose={() => setIsFilterOpen(false)}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          experienceRange={experienceRange}
-          setExperienceRange={setExperienceRange}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          skillsFilter={skillsFilter}
-          setSkillsFilter={setSkillsFilter}
-          scoreRange={scoreRange}
-          setScoreRange={setScoreRange}
-          selectedSubfields={selectedSubfields}
-          setSelectedSubfields={setSelectedSubfields}
-          selectedSoftware={selectedSoftware}
-          setSelectedSoftware={setSelectedSoftware}
-          erpVersion={erpVersion}
-          setErpVersion={setErpVersion}
-          selectedCertifications={selectedCertifications}
-          setSelectedCertifications={setSelectedCertifications}
-          selectedIndustries={selectedIndustries}
-          setSelectedIndustries={setSelectedIndustries}
-          selectedVisaStatus={selectedVisaStatus}
-          setSelectedVisaStatus={setSelectedVisaStatus}
-          employmentType={employmentType}
-          setEmploymentType={setEmploymentType}
-          workMode={workMode}
-          setWorkMode={setWorkMode}
-          availability={availability}
-          setAvailability={setAvailability}
-          languageProficiency={languageProficiency}
-          setLanguageProficiency={setLanguageProficiency}
-          genderFilter={genderFilter}
-          setGenderFilter={setGenderFilter}
-          educationLevel={educationLevel}
-          setEducationLevel={setEducationLevel}
-          selectedSpecialNeeds={selectedSpecialNeeds}
-          setSelectedSpecialNeeds={setSelectedSpecialNeeds}
-          cvCompleteness={cvCompleteness}
-          setCvCompleteness={setCvCompleteness}
-          academicExcellence={academicExcellence}
-          setAcademicExcellence={setAcademicExcellence}
-          selectedScreeningTags={selectedScreeningTags}
-          setSelectedScreeningTags={setSelectedScreeningTags}
-          resetAllFilters={resetAllFilters}
-          filteredCandidatesCount={filteredCandidatesCount}
-        />
-      </div>
+          {/* Funnel Tracker */}
+          <Card className="p-4">
+            <div className="grid grid-cols-4 lg:grid-cols-8 gap-4">
+              {trackerStages.map((stage) => {
+                const IconComponent = stage.icon;
+                return (
+                  <div key={stage.id} className={`${stage.bgColor} rounded-lg p-3 text-center`}>
+                    <IconComponent className={`w-5 h-5 mx-auto mb-1 ${stage.color}`} />
+                    <p className="text-xs font-medium text-gray-700">{stage.name}</p>
+                    <p className={`text-lg font-bold ${stage.color}`}>{stage.count}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
+          {/* Recruitment Table */}
+          <Card>
+            <CardContent className="p-0">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-50 hover:bg-gray-50">
+                      <TableHead className="w-[50px] px-4">
+                        <Checkbox
+                          checked={isAllSelected ? true : isIndeterminate ? 'indeterminate' : false}
+                          onCheckedChange={handleSelectAll}
+                        />
+                      </TableHead>
+                      <TableHead>Name</TableHead>
+                      <TableHead>
+                        <div className="flex items-center gap-1">
+                          % Nestira Insight Score
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Overall score based on Nestira's proprietary insights.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </TableHead>
+                      <TableHead>
+                        <div className="flex items-center gap-1">
+                          % Assessment Score
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Info className="h-4 w-4 text-gray-400 cursor-pointer" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Average score from skill assessments.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </TableHead>
+                      <TableHead>Hiring stage</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="w-[50px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {allFilteredCandidates.map(candidate => {
+                      const currentStage = stages.find(s => s.title === candidate.hiringStage);
+                      const currentStageId = currentStage ? currentStage.id : '';
+                      const assessmentScore = calculateAssessmentScore(candidate.skillScores);
+
+                      return (
+                      <TableRow key={candidate.id} data-state={selectedCandidates.has(candidate.id) ? "selected" : ""}>
+                        <TableCell className="px-4">
+                          <Checkbox
+                            checked={selectedCandidates.has(candidate.id)}
+                            onCheckedChange={(checked) => handleSelectOne(candidate.id, !!checked)}
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={candidate.profilePhoto} />
+                              <AvatarFallback>{candidate.firstName[0]}{candidate.lastName[0]}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button variant="link" className="font-semibold p-0 h-auto text-blue-600 hover:text-blue-800">
+                                {candidate.score > 0 ? `${candidate.score}%` : '-'}
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                              <div className="space-y-2">
+                                <h4 className="font-medium leading-none">Nestira Insight Score</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  This score is calculated based on our proprietary model, considering various factors for job success.
+                                </p>
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                        </TableCell>
+                        <TableCell>
+                           <Popover>
+                            <PopoverTrigger asChild>
+                               <Button variant="link" className="font-semibold p-0 h-auto text-blue-600 hover:text-blue-800">
+                                  {assessmentScore > 0 ? `${assessmentScore}%` : '-'}
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-80">
+                                <div className="space-y-2">
+                                  <h4 className="font-medium leading-none">Assessment Score Breakdown</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    This is the average of the individual skill scores.
+                                  </p>
+                                </div>
+                                <ul className="list-disc pl-5 mt-4 space-y-1 text-sm">
+                                  <li>Accounting: {candidate.skillScores.accounting}%</li>
+                                  <li>Negotiation: {candidate.skillScores.negotiation}%</li>
+                                  <li>Communication: {candidate.skillScores.communication}%</li>
+                                  <li>Time Management: {candidate.skillScores.timeManagement}%</li>
+                                  <li>Culture Fit: {candidate.skillScores.cultureFit}%</li>
+                                </ul>
+                            </PopoverContent>
+                          </Popover>
+                        </TableCell>
+                        <TableCell>
+                          <Select
+                            value={currentStageId}
+                            onValueChange={(newStageId) => handleStageChange(candidate.id, newStageId)}
+                          >
+                            <SelectTrigger className="w-[120px]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {stages.map(stage => (
+                                <SelectItem key={stage.id} value={stage.id}>
+                                  {stage.title}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </TableCell>
+                        <TableCell>
+                           <div className="flex items-center gap-2 text-sm">
+                              <span className={`w-2 h-2 rounded-full bg-${candidate.detailedStatus.color}-500`}></span>
+                              <span className="whitespace-nowrap">{candidate.detailedStatus.text}</span>
+                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon" className="h-8 w-8">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>View profile</DropdownMenuItem>
+                              <DropdownMenuItem>Move to stage</DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">Reject</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    )})}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Filter Sidebar */}
+          <FilterSidebar
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            experienceRange={experienceRange}
+            setExperienceRange={setExperienceRange}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            skillsFilter={skillsFilter}
+            setSkillsFilter={setSkillsFilter}
+            scoreRange={scoreRange}
+            setScoreRange={setScoreRange}
+            selectedSubfields={selectedSubfields}
+            setSelectedSubfields={setSelectedSubfields}
+            selectedSoftware={selectedSoftware}
+            setSelectedSoftware={setSelectedSoftware}
+            erpVersion={erpVersion}
+            setErpVersion={setErpVersion}
+            selectedCertifications={selectedCertifications}
+            setSelectedCertifications={setSelectedCertifications}
+            selectedIndustries={selectedIndustries}
+            setSelectedIndustries={setSelectedIndustries}
+            selectedVisaStatus={selectedVisaStatus}
+            setSelectedVisaStatus={setSelectedVisaStatus}
+            employmentType={employmentType}
+            setEmploymentType={setEmploymentType}
+            workMode={workMode}
+            setWorkMode={setWorkMode}
+            availability={availability}
+            setAvailability={setAvailability}
+            languageProficiency={languageProficiency}
+            setLanguageProficiency={setLanguageProficiency}
+            genderFilter={genderFilter}
+            setGenderFilter={setGenderFilter}
+            educationLevel={educationLevel}
+            setEducationLevel={setEducationLevel}
+            selectedSpecialNeeds={selectedSpecialNeeds}
+            setSelectedSpecialNeeds={setSelectedSpecialNeeds}
+            cvCompleteness={cvCompleteness}
+            setCvCompleteness={setCvCompleteness}
+            academicExcellence={academicExcellence}
+            setAcademicExcellence={setAcademicExcellence}
+            selectedScreeningTags={selectedScreeningTags}
+            setSelectedScreeningTags={setSelectedScreeningTags}
+            resetAllFilters={resetAllFilters}
+            filteredCandidatesCount={filteredCandidatesCount}
+          />
+        </div>
+      </TooltipProvider>
     </DashboardLayout>
   );
 };
