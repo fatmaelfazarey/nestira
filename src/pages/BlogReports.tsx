@@ -36,6 +36,11 @@ const topicColorMap: { [key: string]: string } = {
   "Survey Report": "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700/50",
 };
 
+const audienceColorMap: { [key: string]: string } = {
+  "Hiring Manager": "bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/50 dark:text-sky-300 dark:border-sky-700/50",
+  "Finance Candidate": "bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/50 dark:text-teal-300 dark:border-teal-700/50",
+};
+
 const BlogReports = () => {
   const thumbnail = "/lovable-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
   const allContent = [
@@ -290,7 +295,7 @@ const BlogReports = () => {
                       {(item as any).isTrending && <Badge className="bg-green-600 text-white border-transparent">🔥 Trending</Badge>}
                     </div>
                     <div className="absolute bottom-0 p-4">
-                        <Badge variant="secondary" className="mb-2">{item.targetAudience}</Badge>
+                        <Badge className={`mb-2 rounded-md ${audienceColorMap[item.targetAudience as keyof typeof audienceColorMap] || 'bg-gray-100 text-gray-800'}`}>{item.targetAudience}</Badge>
                         <CardTitle className="text-lg font-bold leading-snug text-white group-hover:text-amber-300 transition-colors">{item.title}</CardTitle>
                     </div>
                   </div>
