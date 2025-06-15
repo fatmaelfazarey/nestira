@@ -81,13 +81,13 @@ const HelpCenter = () => {
         <Separator className="my-8" />
         
         {/* Help Articles */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-primary" />
+        <Card className="shadow-sm border-l-4 border-l-purple-500 bg-purple-50/30">
+          <CardHeader className="pb-4 bg-purple-50/50">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-800">
+              <BookOpen className="w-5 h-5 text-purple-600" />
               Help Articles
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-purple-700">
               In-depth guides to help you master every feature of Nestira.
             </CardDescription>
           </CardHeader>
