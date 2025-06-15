@@ -65,8 +65,8 @@ const navigationSections = [
         badge: null
       },
       {
-        title: "Job Posts",
-        url: "/job-posts",
+        title: "Job Listings",
+        url: "/job-listings",
         icon: File,
         badge: null
       },

@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -9,7 +10,7 @@ import { JobPreviewModal } from '@/components/JobPreviewModal';
 import { JobAnalyticsModal } from '@/components/JobAnalyticsModal';
 import { useToast } from '@/hooks/use-toast';
 
-const JobPosts = () => {
+const JobListings = () => {
   const [jobs, setJobs] = useState([
     {
       id: 1,
@@ -171,7 +172,7 @@ const JobPosts = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Job Posts</h1>
+            <h1 className="text-3xl font-bold text-gray-900">Job Listings</h1>
             <p className="text-gray-600">Manage your job postings and track performance</p>
           </div>
           <Button 
@@ -302,4 +303,4 @@ const JobPosts = () => {
   );
 };
 
-export default JobPosts;
+export default JobListings;

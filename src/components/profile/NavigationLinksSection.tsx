@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -24,7 +25,7 @@ export function NavigationLinksSection() {
       title: 'My Jobs',
       description: 'Manage job postings',
       icon: Briefcase,
-      href: '/job-posts',
+      href: '/job-listings',
       color: 'text-green-600'
     },
     {
