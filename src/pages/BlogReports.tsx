@@ -1,3 +1,4 @@
+
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -180,7 +181,7 @@ const BlogReports = () => {
         </div>
 
         {/* Filters */}
-        <Card className="p-4 space-y-4">
+        <div className="p-4 space-y-4 rounded-lg border bg-gray-50 shadow-sm">
           <div className="flex flex-wrap items-center gap-4">
             <h3 className="text-md font-semibold flex items-center gap-2"><Filter className="w-4 h-4" /> Filters</h3>
             {isFiltered && (
@@ -242,7 +243,7 @@ const BlogReports = () => {
                 ))}
               </ToggleGroup>
           </div>
-        </Card>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-12 pt-6">
           {/* Left Column: Articles */}
