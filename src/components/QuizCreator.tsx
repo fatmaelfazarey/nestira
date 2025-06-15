@@ -191,7 +191,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       <div className="max-w-7xl mx-auto p-6">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Left Panel - Quiz Details */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className={`space-y-6 ${showAISuggestions ? 'lg:col-span-4' : 'lg:col-span-5'}`}>
             <QuizDetailsCard 
               title={quizTitle}
               description={quizDescription}
@@ -236,17 +236,18 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
           </div>
 
           {/* Middle Panel - AI Suggestions */}
-          <div className="lg:col-span-4">
-            <AISuggestionPanel
-              questions={aiSuggestedQuestions}
-              onAddToQuiz={handleAddToQuiz}
-              onRegenerateQuestions={handleRegenerateQuestions}
-              isVisible={showAISuggestions}
-            />
-          </div>
+          {showAISuggestions && (
+            <div className="lg:col-span-4">
+              <AISuggestionPanel
+                questions={aiSuggestedQuestions}
+                onAddToQuiz={handleAddToQuiz}
+                onRegenerateQuestions={handleRegenerateQuestions}
+              />
+            </div>
+          )}
 
           {/* Right Panel - Quiz Customization */}
-          <div className="lg:col-span-4">
+          <div className={showAISuggestions ? 'lg:col-span-4' : 'lg:col-span-7'}>
             <QuizCustomizationPanel
               questions={questions}
               onUpdateQuestion={handleUpdateQuestion}
