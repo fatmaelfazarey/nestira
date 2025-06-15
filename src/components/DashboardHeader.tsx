@@ -25,7 +25,7 @@ export function DashboardHeader() {
         </div>
 
         <div className="flex items-center justify-center flex-1">
-          <img src="/lovable-uploads/56e3e265-35c1-4968-86ec-2a6c964c97ad.png" alt="Nestira Finance Logo" className="h-16" />
+          <img src="/lovable-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png" alt="Logo" className="h-20" />
         </div>
 
         <div className="flex items-center gap-4">
