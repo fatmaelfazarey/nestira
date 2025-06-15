@@ -1,3 +1,4 @@
+
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from './AppSidebar';
 import { DashboardHeader } from './DashboardHeader';
@@ -12,7 +13,7 @@ export function DashboardLayout({
         <AppSidebar />
         <main className="flex-1 flex flex-col backdrop-blur-sm">
           <DashboardHeader />
-          <div className="flex-1 p-8 space-y-6 py-0">
+          <div className="flex-1 p-8">
             <div className="max-w-7xl mx-auto">
               {children}
             </div>

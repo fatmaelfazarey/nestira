@@ -81,7 +81,7 @@ const HelpCenter = () => {
 
   return (
     <DashboardLayout>
-      <div className="p-8 space-y-8">
+      <div className="space-y-8">
         <div className="w-full">
           <HelpCenterBot />
         </div>
