@@ -1,11 +1,12 @@
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { toast } from "sonner";
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Clock, Download, FileText, Filter, X } from 'lucide-react';
+import { Clock, Send, FileText, Filter, X } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -279,8 +280,8 @@ const BlogReports = () => {
                     <p className="font-semibold text-gray-800 line-clamp-2 leading-tight">{item.title}</p>
                     {'downloadCount' in item && <span className="text-sm text-gray-500 font-medium">{item.downloadCount}</span>}
                   </div>
-                  <Button variant="ghost" size="icon" className="text-accent hover:text-accent/80 shrink-0">
-                    <Download className="w-5 h-5" />
+                  <Button variant="ghost" size="icon" className="text-accent hover:text-accent/80 shrink-0" onClick={() => toast("Please check your email, we sent it there.")}>
+                    <Send className="w-5 h-5" />
                   </Button>
                 
                 </Card>) : <p className="text-gray-500">No reports match your criteria.</p>}
