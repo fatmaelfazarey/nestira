@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Accordion,
   AccordionContent,
@@ -9,10 +9,11 @@ import {
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Filter, Search, Flame, Landmark, BrainCog, MessagesSquare, GanttChartSquare } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface QuizFiltersProps {
   isOpen: boolean;
@@ -70,30 +71,60 @@ export function QuizFilters({
   selectedSkills,
   onSelectedSkillsChange,
 }: QuizFiltersProps) {
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
+  const [localFilterSource, setLocalFilterSource] = useState(filterSource);
+  const [localTrendingOnly, setLocalTrendingOnly] = useState(trendingOnly);
+  const [localSelectedSkills, setLocalSelectedSkills] = useState(selectedSkills);
+
+  useEffect(() => {
+    if (isOpen) {
+      setLocalSearchQuery(searchQuery);
+      setLocalFilterSource(filterSource);
+      setLocalTrendingOnly(trendingOnly);
+      setLocalSelectedSkills(selectedSkills);
+    }
+  }, [isOpen, searchQuery, filterSource, trendingOnly, selectedSkills]);
+
   const handleSkillChange = (skill: string, checked: boolean) => {
     const newSkills = checked
-      ? [...selectedSkills, skill]
-      : selectedSkills.filter(s => s !== skill);
-    onSelectedSkillsChange(newSkills);
+      ? [...localSelectedSkills, skill]
+      : localSelectedSkills.filter(s => s !== skill);
+    setLocalSelectedSkills(newSkills);
   };
+
+  const handleResetFilters = () => {
+    setLocalSearchQuery('');
+    setLocalFilterSource('all');
+    setLocalTrendingOnly(false);
+    setLocalSelectedSkills([]);
+  };
+
+  const handleApplyFilters = () => {
+    onSearchQueryChange(localSearchQuery);
+    onFilterSourceChange(localFilterSource);
+    onTrendingOnlyChange(localTrendingOnly);
+    onSelectedSkillsChange(localSelectedSkills);
+    onClose();
+  };
+
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-[400px] sm:w-[540px] overflow-y-auto pr-10">
+      <SheetContent className="w-[400px] sm:w-[540px] flex flex-col">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-3">
             <Filter className="w-5 h-5 text-orange-500" />
             <span className="text-lg font-semibold text-gray-800">Filters & Sorting</span>
           </SheetTitle>
         </SheetHeader>
-        <div className="py-6 space-y-6">
+        <div className="flex-1 overflow-y-auto py-6 space-y-6">
           <div className="flex items-center space-x-2 pt-2">
             <Flame className="w-5 h-5 text-orange-500" />
             <Label htmlFor="trending-switch" className="font-semibold text-gray-700">Trending</Label>
             <Switch
               id="trending-switch"
-              checked={trendingOnly}
-              onCheckedChange={onTrendingOnlyChange}
+              checked={localTrendingOnly}
+              onCheckedChange={setLocalTrendingOnly}
             />
           </div>
           
@@ -102,8 +133,8 @@ export function QuizFilters({
             <ToggleGroup
               type="single"
               variant="outline"
-              value={filterSource}
-              onValueChange={(value) => { if (value) onFilterSourceChange(value); }}
+              value={localFilterSource}
+              onValueChange={(value) => { if (value) setLocalFilterSource(value); }}
               className="justify-start"
               aria-label="Filter quizzes by source"
             >
@@ -120,8 +151,8 @@ export function QuizFilters({
               <Input
                 id="search-job-title"
                 placeholder="e.g. Financial Analyst"
-                value={searchQuery}
-                onChange={(e) => onSearchQueryChange(e.target.value)}
+                value={localSearchQuery}
+                onChange={(e) => setLocalSearchQuery(e.target.value)}
                 className="pl-10 w-full"
               />
             </div>
@@ -144,7 +175,7 @@ export function QuizFilters({
                         <div key={skill} className="flex items-center space-x-3">
                           <Checkbox
                             id={`skill-${skill}`}
-                            checked={selectedSkills.includes(skill)}
+                            checked={localSelectedSkills.includes(skill)}
                             onCheckedChange={(checked) => {
                               handleSkillChange(skill, !!checked);
                             }}
@@ -164,6 +195,10 @@ export function QuizFilters({
             </Accordion>
           </div>
         </div>
+        <SheetFooter>
+          <Button variant="outline" onClick={handleResetFilters}>Reset</Button>
+          <Button onClick={handleApplyFilters} className="bg-accent hover:bg-accent/90 text-white">Apply Filters</Button>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   );
