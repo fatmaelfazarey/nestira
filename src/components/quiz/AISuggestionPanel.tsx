@@ -1,23 +1,28 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, RefreshCw, Plus, Bot } from 'lucide-react';
+import { Search, RefreshCw, Plus, Edit, Bot } from 'lucide-react';
 import { Question } from './types';
 
 interface AISuggestionPanelProps {
   questions: Question[];
   onAddToQuiz: (question: Question) => void;
   onRegenerateQuestions: () => void;
+  isVisible: boolean;
 }
 
 export function AISuggestionPanel({ 
   questions, 
   onAddToQuiz, 
-  onRegenerateQuestions 
+  onRegenerateQuestions, 
+  isVisible 
 }: AISuggestionPanelProps) {
   const [searchQuery, setSearchQuery] = useState('');
+
+  if (!isVisible) return null;
 
   const filteredQuestions = questions.filter(q => 
     q.text.toLowerCase().includes(searchQuery.toLowerCase()) ||

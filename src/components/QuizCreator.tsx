@@ -8,7 +8,6 @@ import { QuizCustomizationPanel } from './quiz/QuizCustomizationPanel';
 import { QuizDetailsCard } from './quiz/QuizDetailsCard';
 import { Question } from './quiz/types';
 import { generateAIQuestions } from './quiz/aiQuestionGenerator';
-import { RecommendedBundle } from './quiz/RecommendedBundle';
 
 interface QuizCreatorProps {
   onSave: (quiz: any) => void;
@@ -71,7 +70,8 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
       isEditing: true
     };
-    setQuestions(prev => [...prev, newQuestion]);
+    // Add custom questions at the beginning of the list
+    setQuestions(prev => [newQuestion, ...prev]);
   };
 
   const handleUpdateQuestion = (questionId: string, updates: Partial<Question>) => {
@@ -86,29 +86,6 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
 
   const handleReorderQuestions = (reorderedQuestions: Question[]) => {
     setQuestions(reorderedQuestions);
-  };
-
-  // New bundle handling
-  const handleAdoptBundle = (skills: string[], role: string) => {
-    const bundleParams: PersonalizationParams = {
-      role: role,
-      skills: skills,
-      seniorityLevel: 'mid-level' // default
-    };
-    handleGenerateQuestions(bundleParams);
-    toast.success(`Using recommended bundle for ${role}!`);
-  };
-
-  const handlePreviewBundle = (skills: string[], role: string) => {
-    const previewParams: PersonalizationParams = {
-      role: role,
-      skills: skills,
-      seniorityLevel: 'mid-level'
-    };
-    const previewQuestions = generateAIQuestions(previewParams);
-    setAiSuggestedQuestions(previewQuestions);
-    setShowAISuggestions(true);
-    toast.success('Preview questions generated!');
   };
 
   const handleSaveQuiz = () => {
@@ -178,15 +155,21 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Left Panel: Personalization and Customization */}
-          <div className={`space-y-6 ${showAISuggestions ? 'lg:col-span-5' : 'lg:col-span-8'}`}>
-            <QuizPersonalization
-              onGenerateQuestions={handleGenerateQuestions}
-              onAdoptBundle={handleAdoptBundle}
-              onPreviewBundle={handlePreviewBundle}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Left Column - Main Flow */}
+          <div className="lg:col-span-3 space-y-6">
+            {/* Step 1: Personalization */}
+            <QuizPersonalization onGenerateQuestions={handleGenerateQuestions} />
+
+            {/* Step 2: AI Suggestions */}
+            <AISuggestionPanel
+              questions={aiSuggestedQuestions}
+              onAddToQuiz={handleAddToQuiz}
+              onRegenerateQuestions={handleRegenerateQuestions}
+              isVisible={showAISuggestions}
             />
-            
+
+            {/* Step 3: Quiz Customization */}
             <QuizCustomizationPanel
               questions={questions}
               onUpdateQuestion={handleUpdateQuestion}
@@ -196,20 +179,9 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
             />
           </div>
 
-          {/* Middle Panel: AI Suggestions */}
-          {showAISuggestions && (
-            <div className="lg:col-span-4">
-              <AISuggestionPanel
-                questions={aiSuggestedQuestions}
-                onAddToQuiz={handleAddToQuiz}
-                onRegenerateQuestions={handleRegenerateQuestions}
-              />
-            </div>
-          )}
-
-          {/* Right Panel: Quiz Details */}
-          <div className={showAISuggestions ? 'lg:col-span-3' : 'lg:col-span-4'}>
-            <QuizDetailsCard 
+          {/* Right Column - Quiz Details */}
+          <div className="lg:col-span-1">
+            <QuizDetailsCard
               title={quizTitle}
               description={quizDescription}
               timeLimit={timeLimit}
