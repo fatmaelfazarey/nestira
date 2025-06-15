@@ -231,7 +231,7 @@ const HelpCenterBot = () => {
                   >
                     {message.isBot && (
                       <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="w-4 h-4 text-primary" />
+                        <Bot className="w-5 h-5 text-primary" />
                       </div>
                     )}
                     <div
@@ -251,7 +251,7 @@ const HelpCenterBot = () => {
                     </div>
                     {!message.isBot && (
                       <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                        <User className="w-4 h-4 text-white" />
+                        <User className="w-5 h-5 text-white" />
                       </div>
                     )}
                   </div>
@@ -259,7 +259,7 @@ const HelpCenterBot = () => {
                 {isLoading && (
                   <div className="flex items-start gap-3">
                     <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Bot className="w-4 h-4 text-primary" />
+                      <Bot className="w-5 h-5 text-primary" />
                     </div>
                     <div className="bg-gray-100 rounded-lg p-3">
                       <div className="flex gap-1">
@@ -311,8 +311,8 @@ const HelpCenterBot = () => {
                         <AccordionItem value={`category-${categoryIndex}`} className="border-b-0">
                             <AccordionTrigger className="p-4 hover:no-underline">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
-                                        <categoryItem.icon className="w-5 h-5 text-primary" />
+                                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                                        <categoryItem.icon className="w-6 h-6 text-primary" />
                                     </div>
                                     <span className="font-semibold text-base text-gray-800">{categoryItem.category}</span>
                                 </div>
@@ -327,12 +327,12 @@ const HelpCenterBot = () => {
                                             onClick={() => handleFAQClick(faq)}
                                           >
                                             <div className="flex items-center gap-2">
-                                              <HelpCircle className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                              <HelpCircle className="w-5 h-5 text-gray-400 flex-shrink-0" />
                                               <span className="text-sm font-medium text-gray-700">{faq.question}</span>
                                             </div>
                                           </AccordionTrigger>
                                           <AccordionContent>
-                                            <div className="pl-[2.1rem] pb-3 text-sm text-gray-600 whitespace-pre-line">
+                                            <div className="pl-[2.4rem] pb-3 text-sm text-gray-600 whitespace-pre-line">
                                               {faq.answer}
                                             </div>
                                           </AccordionContent>
