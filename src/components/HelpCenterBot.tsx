@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -45,11 +44,11 @@ const HelpCenterBot = () => {
       faqs: [
         {
           question: "How do I create a job posting?",
-          answer: "To create a job posting, go to your dashboard and click 'Create Job Post'. You'll be guided through setting the job title, description, requirements, and application process. The AI can help generate compelling job descriptions based on your inputs."
+          answer: "• Go to Dashboard > 'Create Job Post'.\n• Follow prompts for title, description, and requirements.\n• Use our AI to help write compelling descriptions."
         },
         {
           question: "How do I set up my company profile?",
-          answer: "You can set up your company profile in the 'Settings' section. Fill in your company details, upload a logo, and provide information about your culture to attract the right candidates."
+          answer: "• Navigate to 'Settings' > 'Company Profile'.\n• Fill in company details and culture information.\n• Upload your company logo."
         }
       ]
     },
@@ -59,15 +58,15 @@ const HelpCenterBot = () => {
       faqs: [
         {
           question: "How does candidate scoring work?",
-          answer: "Nestira's AI scoring system evaluates candidates based on their skills, experience, and how well they match your job requirements. Scores range from 0-100, with factors including keyword matching, experience relevance, and skill alignment."
+          answer: "• Our AI scores candidates from 0-100 based on job match.\n• Key factors: skills, experience, and keyword relevance."
         },
         {
           question: "How do I schedule interviews?",
-          answer: "To schedule interviews, go to your Recruitment Board, select a candidate, and click 'Schedule Interview'. You can set date/time, add interview questions, invite team members, and send calendar invitations automatically."
+          answer: "• Go to 'Recruitment Board' > Select a candidate.\n• Click 'Schedule Interview'.\n• Set details, add questions, and invite team members."
         },
         {
           question: "How do I assign assessments to candidates?",
-          answer: "You can assign assessments from the candidate profile or recruitment board. Click 'Assign Assessment', select from available quizzes, and confirm. Candidates will receive email notifications with assessment links."
+          answer: "• From a candidate's profile, click 'Assign Assessment'.\n• Choose a quiz and confirm.\n• Candidates are notified via email with a link."
         }
       ]
     },
@@ -77,11 +76,11 @@ const HelpCenterBot = () => {
       faqs: [
         {
           question: "How do I manage my billing?",
-          answer: "You can manage your billing and subscription in the Billing section. Here you can upgrade/downgrade plans, view usage, update payment methods, and download invoices. Contact support for billing disputes or questions."
+          answer: "• Go to the 'Billing' section to manage your subscription.\n• Actions: upgrade/downgrade, update payment, view invoices."
         },
         {
           question: "What are the available subscription plans?",
-          answer: "We offer several subscription plans to fit your needs, from a free plan for basic use to enterprise solutions. You can see all plan details and features on our Billing page."
+          answer: "• We offer multiple plans from Free to Enterprise.\n• View all plan details on the 'Billing' page."
         }
       ]
     },
@@ -91,11 +90,11 @@ const HelpCenterBot = () => {
       faqs: [
         {
           question: "Can I export candidate data?",
-          answer: "You can export candidate data from the Talent Pool page using the export feature. Available formats include CSV and PDF. Go to Talent Pool > Select candidates > Export button."
+          answer: "• Yes, from the 'Talent Pool' page.\n• Select candidates and click 'Export'.\n• Available formats: CSV and PDF."
         },
         {
           question: "What is NestiSign?",
-          answer: "NestiSign is our integrated e-signature tool that allows you to send and manage offer letters and other documents securely within the platform, streamlining your final hiring steps."
+          answer: "• An integrated e-signature tool.\n• Securely send and manage offer letters & documents.\n• Streamlines the final hiring steps."
         }
       ]
     }
@@ -159,26 +158,26 @@ const HelpCenterBot = () => {
     const lowerQuestion = question.toLowerCase();
     
     if (lowerQuestion.includes('job') && lowerQuestion.includes('post')) {
-      return "To create a job posting, go to your dashboard and click 'Create Job Post'. You'll be guided through setting the job title, description, requirements, and application process. The AI can help generate compelling job descriptions based on your inputs.";
+      return "• Go to Dashboard > 'Create Job Post'.\n• Follow prompts for title, description, and requirements.\n• Use our AI to help write compelling descriptions.";
     }
     
     if (lowerQuestion.includes('candidate') && (lowerQuestion.includes('score') || lowerQuestion.includes('scoring'))) {
-      return "Nestira's AI scoring system evaluates candidates based on their skills, experience, and how well they match your job requirements. Scores range from 0-100, with factors including keyword matching, experience relevance, and skill alignment.";
+      return "• Our AI scores candidates from 0-100 based on job match.\n• Key factors: skills, experience, and keyword relevance.";
     }
     
     if (lowerQuestion.includes('billing') || lowerQuestion.includes('subscription')) {
-      return "You can manage your billing and subscription in the Billing section. Here you can upgrade/downgrade plans, view usage, update payment methods, and download invoices. Contact support for billing disputes or questions.";
+      return "• Go to the 'Billing' section to manage your subscription.\n• Actions: upgrade/downgrade, update payment, view invoices.";
     }
     
     if (lowerQuestion.includes('export') || lowerQuestion.includes('download')) {
-      return "You can export candidate data from the Talent Pool page using the export feature. Available formats include CSV and PDF. Go to Talent Pool > Select candidates > Export button.";
+      return "• Yes, from the 'Talent Pool' page.\n• Select candidates and click 'Export'.\n• Available formats: CSV and PDF.";
     }
     
     if (lowerQuestion.includes('interview')) {
-      return "To schedule interviews, go to your Recruitment Board, select a candidate, and click 'Schedule Interview'. You can set date/time, add interview questions, invite team members, and send calendar invitations automatically.";
+      return "• Go to 'Recruitment Board' > Select a candidate.\n• Click 'Schedule Interview'.\n• Set details, add questions, and invite team members.";
     }
     
-    return "I understand you're asking about that topic. For detailed assistance, please check our knowledge base articles or contact our support team directly. Is there a specific feature or process you'd like help with?";
+    return "I am not sure I have an answer for that, but here are some topics I can help with:\n• Creating job posts\n• Candidate scoring\n• Billing & subscriptions\n• Scheduling interviews\nFor more detailed help, please check our knowledge base or contact support.";
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -224,7 +223,7 @@ const HelpCenterBot = () => {
                           : 'bg-primary text-white ml-auto'
                       }`}
                     >
-                      <p className="text-sm">{message.text}</p>
+                      <p className="text-sm whitespace-pre-line">{message.text}</p>
                       <span className="text-xs opacity-70 mt-1 block">
                         {message.timestamp.toLocaleTimeString([], { 
                           hour: '2-digit', 
@@ -315,7 +314,7 @@ const HelpCenterBot = () => {
                                             </div>
                                           </AccordionTrigger>
                                           <AccordionContent>
-                                            <div className="pl-[2.1rem] pb-3 text-sm text-gray-600">
+                                            <div className="pl-[2.1rem] pb-3 text-sm text-gray-600 whitespace-pre-line">
                                               {faq.answer}
                                             </div>
                                           </AccordionContent>
