@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -459,14 +458,6 @@ const RecruitmentBoard = () => {
             {text}
         </Badge>
     );
-  };
-
-  const calculateAssessmentScore = (skillScores: Candidate['skillScores']) => {
-    const scores = Object.values(skillScores);
-    const validScores = scores.filter(s => s > 0);
-    if (validScores.length === 0) return 0;
-    const sum = validScores.reduce((a, b) => a + b, 0);
-    return Math.round(sum / validScores.length);
   };
 
   const handleStageChange = (candidateId: number, newStageId: string) => {
