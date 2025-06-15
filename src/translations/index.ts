@@ -20,6 +20,9 @@ export const translations = {
     userGuide: 'User Guide',
     nestiSign: 'NestiSign',
     profileSettings: 'Profile Settings',
+    resourceUsage: 'Resource Usage',
+    jobPostings: 'Job Postings',
+    candidatesUnlocked: 'Candidates Unlocked',
     
     // Profile Settings
     profileAndSettings: 'Profile & Settings',
@@ -103,6 +106,9 @@ export const translations = {
     userGuide: 'دليل المستخدم',
     nestiSign: 'نستي ساين',
     profileSettings: 'إعدادات الملف الشخصي',
+    resourceUsage: 'استخدام الموارد',
+    jobPostings: 'الوظائف المنشورة',
+    candidatesUnlocked: 'المرشحون المفتوحون',
     
     // Profile Settings
     profileAndSettings: 'الملف الشخصي والإعدادات',

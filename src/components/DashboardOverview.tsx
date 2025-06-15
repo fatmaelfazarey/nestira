@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -38,6 +37,7 @@ import {
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const kpiData = [
   {
@@ -206,6 +206,7 @@ const chartConfig = {
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const { t } = useTranslation();
 
   const handleKpiClick = (action: string) => {
     console.log(`Navigating to ${action}`);
@@ -394,14 +395,14 @@ export function DashboardOverview() {
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <Activity className="w-5 h-5 text-accent" />
-            Resource Usage
+            {t('resourceUsage')}
           </h3>
           <div className="space-y-6">
             <div>
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Briefcase className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium">Job Postings</span>
+                  <span className="text-sm font-medium">{t('jobPostings')}</span>
                 </div>
                 <span className="text-sm text-gray-600">2/3</span>
               </div>
@@ -414,7 +415,7 @@ export function DashboardOverview() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium">Candidates Unlocked</span>
+                  <span className="text-sm font-medium">{t('candidatesUnlocked')}</span>
                 </div>
                 <span className="text-sm text-gray-600">1/5</span>
               </div>
