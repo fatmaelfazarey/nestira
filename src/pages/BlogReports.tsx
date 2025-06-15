@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { BookOpen, TrendingUp, FileText, Clock, Download } from 'lucide-react';
+import { Clock, Download, FileText, Filter, TrendingUp, X, Check, ChevronsUpDown } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 const BlogReports = () => {
   const allContent = [
@@ -13,7 +19,7 @@ const BlogReports = () => {
       type: 'article',
       title: "2024 Finance Salary Trends in MENA",
       excerpt: "Comprehensive analysis of compensation trends across financial roles in the Middle East and North Africa.",
-      category: "Salary Report",
+      topics: ["Salary Trends", "MENA/GCC Focus"],
       readTime: "8 min read",
       publishedAt: "2024-05-15",
       thumbnail: 'photo-1486312338219-ce68d2c6f44d',
@@ -25,32 +31,33 @@ const BlogReports = () => {
       type: 'article',
       title: "The Future of Remote Finance Teams",
       excerpt: "How distributed finance teams are reshaping the industry and what it means for hiring.",
-      category: "Industry Insight",
+      topics: ["Remote Work", "Skills & Hiring"],
       readTime: "6 min read",
       publishedAt: "2024-05-10",
       thumbnail: 'photo-1488590528505-98d2b5aba04b',
       isNew: true,
-      targetAudience: "Candidate",
+      targetAudience: "Finance Candidate",
     },
     {
       id: 'article-3',
       type: 'article',
       title: "Essential Skills for Finance Professionals in 2024",
       excerpt: "The top technical and soft skills employers are looking for in finance candidates.",
-      category: "Skills Guide",
+      topics: ["Skills & Hiring", "Career Growth"],
       readTime: "5 min read",
       publishedAt: "2024-05-05",
       thumbnail: 'photo-1518770660439-4636190af475',
       isNew: false,
-      targetAudience: "Candidate",
+      targetAudience: "Finance Candidate",
     },
     {
       id: 'report-1',
       type: 'report',
       title: "Q2 2024 Hiring Benchmark Report",
       excerpt: "Market insights and hiring metrics for the finance sector.",
-      category: "Quarterly Report",
+      topics: ["Skills & Hiring", "MENA/GCC Focus"],
       downloadCount: "1.2K downloads",
+      publishedAt: "2024-04-20",
       thumbnail: 'photo-1461749280684-dccba630e2f6',
       isNew: false,
       targetAudience: "Hiring Manager",
@@ -60,79 +67,218 @@ const BlogReports = () => {
       type: 'article',
       title: 'AI in Financial Recruitment',
       excerpt: 'How AI is changing the landscape of finding and hiring top financial talent.',
-      category: 'Industry Insight',
+      topics: ["AI in Finance", "Skills & Hiring"],
       readTime: '7 min read',
       publishedAt: '2024-04-28',
       thumbnail: 'photo-1649972904349-6e44c42644a7',
       isNew: false,
-      targetAudience: "Hiring Manager",
+      targetAudience: "Consultant / Researcher",
     },
     {
       id: 'report-2',
       type: 'report',
       title: "Finance Skills Gap Analysis",
       excerpt: "Understanding the gap between required and available skills.",
-      category: "Research Report",
+      topics: ["Skills & Hiring", "Career Growth"],
       downloadCount: "890 downloads",
+      publishedAt: "2024-04-15",
       thumbnail: 'photo-1486312338219-ce68d2c6f44d',
       isNew: false,
       targetAudience: "Hiring Manager",
     },
     {
-      id: 'report-3',
-      type: 'report',
+      id: 'survey-1',
+      type: 'survey',
       title: "Remote Work in Finance: 2024 Survey",
       excerpt: "Survey results on remote work preferences in finance roles.",
-      category: "Survey Report",
-      downloadCount: "650 downloads",
+      topics: ["Remote Work", "Survey Report"],
+      readTime: "4 min read",
+      publishedAt: "2024-03-25",
       thumbnail: 'photo-1488590528505-98d2b5aba04b',
       isNew: false,
-      targetAudience: "Hiring Manager",
+      targetAudience: "Consultant / Researcher",
+    },
+    {
+      id: 'case-study-1',
+      type: 'case-study',
+      title: "Case Study: Scaling a FinTech Startup's Finance Team",
+      excerpt: "How Company X grew its finance department by 500% in one year.",
+      topics: ["Career Growth", "Skills & Hiring"],
+      readTime: "9 min read",
+      publishedAt: "2024-03-10",
+      thumbnail: 'photo-1454165804606-c3d57bc86b40',
+      isNew: false,
+      targetAudience: 'Hiring Manager',
     }
   ];
 
-  const [audienceFilter, setAudienceFilter] = useState('All');
+  const [searchParams, setSearchParams] = useSearchParams();
   
-  const audiences = ['All', 'Hiring Manager', 'Candidate'];
+  const audiences = ['Show All', 'Hiring Manager', 'Finance Candidate', 'Consultant / Researcher'];
+  const contentTypes = [...new Set(allContent.map(item => item.type))];
+  const allTopics = [...new Set(allContent.flatMap(item => item.topics))].sort();
+  const typeDisplayNames: { [key: string]: string } = {
+    'article': 'Blog',
+    'report': 'Report',
+    'survey': 'Survey',
+    'case-study': 'Case Study'
+  };
 
-  const articles = allContent.filter(item => item.type === 'article');
-  const reports = allContent.filter(item => item.type === 'report');
+  const roleFilter = searchParams.get('role') || 'Show All';
+  const typeFilter = searchParams.get('types')?.split(',').filter(Boolean) || [];
+  const topicFilter = searchParams.get('topics')?.split(',').filter(Boolean) || [];
+  const trendingFilter = searchParams.get('trending') === 'true';
 
-  const filteredArticles = articles.filter(item => {
-    if (audienceFilter === 'All') return true;
-    return item.targetAudience === audienceFilter;
-  });
+  const [topicPopoverOpen, setTopicPopoverOpen] = useState(false);
+
+  const updateSearchParams = (key: string, value: string | null) => {
+    const newParams = new URLSearchParams(searchParams);
+    if (value === null || value === '') {
+      newParams.delete(key);
+    } else {
+      newParams.set(key, value);
+    }
+    setSearchParams(newParams, { replace: true });
+  };
+  
+  const filteredContent = useMemo(() => {
+    let content = [...allContent];
+
+    if (roleFilter !== 'Show All') {
+      content = content.filter(item => item.targetAudience === roleFilter);
+    }
+    if (typeFilter.length > 0) {
+      content = content.filter(item => typeFilter.includes(item.type));
+    }
+    if (topicFilter.length > 0) {
+      content = content.filter(item => item.topics.some(topic => topicFilter.includes(topic)));
+    }
+    if (trendingFilter) {
+      content.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+    }
+    return content;
+  }, [roleFilter, typeFilter, topicFilter, trendingFilter]);
+
+  const articles = filteredContent.filter(item => item.type !== 'report');
+  const reports = filteredContent.filter(item => item.type === 'report');
+
+  const handleTopicSelect = (topic: string) => {
+    const newTopics = topicFilter.includes(topic)
+      ? topicFilter.filter(t => t !== topic)
+      : [...topicFilter, topic];
+    updateSearchParams('topics', newTopics.join(','));
+  }
+  
+  const isFiltered = roleFilter !== 'Show All' || typeFilter.length > 0 || topicFilter.length > 0 || trendingFilter;
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Blog & Reports</h1>
-            <p className="text-gray-600">Finance hiring insights, trends, and resources</p>
-          </div>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Blog & Reports</h1>
+          <p className="text-gray-600">Finance hiring insights, trends, and resources</p>
         </div>
+
+        {/* Filters */}
+        <Card className="p-4 space-y-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <h3 className="text-md font-semibold flex items-center gap-2"><Filter className="w-4 h-4" /> Filters</h3>
+            {isFiltered && (
+                <Button variant="ghost" size="sm" className="h-auto px-2 py-1 text-xs" onClick={() => setSearchParams({}, { replace: true })}>
+                  <X className="w-3 h-3 mr-1" />
+                  Clear Filters
+                </Button>
+            )}
+          </div>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="trending-switch" className="font-medium whitespace-nowrap">🔥 Trending</Label>
+              <Switch 
+                id="trending-switch" 
+                checked={trendingFilter} 
+                onCheckedChange={(checked) => updateSearchParams('trending', checked ? 'true' : null)}
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label className="font-medium">I am a...</Label>
+            <ToggleGroup
+              type="single"
+              variant="outline"
+              value={roleFilter}
+              onValueChange={(value) => updateSearchParams('role', value === 'Show All' ? null : value)}
+              className="justify-start flex-wrap"
+            >
+              {audiences.map(audience => (
+                <ToggleGroupItem key={audience} value={audience} className="text-xs sm:text-sm">{audience}</ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
+          <div className="space-y-2">
+            <Label className="font-medium">Content Type</Label>
+            <ToggleGroup
+              type="multiple"
+              variant="outline"
+              value={typeFilter}
+              onValueChange={(value) => updateSearchParams('types', value.join(','))}
+              className="justify-start flex-wrap"
+            >
+              {contentTypes.map(type => (
+                <ToggleGroupItem key={type} value={type} className="text-xs sm:text-sm">{typeDisplayNames[type]}</ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
+          <div className="space-y-2">
+             <Label className="font-medium">Topic Focus</Label>
+             <div>
+                <Popover open={topicPopoverOpen} onOpenChange={setTopicPopoverOpen}>
+                    <PopoverTrigger asChild>
+                        <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={topicPopoverOpen}
+                            className="w-full sm:w-[300px] justify-between"
+                        >
+                            <span className="truncate">
+                                {topicFilter.length > 0 ? `${topicFilter.length} selected` : "Select topics..."}
+                            </span>
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[300px] p-0">
+                        <Command>
+                            <CommandInput placeholder="Search topics..." />
+                            <CommandList>
+                                <CommandEmpty>No topic found.</CommandEmpty>
+                                <CommandGroup>
+                                    {allTopics.map((topic) => (
+                                        <CommandItem
+                                            key={topic}
+                                            value={topic}
+                                            onSelect={() => handleTopicSelect(topic)}
+                                        >
+                                            <Check
+                                                className={`mr-2 h-4 w-4 ${topicFilter.includes(topic) ? "opacity-100" : "opacity-0"}`}
+                                            />
+                                            {topic}
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
+                        </Command>
+                    </PopoverContent>
+                </Popover>
+             </div>
+          </div>
+        </Card>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-12 pt-6">
           {/* Left Column: Articles */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="flex flex-wrap items-center gap-2 mb-2 border-b pb-4">
-              <span className="text-sm font-medium mr-2">Show content for:</span>
-                {audiences.map(audience => (
-                    <Button
-                        key={audience}
-                        variant={audienceFilter === audience ? 'default' : 'outline'}
-                        onClick={() => setAudienceFilter(audience)}
-                        className="rounded-full px-4 py-1 h-auto text-sm"
-                    >
-                        {audience}
-                    </Button>
-                ))}
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {filteredArticles.map(item => (
+              {articles.length > 0 ? articles.map(item => (
                 <Card key={item.id} className="overflow-hidden flex flex-col group hover:shadow-xl transition-all duration-300 rounded-lg">
+                  
                   <div className="relative">
                     <AspectRatio ratio={16 / 9}>
                       <img src={`/${item.thumbnail}.jpg`} alt={item.title} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
@@ -153,11 +299,12 @@ const BlogReports = () => {
                         <Clock className="w-4 h-4" />
                         {item.readTime}
                       </span>
-                      <span>{item.publishedAt}</span>
+                      <span>{new Date(item.publishedAt).toLocaleDateString()}</span>
                     </div>
                   </CardFooter>
+                
                 </Card>
-              ))}
+              )) : <p className="text-gray-500 md:col-span-2">No articles match your criteria.</p>}
             </div>
           </div>
 
@@ -169,8 +316,9 @@ const BlogReports = () => {
             </div>
             
             <div className="space-y-4">
-              {reports.map(item => (
+              {reports.length > 0 ? reports.map(item => (
                 <Card key={item.id} className="flex items-center p-4 gap-4 hover:shadow-md transition-shadow duration-300">
+                  
                   <div className="bg-blue-100 p-3 rounded-lg shrink-0">
                     <FileText className="w-6 h-6 text-blue-600" />
                   </div>
@@ -181,8 +329,9 @@ const BlogReports = () => {
                   <Button variant="ghost" size="icon" className="text-accent hover:text-accent/80 shrink-0">
                     <Download className="w-5 h-5" />
                   </Button>
+                
                 </Card>
-              ))}
+              )) : <p className="text-gray-500">No reports match your criteria.</p>}
             </div>
           </div>
         </div>
