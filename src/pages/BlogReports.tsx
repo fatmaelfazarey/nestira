@@ -287,7 +287,7 @@ const BlogReports = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                     <div className="absolute top-4 left-4 flex items-center gap-2">
                       {item.isNew && <Badge className="bg-accent text-accent-foreground border-accent-foreground/20">New</Badge>}
-                      {(item as any).isTrending && <Badge className="bg-yellow-400 text-yellow-900 border-yellow-500/50">🔥 Trending</Badge>}
+                      {(item as any).isTrending && <Badge className="text-white border-transparent bg-gradient-to-r from-red-500 to-orange-500">🔥 Trending</Badge>}
                     </div>
                     <div className="absolute bottom-0 p-4">
                         <Badge variant="secondary" className="mb-2">{item.targetAudience}</Badge>
