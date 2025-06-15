@@ -239,16 +239,16 @@ export function DashboardOverview() {
             {kpiData.map((kpi) => (
               <Card 
                 key={kpi.title} 
-                className="p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
+                className={`p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor}`}
                 onClick={() => handleKpiClick(kpi.clickAction)}
               >
                 <div className="flex flex-col items-center text-center space-y-2">
-                  <div className={`p-2 rounded-lg ${kpi.bgColor}`}>
+                  <div className={`p-2 rounded-lg bg-white/50`}>
                     <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-xl font-bold text-gray-900">{kpi.value}</h3>
-                    <p className="text-xs font-medium text-gray-600">{kpi.title}</p>
+                    <h3 className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</h3>
+                    <p className={`text-xs font-medium ${kpi.color} opacity-80`}>{kpi.title}</p>
                   </div>
                 </div>
               </Card>
