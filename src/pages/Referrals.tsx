@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,7 @@ const Referrals = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8 p-4 md:p-6">
+      <div className="space-y-8 p-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900">Referrals</h1>
           <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
@@ -73,7 +72,7 @@ const Referrals = () => {
                 </label>
                 <div className="flex gap-2">
                   <Input placeholder="contact@example.com" className="flex-1" />
-                  <Button className="bg-accent hover:bg-accent/90 text-white">
+                  <Button className="bg-success text-success-foreground hover:bg-success/90">
                     Send Invite
                   </Button>
                 </div>
