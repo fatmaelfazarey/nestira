@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,8 +62,8 @@ export function ProfileSettingsContent() {
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
             {/* User Profile */}
-            <Card className="shadow-md bg-white/80 backdrop-blur-sm border-l-4 border-blue-600">
-              <CardHeader className="border-b border-gray-100">
+            <Card className="shadow-md bg-blue-50/30 backdrop-blur-sm border-l-4 border-blue-600">
+              <CardHeader className="border-b border-gray-100 bg-blue-50/50">
                 <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <User className="w-5 h-5 text-blue-600" />
                   {t('userProfile')}
@@ -79,8 +80,8 @@ export function ProfileSettingsContent() {
 
             {/* Company Information - Only show if not individual recruiter */}
             {!isIndividualRecruiter && (
-              <Card className="shadow-md bg-white/80 backdrop-blur-sm border-l-4 border-green-600">
-                <CardHeader className="border-b border-gray-100">
+              <Card className="shadow-md bg-green-50/30 backdrop-blur-sm border-l-4 border-green-600">
+                <CardHeader className="border-b border-gray-100 bg-green-50/50">
                   <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Building2 className="w-5 h-5 text-green-600" />
                     {t('companyInformation')}
@@ -97,8 +98,8 @@ export function ProfileSettingsContent() {
             )}
 
             {/* Login & Security - Moved to the end */}
-            <Card className="shadow-md bg-white/80 backdrop-blur-sm border-l-4 border-orange-600">
-              <CardHeader className="border-b border-gray-100">
+            <Card className="shadow-md bg-orange-50/30 backdrop-blur-sm border-l-4 border-orange-600">
+              <CardHeader className="border-b border-gray-100 bg-orange-50/50">
                 <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <Shield className="w-5 h-5 text-orange-600" />
                   {t('loginAndSecurity')}
