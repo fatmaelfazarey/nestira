@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -220,6 +221,8 @@ export function DashboardOverview() {
         <div className="absolute inset-0 bg-primary-pattern"></div>
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
         <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/30 rounded-full opacity-60"></div>
+        <div className="absolute -bottom-12 -right-4 w-24 h-24 bg-accent/20 rounded-full opacity-50"></div>
+        <div className="absolute bottom-8 left-20 w-16 h-16 bg-accent/20 rounded-full opacity-50"></div>
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-2">
             <Building2 className="w-6 h-6" />
