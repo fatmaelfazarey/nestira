@@ -34,7 +34,7 @@ const BlogReports = () => {
       type: 'article',
       title: "2024 Finance Salary Trends in MENA",
       excerpt: "Comprehensive analysis of compensation trends across financial roles in the Middle East and North Africa.",
-      topics: allAvailableTopics,
+      topics: ["Salary Trends", "MENA/GCC Focus"],
       readTime: "8 min read",
       publishedAt: "2024-05-15",
       thumbnail,
@@ -46,7 +46,7 @@ const BlogReports = () => {
       type: 'article',
       title: "The Future of Remote Finance Teams",
       excerpt: "How distributed finance teams are reshaping the industry and what it means for hiring.",
-      topics: allAvailableTopics,
+      topics: ["Remote Work", "Skills & Hiring"],
       readTime: "6 min read",
       publishedAt: "2024-05-10",
       thumbnail,
@@ -58,7 +58,7 @@ const BlogReports = () => {
       type: 'article',
       title: "Essential Skills for Finance Professionals in 2024",
       excerpt: "The top technical and soft skills employers are looking for in finance candidates.",
-      topics: allAvailableTopics,
+      topics: ["Skills & Hiring", "Career Growth"],
       readTime: "5 min read",
       publishedAt: "2024-05-05",
       thumbnail,
@@ -94,7 +94,7 @@ const BlogReports = () => {
       type: 'article',
       title: 'AI in Financial Recruitment',
       excerpt: 'How AI is changing the landscape of finding and hiring top financial talent.',
-      topics: allAvailableTopics,
+      topics: ["AI in Finance", "Skills & Hiring"],
       readTime: '7 min read',
       publishedAt: '2024-04-28',
       thumbnail,
@@ -106,7 +106,7 @@ const BlogReports = () => {
       type: 'survey',
       title: "Remote Work in Finance: 2024 Survey",
       excerpt: "Survey results on remote work preferences in finance roles.",
-      topics: allAvailableTopics,
+      topics: ["Remote Work", "Survey Report"],
       readTime: "4 min read",
       publishedAt: "2024-03-25",
       thumbnail,
@@ -118,7 +118,7 @@ const BlogReports = () => {
       type: 'case-study',
       title: "Case Study: Scaling a FinTech Startup's Finance Team",
       excerpt: "How Company X grew its finance department by 500% in one year.",
-      topics: allAvailableTopics,
+      topics: ["Career Growth", "Skills & Hiring", "Survey Report", "AI in Finance", "Remote Work", "MENA/GCC Focus", "Salary Trends"],
       readTime: "9 min read",
       publishedAt: "2024-03-10",
       thumbnail,
@@ -280,13 +280,18 @@ const BlogReports = () => {
                     </div>
                   </div>
                   <CardContent className="p-4 flex-grow">
+                    <div className="flex flex-wrap gap-2 mb-2">
+                      {item.topics.map(topic => (
+                        <Badge key={topic} variant="outline">{topic}</Badge>
+                      ))}
+                    </div>
                     <p className="text-sm text-gray-600 line-clamp-3">{item.excerpt}</p>
                   </CardContent>
                   <CardFooter className="bg-gray-50/50 p-4 mt-auto">
                     <div className="flex items-center justify-between w-full text-xs text-gray-500">
                       <span className="flex items-center gap-1">
                         <Clock className="w-4 h-4" />
-                        {item.readTime}
+                        {'readTime' in item && item.readTime}
                       </span>
                       <span>{new Date(item.publishedAt).toLocaleDateString()}</span>
                     </div>
