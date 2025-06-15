@@ -11,6 +11,7 @@ import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle,
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
+import { QuizFilters } from '@/components/quiz/QuizFilters';
 
 const QuizBuilder = () => {
   const [showCreator, setShowCreator] = useState(false);
@@ -19,6 +20,7 @@ const QuizBuilder = () => {
   const [assignQuiz, setAssignQuiz] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSource, setFilterSource] = useState('all');
+  const [trendingOnly, setTrendingOnly] = useState(false);
   const [quizzes, setQuizzes] = useState([
     { 
       id: 1, 
@@ -33,6 +35,7 @@ const QuizBuilder = () => {
       failedCandidates: 3,
       pendingCandidates: 1,
       source: 'Nestira',
+      isTrending: true,
       personalizationParams: { jobTitle: 'Financial Analyst' },
       questionsList: [
         { 
@@ -64,6 +67,7 @@ const QuizBuilder = () => {
       failedCandidates: 0,
       pendingCandidates: 0,
       source: 'Nestira',
+      isTrending: false,
       personalizationParams: { jobTitle: 'Financial Analyst' },
       questionsList: [
         { 
@@ -89,6 +93,7 @@ const QuizBuilder = () => {
       failedCandidates: 1,
       pendingCandidates: 0,
       source: 'Me',
+      isTrending: true,
       personalizationParams: { jobTitle: 'Risk Manager' },
       questionsList: [
         { 
@@ -150,17 +155,9 @@ const QuizBuilder = () => {
 
   const filteredQuizzes = quizzes.filter(quiz => {
     const titleMatch = (quiz.personalizationParams?.jobTitle ?? '').toLowerCase().includes(searchQuery.toLowerCase());
-    // A bit of verbose logic to satisfy typescript, but it's correct
-    if (filterSource === 'all') {
-      return titleMatch;
-    }
-    if (filterSource === 'Me') {
-      return titleMatch && quiz.source === 'Me';
-    }
-    if (filterSource === 'Nestira') {
-      return titleMatch && quiz.source === 'Nestira';
-    }
-    return false;
+    const sourceMatch = filterSource === 'all' || quiz.source === filterSource;
+    const trendingMatch = !trendingOnly || quiz.isTrending;
+    return titleMatch && sourceMatch && trendingMatch;
   });
 
   const groupedQuizzes = filteredQuizzes.reduce((acc, quiz) => {
@@ -204,28 +201,14 @@ const QuizBuilder = () => {
           </Button>
         </div>
 
-        <div className="flex flex-col sm:flex-row items-center gap-4 py-4 border-y">
-          <div className="relative w-full sm:w-auto sm:flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-            <Input
-              placeholder="Filter by job title..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 w-full"
-            />
-          </div>
-          <ToggleGroup 
-            type="single" 
-            value={filterSource} 
-            onValueChange={(value) => { if (value) setFilterSource(value); }}
-            className="items-center"
-            aria-label="Filter quizzes by source"
-          >
-            <ToggleGroupItem value="all" aria-label="Show all quizzes">Show All</ToggleGroupItem>
-            <ToggleGroupItem value="Nestira" aria-label="Show quizzes made by Nestira">Made by Nestira</ToggleGroupItem>
-            <ToggleGroupItem value="Me" aria-label="Show quizzes made by me">Made by Me</ToggleGroupItem>
-          </ToggleGroup>
-        </div>
+        <QuizFilters
+          searchQuery={searchQuery}
+          onSearchQueryChange={setSearchQuery}
+          filterSource={filterSource}
+          onFilterSourceChange={setFilterSource}
+          trendingOnly={trendingOnly}
+          onTrendingOnlyChange={setTrendingOnly}
+        />
 
         <div className="space-y-8">
           {Object.keys(groupedQuizzes).length > 0 ? (
