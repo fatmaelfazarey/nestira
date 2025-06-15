@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   Accordion,
@@ -12,7 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Switch } from '@/components/ui/switch';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Filter, Search, Flame } from 'lucide-react';
+import { Filter, Search, Flame, Landmark, BrainCog, MessagesSquare, GanttChartSquare } from 'lucide-react';
 
 interface QuizFiltersProps {
   isOpen: boolean;
@@ -30,28 +29,28 @@ interface QuizFiltersProps {
 const skillCategories = [
   {
     name: 'Finance, Auditing & Accounting Skills',
-    emoji: '✅',
+    icon: Landmark,
     skills: [
       'Financial Accounting (IFRS)', 'Financial Accounting (US GAAP)', 'Accounts Payable / Receivable (AP/AR)', 'Costing of Products and Services', 'Financial Math', 'Budgeting', 'Financial Planning & Analysis (FP&A)', 'Advanced Accounting (IFRS / GAAP)', 'Internal Auditing / ISAs', 'Financial Due Diligence', 'Financial Modeling in Excel'
     ]
   },
   {
     name: 'Behavioral & Cognitive Tests',
-    emoji: '🧠',
+    icon: BrainCog,
     skills: [
       'DISC', 'Big 5 (OCEAN)', 'Culture Add', 'Behavioral Competency Profiler', 'Problem Solving', 'Critical Thinking', 'Numerical Reasoning'
     ]
   },
   {
     name: 'Communication & Interpersonal',
-    emoji: '💬',
+    icon: MessagesSquare,
     skills: [
       'Communication', 'Active Listening', 'Presentation Skills'
     ]
   },
   {
     name: 'Tools Proficiency',
-    emoji: '📊',
+    icon: GanttChartSquare,
     skills: [
       'Microsoft Excel (Advanced)', 'Power BI', 'QuickBooks / Xero'
     ]
@@ -133,8 +132,8 @@ export function QuizFilters({
               {skillCategories.map((category) => (
                 <AccordionItem value={category.name} key={category.name}>
                   <AccordionTrigger className="text-base font-medium hover:no-underline py-3">
-                    <div className="flex items-center gap-2">
-                      <span className="text-lg">{category.emoji}</span>
+                    <div className="flex items-center gap-3">
+                      <category.icon className="w-5 h-5 text-gray-500" />
                       <span>{category.name}</span>
                     </div>
                   </AccordionTrigger>
