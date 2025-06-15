@@ -16,7 +16,6 @@ import {
   Unlock,
   Eye,
   Target,
-  Building2,
   BarChart3,
   UserCheck,
   AlertCircle
@@ -216,14 +215,19 @@ export function DashboardOverview() {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="relative overflow-hidden bg-gradient-to-r from-primary to-primary/90 rounded-lg p-6 text-white">
-        <div className="absolute inset-0 bg-primary-pattern"></div>
-        <div className="relative">
-          <div className="flex items-center gap-3 mb-2">
-            <Building2 className="w-6 h-6" />
+      <div className="p-6 rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
+        <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/30 rounded-full opacity-60"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="bg-accent/20 p-2 rounded-lg">
+              <Briefcase className="w-5 h-5 text-accent" />
+            </div>
             <h1 className="text-2xl font-bold">Welcome back, Nestira Finance Team!</h1>
           </div>
-          <p className="text-white/80">Here's what's happening with your hiring pipeline today.</p>
+          <p className="text-sm text-slate-300">
+            Here's what's happening with your hiring pipeline today.
+          </p>
         </div>
       </div>
 
