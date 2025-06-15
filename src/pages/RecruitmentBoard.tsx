@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,7 +17,7 @@ import { useState, useMemo } from 'react';
 interface Candidate {
   id: number;
   firstName: string;
-  lastName: string;
+  lastName:string;
   flag: string;
   score: number;
   profilePhoto?: string;
@@ -33,6 +34,7 @@ interface Candidate {
     color: 'green' | 'red' | 'yellow' | 'gray' | 'blue';
   };
   // Additional properties for filtering
+  jobId: string;
   location?: string;
   experience?: number;
   status?: string;
@@ -59,7 +61,7 @@ interface Stage {
 
 const RecruitmentBoard = () => {
   const [selectedCandidates, setSelectedCandidates] = useState<Set<number>>(new Set());
-  const [selectedJob, setSelectedJob] = useState('financial-analyst');
+  const [selectedJob, setSelectedJob] = useState('all');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const jobTitles: { [key: string]: string } = {
@@ -120,6 +122,7 @@ const RecruitmentBoard = () => {
           flag: '🇺🇸', 
           score: 74, 
           isLocked: false,
+          jobId: 'financial-analyst',
           location: 'United Arab Emirates (UAE)',
           experience: 5,
           status: 'Available',
@@ -134,6 +137,7 @@ const RecruitmentBoard = () => {
           flag: '🇪🇬', 
           score: 40, 
           isLocked: true,
+          jobId: 'financial-analyst',
           location: 'Egypt',
           experience: 3,
           status: 'Interviewing',
@@ -170,6 +174,7 @@ const RecruitmentBoard = () => {
           flag: '🇱🇧', 
           score: 0, 
           isLocked: false,
+          jobId: 'investment-manager',
           location: 'United Arab Emirates (UAE)',
           experience: 6,
           status: 'Shortlisted',
@@ -184,6 +189,7 @@ const RecruitmentBoard = () => {
           flag: '🇶🇦',
           score: 0,
           isLocked: true,
+          jobId: 'senior-accountant',
           location: 'Qatar',
           experience: 2,
           status: 'Available',
@@ -198,6 +204,7 @@ const RecruitmentBoard = () => {
           flag: '🇯🇴',
           score: 0,
           isLocked: false,
+          jobId: 'investment-manager',
           location: 'Jordan',
           experience: 8,
           status: 'Available',
@@ -212,6 +219,7 @@ const RecruitmentBoard = () => {
           flag: '🇴🇲',
           score: 0,
           isLocked: false,
+          jobId: 'financial-analyst',
           location: 'Oman',
           experience: 5,
           status: 'Available',
@@ -241,6 +249,7 @@ const RecruitmentBoard = () => {
           flag: '🇸🇦', 
           score: 0,
           isLocked: false,
+          jobId: 'senior-accountant',
           location: 'Saudi Arabia',
           experience: 7,
           status: 'Not Available',
@@ -255,6 +264,7 @@ const RecruitmentBoard = () => {
           flag: '🇵🇰', 
           score: 0, 
           isLocked: true,
+          jobId: 'senior-accountant',
           location: 'Kuwait',
           experience: 4,
           status: 'Not Available',
@@ -331,6 +341,11 @@ const RecruitmentBoard = () => {
         return false;
       }
 
+      // Job Post filter
+      if (selectedJob !== 'all' && candidate.jobId !== selectedJob) {
+        return false;
+      }
+
       // Hiring stage filter
       if (hiringStageFilter.length > 0 && !hiringStageFilter.includes(candidate.hiringStage)) {
         return false;
@@ -376,6 +391,7 @@ const RecruitmentBoard = () => {
     skillsFilter,
     scoreRange,
     assessmentScoreRange,
+    selectedJob,
     hiringStageFilter,
     selectedSubfields,
     selectedSoftware,
@@ -600,7 +616,7 @@ const RecruitmentBoard = () => {
                             </Avatar>
                             <div>
                               <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
-                              <p className="text-sm text-muted-foreground">{jobTitles[selectedJob]}</p>
+                              <p className="text-sm text-muted-foreground">{jobTitles[candidate.jobId]}</p>
                             </div>
                           </div>
                         </TableCell>

@@ -263,6 +263,7 @@ export const FilterSidebar = ({
                     <SelectValue placeholder="All Job Posts" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All Job Posts</SelectItem>
                     {Object.entries(jobTitles).map(([key, title]) => (
                       <SelectItem key={key} value={key}>
                         {title}
