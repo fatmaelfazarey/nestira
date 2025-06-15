@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -346,9 +347,9 @@ export function DashboardOverview() {
         </Card>
 
         {/* Quick Actions */}
-        <Card className="p-6">
+        <Card className="p-6 bg-green-50 border border-green-300">
           <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-            <Target className="w-5 h-5 text-accent" />
+            <Target className="w-5 h-5 text-green-600" />
             Quick Actions
           </h3>
           <div className="grid grid-cols-1 gap-3">
