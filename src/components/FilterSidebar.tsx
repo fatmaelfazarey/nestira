@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +26,8 @@ interface FilterSidebarProps {
   setSkillsFilter: (value: string) => void;
   scoreRange: number[];
   setScoreRange: (value: number[]) => void;
+  assessmentScoreRange: number[];
+  setAssessmentScoreRange: (value: number[]) => void;
   selectedSubfields: string[];
   setSelectedSubfields: (value: string[]) => void;
   selectedSoftware: string[];
@@ -59,6 +62,12 @@ interface FilterSidebarProps {
   setSelectedScreeningTags: (value: string[]) => void;
   resetAllFilters: () => void;
   filteredCandidatesCount: number;
+  jobTitles: { [key: string]: string };
+  selectedJob: string;
+  setSelectedJob: (value: string) => void;
+  hiringStages: string[];
+  hiringStageFilter: string[];
+  setHiringStageFilter: (value: string[]) => void;
 }
 
 export const FilterSidebar = ({
@@ -76,6 +85,8 @@ export const FilterSidebar = ({
   setSkillsFilter,
   scoreRange,
   setScoreRange,
+  assessmentScoreRange,
+  setAssessmentScoreRange,
   selectedSubfields,
   setSelectedSubfields,
   selectedSoftware,
@@ -109,7 +120,13 @@ export const FilterSidebar = ({
   selectedScreeningTags,
   setSelectedScreeningTags,
   resetAllFilters,
-  filteredCandidatesCount
+  filteredCandidatesCount,
+  jobTitles,
+  selectedJob,
+  setSelectedJob,
+  hiringStages,
+  hiringStageFilter,
+  setHiringStageFilter
 }: FilterSidebarProps) => {
   const [isAdvancedFiltersOpen, setIsAdvancedFiltersOpen] = useState(false);
 
@@ -229,6 +246,56 @@ export const FilterSidebar = ({
               </div>
             </div>
           </div>
+          
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
+          
+          {/* Job & Stage Filters */}
+          <div className="space-y-4">
+            <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
+              <Briefcase className="w-4 h-4 text-accent" />
+              Job &amp; Stage
+            </h3>
+
+            <div className="grid grid-cols-1 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Job Post</label>
+                <Select value={selectedJob} onValueChange={setSelectedJob}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Job Posts" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.entries(jobTitles).map(([key, title]) => (
+                      <SelectItem key={key} value={key}>
+                        {title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">Hiring Stage</label>
+                <p className="text-xs text-gray-500">Pick all that apply</p>
+                <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto pr-2">
+                  {hiringStages.map((stage) => (
+                    <div key={stage} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`stage-${stage}`}
+                        checked={hiringStageFilter.includes(stage)}
+                        onCheckedChange={(checked) => {
+                          const newFilter = checked
+                            ? [...hiringStageFilter, stage]
+                            : hiringStageFilter.filter(s => s !== stage);
+                          setHiringStageFilter(newFilter);
+                        }}
+                      />
+                      <label htmlFor={`stage-${stage}`} className="text-sm text-gray-700 font-normal">{stage}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
           <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
@@ -256,11 +323,25 @@ export const FilterSidebar = ({
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Minimum Score: {scoreRange[0]}%
+                  Minimum Nestira Insight Score: {scoreRange[0]}%
                 </label>
                 <Slider
                   value={scoreRange}
                   onValueChange={setScoreRange}
+                  max={100}
+                  min={0}
+                  step={5}
+                  className="w-full"
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Minimum Assessment Score: {assessmentScoreRange[0]}%
+                </label>
+                <Slider
+                  value={assessmentScoreRange}
+                  onValueChange={setAssessmentScoreRange}
                   max={100}
                   min={0}
                   step={5}

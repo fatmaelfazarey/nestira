@@ -75,6 +75,7 @@ const RecruitmentBoard = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [skillsFilter, setSkillsFilter] = useState('all');
   const [scoreRange, setScoreRange] = useState([0]);
+  const [assessmentScoreRange, setAssessmentScoreRange] = useState([0]);
   const [selectedSubfields, setSelectedSubfields] = useState<string[]>([]);
   const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
   const [erpVersion, setErpVersion] = useState('all');
@@ -91,6 +92,7 @@ const RecruitmentBoard = () => {
   const [cvCompleteness, setCvCompleteness] = useState('all');
   const [academicExcellence, setAcademicExcellence] = useState(false);
   const [selectedScreeningTags, setSelectedScreeningTags] = useState<string[]>([]);
+  const [hiringStageFilter, setHiringStageFilter] = useState<string[]>([]);
 
   // Funnel tracker data
   const trackerStages = [
@@ -271,6 +273,8 @@ const RecruitmentBoard = () => {
     }
   ]);
 
+  const hiringStages = useMemo(() => stages.map(s => s.title), [stages]);
+
   // Filter candidates based on selected filters
   const filteredStages = useMemo(() => {
     return stages.map(stage => ({
@@ -303,6 +307,17 @@ const RecruitmentBoard = () => {
 
         // Score filter
         if (candidate.score < scoreRange[0]) {
+          return false;
+        }
+        
+        // Assessment score filter
+        const assessmentScore = calculateAssessmentScore(candidate.skillScores);
+        if (assessmentScore < assessmentScoreRange[0]) {
+          return false;
+        }
+
+        // Hiring stage filter
+        if (hiringStageFilter.length > 0 && !hiringStageFilter.includes(stage.title)) {
           return false;
         }
 
@@ -339,6 +354,7 @@ const RecruitmentBoard = () => {
       })
     }));
   }, [stages, searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, 
+      assessmentScoreRange, hiringStageFilter,
       selectedSubfields, selectedSoftware, selectedCertifications, selectedIndustries, selectedVisaStatus]);
 
   const allFilteredCandidates = useMemo(() => {
@@ -378,6 +394,7 @@ const RecruitmentBoard = () => {
     setStatusFilter('all');
     setSkillsFilter('all');
     setScoreRange([0]);
+    setAssessmentScoreRange([0]);
     setSelectedSubfields([]);
     setSelectedSoftware([]);
     setErpVersion('all');
@@ -394,6 +411,7 @@ const RecruitmentBoard = () => {
     setCvCompleteness('all');
     setAcademicExcellence(false);
     setSelectedScreeningTags([]);
+    setHiringStageFilter([]);
   };
 
   const HiringStageBadge = ({ stageTitle }: { stageTitle: string }) => {
@@ -678,6 +696,14 @@ const RecruitmentBoard = () => {
             setSkillsFilter={setSkillsFilter}
             scoreRange={scoreRange}
             setScoreRange={setScoreRange}
+            assessmentScoreRange={assessmentScoreRange}
+            setAssessmentScoreRange={setAssessmentScoreRange}
+            hiringStages={hiringStages}
+            hiringStageFilter={hiringStageFilter}
+            setHiringStageFilter={setHiringStageFilter}
+            jobTitles={jobTitles}
+            selectedJob={selectedJob}
+            setSelectedJob={setSelectedJob}
             selectedSubfields={selectedSubfields}
             setSelectedSubfields={setSelectedSubfields}
             selectedSoftware={selectedSoftware}
