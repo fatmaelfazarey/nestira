@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -74,19 +73,19 @@ const Billing = () => {
             </CardContent>
           </Card>
           
-          <Card className="md:col-span-2">
+          <Card className="md:col-span-2 bg-gradient-to-br from-blue-50 to-indigo-100 border-blue-200">
             <CardHeader>
               <CardTitle>Payment Method</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center gap-3 mb-4 p-4 rounded-lg bg-gray-50 border">
-                <CreditCard className="w-8 h-8 text-gray-400" />
+              <div className="flex items-center gap-4 mb-4 p-4 rounded-lg bg-white/60 border border-black/5 shadow-sm">
+                <CreditCard className="w-12 h-12 text-blue-600" />
                 <div>
-                  <p className="font-semibold text-lg">•••• •••• •••• 4242</p>
+                  <p className="font-semibold text-lg text-gray-800">•••• •••• •••• 4242</p>
                   <p className="text-sm text-gray-600">Expires 12/25</p>
                 </div>
               </div>
-              <Button variant="outline" className="w-full">Update Payment Method</Button>
+              <Button variant="outline" className="w-full bg-white hover:bg-white/80 border-blue-200">Update Payment Method</Button>
             </CardContent>
           </Card>
         </div>
