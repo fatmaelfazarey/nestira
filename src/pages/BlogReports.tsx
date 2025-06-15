@@ -1,3 +1,4 @@
+
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -37,8 +38,8 @@ const topicColorMap: { [key: string]: string } = {
 };
 
 const audienceColorMap: { [key: string]: string } = {
-  "Hiring Manager": "bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-900/50 dark:text-sky-300 dark:border-sky-700/50",
-  "Finance Candidate": "bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/50 dark:text-teal-300 dark:border-teal-700/50",
+  "Hiring Manager": "bg-cyan-400 text-cyan-950 border-cyan-500 dark:bg-cyan-500 dark:text-cyan-950 dark:border-cyan-600",
+  "Finance Candidate": "bg-fuchsia-400 text-fuchsia-950 border-fuchsia-500 dark:bg-fuchsia-500 dark:text-fuchsia-950 dark:border-fuchsia-600",
 };
 
 const BlogReports = () => {
