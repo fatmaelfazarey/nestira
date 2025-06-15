@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -44,9 +43,9 @@ export function QuizPersonalization() {
               We'll use your job details to provide relevant suggestions as you build your assessment
             </p>
             <div className="pt-1 pb-2">
-                <Button variant="link" className="text-accent p-0 h-auto flex items-center gap-1" onClick={() => setIsModalOpen(true)}>
-                    Or, choose from a job post
-                    <ArrowRight className="w-4 h-4" />
+                <Button variant="outline" className="border-accent text-accent hover:bg-accent/10 hover:text-accent" onClick={() => setIsModalOpen(true)}>
+                    Choose from a job post
+                    <ArrowRight />
                 </Button>
             </div>
             <Textarea
