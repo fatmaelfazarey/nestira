@@ -65,21 +65,21 @@ const navigationSections = [
         badge: null
       },
       {
-        title: "Job Listings",
-        url: "/job-listings",
+        title: "Job Posts",
+        url: "/job-posts",
         icon: File,
-        badge: null
-      },
-      {
-        title: "Recruitment Board",
-        url: "/recruitment-board",
-        icon: List,
         badge: null
       },
       {
         title: "Interviews",
         url: "/interviews",
         icon: Calendar,
+        badge: null
+      },
+      {
+        title: "Recruitment Board",
+        url: "/recruitment-board",
+        icon: List,
         badge: null
       }
     ]

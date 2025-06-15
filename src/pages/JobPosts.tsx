@@ -1,6 +1,6 @@
 
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Plus, Eye, Pencil, BarChart2, Archive } from 'lucide-react';
@@ -10,7 +10,7 @@ import { JobPreviewModal } from '@/components/JobPreviewModal';
 import { JobAnalyticsModal } from '@/components/JobAnalyticsModal';
 import { useToast } from '@/hooks/use-toast';
 
-const JobListings = () => {
+const JobPosts = () => {
   const [jobs, setJobs] = useState([
     {
       id: 1,
@@ -172,8 +172,8 @@ const JobListings = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Job Listings</h1>
-            <p className="text-gray-600">Manage your job postings and track performance</p>
+            <h1 className="text-3xl font-bold text-gray-900">Job Posts</h1>
+            <p className="text-gray-600">Manage your job posts and track performance</p>
           </div>
           <Button 
             className="bg-accent hover:bg-accent/90"
@@ -303,4 +303,4 @@ const JobListings = () => {
   );
 };
 
-export default JobListings;
+export default JobPosts;
