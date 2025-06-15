@@ -26,6 +26,16 @@ const allAvailableTopics = [
   "Survey Report",
 ];
 
+const topicColorMap: { [key: string]: string } = {
+  "AI in Finance": "bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/50 dark:text-blue-300 dark:border-blue-700/50",
+  "Career Growth": "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/50 dark:text-green-300 dark:border-green-700/50",
+  "MENA/GCC Focus": "bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-900/50 dark:text-purple-300 dark:border-purple-700/50",
+  "Remote Work": "bg-pink-100 text-pink-800 border-pink-200 dark:bg-pink-900/50 dark:text-pink-300 dark:border-pink-700/50",
+  "Salary Trends": "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700/50",
+  "Skills & Hiring": "bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-700/50",
+  "Survey Report": "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700/50",
+};
+
 const BlogReports = () => {
   const thumbnail = "/lovable-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
   const allContent = [
@@ -282,7 +292,7 @@ const BlogReports = () => {
                   <CardContent className="p-4 flex-grow">
                     <div className="flex flex-wrap gap-2 mb-2">
                       {item.topics.map(topic => (
-                        <Badge key={topic} variant="outline">{topic}</Badge>
+                        <Badge key={topic} variant="outline" className={topicColorMap[topic] || 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700'}>{topic}</Badge>
                       ))}
                     </div>
                     <p className="text-sm text-gray-600 line-clamp-3">{item.excerpt}</p>
