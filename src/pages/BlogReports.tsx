@@ -285,7 +285,7 @@ const BlogReports = () => {
                       <img src={item.thumbnail} alt={item.title} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
                     </AspectRatio>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <div className="absolute top-2 left-4 flex items-center gap-2">
                       {item.isNew && <Badge className="bg-accent text-accent-foreground border-accent-foreground/20">New</Badge>}
                       {(item as any).isTrending && <Badge className="bg-green-600 text-white border-transparent">🔥 Trending</Badge>}
                     </div>
