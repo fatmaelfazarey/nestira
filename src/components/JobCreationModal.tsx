@@ -418,9 +418,9 @@ We offer a competitive compensation package and excellent career growth opportun
             </Card>
 
             {/* Work & Contract Preferences Section - Purple Theme */}
-            <Card className="shadow-sm border-l-4 border-l-purple-400 bg-white">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-600">
+            <Card className="shadow-sm border-l-4 border-l-purple-500 bg-purple-50/30">
+              <CardHeader className="pb-4 bg-purple-50/50">
+                <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-800">
                   <Users className="w-5 h-5 text-purple-600" />
                   Work & Contract Preferences
                 </CardTitle>
