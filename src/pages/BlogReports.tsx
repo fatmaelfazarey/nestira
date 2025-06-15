@@ -61,18 +61,6 @@ const BlogReports = () => {
       targetAudience: "Hiring Manager",
     },
     {
-      id: 'article-4',
-      type: 'article',
-      title: 'AI in Financial Recruitment',
-      excerpt: 'How AI is changing the landscape of finding and hiring top financial talent.',
-      topics: ["AI in Finance", "Skills & Hiring"],
-      readTime: '7 min read',
-      publishedAt: '2024-04-28',
-      thumbnail: 'photo-1649972904349-6e44c42644a7',
-      isNew: false,
-      targetAudience: "Consultant / Researcher",
-    },
-    {
       id: 'report-2',
       type: 'report',
       title: "Finance Skills Gap Analysis",
@@ -83,18 +71,6 @@ const BlogReports = () => {
       thumbnail: 'photo-1486312338219-ce68d2c6f44d',
       isNew: false,
       targetAudience: "Hiring Manager",
-    },
-    {
-      id: 'survey-1',
-      type: 'survey',
-      title: "Remote Work in Finance: 2024 Survey",
-      excerpt: "Survey results on remote work preferences in finance roles.",
-      topics: ["Remote Work", "Survey Report"],
-      readTime: "4 min read",
-      publishedAt: "2024-03-25",
-      thumbnail: 'photo-1488590528505-98d2b5aba04b',
-      isNew: false,
-      targetAudience: "Consultant / Researcher",
     },
     {
       id: 'case-study-1',
@@ -112,7 +88,7 @@ const BlogReports = () => {
 
   const [searchParams, setSearchParams] = useSearchParams();
   
-  const audiences = ['Show All', 'Hiring Manager', 'Finance Candidate', 'Consultant / Researcher'];
+  const audiences = ['Show All', 'Hiring Manager', 'Finance Candidate'];
   const contentTypes = [...new Set(allContent.map(item => item.type))];
   const allTopics = [...new Set(allContent.flatMap(item => item.topics))].sort();
   const typeDisplayNames: { [key: string]: string } = {
