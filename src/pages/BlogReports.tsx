@@ -39,7 +39,7 @@ const BlogReports = () => {
       category: "Skills Guide",
       readTime: "5 min read",
       publishedAt: "2024-05-05",
-      thumbnail: 'photo-1581091226825-a6a2a5aee158',
+      thumbnail: 'photo-1518770660439-4636190af475',
       isNew: false,
     },
     {
@@ -49,7 +49,7 @@ const BlogReports = () => {
       excerpt: "Market insights and hiring metrics for the finance sector.",
       category: "Quarterly Report",
       downloadCount: "1.2K downloads",
-      thumbnail: 'photo-1518770660439-4636190af475',
+      thumbnail: 'photo-1461749280684-dccba630e2f6',
       isNew: false,
     },
     {
@@ -60,7 +60,7 @@ const BlogReports = () => {
       category: 'Industry Insight',
       readTime: '7 min read',
       publishedAt: '2024-04-28',
-      thumbnail: 'photo-1485827404703-89b55fcc595e',
+      thumbnail: 'photo-1649972904349-6e44c42644a7',
       isNew: false,
     },
     {
@@ -70,7 +70,7 @@ const BlogReports = () => {
       excerpt: "Understanding the gap between required and available skills.",
       category: "Research Report",
       downloadCount: "890 downloads",
-      thumbnail: 'photo-1526374965328-7f61d4dc18c5',
+      thumbnail: 'photo-1486312338219-ce68d2c6f44d',
       isNew: false,
     },
     {
@@ -80,7 +80,7 @@ const BlogReports = () => {
       excerpt: "Survey results on remote work preferences in finance roles.",
       category: "Survey Report",
       downloadCount: "650 downloads",
-      thumbnail: 'photo-1531297484001-80022131f5a1',
+      thumbnail: 'photo-1488590528505-98d2b5aba04b',
       isNew: false,
     }
   ];
