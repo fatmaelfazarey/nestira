@@ -3,6 +3,7 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import HelpCenterBot from '@/components/HelpCenterBot';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { 
   BookOpen,
 } from "lucide-react";
@@ -71,6 +72,13 @@ const HelpCenter = () => {
     }
   ];
 
+  const categoryStyles: Record<string, string> = {
+    basics: "bg-blue-100 text-blue-800 border-blue-200/60 hover:bg-blue-100/80",
+    hiring: "bg-green-100 text-green-800 border-green-200/60 hover:bg-green-100/80",
+    interviews: "bg-indigo-100 text-indigo-800 border-indigo-200/60 hover:bg-indigo-100/80",
+    tools: "bg-amber-100 text-amber-800 border-amber-200/60 hover:bg-amber-100/80",
+  };
+
   return (
     <DashboardLayout>
       <div className="p-8 space-y-8">
@@ -104,8 +112,15 @@ const HelpCenter = () => {
                       />
                     </div>
                     <div className="p-4 flex flex-col flex-grow">
-                      <h3 className="font-semibold text-lg mb-2">{article.title}</h3>
-                      <p className="text-sm text-gray-600 flex-grow">{article.purpose}</p>
+                      <div className="flex-grow">
+                        <h3 className="font-semibold text-lg mb-2">{article.title}</h3>
+                        <p className="text-sm text-gray-600">{article.purpose}</p>
+                      </div>
+                      <div className="mt-4">
+                        <Badge className={`font-medium capitalize ${categoryStyles[article.category] || 'bg-gray-100 text-gray-800'}`}>
+                          {article.category}
+                        </Badge>
+                      </div>
                     </div>
                   </Card>
                 </a>
