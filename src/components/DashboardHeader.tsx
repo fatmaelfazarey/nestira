@@ -1,7 +1,7 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Search, Settings, User, Building2 } from "lucide-react";
+import { Search, Settings, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export function DashboardHeader() {
@@ -25,15 +25,7 @@ export function DashboardHeader() {
         </div>
 
         <div className="flex items-center justify-center flex-1">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
-              <Building2 className="text-white w-4 h-4" />
-            </div>
-            <div>
-              <h1 className="font-semibold text-lg text-primary">Nestira Finance</h1>
-              <p className="text-xs text-gray-500">powered by Nestira</p>
-            </div>
-          </div>
+          <img src="/lovable-uploads/56e3e265-35c1-4968-86ec-2a6c964c97ad.png" alt="Nestira Finance Logo" className="h-10" />
         </div>
 
         <div className="flex items-center gap-4">
