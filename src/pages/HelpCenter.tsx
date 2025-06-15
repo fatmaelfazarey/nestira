@@ -94,8 +94,8 @@ const HelpCenter = () => {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {articles.length > 0 ? articles.map((article) => (
-                <a key={article.id} href={article.url} target="_blank" rel="noopener noreferrer" className="block hover:shadow-lg transition-shadow duration-300 rounded-lg">
-                  <Card className="overflow-hidden flex flex-col h-full">
+                <a key={article.id} href={article.url} target="_blank" rel="noopener noreferrer" className="block group rounded-lg">
+                  <Card className="overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:shadow-lg group-hover:border-accent">
                     <div className="relative">
                       <img 
                         src={article.video.thumbnail} 
