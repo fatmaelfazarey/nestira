@@ -223,7 +223,7 @@ export function DashboardOverview() {
             <div className="bg-accent/20 p-2 rounded-lg">
               <Briefcase className="w-5 h-5 text-accent" />
             </div>
-            <h1 className="text-2xl font-bold">Welcome back, Nestira Finance Team!</h1>
+            <h1 className="text-2xl font-bold">Welcome back, Yasser!</h1>
           </div>
           <p className="text-sm text-slate-300">
             Here's what's happening with your hiring pipeline today.
