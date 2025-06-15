@@ -23,8 +23,15 @@ const IntegrationItem: React.FC<IntegrationItemProps> = ({ icon, title, descript
         <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-lg bg-gray-100">
           {icon}
         </div>
-        <div className={isRTL ? 'text-right' : ''}>
-          <h3 className="font-semibold text-gray-800">{title}</h3>
+        <div className={`${isRTL ? 'text-right' : ''} space-y-1`}>
+          <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            <h3 className="font-semibold text-gray-800">{title}</h3>
+            {!isConnected && (
+              <span className="text-xs font-semibold text-red-700 bg-red-100 px-2 py-0.5 rounded-full">
+                {t('required')}
+              </span>
+            )}
+          </div>
           <p className="text-sm text-gray-500">{description}</p>
         </div>
       </div>

@@ -1,4 +1,3 @@
-
 export const translations = {
   english: {
     // Dashboard
@@ -47,10 +46,11 @@ export const translations = {
     uploadPicture: 'Upload Picture',
     
     // Integrations
+    integrationsDesc: 'All integrations are required. Connect your Google accounts to enable full functionality.',
     googleMeetDesc: 'Connect to schedule and manage video interviews.',
     googleCalendarDesc: 'Sync interview schedules with your calendar.',
     gmailDesc: 'Integrate your email for seamless communication.',
-
+    
     // Platform Preferences
     languagePreference: 'Language Preference',
     interfaceMode: 'Interface Mode',
@@ -141,6 +141,7 @@ export const translations = {
     uploadPicture: 'رفع صورة',
 
     // Integrations
+    integrationsDesc: 'جميع التكاملات مطلوبة. قم بتوصيل حسابات Google الخاصة بك لتمكين الوظائف الكاملة.',
     googleMeetDesc: 'اتصل لجدولة وإدارة مقابلات الفيديو.',
     googleCalendarDesc: 'مزامنة جداول المقابلات مع تقويمك.',
     gmailDesc: 'دمج بريدك الإلكتروني لتواصل سلس.',

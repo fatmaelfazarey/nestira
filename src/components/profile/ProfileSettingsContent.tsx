@@ -1,6 +1,6 @@
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Save, User, Building2, Shield, Puzzle } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -105,6 +105,7 @@ export function ProfileSettingsContent() {
                   <Puzzle className="w-5 h-5 text-purple-600" />
                   {t('integrations')}
                 </CardTitle>
+                <CardDescription>{t('integrationsDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="p-6">
                 <IntegrationsSection onChange={handleFieldChange} />
