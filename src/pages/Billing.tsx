@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { CreditCard, Download, CheckCircle, ArrowUpCircle, Star } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const Billing = () => {
   const invoices = [
@@ -98,11 +99,18 @@ const Billing = () => {
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {availablePlans.map((plan) => (
-                <Card key={plan.name} className={`flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 ${plan.isCurrent ? 'border-2 border-accent' : ''}`}>
+                <Card 
+                  key={plan.name} 
+                  className={cn(
+                    "flex flex-col relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 h-full",
+                    plan.isCurrent && "border-2 border-accent",
+                    plan.name === 'Business' && "ring-2 ring-purple-600 ring-offset-2 shadow-lg shadow-purple-600/20"
+                  )}
+                >
                   {plan.isCurrent ? (
                     <Badge className="absolute top-4 right-4 bg-accent text-white font-semibold">Current Plan</Badge>
                   ) : plan.name === 'Business' && (
-                    <Badge variant="secondary" className="absolute top-4 right-4 bg-purple-100 text-purple-800 border-purple-200">Most Popular</Badge>
+                    <Badge className="absolute top-4 right-4 bg-purple-600 text-white font-semibold border-purple-700">Most Popular</Badge>
                   )}
                   <CardHeader>
                     <CardTitle className="text-xl">{plan.name}</CardTitle>
