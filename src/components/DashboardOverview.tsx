@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { 
@@ -347,39 +346,39 @@ export function DashboardOverview() {
         </Card>
 
         {/* Quick Actions */}
-        <Card className="p-6 bg-purple-50 border border-purple-200">
+        <Card className="p-6 bg-orange-50 border border-orange-200">
           <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-            <Target className="w-5 h-5 text-purple-600" />
+            <Target className="w-5 h-5 text-orange-600" />
             Quick Actions
           </h3>
           <div className="grid grid-cols-1 gap-3">
             <Link to="/talent-pool">
-              <Button className="justify-start h-12 bg-purple-600 hover:bg-purple-700 text-white w-full">
+              <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
                 <Users className="w-4 h-4 mr-3" />
                 Browse Talent Pool
               </Button>
             </Link>
             <Link to="/unlocked-talents">
-              <Button variant="outline" className="justify-start h-12 w-full border-purple-300 text-purple-700 hover:bg-purple-100 hover:text-purple-800">
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
                 <UserCheck className="w-4 h-4 mr-3" />
                 Unlocked Talents
               </Button>
             </Link>
             <Link to="/job-listings">
-              <Button variant="outline" className="justify-start h-12 w-full border-purple-300 text-purple-700 hover:bg-purple-100 hover:text-purple-800">
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
                 <FileText className="w-4 h-4 mr-3" />
                 Create Job Post
               </Button>
             </Link>
             <Link to="/quiz-builder">
-              <Button variant="outline" className="justify-start h-12 w-full border-purple-300 text-purple-700 hover:bg-purple-100 hover:text-purple-800">
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
                 <PuzzleIcon className="w-4 h-4 mr-3" />
                 Quiz Builder
               </Button>
             </Link>
             <Button 
               variant="outline" 
-              className="justify-start h-12 w-full border-purple-300 text-purple-700 hover:bg-purple-100 hover:text-purple-800"
+              className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800"
               onClick={() => setShowAnalyticsModal(true)}
             >
               <TrendingUp className="w-4 h-4 mr-3" />
