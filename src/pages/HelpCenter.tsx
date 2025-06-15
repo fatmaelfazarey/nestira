@@ -1,7 +1,6 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import HelpCenterBot from '@/components/HelpCenterBot';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { 
   BookOpen,
@@ -81,40 +80,38 @@ const HelpCenter = () => {
         <Separator className="my-8" />
         
         {/* Help Articles */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+        <div>
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-primary" />
               Help Articles
-            </CardTitle>
-            <CardDescription>
+            </h2>
+            <p className="text-sm text-muted-foreground mt-2">
               In-depth guides to help you master every feature of Nestira.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {articles.length > 0 ? articles.map((article) => (
-                <a key={article.id} href={article.url} target="_blank" rel="noopener noreferrer" className="block group rounded-lg">
-                  <Card className="overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:shadow-lg group-hover:border-accent">
-                    <div className="relative">
-                      <img 
-                        src={article.video.thumbnail} 
-                        alt={article.title}
-                        className="w-full h-40 object-cover bg-gray-100"
-                      />
-                    </div>
-                    <div className="p-4 flex flex-col flex-grow">
-                      <h3 className="font-semibold text-lg mb-2">{article.title}</h3>
-                      <p className="text-sm text-gray-600 flex-grow">{article.purpose}</p>
-                    </div>
-                  </Card>
-                </a>
-              )) : (
-                <p className="text-gray-500 md:col-span-2 lg:col-span-3 text-center">No articles available.</p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {articles.length > 0 ? articles.map((article) => (
+              <a key={article.id} href={article.url} target="_blank" rel="noopener noreferrer" className="block group rounded-lg">
+                <Card className="overflow-hidden flex flex-col h-full transition-all duration-300 group-hover:shadow-lg group-hover:border-accent">
+                  <div className="relative">
+                    <img 
+                      src={article.video.thumbnail} 
+                      alt={article.title}
+                      className="w-full h-40 object-cover bg-gray-100"
+                    />
+                  </div>
+                  <div className="p-4 flex flex-col flex-grow">
+                    <h3 className="font-semibold text-lg mb-2">{article.title}</h3>
+                    <p className="text-sm text-gray-600 flex-grow">{article.purpose}</p>
+                  </div>
+                </Card>
+              </a>
+            )) : (
+              <p className="text-gray-500 md:col-span-2 lg:col-span-3 text-center">No articles available.</p>
+            )}
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
