@@ -230,15 +230,15 @@ const HelpCenterBot = () => {
                     }`}
                   >
                     {message.isBot && (
-                      <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="w-5 h-5 text-primary" />
+                      <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Bot className="w-6 h-6 text-accent" />
                       </div>
                     )}
                     <div
                       className={`max-w-[80%] rounded-lg p-3 ${
                         message.isBot
                           ? 'bg-gray-100 text-gray-900'
-                          : 'bg-primary text-white ml-auto'
+                          : 'bg-accent text-white ml-auto'
                       }`}
                     >
                       <p className="text-sm whitespace-pre-line">{message.text}</p>
@@ -250,16 +250,16 @@ const HelpCenterBot = () => {
                       </span>
                     </div>
                     {!message.isBot && (
-                      <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
-                        <User className="w-5 h-5 text-white" />
+                      <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center flex-shrink-0">
+                        <User className="w-6 h-6 text-white" />
                       </div>
                     )}
                   </div>
                 ))}
                 {isLoading && (
                   <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-primary" />
+                    <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
+                      <Bot className="w-6 h-6 text-accent" />
                     </div>
                     <div className="bg-gray-100 rounded-lg p-3">
                       <div className="flex gap-1">
