@@ -324,9 +324,14 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
                 className="w-full border rounded px-4 py-2"
                 value={personalizationParams?.seniorityLevel || ""}
                 onChange={e => {
-                  setPersonalizationParams(prev =>
-                    ({ ...(prev || {}), seniorityLevel: e.target.value })
-                  );
+                  setPersonalizationParams(prev => {
+                    // Default/fallback values if prev is null or missing keys
+                    return {
+                      role: prev?.role ?? selectedJobTitle ?? "",
+                      skills: prev?.skills ?? customSkills,
+                      seniorityLevel: e.target.value
+                    };
+                  });
                 }}
               >
                 <option value="">Select seniority...</option>
