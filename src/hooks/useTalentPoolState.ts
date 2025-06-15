@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { candidates } from '@/data/candidatesData';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
@@ -35,6 +34,9 @@ export const useTalentPoolState = () => {
   const [sortBy, setSortBy] = useState('score');
 
   // Filter states
+  const [assessmentScoreRange, setAssessmentScoreRange] = useState([0]);
+  const [selectedJob, setSelectedJob] = useState('all');
+  const [hiringStageFilter, setHiringStageFilter] = useState<string[]>([]);
   const [selectedSubfields, setSelectedSubfields] = useState<string[]>([]);
   const [selectedSoftware, setSelectedSoftware] = useState<string[]>([]);
   const [erpVersion, setErpVersion] = useState('all');
@@ -59,7 +61,10 @@ export const useTalentPoolState = () => {
            experienceRange[0] > 0 || 
            statusFilter !== 'all' || 
            skillsFilter !== 'all' || 
-           scoreRange[0] > 0 || 
+           scoreRange[0] > 0 ||
+           assessmentScoreRange[0] > 0 ||
+           selectedJob !== 'all' ||
+           hiringStageFilter.length > 0 ||
            selectedSubfields.length > 0 || 
            selectedSoftware.length > 0 || 
            erpVersion !== 'all' || 
@@ -103,6 +108,9 @@ export const useTalentPoolState = () => {
     setStatusFilter('all');
     setSkillsFilter('all');
     setScoreRange([0]);
+    setAssessmentScoreRange([0]);
+    setSelectedJob('all');
+    setHiringStageFilter([]);
     setSelectedSubfields([]);
     setSelectedSoftware([]);
     setErpVersion('all');
@@ -173,7 +181,7 @@ export const useTalentPoolState = () => {
         isAnimating: false
       });
     }
-  }, [searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, selectedSubfields, selectedSoftware, erpVersion, selectedCertifications, selectedIndustries, selectedVisaStatus, employmentType, workMode, availability, languageProficiency, genderFilter, educationLevel, selectedSpecialNeeds, cvCompleteness, academicExcellence, selectedScreeningTags]);
+  }, [searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter, scoreRange, assessmentScoreRange, selectedJob, hiringStageFilter, selectedSubfields, selectedSoftware, erpVersion, selectedCertifications, selectedIndustries, selectedVisaStatus, employmentType, workMode, availability, languageProficiency, genderFilter, educationLevel, selectedSpecialNeeds, cvCompleteness, academicExcellence, selectedScreeningTags]);
 
   return {
     // State values
@@ -198,6 +206,9 @@ export const useTalentPoolState = () => {
     revealTrigger, setRevealTrigger,
     scoreVisibility, setScoreVisibility,
     sortBy, setSortBy,
+    assessmentScoreRange, setAssessmentScoreRange,
+    selectedJob, setSelectedJob,
+    hiringStageFilter, setHiringStageFilter,
     selectedSubfields, setSelectedSubfields,
     selectedSoftware, setSelectedSoftware,
     erpVersion, setErpVersion,

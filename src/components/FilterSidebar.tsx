@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -121,7 +120,7 @@ export const FilterSidebar = ({
   setSelectedScreeningTags,
   resetAllFilters,
   filteredCandidatesCount,
-  jobTitles,
+  jobTitles = {},
   selectedJob,
   setSelectedJob,
   hiringStages,

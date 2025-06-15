@@ -54,6 +54,9 @@ const TalentPool = () => {
     cvCompleteness, setCvCompleteness,
     academicExcellence, setAcademicExcellence,
     selectedScreeningTags, setSelectedScreeningTags,
+    assessmentScoreRange, setAssessmentScoreRange,
+    selectedJob, setSelectedJob,
+    hiringStageFilter, setHiringStageFilter,
     
     // Helper functions
     hasActiveFilters,
@@ -65,6 +68,14 @@ const TalentPool = () => {
 
   const allSkills = Array.from(new Set(candidates.flatMap(c => c.tags)));
 
+  const jobTitles = {
+    "all": "All Job Posts",
+    "senior-financial-analyst": "Senior Financial Analyst",
+    "accountant": "Accountant",
+    "finance-manager": "Finance Manager",
+  };
+  const hiringStages = ["Sourced", "Applied", "Phone Screen", "Assessment", "Interview", "Offer", "Hired"];
+
   // Use AI filtered candidates if available, otherwise use regular filtering
   const baseCandidates = aiFilteredCandidates || candidates;
   const filteredCandidates = baseCandidates.filter(candidate => {
@@ -74,6 +85,8 @@ const TalentPool = () => {
     const matchesStatus = statusFilter === 'all' || candidate.status === statusFilter;
     const matchesSkills = skillsFilter === 'all' || candidate.tags.includes(skillsFilter);
     const matchesScore = scoreRange[0] === 0 || candidate.score >= scoreRange[0];
+    const matchesAssessmentScore = assessmentScoreRange[0] === 0 || (candidate.assessmentScore && candidate.assessmentScore >= assessmentScoreRange[0]);
+    const matchesHiringStage = hiringStageFilter.length === 0 || (candidate.hiringStage && hiringStageFilter.includes(candidate.hiringStage));
     
     // Check new filters
     const matchesSubfields = selectedSubfields.length === 0 || selectedSubfields.some(subfield => candidate.financeSubfields.includes(subfield));
@@ -81,7 +94,7 @@ const TalentPool = () => {
     const matchesCertifications = selectedCertifications.length === 0 || selectedCertifications.some(cert => candidate.certifications.includes(cert));
     const matchesIndustries = selectedIndustries.length === 0 || selectedIndustries.some(industry => candidate.industryExperience.includes(industry));
     
-    return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore && matchesSubfields && matchesSoftware && matchesCertifications && matchesIndustries;
+    return matchesSearch && matchesLocation && matchesExperience && matchesStatus && matchesSkills && matchesScore && matchesAssessmentScore && matchesHiringStage && matchesSubfields && matchesSoftware && matchesCertifications && matchesIndustries;
   });
 
   // Show all candidates if not revealed, otherwise show filtered/matched candidates
@@ -355,6 +368,8 @@ const TalentPool = () => {
           setSkillsFilter={setSkillsFilter} 
           scoreRange={scoreRange} 
           setScoreRange={setScoreRange} 
+          assessmentScoreRange={assessmentScoreRange}
+          setAssessmentScoreRange={setAssessmentScoreRange}
           selectedSubfields={selectedSubfields} 
           setSelectedSubfields={setSelectedSubfields} 
           selectedSoftware={selectedSoftware} 
@@ -388,7 +403,13 @@ const TalentPool = () => {
           selectedScreeningTags={selectedScreeningTags} 
           setSelectedScreeningTags={setSelectedScreeningTags} 
           resetAllFilters={resetAllFilters} 
-          filteredCandidatesCount={getFilteredCount()} 
+          filteredCandidatesCount={getFilteredCount()}
+          jobTitles={jobTitles}
+          selectedJob={selectedJob}
+          setSelectedJob={setSelectedJob}
+          hiringStages={hiringStages}
+          hiringStageFilter={hiringStageFilter}
+          setHiringStageFilter={setHiringStageFilter}
         />
 
         <FindMyMatchModal isOpen={isFindMyMatchOpen} onClose={() => setIsFindMyMatchOpen(false)} onJobSelected={handleJobPostSelected} />
