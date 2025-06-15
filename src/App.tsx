@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -21,7 +20,6 @@ import Referrals from "./pages/Referrals";
 import BlogReports from "./pages/BlogReports";
 import HelpCenter from "./pages/HelpCenter";
 import EmailAlertsSettings from "./pages/EmailAlertsSettings";
-import UserGuide from "./pages/UserGuide";
 import NestiSign from "./pages/NestiSign";
 import ProfileSettings from "./pages/ProfileSettings";
 import NotFound from "./pages/NotFound";
@@ -52,7 +50,6 @@ const App = () => (
             <Route path="/blog" element={<BlogReports />} />
             <Route path="/help" element={<HelpCenter />} />
             <Route path="/email-alerts" element={<EmailAlertsSettings />} />
-            <Route path="/user-guide" element={<UserGuide />} />
             <Route path="/nesti-sign" element={<NestiSign />} />
             <Route path="/profile-settings" element={<ProfileSettings />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

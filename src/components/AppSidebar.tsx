@@ -105,12 +105,6 @@ const navigationSections = [
     label: "Account",
     items: [
       {
-        title: "User Guide",
-        url: "/user-guide",
-        icon: BookOpen,
-        badge: null
-      },
-      {
         title: "Billing",
         url: "/billing",
         icon: CreditCard,
