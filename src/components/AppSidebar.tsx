@@ -194,8 +194,8 @@ export function AppSidebar() {
             <p className="text-xs text-green-100 mb-3">
               We’ll handle the hiring. You get the thank-you (in cash). Perfect for recruiters, HR consultants, and team leads.
             </p>
-            <Button size="sm" className="w-full bg-white text-green-700 hover:bg-white/90 font-semibold">
-                Refer & Earn
+            <Button asChild size="sm" className="w-full bg-white text-green-700 hover:bg-white/90 font-semibold">
+                <Link to="/referrals">Refer & Earn</Link>
             </Button>
           </div>
           <div className="text-xs text-gray-400 text-center font-medium">
