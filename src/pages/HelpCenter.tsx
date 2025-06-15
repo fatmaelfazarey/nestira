@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import HelpCenterBot from '@/components/HelpCenterBot';
 import { useState } from 'react';
@@ -24,7 +25,7 @@ const HelpCenter = () => {
       title: "Getting Started with Nestira",
       purpose: "Learn the basics of setting up your recruitment workflow, from company profile to your first job post.",
       video: {
-        thumbnail: "/placeholder.svg",
+        thumbnail: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=800&q=80",
         duration: "5:30",
       },
       steps: [
@@ -41,7 +42,7 @@ const HelpCenter = () => {
       title: "Creating Effective Job Posts",
       purpose: "A step-by-step guide to posting your job listings that attract the right talent.",
       video: {
-        thumbnail: "/placeholder.svg",
+        thumbnail: "https://images.unsplash.com/photo-1649972904349-6e44c42644a7?auto=format&fit=crop&w=800&q=80",
         duration: "8:45",
       },
       steps: [
@@ -59,7 +60,7 @@ const HelpCenter = () => {
       title: "Managing Your Talent Pool & Screening Candidates",
       purpose: "Organize, filter, and screen candidates effectively to find the best fit for your roles.",
       video: {
-        thumbnail: "/placeholder.svg",
+        thumbnail: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80",
         duration: "6:20",
       },
       steps: [
@@ -76,7 +77,7 @@ const HelpCenter = () => {
       title: "Setting Up Interviews",
       purpose: "Learn how to schedule and manage candidate interviews seamlessly within Nestira.",
       video: {
-        thumbnail: "/placeholder.svg",
+        thumbnail: "https://images.unsplash.com/photo-1531297484001-80022131f5a1?auto=format&fit=crop&w=800&q=80",
         duration: "7:15",
       },
       steps: [
@@ -94,7 +95,7 @@ const HelpCenter = () => {
       title: "Using the Quiz Designer",
       purpose: "Create custom assessments and quizzes to evaluate candidate skills objectively.",
       video: {
-        thumbnail: "/placeholder.svg",
+        thumbnail: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80",
         duration: "9:10",
       },
       steps: [
@@ -112,7 +113,7 @@ const HelpCenter = () => {
       title: "Analytics & Reporting",
       purpose: "Understand your recruitment performance with our powerful analytics and reporting tools.",
       video: {
-        thumbnail: "/placeholder.svg",
+        thumbnail: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7?auto=format&fit=crop&w=800&q=80",
         duration: "4:50",
       },
       steps: [
@@ -194,7 +195,7 @@ const HelpCenter = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredArticles.length > 0 ? filteredArticles.map((article) => (
                 <Card key={article.id} className="overflow-hidden flex flex-col">
                   <div className="relative">
