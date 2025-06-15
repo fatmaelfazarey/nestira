@@ -1,13 +1,16 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Save, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
-import { QuizPersonalization, PersonalizationParams } from './quiz/QuizPersonalization';
+import { QuizPersonalization } from './quiz/QuizPersonalization';
 import { AISuggestionPanel } from './quiz/AISuggestionPanel';
 import { QuizCustomizationPanel } from './quiz/QuizCustomizationPanel';
 import { QuizDetailsCard } from './quiz/QuizDetailsCard';
 import { Question } from './quiz/types';
 import { generateAIQuestions } from './quiz/aiQuestionGenerator';
+import { QuizStepper } from './quiz/QuizStepper';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface QuizCreatorProps {
   onSave: (quiz: any) => void;
@@ -26,8 +29,16 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   const [aiSuggestedQuestions, setAiSuggestedQuestions] = useState<Question[]>([]);
   
   // UI state
-  const [showAISuggestions, setShowAISuggestions] = useState(false);
-  const [personalizationParams, setPersonalizationParams] = useState<PersonalizationParams | null>(null);
+  const [personalizationParams, setPersonalizationParams] = useState<any | null>(null);
+  const [currentStep, setCurrentStep] = useState(1);
+
+  const steps = [
+    { id: 1, name: 'Job details' },
+    { id: 2, name: 'Choose tests' },
+    { id: 3, name: 'Add questions' },
+    { id: 4, name: 'Finalize' },
+  ];
+
 
   // Load editing quiz data
   useEffect(() => {
@@ -37,17 +48,26 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       setTimeLimit(editingQuiz.timeLimit || { hours: 0, minutes: 30, seconds: 0 });
       setQuestions(editingQuiz.questionsList || []);
       setPersonalizationParams(editingQuiz.personalizationParams || null);
+      // Potentially set current step based on editingQuiz state
     }
   }, [editingQuiz]);
 
-  const handleGenerateQuestions = (params: PersonalizationParams) => {
+  const handleGenerateQuestions = (params: any) => {
     console.log('Generating questions for:', params);
     const generatedQuestions = generateAIQuestions(params);
     setAiSuggestedQuestions(generatedQuestions);
     setPersonalizationParams(params);
-    setShowAISuggestions(true);
     
     toast.success(`Generated ${generatedQuestions.length} questions based on your criteria!`);
+  };
+
+  const handleContinue = () => {
+    if (currentStep === 1) {
+      // In a real scenario, we'd collect form data from QuizPersonalization here.
+      // For now, we'll use mock data to generate questions for the next step.
+      handleGenerateQuestions({ role: 'financial-analyst', skills: ['Excel', 'Budgeting'], seniorityLevel: 'mid-level' });
+    }
+    setCurrentStep(prev => prev + 1);
   };
 
   const handleRegenerateQuestions = () => {
@@ -154,60 +174,101 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6 space-y-6">
+        <QuizStepper steps={steps} currentStep={currentStep} />
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Left Column - Main Flow */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Step 1: Personalization */}
-            <QuizPersonalization onGenerateQuestions={handleGenerateQuestions} />
+          <div className={currentStep < 4 ? "lg:col-span-3 space-y-6" : "lg:col-span-4 space-y-6"}>
+            {currentStep === 1 && <QuizPersonalization />}
+            
+            {currentStep === 2 && (
+              <AISuggestionPanel
+                questions={aiSuggestedQuestions}
+                onAddToQuiz={handleAddToQuiz}
+                onRegenerateQuestions={handleRegenerateQuestions}
+                isVisible={true}
+              />
+            )}
 
-            {/* Step 2: AI Suggestions */}
-            <AISuggestionPanel
-              questions={aiSuggestedQuestions}
-              onAddToQuiz={handleAddToQuiz}
-              onRegenerateQuestions={handleRegenerateQuestions}
-              isVisible={showAISuggestions}
-            />
-
-            {/* Step 3: Quiz Customization */}
-            <QuizCustomizationPanel
-              questions={questions}
-              onUpdateQuestion={handleUpdateQuestion}
-              onRemoveQuestion={handleRemoveQuestion}
-              onReorderQuestions={handleReorderQuestions}
-              onAddCustomQuestion={handleAddCustomQuestion}
-            />
+            {currentStep === 3 && (
+              <QuizCustomizationPanel
+                questions={questions}
+                onUpdateQuestion={handleUpdateQuestion}
+                onRemoveQuestion={handleRemoveQuestion}
+                onReorderQuestions={handleReorderQuestions}
+                onAddCustomQuestion={handleAddCustomQuestion}
+              />
+            )}
+            {currentStep === 4 && (
+               <Card>
+                <CardHeader><CardTitle>Finalize Quiz</CardTitle></CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">Review your quiz settings and added questions before saving.</p>
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <QuizDetailsCard
+                      title={quizTitle}
+                      description={quizDescription}
+                      timeLimit={timeLimit}
+                      onTitleChange={setQuizTitle}
+                      onDescriptionChange={setQuizDescription}
+                      onTimeLimitChange={setTimeLimit}
+                    />
+                    <QuizCustomizationPanel
+                      questions={questions}
+                      onUpdateQuestion={handleUpdateQuestion}
+                      onRemoveQuestion={handleRemoveQuestion}
+                      onReorderQuestions={handleReorderQuestions}
+                      onAddCustomQuestion={handleAddCustomQuestion}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Right Column - Quiz Details */}
-          <div className="lg:col-span-1">
-            <QuizDetailsCard
-              title={quizTitle}
-              description={quizDescription}
-              timeLimit={timeLimit}
-              onTitleChange={setQuizTitle}
-              onDescriptionChange={setQuizDescription}
-              onTimeLimitChange={setTimeLimit}
-            />
-          </div>
+          {currentStep < 4 && (
+            <div className="lg:col-span-1">
+              <QuizDetailsCard
+                title={quizTitle}
+                description={quizDescription}
+                timeLimit={timeLimit}
+                onTitleChange={setQuizTitle}
+                onDescriptionChange={setQuizDescription}
+                onTimeLimitChange={setTimeLimit}
+              />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Footer CTA - Sticky */}
       <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
-        <div className="max-w-7xl mx-auto flex justify-end gap-3">
+        <div className="max-w-7xl mx-auto flex justify-end items-center gap-3">
+          {currentStep > 1 && (
+            <Button variant="outline" onClick={() => setCurrentStep(prev => prev - 1)} className="mr-auto">
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Back
+            </Button>
+          )}
           <Button variant="ghost" onClick={onCancel}>
             Cancel
           </Button>
-          <Button 
-            onClick={handleSaveQuiz} 
-            disabled={!isQuizComplete}
-            className="bg-accent hover:bg-accent/90 text-white"
-            size="lg"
-          >
-            <Save className="w-4 h-4 mr-2" />
-            {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
-          </Button>
+          {currentStep < steps.length ? (
+            <Button onClick={handleContinue} className="bg-accent hover:bg-accent/90 text-white">
+                Continue
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleSaveQuiz} 
+              disabled={!isQuizComplete}
+              className="bg-accent hover:bg-accent/90 text-white"
+              size="lg"
+            >
+              <Save className="w-4 h-4 mr-2" />
+              {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
+            </Button>
+          )}
         </div>
       </div>
     </div>

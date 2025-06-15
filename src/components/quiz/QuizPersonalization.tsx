@@ -1,170 +1,130 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Sparkles } from 'lucide-react';
+import { Sparkles, Info } from 'lucide-react';
 
-interface QuizPersonalizationProps {
-  onGenerateQuestions: (params: PersonalizationParams) => void;
-}
-
-export interface PersonalizationParams {
-  role: string;
-  skills: string[];
-  seniorityLevel: string;
-}
-
-const defaultSkills = ['Excel', 'Financial Reporting', 'Budgeting', 'Tax Compliance', 'Risk Management'];
-const seniorityLevels = ['Entry Level', 'Mid Level', 'Senior Level'];
-
-export function QuizPersonalization({ onGenerateQuestions }: QuizPersonalizationProps) {
-  const [role, setRole] = useState('');
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [customSkill, setCustomSkill] = useState('');
-  const [seniorityLevel, setSeniorityLevel] = useState('');
-
-  const handleSkillToggle = (skill: string) => {
-    setSelectedSkills(prev => 
-      prev.includes(skill) 
-        ? prev.filter(s => s !== skill)
-        : [...prev, skill]
-    );
-  };
-
-  const handleAddCustomSkill = () => {
-    if (customSkill.trim() && !selectedSkills.includes(customSkill.trim())) {
-      setSelectedSkills(prev => [...prev, customSkill.trim()]);
-      setCustomSkill('');
-    }
-  };
-
-  const handleGenerateQuestions = () => {
-    if (role && selectedSkills.length > 0 && seniorityLevel) {
-      onGenerateQuestions({ role, skills: selectedSkills, seniorityLevel });
-    }
-  };
-
-  const isComplete = role && selectedSkills.length > 0 && seniorityLevel;
-
+export function QuizPersonalization() {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <Sparkles className="w-5 h-5 text-accent" />
-          Let's Personalize Your Quiz
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Role Selection */}
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <h2 className="text-3xl font-bold">Job details</h2>
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Which role are you hiring for? *
-          </label>
-          <Select value={role} onValueChange={setRole}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select a role..." />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="financial-analyst">Financial Analyst</SelectItem>
-              <SelectItem value="accountant">Accountant</SelectItem>
-              <SelectItem value="bookkeeper">Bookkeeper</SelectItem>
-              <SelectItem value="controller">Controller</SelectItem>
-              <SelectItem value="cfo">Chief Financial Officer</SelectItem>
-              <SelectItem value="auditor">Auditor</SelectItem>
-              <SelectItem value="tax-specialist">Tax Specialist</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label className="flex items-center gap-2 font-semibold text-lg">
+            <Sparkles className="w-5 h-5 text-accent" />
+            What job are you hiring for?
+          </Label>
+          <p className="text-sm text-muted-foreground">
+            We'll use your job details to provide relevant suggestions as you build your assessment
+          </p>
+          <Textarea
+            placeholder="Add a job description or enter your job requirements manually e.g. job title, key responsibilities, and must-have skills."
+            className="min-h-[120px] border-accent/50 focus:border-accent ring-accent/20"
+          />
         </div>
 
-        {/* Skills Selection */}
-        <div className="space-y-3">
-          <label className="text-sm font-medium text-gray-700">
-            What skills would you like to assess? *
-          </label>
-          <div className="grid grid-cols-2 gap-3">
-            {defaultSkills.map((skill) => (
-              <div key={skill} className="flex items-center space-x-2">
-                <Checkbox
-                  id={skill}
-                  checked={selectedSkills.includes(skill)}
-                  onCheckedChange={() => handleSkillToggle(skill)}
-                />
-                <label htmlFor={skill} className="text-sm text-gray-700 cursor-pointer">
-                  {skill}
-                </label>
-              </div>
-            ))}
-          </div>
-
-          {/* Custom Skill Input */}
-          <div className="flex gap-2">
-            <Input
-              placeholder="Add another skill..."
-              value={customSkill}
-              onChange={(e) => setCustomSkill(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && handleAddCustomSkill()}
-            />
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={handleAddCustomSkill}
-              disabled={!customSkill.trim()}
-            >
-              <Plus className="w-4 h-4" />
-            </Button>
-          </div>
-
-          {/* Selected Skills Display */}
-          {selectedSkills.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {selectedSkills.map((skill) => (
-                <Badge 
-                  key={skill} 
-                  variant="secondary" 
-                  className="cursor-pointer hover:bg-red-100"
-                  onClick={() => handleSkillToggle(skill)}
-                >
-                  {skill} ×
-                </Badge>
-              ))}
+        <div className="space-y-4 pt-4">
+          <h3 className="font-semibold text-lg">Job overview</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1">
+              <Label>Job role *</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Finance & Accounting Manager" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="financial-analyst">Financial Analyst</SelectItem>
+                  <SelectItem value="accountant">Accountant</SelectItem>
+                  <SelectItem value="bookkeeper">Bookkeeper</SelectItem>
+                  <SelectItem value="controller">Controller</SelectItem>
+                  <SelectItem value="cfo">Chief Financial Officer</SelectItem>
+                  <SelectItem value="auditor">Auditor</SelectItem>
+                  <SelectItem value="tax-specialist">Tax Specialist</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          )}
+            <div className="space-y-1">
+              <Label>Work arrangement *</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Remote" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="remote">Remote</SelectItem>
+                  <SelectItem value="hybrid">Hybrid</SelectItem>
+                  <SelectItem value="on-site">On-site</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>Job role location *</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="Worldwide" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="worldwide">Worldwide</SelectItem>
+                  <SelectItem value="usa">United States</SelectItem>
+                  <SelectItem value="uk">United Kingdom</SelectItem>
+                  <SelectItem value="canada">Canada</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <Label>Language of assessment *</Label>
+              <Select>
+                <SelectTrigger>
+                  <SelectValue placeholder="English" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="english">English</SelectItem>
+                  <SelectItem value="spanish">Spanish</SelectItem>
+                  <SelectItem value="french">French</SelectItem>
+                  <SelectItem value="german">German</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
 
-        {/* Seniority Level */}
-        <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-700">
-            Seniority level *
-          </label>
-          <Select value={seniorityLevel} onValueChange={setSeniorityLevel}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select seniority level..." />
-            </SelectTrigger>
-            <SelectContent>
-              {seniorityLevels.map((level) => (
-                <SelectItem key={level} value={level.toLowerCase().replace(' ', '-')}>
-                  {level}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="space-y-4 pt-4">
+          <h3 className="font-semibold text-lg flex items-center gap-1">
+            Creation method <Info className="w-4 h-4 text-muted-foreground" />
+          </h3>
+          <RadioGroup defaultValue="build-own" className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Label htmlFor="template" className="block cursor-pointer rounded-lg border bg-card p-4 text-card-foreground shadow-sm hover:bg-accent/5 has-[input:checked]:border-accent has-[input:checked]:ring-1 has-[input:checked]:ring-accent">
+              <div className="flex items-start gap-4">
+                <RadioGroupItem value="template" id="template" />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-semibold">Using an Essential Skills Template</h4>
+                    <Badge variant="outline" className="text-green-600 border-green-600 bg-green-50">Free</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Evaluate essential skills applicable across job roles and industries.
+                  </p>
+                  <p className="text-sm font-semibold text-accent pt-2">See details</p>
+                </div>
+              </div>
+            </Label>
+            <Label htmlFor="build-own" className="block cursor-pointer rounded-lg border bg-card p-4 text-card-foreground shadow-sm hover:bg-accent/5 has-[input:checked]:border-accent has-[input:checked]:ring-1 has-[input:checked]:ring-accent">
+              <div className="flex items-start gap-4">
+                <RadioGroupItem value="build-own" id="build-own" />
+                <div className="space-y-1 mt-1">
+                  <h4 className="font-semibold">Building your own</h4>
+                  <p className="text-sm text-muted-foreground">
+                    Select your own tests and custom questions.
+                  </p>
+                </div>
+              </div>
+            </Label>
+          </RadioGroup>
         </div>
-
-        {/* Generate Button */}
-        <Button
-          onClick={handleGenerateQuestions}
-          disabled={!isComplete}
-          className="w-full bg-accent hover:bg-accent/90 text-white"
-          size="lg"
-        >
-          <Sparkles className="w-4 h-4 mr-2" />
-          Generate Questions
-        </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
