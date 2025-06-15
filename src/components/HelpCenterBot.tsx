@@ -22,6 +22,12 @@ interface FAQCategory {
   category: string;
   icon: React.ElementType;
   faqs: FAQ[];
+  color: {
+    bg: string;
+    border: string;
+    text: string;
+    iconBg: string;
+  };
 }
 
 const WELCOME_TEXT = "Hi! I'm Nestira's Help Assistant. I can answer questions about using the platform, billing, candidate management, and more. You can ask me anything or click on the FAQs below for quick answers!";
@@ -43,6 +49,12 @@ const HelpCenterBot = () => {
     {
       category: "Getting Started",
       icon: Rocket,
+      color: {
+        bg: 'bg-blue-50/30',
+        border: 'border-blue-600',
+        text: 'text-blue-600',
+        iconBg: 'bg-blue-100/50'
+      },
       faqs: [
         {
           question: "How do I create a job posting?",
@@ -57,6 +69,12 @@ const HelpCenterBot = () => {
     {
       category: "Hiring Process",
       icon: Users,
+      color: {
+        bg: 'bg-green-50/30',
+        border: 'border-green-600',
+        text: 'text-green-600',
+        iconBg: 'bg-green-100/50'
+      },
       faqs: [
         {
           question: "How does candidate scoring work?",
@@ -75,6 +93,12 @@ const HelpCenterBot = () => {
     {
       category: "Billing & Subscription",
       icon: CreditCard,
+      color: {
+        bg: 'bg-orange-50/30',
+        border: 'border-orange-600',
+        text: 'text-orange-600',
+        iconBg: 'bg-orange-100/50'
+      },
       faqs: [
         {
           question: "How do I manage my billing?",
@@ -89,6 +113,12 @@ const HelpCenterBot = () => {
     {
       category: "Platform Features",
       icon: ClipboardList,
+      color: {
+        bg: 'bg-purple-50/30',
+        border: 'border-purple-600',
+        text: 'text-purple-600',
+        iconBg: 'bg-purple-100/50'
+      },
       faqs: [
         {
           question: "Can I export candidate data?",
@@ -209,7 +239,7 @@ const HelpCenterBot = () => {
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-white" />
+                  <Bot className="w-5 h-5 text-white" />
                 </div>
                 <span className="font-bold text-lg">Nestira Help Assistant</span>
               </div>
@@ -231,7 +261,7 @@ const HelpCenterBot = () => {
                   >
                     {message.isBot && (
                       <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="w-6 h-6 text-accent" />
+                        <Bot className="w-5 h-5 text-accent" />
                       </div>
                     )}
                     <div
@@ -259,7 +289,7 @@ const HelpCenterBot = () => {
                 {isLoading && (
                   <div className="flex items-start gap-3">
                     <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
-                      <Bot className="w-6 h-6 text-accent" />
+                      <Bot className="w-5 h-5 text-accent" />
                     </div>
                     <div className="bg-gray-100 rounded-lg p-3">
                       <div className="flex gap-1">
@@ -298,7 +328,7 @@ const HelpCenterBot = () => {
         <Card className="h-full">
           <CardHeader className="flex-shrink-0 border-b">
             <CardTitle className="flex items-center gap-2">
-              <HelpCircle className="w-6 h-6 text-accent" />
+              <HelpCircle className="w-5 h-5 text-accent" />
               <span className="font-bold">Frequently Asked Questions</span>
             </CardTitle>
           </CardHeader>
@@ -307,12 +337,12 @@ const HelpCenterBot = () => {
               <div className="p-4 space-y-2">
                 <Accordion type="multiple" className="w-full space-y-2">
                   {categorizedFaqs.map((categoryItem, categoryIndex) => (
-                    <Card key={categoryIndex} className="bg-white/80 border-gray-200/60 shadow-sm transition-all duration-200 overflow-hidden">
+                    <Card key={categoryIndex} className={`shadow-md transition-all duration-200 overflow-hidden border-l-4 ${categoryItem.color.bg} ${categoryItem.color.border} backdrop-blur-sm`}>
                         <AccordionItem value={`category-${categoryIndex}`} className="border-b-0">
                             <AccordionTrigger className="p-4 hover:no-underline">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                                        <categoryItem.icon className="w-6 h-6 text-primary" />
+                                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${categoryItem.color.iconBg}`}>
+                                        <categoryItem.icon className={`w-5 h-5 ${categoryItem.color.text}`} />
                                     </div>
                                     <span className="font-semibold text-base text-gray-800">{categoryItem.category}</span>
                                 </div>
