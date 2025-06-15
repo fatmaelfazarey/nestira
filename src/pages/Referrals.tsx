@@ -22,40 +22,46 @@ const Referrals = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Referrals</h1>
-            <p className="text-gray-600">Invite companies and earn rewards</p>
-          </div>
+      <div className="space-y-8 p-4 md:p-6">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900">Referrals</h1>
+          <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
+            Whether it’s a company you trust or a manager in your network, send them our way. We’ll handle the hiring — you get the thank-you (in cash). Perfect for recruiters, HR consultants, and team leads.
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card>
             <CardContent className="p-6 text-center">
-              <Users className="w-8 h-8 text-accent mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{referralStats.totalReferrals}</div>
-              <div className="text-sm text-gray-600">Total Referrals</div>
+              <div className="mx-auto bg-accent/10 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                <Users className="w-6 h-6 text-accent" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900">{referralStats.totalReferrals}</div>
+              <div className="text-sm text-gray-500">Total Referrals</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
-              <Gift className="w-8 h-8 text-green-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{referralStats.successfulReferrals}</div>
-              <div className="text-sm text-gray-600">Successful</div>
+              <div className="mx-auto bg-green-100 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                <Gift className="w-6 h-6 text-green-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900">{referralStats.successfulReferrals}</div>
+              <div className="text-sm text-gray-500">Successful</div>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-6 text-center">
-              <Mail className="w-8 h-8 text-blue-600 mx-auto mb-2" />
-              <div className="text-2xl font-bold text-gray-900">{referralStats.pendingReferrals}</div>
-              <div className="text-sm text-gray-600">Pending</div>
+              <div className="mx-auto bg-blue-100 rounded-full w-12 h-12 flex items-center justify-center mb-3">
+                <Mail className="w-6 h-6 text-blue-600" />
+              </div>
+              <div className="text-3xl font-bold text-gray-900">{referralStats.pendingReferrals}</div>
+              <div className="text-sm text-gray-500">Pending</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="flex items-center justify-center">
             <CardContent className="p-6 text-center">
-              <div className="text-2xl font-bold text-accent">{referralStats.totalEarned}</div>
-              <div className="text-sm text-gray-600">Total Earned</div>
+              <div className="text-3xl font-bold text-accent">{referralStats.totalEarned}</div>
+              <div className="text-sm text-gray-500">Total Earned</div>
             </CardContent>
           </Card>
         </div>
@@ -63,7 +69,7 @@ const Referrals = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>Invite Companies</CardTitle>
+              <CardTitle>Invite Others</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
@@ -71,7 +77,7 @@ const Referrals = () => {
                   Email Address
                 </label>
                 <div className="flex gap-2">
-                  <Input placeholder="company@example.com" className="flex-1" />
+                  <Input placeholder="contact@example.com" className="flex-1" />
                   <Button className="bg-accent hover:bg-accent/90 text-white">
                     Send Invite
                   </Button>
@@ -105,8 +111,8 @@ const Referrals = () => {
                 <div className="flex gap-3">
                   <div className="w-6 h-6 bg-accent text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
                   <div>
-                    <h4 className="font-medium">Invite Companies</h4>
-                    <p className="text-sm text-gray-600">Send invitations to companies you know</p>
+                    <h4 className="font-medium">Invite Someone</h4>
+                    <p className="text-sm text-gray-600">Send invitations to people you know</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -141,7 +147,10 @@ const Referrals = () => {
                     <p className="text-sm text-gray-600">{referral.date}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge variant={referral.status === 'Successful' ? 'default' : 'secondary'}>
+                    <Badge 
+                      variant={referral.status === 'Successful' ? 'default' : 'secondary'} 
+                      className={referral.status === 'Successful' ? 'bg-gray-900 text-white hover:bg-gray-800' : ''}
+                    >
                       {referral.status}
                     </Badge>
                     <span className="font-medium">{referral.reward}</span>
