@@ -50,6 +50,7 @@ const BlogReports = () => {
       thumbnail,
       isNew: true,
       targetAudience: "Hiring Manager",
+      isTrending: true,
     },
     {
       id: 'article-2',
@@ -110,6 +111,7 @@ const BlogReports = () => {
       thumbnail,
       isNew: false,
       targetAudience: "Hiring Manager",
+      isTrending: true,
     },
     {
       id: 'survey-1',
@@ -283,7 +285,10 @@ const BlogReports = () => {
                       <img src={item.thumbnail} alt={item.title} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
                     </AspectRatio>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    {item.isNew && <Badge className="absolute top-4 left-4 bg-accent text-accent-foreground border-accent-foreground/20">New</Badge>}
+                    <div className="absolute top-4 left-4 flex items-center gap-2">
+                      {item.isNew && <Badge className="bg-accent text-accent-foreground border-accent-foreground/20">New</Badge>}
+                      {(item as any).isTrending && <Badge className="bg-yellow-400 text-yellow-900 border-yellow-500/50">🔥 Trending</Badge>}
+                    </div>
                     <div className="absolute bottom-0 p-4">
                         <Badge variant="secondary" className="mb-2">{item.targetAudience}</Badge>
                         <CardTitle className="text-lg font-bold leading-snug text-white group-hover:text-amber-300 transition-colors">{item.title}</CardTitle>
