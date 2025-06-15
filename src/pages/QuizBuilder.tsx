@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle, Search } from 'lucide-react';
+import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle, Search, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -22,6 +22,7 @@ const QuizBuilder = () => {
   const [filterSource, setFilterSource] = useState('all');
   const [trendingOnly, setTrendingOnly] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
   const [quizzes, setQuizzes] = useState([
     { 
       id: 1, 
@@ -165,6 +166,12 @@ const QuizBuilder = () => {
     return titleMatch && sourceMatch && trendingMatch && skillMatch;
   });
 
+  const activeFilterCount =
+    (searchQuery ? 1 : 0) +
+    (filterSource !== 'all' ? 1 : 0) +
+    (trendingOnly ? 1 : 0) +
+    (selectedSkills.length > 0 ? 1 : 0);
+
   const groupedQuizzes = filteredQuizzes.reduce((acc, quiz) => {
     const jobTitle = quiz.personalizationParams?.jobTitle || 'Other';
     if (!acc[jobTitle]) {
@@ -206,16 +213,20 @@ const QuizBuilder = () => {
           </Button>
         </div>
 
-        <QuizFilters
-          searchQuery={searchQuery}
-          onSearchQueryChange={setSearchQuery}
-          filterSource={filterSource}
-          onFilterSourceChange={setFilterSource}
-          trendingOnly={trendingOnly}
-          onTrendingOnlyChange={setTrendingOnly}
-          selectedSkills={selectedSkills}
-          onSelectedSkillsChange={setSelectedSkills}
-        />
+        <Card className="border-orange-200 bg-orange-50/30">
+          <CardContent className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white rounded-lg border">
+                 <Filter className="w-5 h-5 text-orange-500" />
+              </div>
+              <h2 className="text-lg font-semibold text-gray-800">Filters & Sorting</h2>
+            </div>
+            <Button onClick={() => setIsFilterSheetOpen(true)} variant="outline">
+              <Filter className="w-4 h-4 mr-2" />
+              Filters {activeFilterCount > 0 && `(${activeFilterCount})`}
+            </Button>
+          </CardContent>
+        </Card>
 
         <div className="space-y-8">
           {Object.keys(groupedQuizzes).length > 0 ? (
@@ -335,6 +346,19 @@ const QuizBuilder = () => {
           onAssign={assignQuizToCandidates}
         />
       )}
+
+      <QuizFilters
+        isOpen={isFilterSheetOpen}
+        onClose={() => setIsFilterSheetOpen(false)}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        filterSource={filterSource}
+        onFilterSourceChange={setFilterSource}
+        trendingOnly={trendingOnly}
+        onTrendingOnlyChange={setTrendingOnly}
+        selectedSkills={selectedSkills}
+        onSelectedSkillsChange={setSelectedSkills}
+      />
     </DashboardLayout>
   );
 };
