@@ -7,9 +7,12 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Plus, Sparkles } from 'lucide-react';
+import { RecommendedBundle } from './RecommendedBundle';
 
 interface QuizPersonalizationProps {
   onGenerateQuestions: (params: PersonalizationParams) => void;
+  onAdoptBundle: (skills: string[], role: string) => void;
+  onPreviewBundle: (skills: string[], role: string) => void;
 }
 
 export interface PersonalizationParams {
@@ -21,7 +24,7 @@ export interface PersonalizationParams {
 const defaultSkills = ['Excel', 'Financial Reporting', 'Budgeting', 'Tax Compliance', 'Risk Management'];
 const seniorityLevels = ['Entry Level', 'Mid Level', 'Senior Level'];
 
-export function QuizPersonalization({ onGenerateQuestions }: QuizPersonalizationProps) {
+export function QuizPersonalization({ onGenerateQuestions, onAdoptBundle, onPreviewBundle }: QuizPersonalizationProps) {
   const [role, setRole] = useState('');
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
   const [customSkill, setCustomSkill] = useState('');
@@ -69,16 +72,27 @@ export function QuizPersonalization({ onGenerateQuestions }: QuizPersonalization
               <SelectValue placeholder="Select a role..." />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="financial-analyst">Financial Analyst</SelectItem>
-              <SelectItem value="accountant">Accountant</SelectItem>
-              <SelectItem value="bookkeeper">Bookkeeper</SelectItem>
-              <SelectItem value="controller">Controller</SelectItem>
-              <SelectItem value="cfo">Chief Financial Officer</SelectItem>
-              <SelectItem value="auditor">Auditor</SelectItem>
-              <SelectItem value="tax-specialist">Tax Specialist</SelectItem>
+              <SelectItem value="FP&A Analyst">FP&A Analyst</SelectItem>
+              <SelectItem value="Accountant">Accountant</SelectItem>
+              <SelectItem value="Finance Manager">Finance Manager</SelectItem>
+              <SelectItem value="Financial Analyst">Financial Analyst</SelectItem>
+              <SelectItem value="Bookkeeper">Bookkeeper</SelectItem>
+              <SelectItem value="Controller">Controller</SelectItem>
+              <SelectItem value="Chief Financial Officer">CFO</SelectItem>
+              <SelectItem value="Auditor">Auditor</SelectItem>
+              <SelectItem value="Tax Specialist">Tax Specialist</SelectItem>
             </SelectContent>
           </Select>
         </div>
+
+        {/* Recommended Bundle */}
+        {role && (
+          <RecommendedBundle
+            jobTitle={role}
+            onPreview={(skills) => onPreviewBundle(skills, role)}
+            onAdopt={(skills) => onAdoptBundle(skills, role)}
+          />
+        )}
 
         {/* Skills Selection */}
         <div className="space-y-3">
