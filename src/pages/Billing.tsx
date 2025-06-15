@@ -1,3 +1,4 @@
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,10 +8,24 @@ import { cn } from '@/lib/utils';
 
 const Billing = () => {
   const invoices = [
-    { id: 1, date: '2024-05-01', amount: '$99.00', status: 'Paid' },
-    { id: 2, date: '2024-04-01', amount: '$99.00', status: 'Paid' },
-    { id: 3, date: '2024-03-01', amount: '$99.00', status: 'Paid' },
+    { id: 4, date: '2025-07-01', amount: '$99.00', status: 'Upcoming' },
+    { id: 3, date: '2025-06-01', amount: '$99.00', status: 'Pending' },
+    { id: 2, date: '2025-05-01', amount: '$99.00', status: 'Paid' },
+    { id: 1, date: '2025-04-01', amount: '$99.00', status: 'Paid' },
   ];
+
+  const getStatusBadgeClass = (status: string) => {
+    switch (status) {
+      case 'Paid':
+        return 'bg-green-100 text-green-800 border-green-200/60';
+      case 'Pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200/60';
+      case 'Upcoming':
+        return 'bg-blue-100 text-blue-800 border-blue-200/60';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   const availablePlans = [
     {
@@ -153,7 +168,7 @@ const Billing = () => {
                     <p className="text-sm text-gray-600">{invoice.date}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Badge className="bg-green-100 text-green-800">{invoice.status}</Badge>
+                    <Badge className={cn("font-semibold", getStatusBadgeClass(invoice.status))}>{invoice.status}</Badge>
                     <span className="font-medium">{invoice.amount}</span>
                     <Button variant="ghost" size="icon" className="text-gray-500 hover:text-gray-900">
                       <Download className="w-4 h-4" />
