@@ -38,8 +38,8 @@ const topicColorMap: { [key: string]: string } = {
 };
 
 const audienceColorMap: { [key: string]: string } = {
-  "Hiring Manager": "bg-cyan-400 text-cyan-950 border-cyan-500 dark:bg-cyan-500 dark:text-cyan-950 dark:border-cyan-600",
-  "Finance Candidate": "bg-fuchsia-400 text-fuchsia-950 border-fuchsia-500 dark:bg-fuchsia-500 dark:text-fuchsia-950 dark:border-fuchsia-600",
+  "Hiring Manager": "bg-sky-500 text-white border-sky-600 dark:bg-sky-600 dark:border-sky-700",
+  "Finance Candidate": "bg-lime-500 text-lime-950 border-lime-600 dark:bg-lime-600 dark:text-lime-950 dark:border-lime-700",
 };
 
 const BlogReports = () => {
