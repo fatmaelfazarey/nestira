@@ -10,6 +10,16 @@ import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
+const allAvailableTopics = [
+  "AI in Finance",
+  "Career Growth",
+  "MENA/GCC Focus",
+  "Remote Work",
+  "Salary Trends",
+  "Skills & Hiring",
+  "Survey Report",
+];
+
 const BlogReports = () => {
   const allContent = [
     {
@@ -17,7 +27,7 @@ const BlogReports = () => {
       type: 'article',
       title: "2024 Finance Salary Trends in MENA",
       excerpt: "Comprehensive analysis of compensation trends across financial roles in the Middle East and North Africa.",
-      topics: ["Salary Trends", "MENA/GCC Focus"],
+      topics: allAvailableTopics,
       readTime: "8 min read",
       publishedAt: "2024-05-15",
       thumbnail: 'photo-1486312338219-ce68d2c6f44d',
@@ -29,7 +39,7 @@ const BlogReports = () => {
       type: 'article',
       title: "The Future of Remote Finance Teams",
       excerpt: "How distributed finance teams are reshaping the industry and what it means for hiring.",
-      topics: ["Remote Work", "Skills & Hiring"],
+      topics: allAvailableTopics,
       readTime: "6 min read",
       publishedAt: "2024-05-10",
       thumbnail: 'photo-1488590528505-98d2b5aba04b',
@@ -41,7 +51,7 @@ const BlogReports = () => {
       type: 'article',
       title: "Essential Skills for Finance Professionals in 2024",
       excerpt: "The top technical and soft skills employers are looking for in finance candidates.",
-      topics: ["Skills & Hiring", "Career Growth"],
+      topics: allAvailableTopics,
       readTime: "5 min read",
       publishedAt: "2024-05-05",
       thumbnail: 'photo-1518770660439-4636190af475',
@@ -77,7 +87,7 @@ const BlogReports = () => {
       type: 'article',
       title: 'AI in Financial Recruitment',
       excerpt: 'How AI is changing the landscape of finding and hiring top financial talent.',
-      topics: ["AI in Finance", "Skills & Hiring"],
+      topics: allAvailableTopics,
       readTime: '7 min read',
       publishedAt: '2024-04-28',
       thumbnail: 'photo-1649972904349-6e44c42644a7',
@@ -89,7 +99,7 @@ const BlogReports = () => {
       type: 'survey',
       title: "Remote Work in Finance: 2024 Survey",
       excerpt: "Survey results on remote work preferences in finance roles.",
-      topics: ["Remote Work", "Survey Report"],
+      topics: allAvailableTopics,
       readTime: "4 min read",
       publishedAt: "2024-03-25",
       thumbnail: 'photo-1488590528505-98d2b5aba04b',
@@ -101,7 +111,7 @@ const BlogReports = () => {
       type: 'case-study',
       title: "Case Study: Scaling a FinTech Startup's Finance Team",
       excerpt: "How Company X grew its finance department by 500% in one year.",
-      topics: ["Career Growth", "Skills & Hiring"],
+      topics: allAvailableTopics,
       readTime: "9 min read",
       publishedAt: "2024-03-10",
       thumbnail: 'photo-1454165804606-c3d57bc86b40',
