@@ -1,13 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Clock, Download, FileText, Filter, TrendingUp, X, Check, ChevronsUpDown } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Clock, Download, FileText, Filter, X } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
@@ -129,8 +127,6 @@ const BlogReports = () => {
   const topicFilter = searchParams.get('topics')?.split(',').filter(Boolean) || [];
   const trendingFilter = searchParams.get('trending') === 'true';
 
-  const [topicPopoverOpen, setTopicPopoverOpen] = useState(false);
-
   const updateSearchParams = (key: string, value: string | null) => {
     const newParams = new URLSearchParams(searchParams);
     if (value === null || value === '') {
@@ -162,13 +158,6 @@ const BlogReports = () => {
   const articles = filteredContent.filter(item => item.type !== 'report');
   const reports = filteredContent.filter(item => item.type === 'report');
 
-  const handleTopicSelect = (topic: string) => {
-    const newTopics = topicFilter.includes(topic)
-      ? topicFilter.filter(t => t !== topic)
-      : [...topicFilter, topic];
-    updateSearchParams('topics', newTopics.join(','));
-  }
-  
   const isFiltered = roleFilter !== 'Show All' || typeFilter.length > 0 || topicFilter.length > 0 || trendingFilter;
 
   return (
@@ -230,45 +219,17 @@ const BlogReports = () => {
           </div>
           <div className="space-y-2">
              <Label className="font-medium">Topic Focus</Label>
-             <div>
-                <Popover open={topicPopoverOpen} onOpenChange={setTopicPopoverOpen}>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant="outline"
-                            role="combobox"
-                            aria-expanded={topicPopoverOpen}
-                            className="w-full sm:w-[300px] justify-between"
-                        >
-                            <span className="truncate">
-                                {topicFilter.length > 0 ? `${topicFilter.length} selected` : "Select topics..."}
-                            </span>
-                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-[300px] p-0">
-                        <Command>
-                            <CommandInput placeholder="Search topics..." />
-                            <CommandList>
-                                <CommandEmpty>No topic found.</CommandEmpty>
-                                <CommandGroup>
-                                    {allTopics.map((topic) => (
-                                        <CommandItem
-                                            key={topic}
-                                            value={topic}
-                                            onSelect={() => handleTopicSelect(topic)}
-                                        >
-                                            <Check
-                                                className={`mr-2 h-4 w-4 ${topicFilter.includes(topic) ? "opacity-100" : "opacity-0"}`}
-                                            />
-                                            {topic}
-                                        </CommandItem>
-                                    ))}
-                                </CommandGroup>
-                            </CommandList>
-                        </Command>
-                    </PopoverContent>
-                </Popover>
-             </div>
+             <ToggleGroup
+                type="multiple"
+                variant="outline"
+                value={topicFilter}
+                onValueChange={(value) => updateSearchParams('topics', value.join(','))}
+                className="justify-start flex-wrap"
+              >
+                {allTopics.map(topic => (
+                  <ToggleGroupItem key={topic} value={topic} className="text-xs sm:text-sm">{topic}</ToggleGroupItem>
+                ))}
+              </ToggleGroup>
           </div>
         </Card>
 
