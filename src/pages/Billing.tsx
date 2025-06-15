@@ -19,6 +19,31 @@ const Billing = () => {
     { id: 3, date: '2024-03-01', amount: '$99.00', status: 'Paid' },
   ];
 
+  const availablePlans = [
+    {
+      name: 'Starter',
+      price: '$29',
+      period: 'month',
+      features: ['Up to 10 job posts', 'Basic candidate search', 'Standard analytics', 'Email support'],
+      cta: 'Downgrade Plan',
+    },
+    {
+      name: 'Professional',
+      price: '$99',
+      period: 'month',
+      features: ['Up to 50 job posts', 'Unlimited candidates', 'Advanced analytics', 'Priority support'],
+      cta: 'Current Plan',
+      isCurrent: true,
+    },
+    {
+      name: 'Business',
+      price: '$249',
+      period: 'month',
+      features: ['Unlimited job posts', 'AI candidate matching', 'Team collaboration tools', 'Dedicated account manager'],
+      cta: 'Upgrade Plan',
+    },
+  ];
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -27,9 +52,6 @@ const Billing = () => {
             <h1 className="text-3xl font-bold text-gray-900">Billing & Subscription</h1>
             <p className="text-gray-600">Manage your subscription and billing information</p>
           </div>
-          <Button className="bg-accent hover:bg-accent/90 text-white">
-            Upgrade Plan
-          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -103,6 +125,41 @@ const Billing = () => {
             </Card>
           </div>
         </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Available Plans</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {availablePlans.map((plan) => (
+                <Card key={plan.name} className={`flex flex-col ${plan.isCurrent ? 'border-2 border-primary' : ''}`}>
+                  <CardHeader>
+                    <CardTitle className="text-xl">{plan.name}</CardTitle>
+                    <p className="text-3xl font-bold">{plan.price}<span className="text-sm font-normal text-gray-600">/{plan.period}</span></p>
+                  </CardHeader>
+                  <CardContent className="flex flex-col flex-grow">
+                    <ul className="space-y-3 mb-6 flex-grow">
+                      {plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-start gap-3">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-1 flex-shrink-0" />
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <Button
+                      className={`w-full mt-auto ${plan.cta === 'Upgrade Plan' ? 'bg-accent hover:bg-accent/90 text-white' : ''}`}
+                      variant={plan.isCurrent ? 'outline' : (plan.cta === 'Upgrade Plan' ? 'default' : 'secondary')}
+                      disabled={plan.isCurrent}
+                    >
+                      {plan.cta}
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>
