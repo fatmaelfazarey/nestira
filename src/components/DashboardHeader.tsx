@@ -22,10 +22,7 @@ export function DashboardHeader() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <SidebarTrigger />
-        </div>
-
-        <div className="flex items-center justify-center flex-1">
-          <img src="/lovable-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png" alt="Logo" className="h-20" />
+          <img src="/lovable-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png" alt="Logo" className="h-12" />
         </div>
 
         <div className="flex items-center gap-4">
