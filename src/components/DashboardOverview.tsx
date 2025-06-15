@@ -191,15 +191,15 @@ const recentProfileViews = [
 const chartConfig = {
   applications: {
     label: "Applications",
-    color: "#00102c",
+    color: "hsl(var(--primary))",
   },
   interviews: {
-    label: "Interviews", 
-    color: "#f97316",
+    label: "Interviews",
+    color: "hsl(28, 95%, 53%)",
   },
   count: {
     label: "Interviews",
-    color: "#00102c",
+    color: "hsl(var(--primary))",
   }
 };
 
