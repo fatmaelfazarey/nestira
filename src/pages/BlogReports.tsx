@@ -290,9 +290,9 @@ const BlogReports = () => {
                     </div>
                   </div>
                   <CardContent className="p-4 flex-grow">
-                    <div className="flex flex-wrap gap-2 mb-2">
+                    <div className="flex flex-wrap gap-1.5 mb-2">
                       {item.topics.map(topic => (
-                        <Badge key={topic} variant="outline" className={topicColorMap[topic] || 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700'}>{topic}</Badge>
+                        <Badge key={topic} className={topicColorMap[topic] || 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700'}>{topic}</Badge>
                       ))}
                     </div>
                     <p className="text-sm text-gray-600 line-clamp-3">{item.excerpt}</p>
