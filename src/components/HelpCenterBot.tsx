@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -235,7 +236,7 @@ const HelpCenterBot = () => {
       {/* Chat Interface - Main Column */}
       <div className="relative z-0">
         <Card className="h-full flex flex-col">
-          <CardHeader className="flex-shrink-0 border-b bg-gradient-to-r from-primary to-slate-800 text-white">
+          <CardHeader className="flex-shrink-0 border-b bg-gradient-to-r from-accent to-orange-600 text-white">
             <CardTitle className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
@@ -244,7 +245,7 @@ const HelpCenterBot = () => {
                 <span className="font-bold text-lg">Nestira Help Assistant</span>
               </div>
               <Button variant="ghost" size="icon" onClick={handleReset} className="text-white hover:bg-white/20 hover:text-white">
-                <RotateCcw className="w-4 h-4" />
+                <RotateCcw className="w-5 h-5" />
               </Button>
             </CardTitle>
           </CardHeader>
@@ -260,14 +261,14 @@ const HelpCenterBot = () => {
                     }`}
                   >
                     {message.isBot && (
-                      <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Bot className="w-5 h-5 text-accent" />
+                      <div className="w-10 h-10 bg-blue-100/50 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Bot className="w-5 h-5 text-blue-600" />
                       </div>
                     )}
                     <div
                       className={`max-w-[80%] rounded-lg p-3 ${
                         message.isBot
-                          ? 'bg-gray-100 text-gray-900'
+                          ? 'bg-blue-100 text-blue-800'
                           : 'bg-accent text-white ml-auto'
                       }`}
                     >
@@ -288,14 +289,14 @@ const HelpCenterBot = () => {
                 ))}
                 {isLoading && (
                   <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center">
-                      <Bot className="w-5 h-5 text-accent" />
+                    <div className="w-10 h-10 bg-blue-100/50 rounded-full flex items-center justify-center">
+                      <Bot className="w-5 h-5 text-blue-600" />
                     </div>
-                    <div className="bg-gray-100 rounded-lg p-3">
+                    <div className="bg-blue-100 rounded-lg p-3">
                       <div className="flex gap-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
                   </div>
@@ -304,7 +305,7 @@ const HelpCenterBot = () => {
             </ScrollArea>
             
             {/* Fixed Input Bar */}
-            <div className="absolute bottom-0 left-0 right-0 z-10 bg-white border-t p-4">
+            <div className="absolute bottom-0 left-0 right-0 z-10 bg-white/80 backdrop-blur-sm border-t p-4">
               <div className="flex gap-2">
                 <Input
                   value={inputValue}
@@ -315,7 +316,7 @@ const HelpCenterBot = () => {
                   className="flex-1"
                 />
                 <Button onClick={sendMessage} disabled={isLoading || !inputValue.trim()}>
-                  <Send className="w-4 h-4" />
+                  <Send className="w-5 h-5" />
                 </Button>
               </div>
             </div>
@@ -328,7 +329,7 @@ const HelpCenterBot = () => {
         <Card className="h-full">
           <CardHeader className="flex-shrink-0 border-b">
             <CardTitle className="flex items-center gap-2">
-              <HelpCircle className="w-5 h-5 text-accent" />
+              <HelpCircle className="w-6 h-6 text-accent" />
               <span className="font-bold">Frequently Asked Questions</span>
             </CardTitle>
           </CardHeader>
@@ -357,7 +358,7 @@ const HelpCenterBot = () => {
                                             onClick={() => handleFAQClick(faq)}
                                           >
                                             <div className="flex items-center gap-2">
-                                              <HelpCircle className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                              <HelpCircle className="w-5 h-5 text-gray-400 flex-shrink-0" />
                                               <span className="text-sm font-medium text-gray-700">{faq.question}</span>
                                             </div>
                                           </AccordionTrigger>
