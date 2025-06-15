@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
@@ -52,7 +51,7 @@ export function NavigationLinksSection() {
   ];
 
   return (
-    <Card className="sticky top-6 shadow-md border-0 bg-white/90 backdrop-blur-sm">
+    <Card className="sticky top-6 shadow-md bg-white/90 backdrop-blur-sm border-l-4 border-accent">
       <CardHeader className="border-b border-gray-100">
         <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
           <RotateCcw className="w-5 h-5 text-accent" />
