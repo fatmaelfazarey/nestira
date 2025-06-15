@@ -33,6 +33,7 @@ const QuizBuilder = () => {
       failedCandidates: 3,
       pendingCandidates: 1,
       source: 'Nestira',
+      personalizationParams: { jobTitle: 'Financial Analyst' },
       questionsList: [
         { 
           id: 'q1', 
@@ -63,6 +64,7 @@ const QuizBuilder = () => {
       failedCandidates: 0,
       pendingCandidates: 0,
       source: 'Nestira',
+      personalizationParams: { jobTitle: 'Financial Analyst' },
       questionsList: [
         { 
           id: 'q3', 
@@ -87,6 +89,7 @@ const QuizBuilder = () => {
       failedCandidates: 1,
       pendingCandidates: 0,
       source: 'Me',
+      personalizationParams: { jobTitle: 'Risk Manager' },
       questionsList: [
         { 
           id: 'q4', 
@@ -146,8 +149,7 @@ const QuizBuilder = () => {
   };
 
   const filteredQuizzes = quizzes.filter(quiz => {
-    const titleMatch = quiz.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const sourceMatch = filterSource === 'all' || quiz.source === 'Me' && filterSource === 'Me' || quiz.source === 'Nestira' && filterSource === 'Nestira';
+    const titleMatch = (quiz.personalizationParams?.jobTitle ?? '').toLowerCase().includes(searchQuery.toLowerCase());
     // A bit of verbose logic to satisfy typescript, but it's correct
     if (filterSource === 'all') {
       return titleMatch;
@@ -160,6 +162,15 @@ const QuizBuilder = () => {
     }
     return false;
   });
+
+  const groupedQuizzes = filteredQuizzes.reduce((acc, quiz) => {
+    const jobTitle = quiz.personalizationParams?.jobTitle || 'Other';
+    if (!acc[jobTitle]) {
+      acc[jobTitle] = [];
+    }
+    acc[jobTitle].push(quiz);
+    return acc;
+  }, {} as Record<string, typeof quizzes>);
 
   if (showCreator) {
     return (
@@ -216,92 +227,105 @@ const QuizBuilder = () => {
           </ToggleGroup>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredQuizzes.map((quiz) => (
-            <Card key={quiz.id} className="hover:shadow-md transition-shadow">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg">{quiz.title}</CardTitle>
-                    {quiz.assignedCandidates > 0 && (
-                      <Badge variant="secondary" className="text-xs">
-                        {quiz.assignedCandidates} assigned
-                      </Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Switch
-                      checked={quiz.isActive}
-                      onCheckedChange={() => toggleQuizActive(quiz.id)}
-                    />
-                    <span className="text-xs text-gray-500">
-                      {quiz.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <span>{quiz.questions} questions</span>
-                  <span>{quiz.duration}</span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    quiz.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {quiz.status}
-                  </span>
-                </div>
-                
-                {/* Candidate Statistics */}
-                {quiz.assignedCandidates > 0 && (
-                  <div className="space-y-2 pt-2 border-t">
-                    <div className="flex gap-4 text-xs">
-                      <div className="flex items-center gap-1 text-green-600">
-                        <CheckCircle className="w-3 h-3" />
-                        <span>Passed: {quiz.passedCandidates}</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-red-600">
-                        <XCircle className="w-3 h-3" />
-                        <span>Failed: {quiz.failedCandidates}</span>
-                      </div>
-                      {quiz.pendingCandidates > 0 && (
-                        <div className="flex items-center gap-1 text-orange-600">
-                          <span>Pending: {quiz.pendingCandidates}</span>
+        <div className="space-y-8">
+          {Object.keys(groupedQuizzes).length > 0 ? (
+            Object.entries(groupedQuizzes).map(([jobTitle, quizzesInGroup]) => (
+              <div key={jobTitle}>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 px-1">{jobTitle}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {quizzesInGroup.map((quiz) => (
+                    <Card key={quiz.id} className="hover:shadow-md transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <CardTitle className="text-lg">{quiz.title}</CardTitle>
+                            {quiz.assignedCandidates > 0 && (
+                              <Badge variant="secondary" className="text-xs">
+                                {quiz.assignedCandidates} assigned
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={quiz.isActive}
+                              onCheckedChange={() => toggleQuizActive(quiz.id)}
+                            />
+                            <span className="text-xs text-gray-500">
+                              {quiz.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex gap-2 flex-wrap">
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => editQuizHandler(quiz)}
-                  >
-                    <Settings className="w-4 h-4 mr-1" />
-                    Edit
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => previewQuizHandler(quiz)}
-                  >
-                    <Play className="w-4 h-4 mr-1" />
-                    Preview
-                  </Button>
-                  {quiz.isActive && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => assignQuizHandler(quiz)}
-                    >
-                      <UserPlus className="w-4 h-4 mr-1" />
-                      Assign
-                    </Button>
-                  )}
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <span>{quiz.questions} questions</span>
+                          <span>{quiz.duration}</span>
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            quiz.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {quiz.status}
+                          </span>
+                        </div>
+                        
+                        {/* Candidate Statistics */}
+                        {quiz.assignedCandidates > 0 && (
+                          <div className="space-y-2 pt-2 border-t">
+                            <div className="flex gap-4 text-xs">
+                              <div className="flex items-center gap-1 text-green-600">
+                                <CheckCircle className="w-3 h-3" />
+                                <span>Passed: {quiz.passedCandidates}</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-red-600">
+                                <XCircle className="w-3 h-3" />
+                                <span>Failed: {quiz.failedCandidates}</span>
+                              </div>
+                              {quiz.pendingCandidates > 0 && (
+                                <div className="flex items-center gap-1 text-orange-600">
+                                  <span>Pending: {quiz.pendingCandidates}</span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="flex gap-2 flex-wrap">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => editQuizHandler(quiz)}
+                          >
+                            <Settings className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => previewQuizHandler(quiz)}
+                          >
+                            <Play className="w-4 h-4 mr-1" />
+                            Preview
+                          </Button>
+                          {quiz.isActive && (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => assignQuizHandler(quiz)}
+                            >
+                              <UserPlus className="w-4 h-4 mr-1" />
+                              Assign
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No quizzes match your filters.</p>
+            </div>
+          )}
         </div>
       </div>
 
