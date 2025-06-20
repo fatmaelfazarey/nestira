@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -6,9 +5,10 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, Target, Settings, Users, Globe } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 
@@ -252,67 +252,6 @@ export function ExpandedCandidateModal({
 
                 <Separator />
 
-                {/* Contact Info */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900">Contact Information</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-gray-500" />
-                      <span>{candidate.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-gray-500" />
-                      <a 
-                        href={`mailto:${candidate.email}`}
-                        className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
-                      >
-                        {candidate.email}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-gray-500" />
-                      <a 
-                        href={`tel:${candidate.phone}`}
-                        className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
-                      >
-                        {candidate.phone}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Job Preferences */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900">Job Preferences</h4>
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <span className="font-medium text-gray-700">Preferred Titles:</span>
-                      <p className="text-gray-600">Finance Manager, FP&A Director</p>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Preferred Locations:</span>
-                      <p className="text-gray-600">Dubai, Abu Dhabi, Riyadh</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span>Immediate availability</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-gray-500" />
-                      <span>{candidate.salaryExpectation}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Home className="w-4 h-4 text-gray-500" />
-                      <span>Remote-ready</span>
-                    </div>
-                    <Badge className="bg-green-100 text-green-800">Full-time</Badge>
-                  </div>
-                </div>
-
-                <Separator />
-
                 {/* Download Buttons */}
                 <div className="space-y-3">
                   <div className="flex flex-col gap-2">
@@ -336,388 +275,418 @@ export function ExpandedCandidateModal({
             {/* RIGHT MAIN CONTENT - Scrollable */}
             <div className="flex-1 overflow-y-auto bg-gray-50">
               <div className="p-6 space-y-6">
-                {/* Video Introduction */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <div className="flex items-center justify-center h-48 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
-                    <div className="text-center">
-                      <Play className="w-12 h-12 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-600">Video Introduction</p>
-                      <Button variant="outline" className="mt-2">
-                        <Play className="w-4 h-4 mr-2" />
-                        Watch Introduction (2:30)
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Professional Summary */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <div className="space-y-3">
-                    <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Summary</p>
-                    <p className="text-gray-700 leading-relaxed">{candidate.summary}</p>
-                  </div>
-                </div>
-
-                {/* Assessment Results Section */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-semibold flex items-center gap-2">
-                        <Brain className="w-5 h-5 text-[#ff5f1b]" />
-                        Assessment Results
-                      </h3>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Detailed results from candidate assessments including scores and analysis</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Left Side - Assessment Scores */}
-                    <div className="space-y-6">
-                      {/* Overall Score */}
-                      <div className="text-center p-6 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-center mb-4">
-                          <div className="text-6xl font-bold text-gray-800">61%</div>
-                        </div>
-                        <p className="text-gray-600 text-sm uppercase tracking-wide mb-2">Average Score</p>
-                        <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                            <span>Your candidate pool average</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="w-3 h-3 bg-teal-600 rounded-full"></div>
-                            <span>Your best candidate score</span>
-                          </div>
-                        </div>
+                {/* Candidate Basics Section - Blue Theme */}
+                <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/30">
+                  <CardHeader className="pb-4 bg-blue-50/50">
+                    <CardTitle className="flex items-center gap-2 text-lg font-semibold text-blue-800">
+                      <User className="w-5 h-5 text-blue-600" />
+                      Candidate Basics
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-1">Current Title</h4>
+                        <p className="text-gray-900">{candidate.title}</p>
                       </div>
-
-                      {/* Scoring Method */}
-                      <div className="p-4 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-between mb-3">
-                          <h4 className="font-semibold text-gray-900">Scoring method</h4>
-                          <Button variant="outline" size="sm" className="text-xs">
-                            <FileText className="w-3 h-3 mr-1" />
-                            Change
-                          </Button>
-                        </div>
-                        <p className="text-gray-700 font-medium">Percentage of correct answers</p>
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-1">Experience Level</h4>
+                        <p className="text-gray-900">{candidate.experience}</p>
                       </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-1 flex items-center gap-2">
+                          <MapPin className="w-4 h-4" />
+                          Location
+                        </h4>
+                        <p className="text-gray-900">{candidate.location}</p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-1">Education</h4>
+                        <p className="text-gray-900">{candidate.education}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-gray-700 mb-2">Professional Summary</h4>
+                      <p className="text-gray-600 text-sm leading-relaxed">{candidate.summary}</p>
+                    </div>
+                  </CardContent>
+                </Card>
 
-                      {/* Tests Included */}
-                      <div className="space-y-3">
-                        <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Tests Included in Scoring</h4>
-                        <div className="space-y-3">
-                          {mockAssessments.map((assessment, index) => (
-                            <Collapsible key={index}>
-                              <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                <div className="flex items-center gap-2">
-                                  <ChevronDown className="w-4 h-4 text-gray-500" />
-                                  <span className="text-sm font-medium text-gray-800">{assessment.name}</span>
+                {/* Experience & Skills Section - Green Theme */}
+                <Card className="shadow-sm border-l-4 border-l-green-500 bg-green-50/30">
+                  <CardHeader className="pb-4 bg-green-50/50">
+                    <CardTitle className="flex items-center gap-2 text-lg font-semibold text-green-800">
+                      <Award className="w-5 h-5 text-green-600" />
+                      Experience & Skills
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Skills Categories */}
+                    <div className="space-y-4">
+                      {/* Finance Subfields */}
+                      <Collapsible open={expandedSections.financeSubfields} onOpenChange={() => toggleSection('financeSubfields')}>
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                          <span className="font-medium text-blue-900 flex items-center gap-2">
+                            <Building className="w-4 h-4" />
+                            Finance Subfields
+                          </span>
+                          {expandedSections.financeSubfields ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2">
+                          <div className="flex flex-wrap gap-2 p-3">
+                            {skillCategories.financeSubfields.map(skill => (
+                              <Badge key={skill} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                                {skill}
+                              </Badge>
+                            ))}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+
+                      {/* Software & Tools */}
+                      <Collapsible open={expandedSections.softwareTools} onOpenChange={() => toggleSection('softwareTools')}>
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
+                          <span className="font-medium text-purple-900 flex items-center gap-2">
+                            <Code className="w-4 h-4" />
+                            Software & Tools
+                          </span>
+                          {expandedSections.softwareTools ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2">
+                          <div className="flex flex-wrap gap-2 p-3">
+                            {skillCategories.softwareTools.map(tool => (
+                              <Badge key={tool} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
+                                {tool}
+                              </Badge>
+                            ))}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+
+                      {/* Certifications */}
+                      <Collapsible open={expandedSections.certifications} onOpenChange={() => toggleSection('certifications')}>
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
+                          <span className="font-medium text-green-900 flex items-center gap-2">
+                            <Award className="w-4 h-4" />
+                            Certifications
+                          </span>
+                          {expandedSections.certifications ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2">
+                          <div className="flex flex-wrap gap-2 p-3">
+                            {skillCategories.certifications.map(cert => (
+                              <Badge key={cert} variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                {cert}
+                              </Badge>
+                            ))}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    </div>
+
+                    {/* Experience Timeline */}
+                    <div className="pt-4 border-t border-gray-200">
+                      <h4 className="font-medium text-gray-700 mb-4 flex items-center gap-2">
+                        <Briefcase className="w-4 h-4" />
+                        Experience Timeline
+                      </h4>
+                      <div className="space-y-6">
+                        {mockExperience.map((exp, index) => (
+                          <div key={index} className="relative pl-6 border-l-2 border-gray-200 last:border-l-0">
+                            <div className="absolute w-3 h-3 bg-[#ff5f1b] rounded-full -left-[7px] top-1"></div>
+                            <div className="space-y-2">
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <h5 className="font-semibold text-gray-900">{exp.title}</h5>
+                                  <p className="text-[#ff5f1b] font-medium">{exp.company}</p>
                                 </div>
-                                <span className="text-sm font-semibold text-gray-800">{assessment.score}%</span>
-                              </CollapsibleTrigger>
-                              <CollapsibleContent className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
-                                <div className="space-y-3">
-                                  <div className="flex items-center justify-between">
-                                    <span className="text-sm text-gray-600">Score:</span>
-                                    <div className="flex items-center gap-2">
-                                      <Progress value={assessment.score} className="w-20" />
-                                      <span className="text-sm font-semibold">{assessment.score}%</span>
+                                <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">{exp.duration}</span>
+                              </div>
+                              <ul className="text-sm text-gray-700 space-y-1">
+                                {exp.bullets.map((bullet, i) => (
+                                  <li key={i} className="flex items-start gap-2">
+                                    <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+                                    {bullet}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Work & Contract Preferences Section - Purple Theme */}
+                <Card className="shadow-sm border-l-4 border-l-purple-500 bg-purple-50/30">
+                  <CardHeader className="pb-4 bg-purple-50/50">
+                    <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-800">
+                      <Users className="w-5 h-5 text-purple-600" />
+                      Work & Contract Preferences
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-3">Contact Information</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Mail className="w-4 h-4 text-gray-500" />
+                            <a 
+                              href={`mailto:${candidate.email}`}
+                              className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
+                            >
+                              {candidate.email}
+                            </a>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Phone className="w-4 h-4 text-gray-500" />
+                            <a 
+                              href={`tel:${candidate.phone}`}
+                              className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
+                            >
+                              {candidate.phone}
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-700 mb-3">Job Preferences</h4>
+                        <div className="space-y-2 text-sm">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4 text-gray-500" />
+                            <span>Immediate availability</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <DollarSign className="w-4 h-4 text-gray-500" />
+                            <span>{candidate.salaryExpectation}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Home className="w-4 h-4 text-gray-500" />
+                            <span>Remote-ready</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-gray-200">
+                      <h4 className="font-medium text-gray-700 mb-3">Preferred Locations</h4>
+                      <p className="text-gray-600 text-sm">Dubai, Abu Dhabi, Riyadh</p>
+                    </div>
+                    <div className="pt-4 border-t border-gray-200">
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-green-100 text-green-800">Full-time</Badge>
+                        <Badge variant="outline">Hybrid</Badge>
+                        <Badge variant="outline">Remote</Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Assessment Results Section - Orange Theme */}
+                <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
+                  <CardHeader className="pb-4 bg-orange-50/50">
+                    <CardTitle className="flex items-center gap-2 text-lg font-semibold text-orange-800">
+                      <Target className="w-5 h-5 text-orange-600" />
+                      Scoring & Matching
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                      {/* Left Side - Assessment Scores */}
+                      <div className="space-y-6">
+                        {/* Overall Score */}
+                        <div className="text-center p-6 bg-gray-50 rounded-lg">
+                          <div className="flex items-center justify-center mb-4">
+                            <div className="text-6xl font-bold text-gray-800">61%</div>
+                          </div>
+                          <p className="text-gray-600 text-sm uppercase tracking-wide mb-2">Average Score</p>
+                          <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                              <span>Your candidate pool average</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-teal-600 rounded-full"></div>
+                              <span>Your best candidate score</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Tests Included */}
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Tests Included in Scoring</h4>
+                          <div className="space-y-3">
+                            {mockAssessments.map((assessment, index) => (
+                              <Collapsible key={index}>
+                                <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                  <div className="flex items-center gap-2">
+                                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                                    <span className="text-sm font-medium text-gray-800">{assessment.name}</span>
+                                  </div>
+                                  <span className="text-sm font-semibold text-gray-800">{assessment.score}%</span>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
+                                  <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-sm text-gray-600">Score:</span>
+                                      <div className="flex items-center gap-2">
+                                        <Progress value={assessment.score} className="w-20" />
+                                        <span className="text-sm font-semibold">{assessment.score}%</span>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <span className="text-sm text-gray-600">Our Opinion:</span>
+                                      <p className="text-sm text-gray-800 mt-1">{assessment.opinion}</p>
                                     </div>
                                   </div>
-                                  <div>
-                                    <span className="text-sm text-gray-600">Our Opinion:</span>
-                                    <p className="text-sm text-gray-800 mt-1">{assessment.opinion}</p>
-                                  </div>
-                                </div>
-                              </CollapsibleContent>
-                            </Collapsible>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Side - Anti-cheating Monitor & Video */}
-                    <div className="space-y-6">
-                      {/* Anti-cheating Monitor */}
-                      <div className="p-4 bg-gray-50 rounded-lg border">
-                        <div className="flex items-center justify-between mb-4">
-                          <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                            <Shield className="w-4 h-4" />
-                            Anti-cheating monitor
-                          </h4>
-                          <Tooltip>
-                            <TooltipTrigger>
-                              <HelpCircle className="w-4 h-4 text-gray-500 hover:text-gray-700" />
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Real-time monitoring data during assessment</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </div>
-                        
-                        <div className="space-y-3 text-sm">
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 flex items-center gap-2">
-                              <Monitor className="w-4 h-4" />
-                              Device used
-                            </span>
-                            <span className="font-medium">{antiCheatData.device}</span>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 flex items-center gap-2">
-                              <MapPinIcon className="w-4 h-4" />
-                              Location
-                            </span>
-                            <span className="font-medium">{antiCheatData.location}</span>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600">Filled out only once from IP address?</span>
-                            <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                              {antiCheatData.filledOnce ? "Yes" : "No"}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 flex items-center gap-2">
-                              <Camera className="w-4 h-4" />
-                              Webcam enabled?
-                            </span>
-                            <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                              {antiCheatData.webcamEnabled ? "Yes" : "No"}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 flex items-center gap-2">
-                              <Maximize className="w-4 h-4" />
-                              Full-screen mode always active?
-                            </span>
-                            <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                              {antiCheatData.fullScreenActive ? "Yes" : "No"}
-                            </Badge>
-                          </div>
-                          
-                          <div className="flex items-center justify-between">
-                            <span className="text-gray-600 flex items-center gap-2">
-                              <MousePointer className="w-4 h-4" />
-                              Mouse always in assessment window?
-                            </span>
-                            <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                              {antiCheatData.mouseInWindow ? "Yes" : "No"}
-                            </Badge>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Assessment Video */}
-                      <div className="bg-gray-100 rounded-lg overflow-hidden">
-                        <div className="aspect-video bg-black flex items-center justify-center relative">
-                          <img 
-                            src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
-                            alt="Assessment video preview"
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                            <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
-                              <Play className="w-6 h-6 mr-2" />
-                              Watch Assessment Video
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="p-3 bg-white">
-                          <div className="flex items-center justify-between text-sm text-gray-600">
-                            <span>Assessment Recording</span>
-                            <span>15:42 / 45:00</span>
-                          </div>
-                          <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                            <div className="bg-[#ff5f1b] h-1 rounded-full" style={{ width: '35%' }}></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Skills & Expertise */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5" />
-                    Skills & Expertise
-                  </h3>
-                  
-                  <div className="space-y-4">
-                    {/* Finance Subfields */}
-                    <Collapsible open={expandedSections.financeSubfields} onOpenChange={() => toggleSection('financeSubfields')}>
-                      <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                        <span className="font-medium text-blue-900 flex items-center gap-2">
-                          <Building className="w-4 h-4" />
-                          Finance Subfields
-                        </span>
-                        {expandedSections.financeSubfields ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-2">
-                        <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.financeSubfields.map(skill => (
-                            <Badge key={skill} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                              {skill}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-
-                    {/* Software & Tools */}
-                    <Collapsible open={expandedSections.softwareTools} onOpenChange={() => toggleSection('softwareTools')}>
-                      <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                        <span className="font-medium text-purple-900 flex items-center gap-2">
-                          <Code className="w-4 h-4" />
-                          Software & Tools
-                        </span>
-                        {expandedSections.softwareTools ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-2">
-                        <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.softwareTools.map(tool => (
-                            <Badge key={tool} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200">
-                              {tool}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-
-                    {/* Certifications */}
-                    <Collapsible open={expandedSections.certifications} onOpenChange={() => toggleSection('certifications')}>
-                      <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                        <span className="font-medium text-green-900 flex items-center gap-2">
-                          <Award className="w-4 h-4" />
-                          Certifications
-                        </span>
-                        {expandedSections.certifications ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                      </CollapsibleTrigger>
-                      <CollapsibleContent className="mt-2">
-                        <div className="flex flex-wrap gap-2 p-3">
-                          {skillCategories.certifications.map(cert => (
-                            <Badge key={cert} variant="outline" className="bg-green-50 text-green-700 border-green-200">
-                              {cert}
-                            </Badge>
-                          ))}
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  </div>
-                </div>
-
-                {/* Experience Timeline */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <Briefcase className="w-5 h-5" />
-                    Experience Timeline
-                  </h3>
-                  <div className="space-y-6">
-                    {mockExperience.map((exp, index) => (
-                      <div key={index} className="relative pl-6 border-l-2 border-gray-200 last:border-l-0">
-                        <div className="absolute w-3 h-3 bg-[#ff5f1b] rounded-full -left-[7px] top-1"></div>
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-start">
-                            <div>
-                              <h4 className="font-semibold text-gray-900">{exp.title}</h4>
-                              <p className="text-[#ff5f1b] font-medium">{exp.company}</p>
-                            </div>
-                            <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">{exp.duration}</span>
-                          </div>
-                          <ul className="text-sm text-gray-700 space-y-1">
-                            {exp.bullets.map((bullet, i) => (
-                              <li key={i} className="flex items-start gap-2">
-                                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
-                                {bullet}
-                              </li>
+                                </CollapsibleContent>
+                              </Collapsible>
                             ))}
-                          </ul>
+                          </div>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
 
-                {/* Education */}
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                    <GraduationCap className="w-5 h-5" />
-                    Education
-                  </h3>
-                  <div className="space-y-2">
-                    <h4 className="font-semibold text-gray-900">{candidate.education}</h4>
-                    <p className="text-[#ff5f1b] font-medium">American University of Dubai</p>
-                    <p className="text-sm text-gray-500">2012 - 2016</p>
-                  </div>
-                </div>
+                      {/* Right Side - Anti-cheating Monitor & Video */}
+                      <div className="space-y-6">
+                        {/* Anti-cheating Monitor */}
+                        <div className="p-4 bg-gray-50 rounded-lg border">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                              <Shield className="w-4 h-4" />
+                              Anti-cheating monitor
+                            </h4>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <HelpCircle className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Real-time monitoring data during assessment</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          
+                          <div className="space-y-3 text-sm">
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <Monitor className="w-4 h-4" />
+                                Device used
+                              </span>
+                              <span className="font-medium">{antiCheatData.device}</span>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <MapPinIcon className="w-4 h-4" />
+                                Location
+                              </span>
+                              <span className="font-medium">{antiCheatData.location}</span>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Filled out only once from IP address?</span>
+                              <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.filledOnce ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <Camera className="w-4 h-4" />
+                                Webcam enabled?
+                              </span>
+                              <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.webcamEnabled ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <Maximize className="w-4 h-4" />
+                                Full-screen mode always active?
+                              </span>
+                              <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.fullScreenActive ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <MousePointer className="w-4 h-4" />
+                                Mouse always in assessment window?
+                              </span>
+                              <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.mouseInWindow ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
 
-                {/* Nestira Skill Insights */}
-                <div className="rounded-lg shadow-sm border border-gray-200 p-6 bg-green-400">
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-xl font-semibold flex items-center gap-2">
-                        <Brain className="w-5 h-5 text-[#ff5f1b]" />
-                        <TrendingUp className="w-5 h-5" />
-                        Nestira Skill Insights
-                      </h3>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>These insights are based on the candidate's responses to the Nestira Insight Assessment.</p>
-                        </TooltipContent>
-                      </Tooltip>
+                        {/* Assessment Video */}
+                        <div className="bg-gray-100 rounded-lg overflow-hidden">
+                          <div className="aspect-video bg-black flex items-center justify-center relative">
+                            <img 
+                              src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                              alt="Assessment video preview"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                              <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                                <Play className="w-6 h-6 mr-2" />
+                                Watch Assessment Video
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="p-3 bg-white">
+                            <div className="flex items-center justify-between text-sm text-gray-600">
+                              <span>Assessment Recording</span>
+                              <span>15:42 / 45:00</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                              <div className="bg-[#ff5f1b] h-1 rounded-full" style={{ width: '35%' }}></div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-4 mb-6">
-                    {mockAssessments.map((assessment, index) => (
-                      <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
-                        <div className="flex items-center gap-3">
-                          {assessment.status === 'passed' ? (
-                            <CheckCircle className="w-5 h-5 text-green-500" />
-                          ) : (
-                            <AlertCircle className="w-5 h-5 text-yellow-500" />
-                          )}
-                          <span className="font-medium">{assessment.name}</span>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <Progress value={assessment.score} className="w-24" />
-                          <span className="text-sm font-semibold w-12">{assessment.score}%</span>
-                          <Badge 
-                            variant={assessment.status === 'passed' ? 'default' : 'secondary'} 
-                            className={assessment.status === 'passed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
-                          >
-                            {assessment.status === 'passed' ? 'Pass' : 'Needs Improvement'}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
 
-                  {/* Assign Assessment Button */}
-                  <Button 
-                    className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3" 
-                    onClick={() => setShowQuizModal(true)}
-                  >
-                    <Brain className="w-5 h-5 mr-2" />
-                    <Award className="w-5 h-5 mr-2" />
-                    Assign Assessment
-                  </Button>
-                </div>
+                    {/* Assign Assessment Button */}
+                    <div className="mt-6 pt-6 border-t border-gray-200">
+                      <Button 
+                        className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3" 
+                        onClick={() => setShowQuizModal(true)}
+                      >
+                        <Brain className="w-5 h-5 mr-2" />
+                        <Award className="w-5 h-5 mr-2" />
+                        Assign Assessment
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Video Introduction Section */}
+                <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
+                  <CardHeader className="pb-4 bg-indigo-50/50">
+                    <CardTitle className="flex items-center gap-2 text-lg font-semibold text-indigo-800">
+                      <Play className="w-5 h-5 text-indigo-600" />
+                      Video Introduction
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex items-center justify-center h-48 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
+                      <div className="text-center">
+                        <Play className="w-12 h-12 text-gray-400 mx-auto mb-2" />
+                        <p className="text-gray-600">Video Introduction</p>
+                        <Button variant="outline" className="mt-2">
+                          <Play className="w-4 h-4 mr-2" />
+                          Watch Introduction (2:30)
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
