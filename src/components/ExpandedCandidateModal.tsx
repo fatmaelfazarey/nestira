@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 
@@ -83,22 +84,30 @@ export function ExpandedCandidateModal({
   }];
 
   const mockAssessments = [{
-    name: "Financial Modeling",
-    score: 92,
-    status: "passed"
+    name: "JavaScript (coding): data structures & data types",
+    score: 100,
+    status: "passed",
+    opinion: "Excellent understanding of JavaScript fundamentals with perfect execution of data structure problems."
   }, {
-    name: "Excel Advanced",
-    score: 88,
-    status: "passed"
+    name: "Critical thinking",
+    score: 37,
+    status: "needs-improvement",
+    opinion: "Shows basic analytical skills but needs improvement in complex problem-solving scenarios."
   }, {
-    name: "IFRS Knowledge",
-    score: 76,
-    status: "needs-improvement"
-  }, {
-    name: "Risk Analysis",
-    score: 94,
-    status: "passed"
+    name: "Culture add",
+    score: 47,
+    status: "needs-improvement", 
+    opinion: "Demonstrates some cultural awareness but could benefit from better alignment with company values."
   }];
+
+  const antiCheatData = {
+    device: "Desktop",
+    location: "Lagos (LA), NG",
+    filledOnce: false,
+    webcamEnabled: true,
+    fullScreenActive: true,
+    mouseInWindow: true
+  };
 
   const skillCategories = {
     financeSubfields: ["Financial Planning", "Budget Management", "Cost Analysis", "Risk Assessment"],
@@ -346,6 +355,196 @@ export function ExpandedCandidateModal({
                   <div className="space-y-3">
                     <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Summary</p>
                     <p className="text-gray-700 leading-relaxed">{candidate.summary}</p>
+                  </div>
+                </div>
+
+                {/* Assessment Results Section */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-xl font-semibold flex items-center gap-2">
+                        <Brain className="w-5 h-5 text-[#ff5f1b]" />
+                        Assessment Results
+                      </h3>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Detailed results from candidate assessments including scores and analysis</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    {/* Left Side - Assessment Scores */}
+                    <div className="space-y-6">
+                      {/* Overall Score */}
+                      <div className="text-center p-6 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-center mb-4">
+                          <div className="text-6xl font-bold text-gray-800">61%</div>
+                        </div>
+                        <p className="text-gray-600 text-sm uppercase tracking-wide mb-2">Average Score</p>
+                        <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                            <span>Your candidate pool average</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-teal-600 rounded-full"></div>
+                            <span>Your best candidate score</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Scoring Method */}
+                      <div className="p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-semibold text-gray-900">Scoring method</h4>
+                          <Button variant="outline" size="sm" className="text-xs">
+                            <FileText className="w-3 h-3 mr-1" />
+                            Change
+                          </Button>
+                        </div>
+                        <p className="text-gray-700 font-medium">Percentage of correct answers</p>
+                      </div>
+
+                      {/* Tests Included */}
+                      <div className="space-y-3">
+                        <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Tests Included in Scoring</h4>
+                        <div className="space-y-3">
+                          {mockAssessments.map((assessment, index) => (
+                            <Collapsible key={index}>
+                              <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                <div className="flex items-center gap-2">
+                                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                                  <span className="text-sm font-medium text-gray-800">{assessment.name}</span>
+                                </div>
+                                <span className="text-sm font-semibold text-gray-800">{assessment.score}%</span>
+                              </CollapsibleTrigger>
+                              <CollapsibleContent className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
+                                <div className="space-y-3">
+                                  <div className="flex items-center justify-between">
+                                    <span className="text-sm text-gray-600">Score:</span>
+                                    <div className="flex items-center gap-2">
+                                      <Progress value={assessment.score} className="w-20" />
+                                      <span className="text-sm font-semibold">{assessment.score}%</span>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <span className="text-sm text-gray-600">Our Opinion:</span>
+                                    <p className="text-sm text-gray-800 mt-1">{assessment.opinion}</p>
+                                  </div>
+                                </div>
+                              </CollapsibleContent>
+                            </Collapsible>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Side - Anti-cheating Monitor & Video */}
+                    <div className="space-y-6">
+                      {/* Anti-cheating Monitor */}
+                      <div className="p-4 bg-gray-50 rounded-lg border">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <Shield className="w-4 h-4" />
+                            Anti-cheating monitor
+                          </h4>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <HelpCircle className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Real-time monitoring data during assessment</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                        
+                        <div className="space-y-3 text-sm">
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 flex items-center gap-2">
+                              <Monitor className="w-4 h-4" />
+                              Device used
+                            </span>
+                            <span className="font-medium">{antiCheatData.device}</span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 flex items-center gap-2">
+                              <MapPinIcon className="w-4 h-4" />
+                              Location
+                            </span>
+                            <span className="font-medium">{antiCheatData.location}</span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600">Filled out only once from IP address?</span>
+                            <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.filledOnce ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 flex items-center gap-2">
+                              <Camera className="w-4 h-4" />
+                              Webcam enabled?
+                            </span>
+                            <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.webcamEnabled ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 flex items-center gap-2">
+                              <Maximize className="w-4 h-4" />
+                              Full-screen mode always active?
+                            </span>
+                            <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.fullScreenActive ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between">
+                            <span className="text-gray-600 flex items-center gap-2">
+                              <MousePointer className="w-4 h-4" />
+                              Mouse always in assessment window?
+                            </span>
+                            <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.mouseInWindow ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Assessment Video */}
+                      <div className="bg-gray-100 rounded-lg overflow-hidden">
+                        <div className="aspect-video bg-black flex items-center justify-center relative">
+                          <img 
+                            src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                            alt="Assessment video preview"
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                              <Play className="w-6 h-6 mr-2" />
+                              Watch Assessment Video
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="p-3 bg-white">
+                          <div className="flex items-center justify-between text-sm text-gray-600">
+                            <span>Assessment Recording</span>
+                            <span>15:42 / 45:00</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                            <div className="bg-[#ff5f1b] h-1 rounded-full" style={{ width: '35%' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
