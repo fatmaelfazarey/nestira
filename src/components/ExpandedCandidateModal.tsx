@@ -245,7 +245,169 @@ export function ExpandedCandidateModal({
           <div className="flex h-[calc(95vh-140px)]">
             {/* LEFT SIDEBAR - Fixed Width */}
             <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
-              {/* ... keep existing code (sidebar content) */}
+              <div className="p-6 space-y-6">
+                {/* Profile Section */}
+                <div className="text-center">
+                  <div className="relative mb-4">
+                    <Avatar className="w-24 h-24 mx-auto">
+                      <AvatarImage src={candidate.photo} alt={candidate.name} />
+                      <AvatarFallback className="text-lg font-semibold">
+                        {candidate.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                      <CheckCircle className="w-3 h-3 text-white" />
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold text-gray-900">
+                      {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+                    </h3>
+                    <p className="text-[#ff5f1b] font-medium">{candidate.title}</p>
+                    
+                    <div className="flex items-center justify-center gap-2 text-gray-600">
+                      <MapPin className="w-4 h-4" />
+                      <span className="text-sm">{candidate.location}</span>
+                      <span className="text-sm">{getCountryFlag(candidate.country)}</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <Briefcase className="w-4 h-4" />
+                        <span>{candidate.yearsOfExperience} years</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Calendar className="w-4 h-4" />
+                        <span>{candidate.profileAdded}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-center gap-1 text-sm text-gray-600">
+                      <DollarSign className="w-4 h-4" />
+                      <span>{candidate.salaryExpectation}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Contact Information */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Contact</h4>
+                  
+                  {isUnlocked ? (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-gray-500" />
+                        <span className="text-gray-700">{candidate.email}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-gray-500" />
+                        <span className="text-gray-700">{candidate.phone}</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <Mail className="w-4 h-4 text-gray-500" />
+                        <span className="text-gray-400">***@*****.com</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-gray-500" />
+                        <span className="text-gray-400">+*** *** ****</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
+                {/* Match Score */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Match Score</h4>
+                  <div className="text-center">
+                    <CircularProgress 
+                      percentage={candidate.score}
+                      size={80}
+                      strokeWidth={8}
+                      className="mx-auto mb-2"
+                    />
+                    <p className="text-sm text-gray-600">Overall Match</p>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Status & Tags */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Status</h4>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 w-full justify-center">
+                    {candidate.status}
+                  </Badge>
+                  
+                  <div className="flex flex-wrap gap-1">
+                    {candidate.tags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Action Buttons */}
+                <div className="space-y-2">
+                  <Button 
+                    className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white"
+                    onClick={() => setShowQuizModal(true)}
+                  >
+                    <Brain className="w-4 h-4 mr-2" />
+                    Assign Assessment
+                  </Button>
+                  
+                  <Button variant="outline" className="w-full" onClick={handleDownloadCV}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Download CV 
+                  </Button>
+                  
+                  <Button variant="outline" className="w-full" onClick={handleDownloadProfile}>
+                    <User className="w-4 h-4 mr-2" />
+                    Download Profile
+                  </Button>
+                  
+                  <div className="relative">
+                    <Button variant="outline" className="w-full" onClick={() => setShowCoverLetter(!showCoverLetter)}>
+                      <FileText className="w-4 h-4 mr-2" />
+                      View Cover Letter
+                      {showCoverLetter ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                    </Button>
+                    
+                    {showCoverLetter && (
+                      <div className="mt-2 p-3 bg-gray-50 rounded-lg border text-sm">
+                        <p className="text-gray-700 mb-2">
+                          I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis...
+                        </p>
+                        <Button size="sm" variant="outline" onClick={handleDownloadCoverLetter}>
+                          <Download className="w-3 h-3 mr-1" />
+                          Download
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Button variant="outline" className="w-full">
+                    <MessageSquare className="w-4 h-4 mr-2" />
+                    Message Candidate
+                  </Button>
+                  
+                  <Button variant="outline" className="w-full">
+                    <StickyNote className="w-4 h-4 mr-2" />
+                    Add Note
+                  </Button>
+                </div>
+              </div>
             </div>
 
             {/* RIGHT MAIN CONTENT - Tabbed Interface */}
