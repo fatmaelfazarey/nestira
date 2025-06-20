@@ -245,139 +245,19 @@ export function ExpandedCandidateModal({
           <div className="flex h-[calc(95vh-140px)]">
             {/* LEFT SIDEBAR - Fixed Width */}
             <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
-              <div className="p-6 space-y-6">
-                {/* Candidate Overview */}
-                <div className="text-center space-y-4">
-                  <div className="relative mx-auto w-24 h-24">
-                    <Avatar className={`w-24 h-24 transition-all duration-500 ${!isUnlocked ? 'blur-sm' : ''}`}>
-                      <AvatarImage src={candidate.photo} alt={candidate.name} />
-                      <AvatarFallback className="text-2xl">{candidate.name.charAt(0)}</AvatarFallback>
-                    </Avatar>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-center gap-2">
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
-                      </h3>
-                      <span className="text-xl">{getCountryFlag(candidate.country)}</span>
-                    </div>
-                    <p className="text-gray-600">{candidate.title}</p>
-                  </div>
-
-                  {/* Matching Score */}
-                  <div className="flex justify-center">
-                    <CircularProgress value={candidate.score} size={80} strokeWidth={6} showPercentage={true} />
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Cover Letter */}
-                <div className="space-y-3">
-                  <Button variant="outline" size="sm" className="w-full justify-start border-[#ff5f1b] text-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white" onClick={() => setShowCoverLetter(!showCoverLetter)}>
-                    <Eye className="w-4 h-4 mr-2" />
-                    View Cover Letter
-                  </Button>
-                  {showCoverLetter && (
-                    <div className="bg-gray-50 p-3 rounded-lg text-xs leading-relaxed">
-                      Dear Hiring Manager,<br /><br />
-                      I am writing to express my strong interest in the Senior Finance Manager position. With over 8 years of progressive experience...
-                    </div>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Contact Info */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900">Contact Information</h4>
-                  <div className="space-y-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-gray-500" />
-                      <span>{candidate.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-gray-500" />
-                      <a 
-                        href={`mailto:${candidate.email}`}
-                        className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
-                      >
-                        {candidate.email}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 text-gray-500" />
-                      <a 
-                        href={`tel:${candidate.phone}`}
-                        className={`${!isUnlocked ? 'blur-sm' : 'text-blue-500 hover:text-blue-600 hover:underline transition-colors'}`}
-                      >
-                        {candidate.phone}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Job Preferences */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900">Job Preferences</h4>
-                  <div className="space-y-3 text-sm">
-                    <div>
-                      <span className="font-medium text-gray-700">Preferred Titles:</span>
-                      <p className="text-gray-600">Finance Manager, FP&A Director</p>
-                    </div>
-                    <div>
-                      <span className="font-medium text-gray-700">Preferred Locations:</span>
-                      <p className="text-gray-600">Dubai, Abu Dhabi, Riyadh</p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-gray-500" />
-                      <span>Immediate availability</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <DollarSign className="w-4 h-4 text-gray-500" />
-                      <span>{candidate.salaryExpectation}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Home className="w-4 h-4 text-gray-500" />
-                      <span>Remote-ready</span>
-                    </div>
-                    <Badge className="bg-green-100 text-green-800">Full-time</Badge>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Download Buttons */}
-                <div className="space-y-3">
-                  <div className="flex flex-col gap-2">
-                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadCV}>
-                      <Download className="w-4 h-4 mr-2" />
-                      Download CV
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadCoverLetter}>
-                      <FileText className="w-4 h-4 mr-2" />
-                      Download Cover Letter
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start" onClick={handleDownloadProfile}>
-                      <User className="w-4 h-4 mr-2" />
-                      Download Profile
-                    </Button>
-                  </div>
-                </div>
-              </div>
+              {/* ... keep existing code (sidebar content) */}
             </div>
 
             {/* RIGHT MAIN CONTENT - Tabbed Interface */}
             <div className="flex-1 overflow-hidden bg-gray-50">
               <Tabs defaultValue="overview" className="h-full flex flex-col">
                 <div className="border-b bg-white px-6">
-                  <TabsList className="grid w-full max-w-3xl grid-cols-4">
+                  <TabsList className="grid w-full max-w-2xl grid-cols-3">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="behavioral-culture">Behavioral & Culture Fit</TabsTrigger>
-                    <TabsTrigger value="behavioral-assessment">Behavioral Assessment</TabsTrigger>
+                    <TabsTrigger value="behavioral-culture" className="bg-gradient-to-r from-purple-50 to-blue-50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-100 data-[state=active]:to-blue-100 text-purple-700 data-[state=active]:text-purple-800">
+                      <Brain className="w-4 h-4 mr-2 text-[#ff5f1b]" />
+                      Behavioral & Culture Fit
+                    </TabsTrigger>
                     <TabsTrigger value="assessment-results">Assessment Results</TabsTrigger>
                   </TabsList>
                 </div>
@@ -640,7 +520,7 @@ export function ExpandedCandidateModal({
                               <FileText className="w-5 h-5 text-gray-500 mt-1 flex-shrink-0" />
                               <h3 className="text-lg font-semibold text-gray-900">How were these insights generated?</h3>
                             </div>
-                            {expandedSections.scenarioContext ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                            {expandedSections.scenarioContext ? <ChevronUp className="w-5 h-4" /> : <ChevronDown className="w-5 h-4" />}
                           </CollapsibleTrigger>
                           <CollapsibleContent className="mt-4">
                             <div className="space-y-3">
@@ -670,88 +550,6 @@ export function ExpandedCandidateModal({
                       </div>
                     </div>
                   )}
-                </TabsContent>
-
-                {/* Behavioral Assessment Tab */}
-                <TabsContent value="behavioral-assessment" className="flex-1 overflow-y-auto p-6 mt-0">
-                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xl font-semibold flex items-center gap-2">
-                          <Brain className="w-5 h-5 text-[#ff5f1b]" />
-                          Behavioral Assessment
-                        </h3>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Generate personality-style assessments for candidates using our specialized GPT assistant.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </div>
-                    </div>
-                    
-                    <div className="space-y-6">
-                      <div className="text-center p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
-                        <Brain className="w-16 h-16 text-[#ff5f1b] mx-auto mb-4" />
-                        <h4 className="text-lg font-semibold text-gray-900 mb-2">
-                          Generate Behavioral Assessment
-                        </h4>
-                        <p className="text-gray-600 mb-6 max-w-md mx-auto">
-                          Create mandatory personality-style assessments tailored to this candidate's profile using our specialized GPT assistant.
-                        </p>
-                        
-                        <div className="bg-white p-4 rounded-lg border mb-6">
-                          <p className="text-sm text-gray-700 mb-2">
-                            <strong>What you'll need to provide:</strong>
-                          </p>
-                          <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
-                            <li>Job title: {candidate.title}</li>
-                            <li>Seniority level</li>
-                            <li>Region: {candidate.location}</li>
-                            <li>Number of scenarios to generate</li>
-                          </ul>
-                        </div>
-
-                        <Button 
-                          className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3 px-6" 
-                          onClick={handleBehavioralAssessment}
-                        >
-                          <Brain className="w-5 h-5 mr-2" />
-                          <ExternalLink className="w-4 h-4 mr-2" />
-                          Open Assessment Generator
-                        </Button>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-                          <h5 className="font-semibold text-blue-900 mb-2">Personality Assessment</h5>
-                          <p className="text-sm text-blue-700">
-                            Evaluate candidate's behavioral traits and work style preferences
-                          </p>
-                        </div>
-                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
-                          <h5 className="font-semibold text-green-900 mb-2">Scenario-Based Questions</h5>
-                          <p className="text-sm text-green-700">
-                            Generate realistic workplace scenarios for better assessment
-                          </p>
-                        </div>
-                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                          <h5 className="font-semibold text-purple-900 mb-2">Role-Specific Insights</h5>
-                          <p className="text-sm text-purple-700">
-                            Tailored questions based on job requirements and seniority
-                          </p>
-                        </div>
-                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
-                          <h5 className="font-semibold text-orange-900 mb-2">Cultural Fit Analysis</h5>
-                          <p className="text-sm text-orange-700">
-                            Assess alignment with company culture and team dynamics
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </TabsContent>
 
                 {/* Assessment Results Tab */}
