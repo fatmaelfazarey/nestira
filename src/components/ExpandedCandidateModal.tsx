@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 
@@ -54,7 +54,8 @@ export function ExpandedCandidateModal({
     industry: true,
     financeSubfields: true,
     softwareTools: true,
-    certifications: true
+    certifications: true,
+    scenarioContext: false
   });
 
   if (!candidate) return null;
@@ -125,6 +126,32 @@ export function ExpandedCandidateModal({
     { id: 5, title: "Risk Management Evaluation", duration: "40 min", difficulty: "Intermediate", category: "Core Finance" }
   ];
 
+  // Mock behavioral data
+  const behavioralData = {
+    summary: "Collaborative and integrity-driven accountant who prefers clear processes, team input, and supervisory guidance when making complex decisions.",
+    keyTraits: [
+      { label: "Collaboration-Focused", tooltip: "Tends to seek input from peers before acting", color: "bg-blue-100 text-blue-800" },
+      { label: "Process-Oriented", tooltip: "Prefers established procedures and clear guidelines", color: "bg-green-100 text-green-800" },
+      { label: "Detail-Conscious", tooltip: "Shows high attention to accuracy and completeness", color: "bg-purple-100 text-purple-800" },
+      { label: "Risk-Aware", tooltip: "Considers potential consequences before making decisions", color: "bg-orange-100 text-orange-800" },
+      { label: "Team-Dependent", tooltip: "Values team consensus in decision-making", color: "bg-teal-100 text-teal-800" },
+      { label: "Structured", tooltip: "Thrives in organized, well-defined environments", color: "bg-indigo-100 text-indigo-800" }
+    ],
+    traitIndicators: [
+      { name: "Risk Tolerance", value: 35, color: "bg-orange-500", level: "Caution" },
+      { name: "Decision-Making Style", value: 70, color: "bg-green-500", level: "Strong" },
+      { name: "Integrity Signal", value: 85, color: "bg-green-500", level: "Strong" },
+      { name: "Peer Dependency", value: 60, color: "bg-yellow-500", level: "Moderate" }
+    ],
+    cultureFit: "Prefers structured, process-driven teams with clear expectations and collaborative decision-making.",
+    environmentFit: [
+      { label: "Structured Teams", icon: "🏢" },
+      { label: "Cross-functional Work", icon: "🤝" },
+      { label: "Deadline-Driven", icon: "⏱️" },
+      { label: "Role Clarity", icon: "🎯" }
+    ]
+  };
+
   const toggleSection = (section: keyof typeof expandedSections) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -188,6 +215,10 @@ export function ExpandedCandidateModal({
 
   const handleBehavioralAssessment = () => {
     window.open('https://chatgpt.com/g/g-6849be2aace4819189a69fa95518fd38-nestira-behavioral-assessment-assistant', '_blank');
+  };
+
+  const handleDownloadFitReport = () => {
+    console.log('Downloading Behavioral Fit Report for', candidate.name);
   };
 
   return (
@@ -343,8 +374,9 @@ export function ExpandedCandidateModal({
             <div className="flex-1 overflow-hidden bg-gray-50">
               <Tabs defaultValue="overview" className="h-full flex flex-col">
                 <div className="border-b bg-white px-6">
-                  <TabsList className="grid w-full max-w-2xl grid-cols-3">
+                  <TabsList className="grid w-full max-w-3xl grid-cols-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="behavioral-culture">Behavioral & Culture Fit</TabsTrigger>
                     <TabsTrigger value="behavioral-assessment">Behavioral Assessment</TabsTrigger>
                     <TabsTrigger value="assessment-results">Assessment Results</TabsTrigger>
                   </TabsList>
@@ -508,6 +540,136 @@ export function ExpandedCandidateModal({
                       <p className="text-sm text-gray-500">2012 - 2016</p>
                     </div>
                   </div>
+                </TabsContent>
+
+                {/* Behavioral & Culture Fit Tab */}
+                <TabsContent value="behavioral-culture" className="flex-1 overflow-y-auto p-6 mt-0">
+                  {!isUnlocked ? (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center p-8 bg-white rounded-lg shadow-sm border">
+                        <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Unlock to access this candidate's behavioral fit profile</h3>
+                        <p className="text-gray-600">Complete candidate unlock to view detailed behavioral insights and culture fit analysis.</p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {/* Section 1: Behavioral Summary */}
+                      <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+                        <div className="flex items-start gap-3 mb-4">
+                          <MessageSquare className="w-5 h-5 text-blue-500 mt-1 flex-shrink-0" />
+                          <h3 className="text-lg font-semibold text-gray-900">Behavioral Summary</h3>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed">{behavioralData.summary}</p>
+                      </div>
+
+                      {/* Section 2: Key Traits */}
+                      <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+                        <div className="flex items-start gap-3 mb-4">
+                          <Target className="w-5 h-5 text-green-500 mt-1 flex-shrink-0" />
+                          <h3 className="text-lg font-semibold text-gray-900">Key Traits</h3>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {behavioralData.keyTraits.map((trait, index) => (
+                            <Tooltip key={index}>
+                              <TooltipTrigger>
+                                <Badge variant="secondary" className={`${trait.color} text-sm px-3 py-1 rounded-full cursor-help`}>
+                                  {trait.label}
+                                </Badge>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>{trait.tooltip}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Section 3: Trait Indicators */}
+                      <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+                        <div className="flex items-start gap-3 mb-4">
+                          <Zap className="w-5 h-5 text-purple-500 mt-1 flex-shrink-0" />
+                          <h3 className="text-lg font-semibold text-gray-900">Trait Indicators</h3>
+                        </div>
+                        <div className="space-y-4">
+                          {behavioralData.traitIndicators.map((indicator, index) => (
+                            <div key={index} className="space-y-2">
+                              <div className="flex items-center justify-between">
+                                <span className="text-sm font-medium text-gray-700">{indicator.name}</span>
+                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                  indicator.level === 'Strong' ? 'bg-green-100 text-green-800' :
+                                  indicator.level === 'Moderate' ? 'bg-yellow-100 text-yellow-800' :
+                                  'bg-orange-100 text-orange-800'
+                                }`}>
+                                  {indicator.level}
+                                </span>
+                              </div>
+                              <div className="w-full bg-gray-200 rounded-full h-2">
+                                <div 
+                                  className={`${indicator.color} h-2 rounded-full transition-all duration-300`}
+                                  style={{ width: `${indicator.value}%` }}
+                                ></div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Section 4: Culture Fit Snapshot */}
+                      <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+                        <div className="flex items-start gap-3 mb-4">
+                          <Users className="w-5 h-5 text-indigo-500 mt-1 flex-shrink-0" />
+                          <h3 className="text-lg font-semibold text-gray-900">Culture Fit Snapshot</h3>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed mb-4">{behavioralData.cultureFit}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {behavioralData.environmentFit.map((env, index) => (
+                            <Badge key={index} variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
+                              <span className="mr-1">{env.icon}</span>
+                              {env.label}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Section 5: Scenario Context (Collapsible) */}
+                      <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+                        <Collapsible open={expandedSections.scenarioContext} onOpenChange={() => toggleSection('scenarioContext')}>
+                          <CollapsibleTrigger className="flex items-center justify-between w-full">
+                            <div className="flex items-start gap-3">
+                              <FileText className="w-5 h-5 text-gray-500 mt-1 flex-shrink-0" />
+                              <h3 className="text-lg font-semibold text-gray-900">How were these insights generated?</h3>
+                            </div>
+                            {expandedSections.scenarioContext ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                          </CollapsibleTrigger>
+                          <CollapsibleContent className="mt-4">
+                            <div className="space-y-3">
+                              <p className="text-gray-700">
+                                Insights are based on 5 real-world behavioral scenarios for this role. Candidate responses were analyzed using Nestira's GPT-powered Trait Engine.
+                              </p>
+                              <div className="bg-gray-50 p-3 rounded-lg">
+                                <h4 className="font-medium text-gray-800 mb-2">Sample Scenario:</h4>
+                                <p className="text-sm text-gray-600 mb-2">
+                                  "You discover a significant error in last quarter's financial report that was already submitted to stakeholders. How do you handle this situation?"
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  <strong>Analysis:</strong> Response indicated strong integrity signals and preference for collaborative problem-solving.
+                                </p>
+                              </div>
+                            </div>
+                          </CollapsibleContent>
+                        </Collapsible>
+                      </div>
+
+                      {/* Footer Button */}
+                      <div className="flex justify-center pt-4">
+                        <Button variant="outline" onClick={handleDownloadFitReport} className="flex items-center gap-2">
+                          <Download className="w-4 h-4" />
+                          Download Fit Report (PDF)
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </TabsContent>
 
                 {/* Behavioral Assessment Tab */}
