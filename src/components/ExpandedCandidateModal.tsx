@@ -292,37 +292,6 @@ export function ExpandedCandidateModal({
 
                 <Separator />
 
-                {/* Contact Information */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Contact</h4>
-                  
-                  {isUnlocked ? (
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-gray-500" />
-                        <span className="text-gray-700">{candidate.email}</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-gray-500" />
-                        <span className="text-gray-700">{candidate.phone}</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4 text-gray-500" />
-                        <span className="text-gray-400">***@*****.com</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-gray-500" />
-                        <span className="text-gray-400">+*** *** ****</span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <Separator />
-
                 {/* Match Score */}
                 <div className="space-y-3">
                   <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Match Score</h4>
@@ -334,6 +303,107 @@ export function ExpandedCandidateModal({
                       className="mx-auto mb-2"
                     />
                     <p className="text-sm text-gray-600">Overall Match</p>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* View Cover Letter Button */}
+                <div className="relative">
+                  <Button 
+                    variant="outline" 
+                    className="w-full text-[#ff5f1b] border-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white" 
+                    onClick={() => setShowCoverLetter(!showCoverLetter)}
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    View Cover Letter
+                    {showCoverLetter ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
+                  </Button>
+                  
+                  {showCoverLetter && (
+                    <div className="mt-2 p-3 bg-gray-50 rounded-lg border text-sm">
+                      <p className="text-gray-700 mb-2">
+                        I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis...
+                      </p>
+                      <Button size="sm" variant="outline" onClick={handleDownloadCoverLetter}>
+                        <Download className="w-3 h-3 mr-1" />
+                        Download
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
+                {/* Contact Information */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Contact Information</h4>
+                  
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-700">{candidate.location}</span>
+                    </div>
+                    
+                    {isUnlocked ? (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <Mail className="w-4 h-4 text-gray-500" />
+                          <span className="text-blue-600 hover:underline cursor-pointer">{candidate.email}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="w-4 h-4 text-gray-500" />
+                          <span className="text-gray-700">{candidate.phone}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <Mail className="w-4 h-4 text-gray-500" />
+                          <span className="text-gray-400">***@*****.com</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="w-4 h-4 text-gray-500" />
+                          <span className="text-gray-400">+*** *** ****</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Job Preferences */}
+                <div className="space-y-3">
+                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Job Preferences</h4>
+                  
+                  <div className="space-y-3 text-sm">
+                    <div>
+                      <p className="text-gray-600 font-medium mb-1">Preferred Titles:</p>
+                      <p className="text-gray-800">Finance Manager, FP&A Director</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-gray-600 font-medium mb-1">Preferred Locations:</p>
+                      <p className="text-gray-800">Dubai, Abu Dhabi, Riyadh</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-800">Immediate availability</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-800">120,000 - 150,000 AED</span>
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
+                      <Home className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-800">Remote-ready</span>
+                    </div>
+                    
+                    <Badge className="bg-green-100 text-green-800 text-xs">Full-time</Badge>
                   </div>
                 </div>
 
@@ -372,30 +442,15 @@ export function ExpandedCandidateModal({
                     Download CV 
                   </Button>
                   
+                  <Button variant="outline" className="w-full" onClick={handleDownloadCoverLetter}>
+                    <Download className="w-4 h-4 mr-2" />
+                    Download Cover Letter
+                  </Button>
+                  
                   <Button variant="outline" className="w-full" onClick={handleDownloadProfile}>
                     <User className="w-4 h-4 mr-2" />
                     Download Profile
                   </Button>
-                  
-                  <div className="relative">
-                    <Button variant="outline" className="w-full" onClick={() => setShowCoverLetter(!showCoverLetter)}>
-                      <FileText className="w-4 h-4 mr-2" />
-                      View Cover Letter
-                      {showCoverLetter ? <ChevronUp className="w-4 h-4 ml-2" /> : <ChevronDown className="w-4 h-4 ml-2" />}
-                    </Button>
-                    
-                    {showCoverLetter && (
-                      <div className="mt-2 p-3 bg-gray-50 rounded-lg border text-sm">
-                        <p className="text-gray-700 mb-2">
-                          I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis...
-                        </p>
-                        <Button size="sm" variant="outline" onClick={handleDownloadCoverLetter}>
-                          <Download className="w-3 h-3 mr-1" />
-                          Download
-                        </Button>
-                      </div>
-                    )}
-                  </div>
                   
                   <Button variant="outline" className="w-full">
                     <MessageSquare className="w-4 h-4 mr-2" />
