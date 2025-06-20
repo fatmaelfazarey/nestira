@@ -328,7 +328,7 @@ export function ExpandedCandidateModal({
                   <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Match Score</h4>
                   <div className="text-center">
                     <CircularProgress 
-                      percentage={candidate.score}
+                      value={candidate.score}
                       size={80}
                       strokeWidth={8}
                       className="mx-auto mb-2"
