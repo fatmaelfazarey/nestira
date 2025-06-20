@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 
@@ -51,6 +51,7 @@ export function ExpandedCandidateModal({
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [selectedQuizzes, setSelectedQuizzes] = useState<number[]>([]);
   const [expandedSections, setExpandedSections] = useState({
+    industry: true,
     financeSubfields: true,
     softwareTools: true,
     certifications: true
@@ -110,6 +111,7 @@ export function ExpandedCandidateModal({
   };
 
   const skillCategories = {
+    industry: ["Banking", "Insurance", "Investment Management", "Corporate Finance"],
     financeSubfields: ["Financial Planning", "Budget Management", "Cost Analysis", "Risk Assessment"],
     softwareTools: ["SAP", "Oracle", "QuickBooks", "Tableau", "Power BI", "Excel Advanced"],
     certifications: ["CPA", "CFA Level 2", "FRM", "ACCA"]
@@ -182,6 +184,10 @@ export function ExpandedCandidateModal({
 
   const removeSelectedQuiz = (quizId: number) => {
     setSelectedQuizzes(prev => prev.filter(id => id !== quizId));
+  };
+
+  const handleBehavioralAssessment = () => {
+    window.open('https://chatgpt.com/g/g-6849be2aace4819189a69fa95518fd38-nestira-behavioral-assessment-assistant', '_blank');
   };
 
   return (
@@ -339,7 +345,7 @@ export function ExpandedCandidateModal({
                 <div className="border-b bg-white px-6">
                   <TabsList className="grid w-full max-w-2xl grid-cols-3">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="skills-insights">Nestira Skills Insights</TabsTrigger>
+                    <TabsTrigger value="behavioral-assessment">Behavioral Assessment</TabsTrigger>
                     <TabsTrigger value="assessment-results">Assessment Results</TabsTrigger>
                   </TabsList>
                 </div>
@@ -376,6 +382,26 @@ export function ExpandedCandidateModal({
                     </h3>
                     
                     <div className="space-y-4">
+                      {/* Industry */}
+                      <Collapsible open={expandedSections.industry} onOpenChange={() => toggleSection('industry')}>
+                        <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors">
+                          <span className="font-medium text-orange-900 flex items-center gap-2">
+                            <Factory className="w-4 h-4" />
+                            Industry
+                          </span>
+                          {expandedSections.industry ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-2">
+                          <div className="flex flex-wrap gap-2 p-3">
+                            {skillCategories.industry.map(industry => (
+                              <Badge key={industry} variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
+                                {industry}
+                              </Badge>
+                            ))}
+                          </div>
+                        </CollapsibleContent>
+                      </Collapsible>
+
                       {/* Finance Subfields */}
                       <Collapsible open={expandedSections.financeSubfields} onOpenChange={() => toggleSection('financeSubfields')}>
                         <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
@@ -484,61 +510,85 @@ export function ExpandedCandidateModal({
                   </div>
                 </TabsContent>
 
-                {/* Nestira Skills Insights Tab */}
-                <TabsContent value="skills-insights" className="flex-1 overflow-y-auto p-6 mt-0">
-                  <div className="rounded-lg shadow-sm border border-gray-200 p-6 bg-green-400">
+                {/* Behavioral Assessment Tab */}
+                <TabsContent value="behavioral-assessment" className="flex-1 overflow-y-auto p-6 mt-0">
+                  <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                     <div className="flex items-center justify-between mb-6">
                       <div className="flex items-center gap-2">
                         <h3 className="text-xl font-semibold flex items-center gap-2">
                           <Brain className="w-5 h-5 text-[#ff5f1b]" />
-                          <TrendingUp className="w-5 h-5" />
-                          Nestira Skill Insights
+                          Behavioral Assessment
                         </h3>
                         <Tooltip>
                           <TooltipTrigger>
                             <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>These insights are based on the candidate's responses to the Nestira Insight Assessment.</p>
+                            <p>Generate personality-style assessments for candidates using our specialized GPT assistant.</p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
                     </div>
                     
-                    <div className="space-y-4 mb-6">
-                      {mockAssessments.map((assessment, index) => (
-                        <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
-                          <div className="flex items-center gap-3">
-                            {assessment.status === 'passed' ? (
-                              <CheckCircle className="w-5 h-5 text-green-500" />
-                            ) : (
-                              <AlertCircle className="w-5 h-5 text-yellow-500" />
-                            )}
-                            <span className="font-medium">{assessment.name}</span>
-                          </div>
-                          <div className="flex items-center gap-3">
-                            <Progress value={assessment.score} className="w-24" />
-                            <span className="text-sm font-semibold w-12">{assessment.score}%</span>
-                            <Badge 
-                              variant={assessment.status === 'passed' ? 'default' : 'secondary'} 
-                              className={assessment.status === 'passed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}
-                            >
-                              {assessment.status === 'passed' ? 'Pass' : 'Needs Improvement'}
-                            </Badge>
-                          </div>
+                    <div className="space-y-6">
+                      <div className="text-center p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                        <Brain className="w-16 h-16 text-[#ff5f1b] mx-auto mb-4" />
+                        <h4 className="text-lg font-semibold text-gray-900 mb-2">
+                          Generate Behavioral Assessment
+                        </h4>
+                        <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                          Create mandatory personality-style assessments tailored to this candidate's profile using our specialized GPT assistant.
+                        </p>
+                        
+                        <div className="bg-white p-4 rounded-lg border mb-6">
+                          <p className="text-sm text-gray-700 mb-2">
+                            <strong>What you'll need to provide:</strong>
+                          </p>
+                          <ul className="text-sm text-gray-600 list-disc list-inside space-y-1">
+                            <li>Job title: {candidate.title}</li>
+                            <li>Seniority level</li>
+                            <li>Region: {candidate.location}</li>
+                            <li>Number of scenarios to generate</li>
+                          </ul>
                         </div>
-                      ))}
-                    </div>
 
-                    {/* Assign Assessment Button */}
-                    <Button 
-                      className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3" 
-                      onClick={() => setShowQuizModal(true)}
-                    >
-                      <Brain className="w-5 h-5 mr-2" />
-                      <Award className="w-5 h-5 mr-2" />
-                      Assign Assessment
-                    </Button>
+                        <Button 
+                          className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white font-bold py-3 px-6" 
+                          onClick={handleBehavioralAssessment}
+                        >
+                          <Brain className="w-5 h-5 mr-2" />
+                          <ExternalLink className="w-4 h-4 mr-2" />
+                          Open Assessment Generator
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                          <h5 className="font-semibold text-blue-900 mb-2">Personality Assessment</h5>
+                          <p className="text-sm text-blue-700">
+                            Evaluate candidate's behavioral traits and work style preferences
+                          </p>
+                        </div>
+                        <div className="p-4 bg-green-50 rounded-lg border border-green-200">
+                          <h5 className="font-semibold text-green-900 mb-2">Scenario-Based Questions</h5>
+                          <p className="text-sm text-green-700">
+                            Generate realistic workplace scenarios for better assessment
+                          </p>
+                        </div>
+                        <div className="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                          <h5 className="font-semibold text-purple-900 mb-2">Role-Specific Insights</h5>
+                          <p className="text-sm text-purple-700">
+                            Tailored questions based on job requirements and seniority
+                          </p>
+                        </div>
+                        <div className="p-4 bg-orange-50 rounded-lg border border-orange-200">
+                          <h5 className="font-semibold text-orange-900 mb-2">Cultural Fit Analysis</h5>
+                          <p className="text-sm text-orange-700">
+                            Assess alignment with company culture and team dynamics
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </TabsContent>
 
