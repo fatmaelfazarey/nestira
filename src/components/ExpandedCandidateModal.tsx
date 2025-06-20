@@ -266,12 +266,6 @@ export function ExpandedCandidateModal({
                     </h3>
                     <p className="text-[#ff5f1b] font-medium">{candidate.title}</p>
                     
-                    <div className="flex items-center justify-center gap-2 text-gray-600">
-                      <MapPin className="w-4 h-4" />
-                      <span className="text-sm">{candidate.location}</span>
-                      <span className="text-sm">{getCountryFlag(candidate.country)}</span>
-                    </div>
-                    
                     <div className="flex items-center justify-center gap-4 text-sm text-gray-600">
                       <div className="flex items-center gap-1">
                         <Briefcase className="w-4 h-4" />
@@ -340,11 +334,6 @@ export function ExpandedCandidateModal({
                   <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Contact Information</h4>
                   
                   <div className="space-y-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 text-gray-500" />
-                      <span className="text-gray-700">{candidate.location}</span>
-                    </div>
-                    
                     {isUnlocked ? (
                       <>
                         <div className="flex items-center gap-2">
@@ -404,24 +393,6 @@ export function ExpandedCandidateModal({
                     </div>
                     
                     <Badge className="bg-green-100 text-green-800 text-xs">Full-time</Badge>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Status & Tags */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Status</h4>
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 w-full justify-center">
-                    {candidate.status}
-                  </Badge>
-                  
-                  <div className="flex flex-wrap gap-1">
-                    {candidate.tags.map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
-                        {tag}
-                      </Badge>
-                    ))}
                   </div>
                 </div>
 
