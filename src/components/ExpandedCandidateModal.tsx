@@ -822,16 +822,17 @@ export function ExpandedCandidateModal({
 
                 {/* Assessment Results Tab */}
                 <TabsContent value="assessment-results" className="flex-1 overflow-y-auto p-6 mt-0">
-                  <div className="bg-white rounded-lg shadow-sm p-6">
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-xl font-semibold flex items-center gap-2">
-                          <Brain className="w-5 h-5 text-[#ff5f1b]" />
+                  <div className="space-y-8">
+                    {/* Header */}
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-2 mb-4">
+                        <h3 className="text-2xl font-bold flex items-center gap-2">
+                          <Brain className="w-6 h-6 text-[#ff5f1b]" />
                           Assessment Results
                         </h3>
                         <Tooltip>
                           <TooltipTrigger>
-                            <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
+                            <Info className="w-5 h-5 text-gray-500 hover:text-gray-700 transition-colors" />
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Technical real-world scenario assessments with detailed results and analysis</p>
@@ -840,242 +841,249 @@ export function ExpandedCandidateModal({
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {/* Left Side - Assessment Scores */}
-                      <div className="space-y-6">
-                        {/* Overall Score */}
-                        <div className="text-center p-6 bg-gray-50 rounded-lg">
-                          <div className="flex items-center justify-center mb-4">
-                            <div className="text-6xl font-bold text-gray-800">61%</div>
-                          </div>
-                          <p className="text-gray-600 text-sm uppercase tracking-wide mb-2">Average Score</p>
-                          <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                              <span>Your candidate pool average</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <div className="w-3 h-3 bg-teal-600 rounded-full"></div>
-                              <span>Your best candidate score</span>
+                    {/* Overall Score Section */}
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 border border-blue-200">
+                      <div className="text-center">
+                        <div className="flex items-center justify-center mb-6">
+                          <div className="relative">
+                            <div className="text-6xl font-bold text-blue-900 mb-2">61%</div>
+                            <div className="absolute -top-2 -right-2">
+                              <Badge className="bg-blue-600 text-white">Overall</Badge>
                             </div>
                           </div>
                         </div>
-
-                        {/* Technical Scenario Tests */}
-                        <div className="space-y-3">
-                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Technical Real Scenario Tests</h4>
-                          <div className="space-y-3">
-                            {mockAssessments.map((assessment, index) => (
-                              <div key={index} className="p-4 bg-gray-50 rounded-lg border">
-                                <div className="flex items-center justify-between mb-3">
-                                  <div className="flex-1">
-                                    <h5 className="font-medium text-gray-900 mb-1">{assessment.name}</h5>
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-2xl font-bold text-gray-800">{assessment.score}%</span>
-                                      <Badge variant={assessment.score >= 70 ? "default" : "destructive"} 
-                                             className={assessment.score >= 70 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                        {assessment.status === "passed" ? "Passed" : "Needs Improvement"}
-                                      </Badge>
-                                    </div>
-                                  </div>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="text-[#ff5f1b] border-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white"
-                                    onClick={() => handleShowAnswers(assessment)}
-                                  >
-                                    <Eye className="w-4 h-4 mr-1" />
-                                    Show Answers
-                                  </Button>
-                                </div>
-                                <p className="text-sm text-gray-600">{assessment.opinion}</p>
-                              </div>
-                            ))}
+                        <h4 className="text-xl font-semibold text-blue-900 mb-4">Average Assessment Score</h4>
+                        <div className="flex items-center justify-center gap-6 text-sm text-blue-700">
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-blue-300 rounded-full"></div>
+                            <span>Your candidate pool average</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="w-3 h-3 bg-blue-600 rounded-full"></div>
+                            <span>Your best candidate score</span>
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      {/* Right Side - Anti-cheating Monitor & Individual Assessment Videos */}
-                      <div className="space-y-6">
-                        {/* Anti-cheating Monitor */}
-                        <div className="p-4 bg-gray-50 rounded-lg border">
-                          <div className="flex items-center justify-between mb-4">
-                            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                              <Shield className="w-4 h-4" />
-                              Anti-cheating monitor
-                            </h4>
-                            <Tooltip>
-                              <TooltipTrigger>
-                                <HelpCircle className="w-4 h-4 text-gray-500 hover:text-gray-700" />
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Real-time monitoring data during assessment</p>
-                              </TooltipContent>
-                            </Tooltip>
+                    {/* Technical Assessment Tests Section */}
+                    <div className="bg-gradient-to-br from-emerald-50 to-green-100 rounded-2xl p-8 border border-emerald-200">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-emerald-600 rounded-xl">
+                          <FileText className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-bold text-emerald-900">Technical Real Scenario Tests</h4>
+                          <p className="text-emerald-700">Comprehensive assessment of technical capabilities</p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {mockAssessments.map((assessment, index) => (
+                          <div key={index} className="bg-white rounded-xl p-6 border border-emerald-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div className="flex items-start justify-between mb-4">
+                              <div className="flex-1">
+                                <h5 className="font-semibold text-gray-900 mb-2 line-clamp-2">{assessment.name}</h5>
+                                <div className="flex items-center gap-3 mb-3">
+                                  <span className="text-3xl font-bold text-gray-800">{assessment.score}%</span>
+                                  <Badge 
+                                    variant={assessment.score >= 70 ? "default" : "destructive"} 
+                                    className={assessment.score >= 70 ? "bg-green-100 text-green-800 border-green-300" : "bg-red-100 text-red-800 border-red-300"}
+                                  >
+                                    {assessment.status === "passed" ? "Passed" : "Needs Improvement"}
+                                  </Badge>
+                                </div>
+                              </div>
+                            </div>
+                            <p className="text-sm text-gray-600 mb-4 line-clamp-3">{assessment.opinion}</p>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full text-emerald-700 border-emerald-300 hover:bg-emerald-50"
+                              onClick={() => handleShowAnswers(assessment)}
+                            >
+                              <Eye className="w-4 h-4 mr-2" />
+                              View Detailed Results
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Anti-cheating Monitor Section */}
+                    <div className="bg-gradient-to-br from-orange-50 to-red-100 rounded-2xl p-8 border border-orange-200">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-orange-600 rounded-xl">
+                          <Shield className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-bold text-orange-900">Security & Integrity Monitor</h4>
+                          <p className="text-orange-700">Real-time assessment monitoring data</p>
+                        </div>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <HelpCircle className="w-5 h-5 text-orange-600 hover:text-orange-700" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Real-time monitoring data during assessment</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      
+                      <div className="bg-white rounded-xl p-6 border border-orange-200">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Monitor className="w-4 h-4" />
+                              Device used
+                            </span>
+                            <span className="font-semibold text-orange-900">{antiCheatData.device}</span>
                           </div>
                           
-                          <div className="space-y-3 text-sm">
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600 flex items-center gap-2">
-                                <Monitor className="w-4 h-4" />
-                                Device used
-                              </span>
-                              <span className="font-medium">{antiCheatData.device}</span>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600 flex items-center gap-2">
-                                <MapPinIcon className="w-4 h-4" />
-                                Location
-                              </span>
-                              <span className="font-medium">{antiCheatData.location}</span>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600">Filled out only once from IP address?</span>
-                              <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                {antiCheatData.filledOnce ? "Yes" : "No"}
-                              </Badge>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600 flex items-center gap-2">
-                                <Camera className="w-4 h-4" />
-                                Webcam enabled?
-                              </span>
-                              <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                {antiCheatData.webcamEnabled ? "Yes" : "No"}
-                              </Badge>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600 flex items-center gap-2">
-                                <Maximize className="w-4 h-4" />
-                                Full-screen mode always active?
-                              </span>
-                              <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                {antiCheatData.fullScreenActive ? "Yes" : "No"}
-                              </Badge>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600 flex items-center gap-2">
-                                <MousePointer className="w-4 h-4" />
-                                Mouse always in assessment window?
-                              </span>
-                              <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                {antiCheatData.mouseInWindow ? "Yes" : "No"}
-                              </Badge>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600">No copy paste detected?</span>
-                              <Badge variant={antiCheatData.noCopyPaste ? "default" : "destructive"} className={antiCheatData.noCopyPaste ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                {antiCheatData.noCopyPaste ? "Yes" : "No"}
-                              </Badge>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600">No minimize for pages?</span>
-                              <Badge variant={antiCheatData.noMinimize ? "default" : "destructive"} className={antiCheatData.noMinimize ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                {antiCheatData.noMinimize ? "Yes" : "No"}
-                              </Badge>
-                            </div>
-
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-600 flex items-center gap-2">
-                                <Camera className="w-4 h-4" />
-                                Camera position
-                              </span>
-                              <Badge variant="default" className="bg-green-100 text-green-800">
-                                {antiCheatData.cameraPosition}
-                              </Badge>
-                            </div>
+                          <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <MapPinIcon className="w-4 h-4" />
+                              Location
+                            </span>
+                            <span className="font-semibold text-orange-900">{antiCheatData.location}</span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <span className="text-gray-700 text-sm">Single IP session</span>
+                            <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.filledOnce ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Camera className="w-4 h-4" />
+                              Webcam active
+                            </span>
+                            <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.webcamEnabled ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Maximize className="w-4 h-4" />
+                              Full-screen mode
+                            </span>
+                            <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.fullScreenActive ? "Always" : "Violated"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-orange-50 rounded-lg">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <MousePointer className="w-4 h-4" />
+                              Mouse tracking
+                            </span>
+                            <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.mouseInWindow ? "Clean" : "Suspicious"}
+                            </Badge>
                           </div>
                         </div>
+                      </div>
+                    </div>
 
-                        {/* Individual Assessment Videos */}
-                        <div className="space-y-4">
-                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Assessment Recording</h4>
+                    {/* Assessment Recording Section */}
+                    <div className="bg-gradient-to-br from-purple-50 to-violet-100 rounded-2xl p-8 border border-purple-200">
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="p-3 bg-purple-600 rounded-xl">
+                          <Camera className="w-6 h-6 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="text-xl font-bold text-purple-900">Assessment Recording</h4>
+                          <p className="text-purple-700">Complete session recording with timeline markers</p>
+                        </div>
+                      </div>
+                      
+                      <div className="bg-white rounded-xl overflow-hidden border border-purple-200">
+                        <div className="aspect-video bg-black flex items-center justify-center relative">
+                          <img 
+                            src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                            alt="Complete assessment recording"
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                            <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                              <Play className="w-5 h-5 mr-2" />
+                              Watch Full Recording
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="p-6">
+                          <div className="flex items-center justify-between text-sm mb-4">
+                            <span className="font-semibold text-gray-900">Complete Assessment Session</span>
+                            <span className="text-gray-600 text-xs bg-gray-100 px-2 py-1 rounded">56:12 / 1:40:00</span>
+                          </div>
                           
-                          {/* Single Video Player */}
-                          <div className="bg-gray-100 rounded-lg overflow-hidden">
-                            <div className="aspect-video bg-black flex items-center justify-center relative">
-                              <img 
-                                src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
-                                alt="Complete assessment recording"
-                                className="w-full h-full object-cover"
-                              />
-                              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                                <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
-                                  <Play className="w-4 h-4 mr-2" />
-                                  Watch Full Recording
-                                </Button>
+                          {/* Enhanced Timeline with Chunks */}
+                          <div className="space-y-4">
+                            <div className="w-full bg-gray-200 rounded-full h-3 relative overflow-hidden">
+                              {/* Chunk 1: Technical Challenge */}
+                              <div 
+                                className="absolute top-0 left-0 bg-blue-500 h-3 rounded-l-full" 
+                                style={{ width: '45%' }}
+                                title="Technical Challenge: Financial Forecasting & Budget Variance Analysis"
+                              ></div>
+                              {/* Chunk 2: Critical Thinking */}
+                              <div 
+                                className="absolute top-0 bg-orange-500 h-3" 
+                                style={{ left: '45%', width: '30%' }}
+                                title="Critical Thinking Scenario: Budget Crisis Resolution"
+                              ></div>
+                              {/* Chunk 3: Culture Fit */}
+                              <div 
+                                className="absolute top-0 bg-purple-500 h-3 rounded-r-full" 
+                                style={{ left: '75%', width: '25%' }}
+                                title="Culture Fit Simulation: Team Conflict & Collaboration"
+                              ></div>
+                              {/* Progress indicator */}
+                              <div 
+                                className="absolute top-0 left-0 bg-green-600 h-3 opacity-80 rounded-l-full" 
+                                style={{ width: '56%' }}
+                              ></div>
+                            </div>
+                            
+                            {/* Chunk Labels */}
+                            <div className="grid grid-cols-3 gap-4 text-xs">
+                              <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg">
+                                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                <div>
+                                  <div className="font-medium text-blue-900">Technical Challenge</div>
+                                  <div className="text-blue-700">0:00-45:00</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 p-2 bg-orange-50 rounded-lg">
+                                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                <div>
+                                  <div className="font-medium text-orange-900">Critical Thinking</div>
+                                  <div className="text-orange-700">45:00-1:15:00</div>
+                                </div>
+                              </div>
+                              <div className="flex items-center gap-2 p-2 bg-purple-50 rounded-lg">
+                                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                <div>
+                                  <div className="font-medium text-purple-900">Culture Fit</div>
+                                  <div className="text-purple-700">1:15:00-1:40:00</div>
+                                </div>
                               </div>
                             </div>
-                            <div className="p-4 bg-white">
-                              <div className="flex items-center justify-between text-sm mb-3">
-                                <span className="font-medium text-gray-900">Complete Assessment Session</span>
-                                <span className="text-gray-600 text-xs">56:12 / 1:40:00</span>
-                              </div>
-                              
-                              {/* Timeline with Chunks */}
-                              <div className="space-y-2">
-                                <div className="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
-                                  {/* Chunk 1: Technical Challenge */}
-                                  <div 
-                                    className="absolute top-0 left-0 bg-blue-500 h-2 rounded-l-full" 
-                                    style={{ width: '45%' }}
-                                    title="Technical Challenge: Financial Forecasting & Budget Variance Analysis"
-                                  ></div>
-                                  {/* Chunk 2: Critical Thinking */}
-                                  <div 
-                                    className="absolute top-0 bg-orange-500 h-2" 
-                                    style={{ left: '45%', width: '30%' }}
-                                    title="Critical Thinking Scenario: Budget Crisis Resolution"
-                                  ></div>
-                                  {/* Chunk 3: Culture Fit */}
-                                  <div 
-                                    className="absolute top-0 bg-purple-500 h-2 rounded-r-full" 
-                                    style={{ left: '75%', width: '25%' }}
-                                    title="Culture Fit Simulation: Team Conflict & Collaboration"
-                                  ></div>
-                                  {/* Progress indicator */}
-                                  <div 
-                                    className="absolute top-0 left-0 bg-green-600 h-2 opacity-80" 
-                                    style={{ width: '56%' }}
-                                  ></div>
-                                </div>
-                                
-                                {/* Chunk Labels */}
-                                <div className="flex justify-between text-xs text-gray-600">
-                                  <div className="flex items-center gap-1">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                                    <span>Technical (0:00-45:00)</span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-                                    <span>Critical Thinking (45:00-1:15:00)</span>
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                                    <span>Culture Fit (1:15:00-1:40:00)</span>
-                                  </div>
-                                </div>
-                                
-                                {/* Quick Jump Buttons */}
-                                <div className="flex gap-2 mt-3">
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    Jump to Technical
-                                  </Button>
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    Jump to Critical Thinking
-                                  </Button>
-                                  <Button size="sm" variant="outline" className="text-xs">
-                                    Jump to Culture Fit
-                                  </Button>
-                                </div>
-                              </div>
+                            
+                            {/* Quick Jump Buttons */}
+                            <div className="flex flex-wrap gap-2 pt-2">
+                              <Button size="sm" variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100">
+                                Jump to Technical
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-xs bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100">
+                                Jump to Critical Thinking  
+                              </Button>
+                              <Button size="sm" variant="outline" className="text-xs bg-purple-50 text-purple-700 border-purple-200 hover:bg-purple-100">
+                                Jump to Culture Fit
+                              </Button>
                             </div>
                           </div>
                         </div>
