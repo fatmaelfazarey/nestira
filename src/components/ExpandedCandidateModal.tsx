@@ -89,23 +89,28 @@ export function ExpandedCandidateModal({
   }];
 
   const mockAssessments = [{
-    name: "JavaScript Technical Challenge: E-commerce Cart Implementation",
+    name: "Technical Challenge: E-commerce Cart Implementation",
     score: 100,
     status: "passed",
     opinion: "Excellent implementation of complex data structures and algorithms. Clean, efficient code with proper error handling.",
     questions: [
       {
         id: 1,
-        question: "What is the correct way to declare an array in JavaScript?",
-        options: ["let arr = [];", "let arr = {};", "let arr = ();", "let arr = new Array[];"],
-        correctAnswer: 0,
-        candidateAnswer: 0,
+        question: "How would you implement a shopping cart with discount calculations?",
+        options: [
+          "Use a simple array to store items",
+          "Create a class with methods for add, remove, and calculate total",
+          "Store everything in localStorage",
+          "Use a global variable"
+        ],
+        correctAnswer: 1,
+        candidateAnswer: 1,
         isCorrect: true
       },
       {
         id: 2,
-        question: "Which method adds an element to the end of an array?",
-        options: ["push()", "pop()", "shift()", "unshift()"],
+        question: "What's the best approach for handling inventory updates?",
+        options: ["Real-time updates", "Batch processing", "Manual updates", "No updates needed"],
         correctAnswer: 0,
         candidateAnswer: 0,
         isCorrect: true
@@ -119,18 +124,23 @@ export function ExpandedCandidateModal({
     questions: [
       {
         id: 1,
-        question: "A company's sales increased by 20% in Q1 and decreased by 15% in Q2. What is the overall change?",
-        options: ["5% increase", "2% increase", "3% decrease", "Cannot determine"],
+        question: "Your project is 50% over budget. What's your first action?",
+        options: [
+          "Cut all non-essential features immediately",
+          "Analyze spending to identify the biggest cost drivers",
+          "Ask for more budget from stakeholders",
+          "Continue as planned and hope for the best"
+        ],
         correctAnswer: 1,
         candidateAnswer: 0,
         isCorrect: false
       },
       {
         id: 2,
-        question: "If all managers are leaders, and some leaders are innovative, which statement is true?",
-        options: ["All managers are innovative", "Some managers are innovative", "No managers are innovative", "Cannot determine from given information"],
-        correctAnswer: 3,
-        candidateAnswer: 1,
+        question: "How do you communicate budget issues to stakeholders?",
+        options: ["Hide the issue", "Present data and solutions", "Blame external factors", "Wait until the end"],
+        correctAnswer: 1,
+        candidateAnswer: 2,
         isCorrect: false
       }
     ]
@@ -142,18 +152,23 @@ export function ExpandedCandidateModal({
     questions: [
       {
         id: 1,
-        question: "How would you handle a conflict with a team member?",
-        options: ["Avoid the conflict", "Address it directly and privately", "Involve management immediately", "Document everything first"],
+        question: "Two team members disagree on project approach. How do you handle it?",
+        options: [
+          "Let them figure it out themselves",
+          "Facilitate a discussion to find common ground",
+          "Choose one approach arbitrarily",
+          "Escalate to management immediately"
+        ],
         correctAnswer: 1,
-        candidateAnswer: 3,
+        candidateAnswer: 0,
         isCorrect: false
       },
       {
         id: 2,
-        question: "What best describes your approach to feedback?",
-        options: ["I prefer written feedback", "I like immediate verbal feedback", "I value constructive feedback in any form", "I don't need much feedback"],
-        correctAnswer: 2,
-        candidateAnswer: 2,
+        question: "How do you ensure everyone's voice is heard in meetings?",
+        options: ["Let natural leaders speak", "Actively ask for input from all members", "Stick to the agenda only", "Keep meetings short"],
+        correctAnswer: 1,
+        candidateAnswer: 1,
         isCorrect: true
       }
     ]
