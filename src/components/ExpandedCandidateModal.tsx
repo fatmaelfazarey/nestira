@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
+import { AssessmentAnswersModal } from './AssessmentAnswersModal';
 
 interface Candidate {
   id: number;
@@ -50,6 +51,8 @@ export function ExpandedCandidateModal({
   const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [selectedQuizzes, setSelectedQuizzes] = useState<number[]>([]);
+  const [selectedAssessment, setSelectedAssessment] = useState<any>(null);
+  const [showAssessmentAnswers, setShowAssessmentAnswers] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     industry: true,
     financeSubfields: true,
@@ -89,17 +92,71 @@ export function ExpandedCandidateModal({
     name: "JavaScript (coding): data structures & data types",
     score: 100,
     status: "passed",
-    opinion: "Excellent understanding of JavaScript fundamentals with perfect execution of data structure problems."
+    opinion: "Excellent understanding of JavaScript fundamentals with perfect execution of data structure problems.",
+    questions: [
+      {
+        id: 1,
+        question: "What is the correct way to declare an array in JavaScript?",
+        options: ["let arr = [];", "let arr = {};", "let arr = ();", "let arr = new Array[];"],
+        correctAnswer: 0,
+        candidateAnswer: 0,
+        isCorrect: true
+      },
+      {
+        id: 2,
+        question: "Which method adds an element to the end of an array?",
+        options: ["push()", "pop()", "shift()", "unshift()"],
+        correctAnswer: 0,
+        candidateAnswer: 0,
+        isCorrect: true
+      }
+    ]
   }, {
     name: "Critical thinking",
     score: 37,
     status: "needs-improvement",
-    opinion: "Shows basic analytical skills but needs improvement in complex problem-solving scenarios."
+    opinion: "Shows basic analytical skills but needs improvement in complex problem-solving scenarios.",
+    questions: [
+      {
+        id: 1,
+        question: "A company's sales increased by 20% in Q1 and decreased by 15% in Q2. What is the overall change?",
+        options: ["5% increase", "2% increase", "3% decrease", "Cannot determine"],
+        correctAnswer: 1,
+        candidateAnswer: 0,
+        isCorrect: false
+      },
+      {
+        id: 2,
+        question: "If all managers are leaders, and some leaders are innovative, which statement is true?",
+        options: ["All managers are innovative", "Some managers are innovative", "No managers are innovative", "Cannot determine from given information"],
+        correctAnswer: 3,
+        candidateAnswer: 1,
+        isCorrect: false
+      }
+    ]
   }, {
     name: "Culture add",
     score: 47,
     status: "needs-improvement", 
-    opinion: "Demonstrates some cultural awareness but could benefit from better alignment with company values."
+    opinion: "Demonstrates some cultural awareness but could benefit from better alignment with company values.",
+    questions: [
+      {
+        id: 1,
+        question: "How would you handle a conflict with a team member?",
+        options: ["Avoid the conflict", "Address it directly and privately", "Involve management immediately", "Document everything first"],
+        correctAnswer: 1,
+        candidateAnswer: 3,
+        isCorrect: false
+      },
+      {
+        id: 2,
+        question: "What best describes your approach to feedback?",
+        options: ["I prefer written feedback", "I like immediate verbal feedback", "I value constructive feedback in any form", "I don't need much feedback"],
+        correctAnswer: 2,
+        candidateAnswer: 2,
+        isCorrect: true
+      }
+    ]
   }];
 
   const antiCheatData = {
@@ -219,6 +276,11 @@ export function ExpandedCandidateModal({
 
   const handleDownloadFitReport = () => {
     console.log('Downloading Behavioral Fit Report for', candidate.name);
+  };
+
+  const handleShowAnswers = (assessment: any) => {
+    setSelectedAssessment(assessment);
+    setShowAssessmentAnswers(true);
   };
 
   return (
@@ -798,30 +860,30 @@ export function ExpandedCandidateModal({
                           <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Tests Included in Scoring</h4>
                           <div className="space-y-3">
                             {mockAssessments.map((assessment, index) => (
-                              <Collapsible key={index}>
-                                <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                  <div className="flex items-center gap-2">
-                                    <ChevronDown className="w-4 h-4 text-gray-500" />
-                                    <span className="text-sm font-medium text-gray-800">{assessment.name}</span>
-                                  </div>
-                                  <span className="text-sm font-semibold text-gray-800">{assessment.score}%</span>
-                                </CollapsibleTrigger>
-                                <CollapsibleContent className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
-                                  <div className="space-y-3">
-                                    <div className="flex items-center justify-between">
-                                      <span className="text-sm text-gray-600">Score:</span>
-                                      <div className="flex items-center gap-2">
-                                        <Progress value={assessment.score} className="w-20" />
-                                        <span className="text-sm font-semibold">{assessment.score}%</span>
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <span className="text-sm text-gray-600">Our Opinion:</span>
-                                      <p className="text-sm text-gray-800 mt-1">{assessment.opinion}</p>
+                              <div key={index} className="p-4 bg-gray-50 rounded-lg border">
+                                <div className="flex items-center justify-between mb-3">
+                                  <div className="flex-1">
+                                    <h5 className="font-medium text-gray-900 mb-1">{assessment.name}</h5>
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-2xl font-bold text-gray-800">{assessment.score}%</span>
+                                      <Badge variant={assessment.score >= 70 ? "default" : "destructive"} 
+                                             className={assessment.score >= 70 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                        {assessment.status === "passed" ? "Passed" : "Needs Improvement"}
+                                      </Badge>
                                     </div>
                                   </div>
-                                </CollapsibleContent>
-                              </Collapsible>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-[#ff5f1b] border-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white"
+                                    onClick={() => handleShowAnswers(assessment)}
+                                  >
+                                    <Eye className="w-4 h-4 mr-1" />
+                                    Show Answers
+                                  </Button>
+                                </div>
+                                <p className="text-sm text-gray-600">{assessment.opinion}</p>
+                              </div>
                             ))}
                           </div>
                         </div>
@@ -1042,6 +1104,13 @@ export function ExpandedCandidateModal({
               </DialogContent>
             </Dialog>
           )}
+
+          {/* Assessment Answers Modal */}
+          <AssessmentAnswersModal
+            assessment={selectedAssessment}
+            isOpen={showAssessmentAnswers}
+            onClose={() => setShowAssessmentAnswers(false)}
+          />
         </DialogContent>
       </Dialog>
     </TooltipProvider>
