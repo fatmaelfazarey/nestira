@@ -183,53 +183,59 @@ export function AppSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter className="p-4 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-slate-50">
-          <div className="space-y-3">
+        <SidebarFooter className="p-4 border-t border-gradient-to-r from-orange-200 to-pink-200 bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
+          <div className="space-y-4">
             {/* Nestira Recruit Box */}
-            <div className="p-3 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-lg text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <UserCheck className="w-4 h-4" />
-                <h4 className="font-semibold text-sm">Nestira Recruit</h4>
+            <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-600 text-white shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <UserCheck className="w-5 h-5 animate-pulse" />
+                <h4 className="font-bold text-base tracking-wide">Nestira Recruit</h4>
               </div>
-              <p className="text-xs text-blue-100 mb-3">
+              <p className="text-sm font-semibold text-white/90 mb-4 leading-relaxed">
                 "We do the hiring. You meet the best."
               </p>
-              <Button asChild size="sm" className="w-full bg-white text-blue-700 hover:bg-white/90 font-semibold">
-                <Link to="/talent-pool">Explore Talents</Link>
+              <Button asChild size="sm" className="w-full bg-white text-blue-700 hover:bg-blue-50 font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-blue-200">
+                <Link to="/talent-pool" className="flex items-center justify-center gap-2">
+                  Let us hire for you →
+                </Link>
               </Button>
             </div>
 
             {/* Nestira Remote Box */}
-            <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 text-white shadow-lg text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Building2 className="w-4 h-4" />
-                <h4 className="font-semibold text-sm">Nestira Remote</h4>
+            <div className="p-4 rounded-xl bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 text-white shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Building2 className="w-5 h-5 animate-pulse" />
+                <h4 className="font-bold text-base tracking-wide">Nestira Remote</h4>
               </div>
-              <p className="text-xs text-purple-100 mb-3">
+              <p className="text-sm font-semibold text-white/90 mb-4 leading-relaxed">
                 "Remote hires. Fully managed from our office."
               </p>
-              <Button asChild size="sm" className="w-full bg-white text-purple-700 hover:bg-white/90 font-semibold">
-                <Link to="/unlocked-talents">Remote Talents</Link>
+              <Button asChild size="sm" className="w-full bg-white text-red-700 hover:bg-red-50 font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-red-200">
+                <Link to="/unlocked-talents" className="flex items-center justify-center gap-2">
+                  Hire remotely. We manage →
+                </Link>
               </Button>
             </div>
 
             {/* Refer & Earn Box */}
-            <div className="p-3 rounded-lg bg-gradient-to-br from-green-500 to-green-700 text-white shadow-lg text-center">
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <DollarSign className="w-4 h-4" />
-                <h4 className="font-semibold text-sm">Refer & Earn</h4>
+            <div className="p-4 rounded-xl bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <DollarSign className="w-5 h-5 animate-bounce" />
+                <h4 className="font-bold text-base tracking-wide">Refer & Earn</h4>
               </div>
-              <p className="text-xs text-green-100 mb-3">
+              <p className="text-sm font-semibold text-white/90 mb-4 leading-relaxed">
                 "Refer jobs or talents. Earn money on every refer."
               </p>
-              <Button asChild size="sm" className="w-full bg-white text-green-700 hover:bg-white/90 font-semibold">
-                <Link to="/referrals">Start Referring</Link>
+              <Button asChild size="sm" className="w-full bg-white text-orange-700 hover:bg-orange-50 font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-orange-200">
+                <Link to="/referrals" className="flex items-center justify-center gap-2">
+                  Refer and get paid →
+                </Link>
               </Button>
             </div>
           </div>
 
-          <div className="text-xs text-gray-400 text-center font-medium mt-4">
-            Powered by <span className="text-accent font-semibold">Nestira</span>
+          <div className="text-xs text-white/80 text-center font-bold mt-6 bg-gradient-to-r from-accent to-orange-600 bg-clip-text text-transparent">
+            Powered by <span className="text-white font-black">Nestira</span>
           </div>
         </SidebarFooter>
       </Sidebar>
