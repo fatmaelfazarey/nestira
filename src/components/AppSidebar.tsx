@@ -1,3 +1,4 @@
+
 import {
   Grid2X2,
   Inbox,
@@ -183,7 +184,7 @@ export function AppSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter className="p-3 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+        <SidebarFooter className="p-3 relative overflow-hidden" style={{ backgroundColor: '#00102c' }}>
           {/* Orange circles background decoration */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-4 right-6 w-16 h-16 bg-orange-500/20 rounded-full"></div>
