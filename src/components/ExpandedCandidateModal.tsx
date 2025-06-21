@@ -8,11 +8,9 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
-import { AssessmentDetailDrawer } from './AssessmentDetailDrawer';
 
 interface Candidate {
   id: number;
@@ -52,8 +50,6 @@ export function ExpandedCandidateModal({
   const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showQuizModal, setShowQuizModal] = useState(false);
   const [selectedQuizzes, setSelectedQuizzes] = useState<number[]>([]);
-  const [selectedAssessment, setSelectedAssessment] = useState<any>(null);
-  const [showAssessmentDetail, setShowAssessmentDetail] = useState(false);
   const [expandedSections, setExpandedSections] = useState({
     industry: true,
     financeSubfields: true,
@@ -223,11 +219,6 @@ export function ExpandedCandidateModal({
 
   const handleDownloadFitReport = () => {
     console.log('Downloading Behavioral Fit Report for', candidate.name);
-  };
-
-  const handleViewAssessment = (assessment: any) => {
-    setSelectedAssessment(assessment);
-    setShowAssessmentDetail(true);
   };
 
   return (
@@ -751,134 +742,191 @@ export function ExpandedCandidateModal({
 
                 {/* Assessment Results Tab */}
                 <TabsContent value="assessment-results" className="flex-1 overflow-y-auto p-6 mt-0">
-                  <div className="space-y-6">
-                    {/* Header */}
-                    <div className="flex items-center gap-2 mb-6">
-                      <Brain className="w-6 h-6 text-[#ff5f1b]" />
-                      <h2 className="text-2xl font-semibold text-gray-900">Assessment Results</h2>
+                  <div className="bg-white rounded-lg shadow-sm p-6">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                          <Brain className="w-5 h-5 text-[#ff5f1b]" />
+                          Assessment Results
+                        </h3>
+                        <Tooltip>
+                          <TooltipTrigger>
+                            <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>Detailed results from candidate assessments including scores and analysis</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
                     </div>
 
-                    {/* Two Column Grid */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                      {/* Left Column */}
+                      {/* Left Side - Assessment Scores */}
                       <div className="space-y-6">
-                        {/* Average Score Box */}
-                        <Card>
-                          <CardHeader className="text-center pb-4">
-                            <CardTitle className="text-lg font-semibold text-gray-900">Average Score</CardTitle>
-                          </CardHeader>
-                          <CardContent className="text-center space-y-4">
+                        {/* Overall Score */}
+                        <div className="text-center p-6 bg-gray-50 rounded-lg">
+                          <div className="flex items-center justify-center mb-4">
                             <div className="text-6xl font-bold text-gray-800">61%</div>
-                            <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
-                              <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
-                                <span>Candidate pool average</span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                                <span>This candidate's best score</span>
-                              </div>
+                          </div>
+                          <p className="text-gray-600 text-sm uppercase tracking-wide mb-2">Average Score</p>
+                          <div className="flex items-center justify-center gap-4 text-xs text-gray-500">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-gray-300 rounded-full"></div>
+                              <span>Your candidate pool average</span>
                             </div>
-                          </CardContent>
-                        </Card>
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 bg-teal-600 rounded-full"></div>
+                              <span>Your best candidate score</span>
+                            </div>
+                          </div>
+                        </div>
 
-                        {/* Scoring Breakdown */}
-                        <Card>
-                          <CardHeader>
-                            <CardTitle className="text-lg font-semibold text-gray-900">Scoring Breakdown</CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
+                        {/* Scoring Method */}
+                        <div className="p-4 bg-gray-50 rounded-lg">
+                          <div className="flex items-center justify-between mb-3">
+                            <h4 className="font-semibold text-gray-900">Scoring method</h4>
+                            <Button variant="outline" size="sm" className="text-xs">
+                              <FileText className="w-3 h-3 mr-1" />
+                              Change
+                            </Button>
+                          </div>
+                          <p className="text-gray-700 font-medium">Percentage of correct answers</p>
+                        </div>
+
+                        {/* Tests Included */}
+                        <div className="space-y-3">
+                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Tests Included in Scoring</h4>
+                          <div className="space-y-3">
                             {mockAssessments.map((assessment, index) => (
-                              <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
-                                <div className="flex-1">
-                                  <p className="font-medium text-gray-900 mb-1">{assessment.name}</p>
+                              <Collapsible key={index}>
+                                <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                   <div className="flex items-center gap-2">
-                                    <Progress value={assessment.score} className="flex-1 max-w-[120px]" />
-                                    <span className="text-lg font-semibold">{assessment.score}%</span>
+                                    <ChevronDown className="w-4 h-4 text-gray-500" />
+                                    <span className="text-sm font-medium text-gray-800">{assessment.name}</span>
                                   </div>
-                                </div>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  onClick={() => handleViewAssessment(assessment)}
-                                  className="ml-4 text-[#ff5f1b] border-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white"
-                                >
-                                  <Eye className="w-4 h-4 mr-1" />
-                                  View Assessment
-                                </Button>
-                              </div>
+                                  <span className="text-sm font-semibold text-gray-800">{assessment.score}%</span>
+                                </CollapsibleTrigger>
+                                <CollapsibleContent className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
+                                  <div className="space-y-3">
+                                    <div className="flex items-center justify-between">
+                                      <span className="text-sm text-gray-600">Score:</span>
+                                      <div className="flex items-center gap-2">
+                                        <Progress value={assessment.score} className="w-20" />
+                                        <span className="text-sm font-semibold">{assessment.score}%</span>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <span className="text-sm text-gray-600">Our Opinion:</span>
+                                      <p className="text-sm text-gray-800 mt-1">{assessment.opinion}</p>
+                                    </div>
+                                  </div>
+                                </CollapsibleContent>
+                              </Collapsible>
                             ))}
-                          </CardContent>
-                        </Card>
+                          </div>
+                        </div>
                       </div>
 
-                      {/* Right Column */}
+                      {/* Right Side - Anti-cheating Monitor & Video */}
                       <div className="space-y-6">
-                        {/* Anti-Cheating Monitor */}
-                        <Card>
-                          <CardHeader>
-                            <CardTitle className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                              <Shield className="w-5 h-5" />
-                              Anti-Cheating Monitor
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div className="space-y-3 text-sm">
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 flex items-center gap-2">
-                                  <Monitor className="w-4 h-4" />
-                                  Device used
-                                </span>
-                                <span className="font-medium">{antiCheatData.device}</span>
-                              </div>
-                              
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 flex items-center gap-2">
-                                  <MapPinIcon className="w-4 h-4" />
-                                  Location
-                                </span>
-                                <span className="font-medium">{antiCheatData.location}</span>
-                              </div>
-                              
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600">Filled only once from IP?</span>
-                                <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                  {antiCheatData.filledOnce ? "✓" : "✗"}
-                                </Badge>
-                              </div>
-                              
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 flex items-center gap-2">
-                                  <Camera className="w-4 h-4" />
-                                  Webcam enabled?
-                                </span>
-                                <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                  {antiCheatData.webcamEnabled ? "✓" : "✗"}
-                                </Badge>
-                              </div>
-                              
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 flex items-center gap-2">
-                                  <Maximize className="w-4 h-4" />
-                                  Full-screen mode?
-                                </span>
-                                <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                  {antiCheatData.fullScreenActive ? "✓" : "✗"}
-                                </Badge>
-                              </div>
-                              
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-600 flex items-center gap-2">
-                                  <MousePointer className="w-4 h-4" />
-                                  Mouse stayed in window?
-                                </span>
-                                <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                                  {antiCheatData.mouseInWindow ? "✓" : "✗"}
-                                </Badge>
-                              </div>
+                        {/* Anti-cheating Monitor */}
+                        <div className="p-4 bg-gray-50 rounded-lg border">
+                          <div className="flex items-center justify-between mb-4">
+                            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                              <Shield className="w-4 h-4" />
+                              Anti-cheating monitor
+                            </h4>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <HelpCircle className="w-4 h-4 text-gray-500 hover:text-gray-700" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Real-time monitoring data during assessment</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                          
+                          <div className="space-y-3 text-sm">
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <Monitor className="w-4 h-4" />
+                                Device used
+                              </span>
+                              <span className="font-medium">{antiCheatData.device}</span>
                             </div>
-                          </CardContent>
-                        </Card>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <MapPinIcon className="w-4 h-4" />
+                                Location
+                              </span>
+                              <span className="font-medium">{antiCheatData.location}</span>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">Filled out only once from IP address?</span>
+                              <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.filledOnce ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <Camera className="w-4 h-4" />
+                                Webcam enabled?
+                              </span>
+                              <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.webcamEnabled ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <Maximize className="w-4 h-4" />
+                                Full-screen mode always active?
+                              </span>
+                              <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.fullScreenActive ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                            
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <MousePointer className="w-4 h-4" />
+                                Mouse always in assessment window?
+                              </span>
+                              <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.mouseInWindow ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Assessment Video */}
+                        <div className="bg-gray-100 rounded-lg overflow-hidden">
+                          <div className="aspect-video bg-black flex items-center justify-center relative">
+                            <img 
+                              src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                              alt="Assessment video preview"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                              <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                                <Play className="w-6 h-6 mr-2" />
+                                Watch Assessment Video
+                              </Button>
+                            </div>
+                          </div>
+                          <div className="p-3 bg-white">
+                            <div className="flex items-center justify-between text-sm text-gray-600">
+                              <span>Assessment Recording</span>
+                              <span>15:42 / 45:00</span>
+                            </div>
+                            <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                              <div className="bg-[#ff5f1b] h-1 rounded-full" style={{ width: '35%' }}></div>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -996,14 +1044,6 @@ export function ExpandedCandidateModal({
           )}
         </DialogContent>
       </Dialog>
-
-      {/* Assessment Detail Drawer */}
-      <AssessmentDetailDrawer
-        assessment={selectedAssessment}
-        isOpen={showAssessmentDetail}
-        onClose={() => setShowAssessmentDetail(false)}
-        antiCheatData={antiCheatData}
-      />
     </TooltipProvider>
   );
 }
