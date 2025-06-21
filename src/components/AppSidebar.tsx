@@ -11,7 +11,10 @@ import {
   HelpCircle,
   CreditCard,
   Users,
-  Settings
+  Settings,
+  UserCheck,
+  Building2,
+  DollarSign
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -180,19 +183,52 @@ export function AppSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter className="p-6 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-slate-50">
-          <div className="mb-6 p-4 rounded-lg bg-gradient-to-br from-green-500 to-green-700 text-white shadow-lg text-center">
-            <h4 className="font-semibold mb-2 text-sm">
-              🤝 Know someone hiring? Send them our way.
-            </h4>
-            <p className="text-xs text-green-100 mb-3">
-              We’ll handle the hiring. You get the thank-you (in cash). Perfect for recruiters, HR consultants, and team leads.
-            </p>
-            <Button asChild size="sm" className="w-full bg-white text-green-700 hover:bg-white/90 font-semibold">
-                <Link to="/referrals">Refer & Earn</Link>
-            </Button>
+        <SidebarFooter className="p-4 border-t border-gray-100 bg-gradient-to-r from-gray-50 to-slate-50">
+          <div className="space-y-3">
+            {/* Nestira Recruit Box */}
+            <div className="p-3 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 text-white shadow-lg text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <UserCheck className="w-4 h-4" />
+                <h4 className="font-semibold text-sm">Nestira Recruit</h4>
+              </div>
+              <p className="text-xs text-blue-100 mb-3">
+                "We do the hiring. You meet the best."
+              </p>
+              <Button asChild size="sm" className="w-full bg-white text-blue-700 hover:bg-white/90 font-semibold">
+                <Link to="/talent-pool">Explore Talents</Link>
+              </Button>
+            </div>
+
+            {/* Nestira Remote Box */}
+            <div className="p-3 rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 text-white shadow-lg text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <Building2 className="w-4 h-4" />
+                <h4 className="font-semibold text-sm">Nestira Remote</h4>
+              </div>
+              <p className="text-xs text-purple-100 mb-3">
+                "Remote hires. Fully managed from our office."
+              </p>
+              <Button asChild size="sm" className="w-full bg-white text-purple-700 hover:bg-white/90 font-semibold">
+                <Link to="/unlocked-talents">Remote Talents</Link>
+              </Button>
+            </div>
+
+            {/* Refer & Earn Box */}
+            <div className="p-3 rounded-lg bg-gradient-to-br from-green-500 to-green-700 text-white shadow-lg text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <DollarSign className="w-4 h-4" />
+                <h4 className="font-semibold text-sm">Refer & Earn</h4>
+              </div>
+              <p className="text-xs text-green-100 mb-3">
+                "Refer jobs or talents. Earn money on every refer."
+              </p>
+              <Button asChild size="sm" className="w-full bg-white text-green-700 hover:bg-white/90 font-semibold">
+                <Link to="/referrals">Start Referring</Link>
+              </Button>
+            </div>
           </div>
-          <div className="text-xs text-gray-400 text-center font-medium">
+
+          <div className="text-xs text-gray-400 text-center font-medium mt-4">
             Powered by <span className="text-accent font-semibold">Nestira</span>
           </div>
         </SidebarFooter>
