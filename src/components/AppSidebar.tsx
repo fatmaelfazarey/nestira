@@ -183,8 +183,16 @@ export function AppSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter className="p-3 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
-          <div className="space-y-2">
+        <SidebarFooter className="p-3 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 relative overflow-hidden">
+          {/* Orange circles background decoration */}
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-4 right-6 w-16 h-16 bg-orange-500/20 rounded-full"></div>
+            <div className="absolute bottom-8 left-4 w-12 h-12 bg-orange-600/15 rounded-full"></div>
+            <div className="absolute top-12 left-8 w-8 h-8 bg-orange-400/25 rounded-full"></div>
+            <div className="absolute bottom-4 right-12 w-6 h-6 bg-orange-500/30 rounded-full"></div>
+          </div>
+          
+          <div className="space-y-2 relative z-10">
             {/* Nestira Recruit */}
             <Button asChild className="w-full h-10 bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-500 hover:to-cyan-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0">
               <Link to="/talent-pool" className="flex items-center justify-center gap-2">
@@ -210,8 +218,8 @@ export function AppSidebar() {
             </Button>
           </div>
 
-          <div className="text-xs text-white/80 text-center font-bold mt-4">
-            Powered by <span className="text-white font-black">Nestira</span>
+          <div className="text-xs text-white text-center font-bold mt-4 relative z-10">
+            Powered by <span className="text-orange-500 font-black">Nestira</span>
           </div>
         </SidebarFooter>
       </Sidebar>
