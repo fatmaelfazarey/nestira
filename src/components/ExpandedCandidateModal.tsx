@@ -996,39 +996,88 @@ export function ExpandedCandidateModal({
 
                         {/* Individual Assessment Videos */}
                         <div className="space-y-4">
-                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Assessment Recordings</h4>
+                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Assessment Recording</h4>
                           
-                          {mockAssessments.map((assessment, index) => (
-                            <div key={index} className="bg-gray-100 rounded-lg overflow-hidden">
-                              <div className="aspect-video bg-black flex items-center justify-center relative">
-                                <img 
-                                  src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
-                                  alt={`${assessment.name} recording preview`}
-                                  className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                                  <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
-                                    <Play className="w-4 h-4 mr-2" />
-                                    Watch Recording
+                          {/* Single Video Player */}
+                          <div className="bg-gray-100 rounded-lg overflow-hidden">
+                            <div className="aspect-video bg-black flex items-center justify-center relative">
+                              <img 
+                                src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                                alt="Complete assessment recording"
+                                className="w-full h-full object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                                  <Play className="w-4 h-4 mr-2" />
+                                  Watch Full Recording
+                                </Button>
+                              </div>
+                            </div>
+                            <div className="p-4 bg-white">
+                              <div className="flex items-center justify-between text-sm mb-3">
+                                <span className="font-medium text-gray-900">Complete Assessment Session</span>
+                                <span className="text-gray-600 text-xs">56:12 / 1:40:00</span>
+                              </div>
+                              
+                              {/* Timeline with Chunks */}
+                              <div className="space-y-2">
+                                <div className="w-full bg-gray-200 rounded-full h-2 relative overflow-hidden">
+                                  {/* Chunk 1: Technical Challenge */}
+                                  <div 
+                                    className="absolute top-0 left-0 bg-blue-500 h-2 rounded-l-full" 
+                                    style={{ width: '45%' }}
+                                    title="Technical Challenge: Financial Forecasting & Budget Variance Analysis"
+                                  ></div>
+                                  {/* Chunk 2: Critical Thinking */}
+                                  <div 
+                                    className="absolute top-0 bg-orange-500 h-2" 
+                                    style={{ left: '45%', width: '30%' }}
+                                    title="Critical Thinking Scenario: Budget Crisis Resolution"
+                                  ></div>
+                                  {/* Chunk 3: Culture Fit */}
+                                  <div 
+                                    className="absolute top-0 bg-purple-500 h-2 rounded-r-full" 
+                                    style={{ left: '75%', width: '25%' }}
+                                    title="Culture Fit Simulation: Team Conflict & Collaboration"
+                                  ></div>
+                                  {/* Progress indicator */}
+                                  <div 
+                                    className="absolute top-0 left-0 bg-green-600 h-2 opacity-80" 
+                                    style={{ width: '56%' }}
+                                  ></div>
+                                </div>
+                                
+                                {/* Chunk Labels */}
+                                <div className="flex justify-between text-xs text-gray-600">
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                    <span>Technical (0:00-45:00)</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                    <span>Critical Thinking (45:00-1:15:00)</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                    <span>Culture Fit (1:15:00-1:40:00)</span>
+                                  </div>
+                                </div>
+                                
+                                {/* Quick Jump Buttons */}
+                                <div className="flex gap-2 mt-3">
+                                  <Button size="sm" variant="outline" className="text-xs">
+                                    Jump to Technical
+                                  </Button>
+                                  <Button size="sm" variant="outline" className="text-xs">
+                                    Jump to Critical Thinking
+                                  </Button>
+                                  <Button size="sm" variant="outline" className="text-xs">
+                                    Jump to Culture Fit
                                   </Button>
                                 </div>
                               </div>
-                              <div className="p-3 bg-white">
-                                <div className="flex items-center justify-between text-sm">
-                                  <span className="font-medium text-gray-900 truncate">{assessment.name}</span>
-                                  <span className="text-gray-600 text-xs">
-                                    {index === 0 ? "25:42 / 45:00" : index === 1 ? "18:30 / 30:00" : "12:15 / 25:00"}
-                                  </span>
-                                </div>
-                                <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                                  <div 
-                                    className="bg-[#ff5f1b] h-1 rounded-full" 
-                                    style={{ width: index === 0 ? '57%' : index === 1 ? '62%' : '49%' }}
-                                  ></div>
-                                </div>
-                              </div>
                             </div>
-                          ))}
+                          </div>
                         </div>
                       </div>
                     </div>
