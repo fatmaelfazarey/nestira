@@ -183,40 +183,34 @@ export function AppSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter className="p-4 border-t border-gradient-to-r from-orange-200 to-pink-200 bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900">
-          <div className="space-y-3">
-            {/* Nestira Recruit Box */}
-            <div className="p-3 rounded-xl bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-600 text-white shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
-              <Button asChild size="sm" className="w-full bg-white text-blue-700 hover:bg-blue-50 font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-blue-200">
-                <Link to="/talent-pool" className="flex items-center justify-center gap-2">
-                  <UserCheck className="w-4 h-4" />
-                  Let us hire for you →
-                </Link>
-              </Button>
-            </div>
+        <SidebarFooter className="p-3 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+          <div className="space-y-2">
+            {/* Nestira Recruit */}
+            <Button asChild className="w-full h-10 bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-500 hover:to-cyan-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0">
+              <Link to="/talent-pool" className="flex items-center justify-center gap-2">
+                <UserCheck className="w-4 h-4" />
+                Let us hire for you →
+              </Link>
+            </Button>
 
-            {/* Nestira Remote Box */}
-            <div className="p-3 rounded-xl bg-gradient-to-r from-pink-500 via-red-500 to-orange-500 text-white shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
-              <Button asChild size="sm" className="w-full bg-white text-red-700 hover:bg-red-50 font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-red-200">
-                <Link to="/unlocked-talents" className="flex items-center justify-center gap-2">
-                  <Building2 className="w-4 h-4" />
-                  Hire remotely. We manage →
-                </Link>
-              </Button>
-            </div>
+            {/* Nestira Remote */}
+            <Button asChild className="w-full h-10 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0">
+              <Link to="/unlocked-talents" className="flex items-center justify-center gap-2">
+                <Building2 className="w-4 h-4" />
+                Hire remotely. We manage →
+              </Link>
+            </Button>
 
-            {/* Refer & Earn Box */}
-            <div className="p-3 rounded-xl bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 text-white shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-white/20">
-              <Button asChild size="sm" className="w-full bg-white text-orange-700 hover:bg-orange-50 font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-2 border-orange-200">
-                <Link to="/referrals" className="flex items-center justify-center gap-2">
-                  <DollarSign className="w-4 h-4" />
-                  Refer and get paid →
-                </Link>
-              </Button>
-            </div>
+            {/* Refer & Earn */}
+            <Button asChild className="w-full h-10 bg-gradient-to-r from-yellow-400 to-red-500 hover:from-yellow-500 hover:to-red-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0">
+              <Link to="/referrals" className="flex items-center justify-center gap-2">
+                <DollarSign className="w-4 h-4" />
+                Refer and get paid →
+              </Link>
+            </Button>
           </div>
 
-          <div className="text-xs text-white/80 text-center font-bold mt-6 bg-gradient-to-r from-accent to-orange-600 bg-clip-text text-transparent">
+          <div className="text-xs text-white/80 text-center font-bold mt-4">
             Powered by <span className="text-white font-black">Nestira</span>
           </div>
         </SidebarFooter>
