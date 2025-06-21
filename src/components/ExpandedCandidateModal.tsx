@@ -89,19 +89,19 @@ export function ExpandedCandidateModal({
   }];
 
   const mockAssessments = [{
-    name: "Technical Challenge: E-commerce Cart Implementation",
+    name: "Technical Challenge: Financial Forecasting & Budget Variance Analysis",
     score: 100,
     status: "passed",
-    opinion: "Excellent implementation of complex data structures and algorithms. Clean, efficient code with proper error handling.",
+    opinion: "Excellent analytical skills in financial modeling and variance analysis. Demonstrated strong understanding of forecasting methodologies and budget management principles.",
     questions: [
       {
         id: 1,
-        question: "How would you implement a shopping cart with discount calculations?",
+        question: "How would you approach creating a 3-year financial forecast for a company experiencing 15% quarterly growth?",
         options: [
-          "Use a simple array to store items",
-          "Create a class with methods for add, remove, and calculate total",
-          "Store everything in localStorage",
-          "Use a global variable"
+          "Use simple linear projection based on current growth",
+          "Apply multiple forecasting methods including scenario analysis and sensitivity testing",
+          "Copy last year's budget and add 15% growth",
+          "Focus only on revenue growth without considering operational scaling"
         ],
         correctAnswer: 1,
         candidateAnswer: 1,
@@ -109,10 +109,10 @@ export function ExpandedCandidateModal({
       },
       {
         id: 2,
-        question: "What's the best approach for handling inventory updates?",
-        options: ["Real-time updates", "Batch processing", "Manual updates", "No updates needed"],
-        correctAnswer: 0,
-        candidateAnswer: 0,
+        question: "Your department shows a 20% budget variance. What's your systematic approach to analysis?",
+        options: ["Blame external market conditions", "Conduct root cause analysis by expense category and timing differences", "Request budget increase for next quarter", "Wait until year-end to address"],
+        correctAnswer: 1,
+        candidateAnswer: 1,
         isCorrect: true
       }
     ]
@@ -180,7 +180,10 @@ export function ExpandedCandidateModal({
     filledOnce: false,
     webcamEnabled: true,
     fullScreenActive: true,
-    mouseInWindow: true
+    mouseInWindow: true,
+    noCopyPaste: true,
+    noMinimize: true,
+    cameraPosition: "Behind candidate"
   };
 
   const skillCategories = {
@@ -892,7 +895,7 @@ export function ExpandedCandidateModal({
                         </div>
                       </div>
 
-                      {/* Right Side - Anti-cheating Monitor & Video */}
+                      {/* Right Side - Anti-cheating Monitor & Individual Assessment Videos */}
                       <div className="space-y-6">
                         {/* Anti-cheating Monitor */}
                         <div className="p-4 bg-gray-50 rounded-lg border">
@@ -964,33 +967,68 @@ export function ExpandedCandidateModal({
                                 {antiCheatData.mouseInWindow ? "Yes" : "No"}
                               </Badge>
                             </div>
+
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">No copy paste detected?</span>
+                              <Badge variant={antiCheatData.noCopyPaste ? "default" : "destructive"} className={antiCheatData.noCopyPaste ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.noCopyPaste ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600">No minimize for pages?</span>
+                              <Badge variant={antiCheatData.noMinimize ? "default" : "destructive"} className={antiCheatData.noMinimize ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                                {antiCheatData.noMinimize ? "Yes" : "No"}
+                              </Badge>
+                            </div>
+
+                            <div className="flex items-center justify-between">
+                              <span className="text-gray-600 flex items-center gap-2">
+                                <Camera className="w-4 h-4" />
+                                Camera position
+                              </span>
+                              <Badge variant="default" className="bg-green-100 text-green-800">
+                                {antiCheatData.cameraPosition}
+                              </Badge>
+                            </div>
                           </div>
                         </div>
 
-                        {/* Assessment Video */}
-                        <div className="bg-gray-100 rounded-lg overflow-hidden">
-                          <div className="aspect-video bg-black flex items-center justify-center relative">
-                            <img 
-                              src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
-                              alt="Assessment video preview"
-                              className="w-full h-full object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                              <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
-                                <Play className="w-6 h-6 mr-2" />
-                                Watch Assessment Video
-                              </Button>
+                        {/* Individual Assessment Videos */}
+                        <div className="space-y-4">
+                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Assessment Recordings</h4>
+                          
+                          {mockAssessments.map((assessment, index) => (
+                            <div key={index} className="bg-gray-100 rounded-lg overflow-hidden">
+                              <div className="aspect-video bg-black flex items-center justify-center relative">
+                                <img 
+                                  src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                                  alt={`${assessment.name} recording preview`}
+                                  className="w-full h-full object-cover"
+                                />
+                                <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                                  <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                                    <Play className="w-4 h-4 mr-2" />
+                                    Watch Recording
+                                  </Button>
+                                </div>
+                              </div>
+                              <div className="p-3 bg-white">
+                                <div className="flex items-center justify-between text-sm">
+                                  <span className="font-medium text-gray-900 truncate">{assessment.name}</span>
+                                  <span className="text-gray-600 text-xs">
+                                    {index === 0 ? "25:42 / 45:00" : index === 1 ? "18:30 / 30:00" : "12:15 / 25:00"}
+                                  </span>
+                                </div>
+                                <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
+                                  <div 
+                                    className="bg-[#ff5f1b] h-1 rounded-full" 
+                                    style={{ width: index === 0 ? '57%' : index === 1 ? '62%' : '49%' }}
+                                  ></div>
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                          <div className="p-3 bg-white">
-                            <div className="flex items-center justify-between text-sm text-gray-600">
-                              <span>Assessment Recording</span>
-                              <span>15:42 / 45:00</span>
-                            </div>
-                            <div className="w-full bg-gray-200 rounded-full h-1 mt-2">
-                              <div className="bg-[#ff5f1b] h-1 rounded-full" style={{ width: '35%' }}></div>
-                            </div>
-                          </div>
+                          ))}
                         </div>
                       </div>
                     </div>
