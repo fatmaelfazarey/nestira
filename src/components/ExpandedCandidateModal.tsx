@@ -89,10 +89,10 @@ export function ExpandedCandidateModal({
   }];
 
   const mockAssessments = [{
-    name: "JavaScript (coding): data structures & data types",
+    name: "JavaScript Technical Challenge: E-commerce Cart Implementation",
     score: 100,
     status: "passed",
-    opinion: "Excellent understanding of JavaScript fundamentals with perfect execution of data structure problems.",
+    opinion: "Excellent implementation of complex data structures and algorithms. Clean, efficient code with proper error handling.",
     questions: [
       {
         id: 1,
@@ -112,10 +112,10 @@ export function ExpandedCandidateModal({
       }
     ]
   }, {
-    name: "Critical thinking",
+    name: "Critical Thinking Scenario: Budget Crisis Resolution",
     score: 37,
     status: "needs-improvement",
-    opinion: "Shows basic analytical skills but needs improvement in complex problem-solving scenarios.",
+    opinion: "Shows basic analytical skills but needs improvement in complex problem-solving scenarios and stakeholder management.",
     questions: [
       {
         id: 1,
@@ -135,10 +135,10 @@ export function ExpandedCandidateModal({
       }
     ]
   }, {
-    name: "Culture add",
+    name: "Culture Fit Simulation: Team Conflict & Collaboration",
     score: 47,
     status: "needs-improvement", 
-    opinion: "Demonstrates some cultural awareness but could benefit from better alignment with company values.",
+    opinion: "Demonstrates some cultural awareness but could benefit from better alignment with company values and conflict resolution skills.",
     questions: [
       {
         id: 1,
@@ -816,7 +816,7 @@ export function ExpandedCandidateModal({
                             <Info className="w-4 h-4 text-gray-500 hover:text-gray-700 transition-colors" />
                           </TooltipTrigger>
                           <TooltipContent>
-                            <p>Detailed results from candidate assessments including scores and analysis</p>
+                            <p>Technical real-world scenario assessments with detailed results and analysis</p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
@@ -843,21 +843,9 @@ export function ExpandedCandidateModal({
                           </div>
                         </div>
 
-                        {/* Scoring Method */}
-                        <div className="p-4 bg-gray-50 rounded-lg">
-                          <div className="flex items-center justify-between mb-3">
-                            <h4 className="font-semibold text-gray-900">Scoring method</h4>
-                            <Button variant="outline" size="sm" className="text-xs">
-                              <FileText className="w-3 h-3 mr-1" />
-                              Change
-                            </Button>
-                          </div>
-                          <p className="text-gray-700 font-medium">Percentage of correct answers</p>
-                        </div>
-
-                        {/* Tests Included */}
+                        {/* Technical Scenario Tests */}
                         <div className="space-y-3">
-                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Tests Included in Scoring</h4>
+                          <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Technical Real Scenario Tests</h4>
                           <div className="space-y-3">
                             {mockAssessments.map((assessment, index) => (
                               <div key={index} className="p-4 bg-gray-50 rounded-lg border">
