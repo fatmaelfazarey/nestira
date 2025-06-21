@@ -361,6 +361,33 @@ export function ExpandedCandidateModal({
                       <DollarSign className="w-4 h-4" />
                       <span>{candidate.salaryExpectation}</span>
                     </div>
+
+                    {/* Contact Information - Moved here */}
+                    <div className="space-y-2 pt-2">
+                      {isUnlocked ? (
+                        <>
+                          <div className="flex items-center justify-center gap-2 text-sm">
+                            <Mail className="w-4 h-4 text-gray-500" />
+                            <span className="text-blue-600 hover:underline cursor-pointer">{candidate.email}</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-2 text-sm">
+                            <Phone className="w-4 h-4 text-gray-500" />
+                            <span className="text-gray-700">{candidate.phone}</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="flex items-center justify-center gap-2 text-sm">
+                            <Mail className="w-4 h-4 text-gray-500" />
+                            <span className="text-gray-400">***@*****.com</span>
+                          </div>
+                          <div className="flex items-center justify-center gap-2 text-sm">
+                            <Phone className="w-4 h-4 text-gray-500" />
+                            <span className="text-gray-400">+*** *** ****</span>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -405,39 +432,6 @@ export function ExpandedCandidateModal({
                       </Button>
                     </div>
                   )}
-                </div>
-
-                <Separator />
-
-                {/* Contact Information */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">Contact Information</h4>
-                  
-                  <div className="space-y-3 text-sm">
-                    {isUnlocked ? (
-                      <>
-                        <div className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-gray-500" />
-                          <span className="text-blue-600 hover:underline cursor-pointer">{candidate.email}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-gray-500" />
-                          <span className="text-gray-700">{candidate.phone}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="flex items-center gap-2">
-                          <Mail className="w-4 h-4 text-gray-500" />
-                          <span className="text-gray-400">***@*****.com</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-gray-500" />
-                          <span className="text-gray-400">+*** *** ****</span>
-                        </div>
-                      </>
-                    )}
-                  </div>
                 </div>
 
                 <Separator />
