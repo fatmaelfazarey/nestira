@@ -1,7 +1,5 @@
 
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { ChevronRight } from 'lucide-react';
 
 interface Step {
   id: number;
@@ -15,34 +13,34 @@ interface QuizStepperProps {
 
 export function QuizStepper({ steps, currentStep }: QuizStepperProps) {
   return (
-    <nav className="flex items-center space-x-1 sm:space-x-2" aria-label="Progress">
-      {steps.map((step, stepIdx) => (
-        <React.Fragment key={step.name}>
-          <div className="flex items-center">
-            <span
-              className={cn(
-                'flex h-6 w-6 sm:h-8 sm:w-8 items-center justify-center rounded-full text-xs sm:text-sm',
-                step.id === currentStep
-                  ? 'bg-accent text-white'
-                  : 'bg-gray-200 text-gray-600',
-              )}
-            >
-              {step.id}
-            </span>
-            <span
-              className={cn(
-                'ml-2 sm:ml-3 text-xs sm:text-sm font-medium',
-                step.id === currentStep ? 'text-accent' : 'text-gray-600'
-              )}
-            >
-              {step.name}
-            </span>
-          </div>
-          {stepIdx < steps.length - 1 ? (
-            <ChevronRight className="h-5 w-5 text-gray-300 mx-1 sm:mx-2" aria-hidden="true" />
-          ) : null}
-        </React.Fragment>
-      ))}
-    </nav>
+    <div className="flex items-center justify-center mb-8">
+      <div className="flex items-center space-x-4">
+        {steps.map((step, index) => (
+          <React.Fragment key={step.id}>
+            <div className="flex items-center">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
+                  step.id <= currentStep
+                    ? 'bg-blue-600 border-blue-600 text-white'
+                    : 'border-gray-300 text-gray-500'
+                }`}
+              >
+                <span className="text-sm font-medium">{step.id}</span>
+              </div>
+              <span
+                className={`ml-2 text-sm font-medium ${
+                  step.id <= currentStep ? 'text-blue-600' : 'text-gray-500'
+                }`}
+              >
+                {step.name}
+              </span>
+            </div>
+            {index < steps.length - 1 && (
+              <div className="w-8 h-px bg-gray-300"></div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
   );
 }

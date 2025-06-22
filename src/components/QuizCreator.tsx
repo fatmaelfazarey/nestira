@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -56,12 +55,18 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   }, [editingQuiz]);
 
   const handleRoleSelected = (roleData: any) => {
+    console.log('Role selected:', roleData);
     setSelectedRole(roleData);
     setQuizTitle(`${roleData.title} Assessment`);
     setCurrentStep(2);
+    
+    // Generate initial AI questions based on the selected role
+    const initialQuestions = generateAIQuestions({ role: roleData.title });
+    setAiSuggestedQuestions(initialQuestions);
   };
 
   const handlePathSelected = (path: 'bundle' | 'custom', data?: any) => {
+    console.log('Path selected:', path, data);
     setSelectedPath(path);
     if (path === 'bundle' && data?.bundle) {
       setSelectedTests(data.bundle);
@@ -72,6 +77,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   };
 
   const handleGenerateQuestions = (params: any) => {
+    console.log('Generating questions with params:', params);
     const generatedQuestions = generateAIQuestions(params);
     setAiSuggestedQuestions(generatedQuestions);
     
@@ -110,6 +116,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   };
 
   const handleCreateQuiz = (quizData: any) => {
+    console.log('Creating quiz with data:', quizData);
     const quiz = {
       id: editingQuiz?.id || Date.now(),
       title: quizData.name,
@@ -126,6 +133,10 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
 
     onSave(quiz);
   };
+
+  const canContinueFromStep1 = selectedRole !== null;
+  const canContinueFromStep2 = selectedPath !== null;
+  const canContinueFromStep3 = selectedPath === 'custom' && (questions.length > 0 || selectedTests.length > 0);
 
   const handleSaveQuiz = () => {
     if (!quizTitle.trim()) {
@@ -243,7 +254,11 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
             <Button 
               onClick={() => setCurrentStep(prev => prev + 1)} 
               className="bg-accent hover:bg-accent/90 text-white"
-              disabled={currentStep === 1 && !selectedRole}
+              disabled={
+                (currentStep === 1 && !canContinueFromStep1) ||
+                (currentStep === 2 && !canContinueFromStep2) ||
+                (currentStep === 3 && !canContinueFromStep3)
+              }
             >
               Continue
             </Button>
