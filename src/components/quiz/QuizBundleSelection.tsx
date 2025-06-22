@@ -72,30 +72,36 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
     setSelectedPath(path);
   };
 
-  const handleViewQuiz = (quiz: BundleQuiz) => {
+  const handleViewQuiz = (e: React.MouseEvent, quiz: BundleQuiz) => {
+    e.stopPropagation();
+    console.log('Viewing quiz:', quiz);
     setViewingQuiz(quiz);
-    toast.success(`Viewing ${quiz.title} quiz details`, {
+    toast.success(`Viewing ${quiz.title}`, {
       description: quiz.description
     });
-    console.log('Viewing quiz:', quiz);
   };
 
-  const handleEditQuiz = (quiz: BundleQuiz) => {
-    toast.info(`Opening ${quiz.title} for editing`, {
-      description: 'Quiz editor would open here'
-    });
+  const handleEditQuiz = (e: React.MouseEvent, quiz: BundleQuiz) => {
+    e.stopPropagation();
     console.log('Editing quiz:', quiz);
-  };
-
-  const handleDeleteQuiz = (quizId: string) => {
-    const quiz = bundleQuizzes.find(q => q.id === quizId);
-    setBundleQuizzes(prev => prev.filter(quiz => quiz.id !== quizId));
-    toast.success(`${quiz?.title} removed from bundle`, {
-      description: 'Quiz has been successfully removed'
+    toast.info(`Opening ${quiz.title} for editing`, {
+      description: 'Quiz customization would open here'
     });
   };
 
-  const handleUseBundleClick = () => {
+  const handleDeleteQuiz = (e: React.MouseEvent, quizId: string) => {
+    e.stopPropagation();
+    const quiz = bundleQuizzes.find(q => q.id === quizId);
+    if (quiz) {
+      setBundleQuizzes(prev => prev.filter(q => q.id !== quizId));
+      toast.success(`${quiz.title} removed`, {
+        description: 'Quiz has been removed from the bundle'
+      });
+    }
+  };
+
+  const handleUseBundleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
     if (bundleQuizzes.length === 0) {
       toast.error('Cannot proceed with empty bundle', {
         description: 'Please add at least one quiz to continue'
@@ -103,15 +109,18 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
       return;
     }
     
+    console.log('Using bundle with quizzes:', bundleQuizzes);
     toast.success('Using suggested bundle', {
       description: `Proceeding with ${bundleQuizzes.length} quizzes`
     });
     onPathSelected('bundle', { bundle: bundleQuizzes });
   };
 
-  const handleStartBuildingClick = () => {
+  const handleStartBuildingClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    console.log('Starting custom quiz builder');
     toast.info('Starting custom quiz builder', {
-      description: 'You can now customize your quiz'
+      description: 'Opening quiz customization tools'
     });
     onPathSelected('custom');
   };
@@ -173,10 +182,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                         variant="ghost" 
                         size="sm"
                         className="h-8 w-8 p-0 hover:bg-blue-100"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleViewQuiz(quiz);
-                        }}
+                        onClick={(e) => handleViewQuiz(e, quiz)}
                       >
                         <Eye className="w-3 h-3" />
                       </Button>
@@ -184,10 +190,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                         variant="ghost" 
                         size="sm"
                         className="h-8 w-8 p-0 hover:bg-green-100"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEditQuiz(quiz);
-                        }}
+                        onClick={(e) => handleEditQuiz(e, quiz)}
                       >
                         <Edit className="w-3 h-3" />
                       </Button>
@@ -195,10 +198,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                         variant="ghost" 
                         size="sm"
                         className="h-8 w-8 p-0 hover:bg-red-100"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteQuiz(quiz.id);
-                        }}
+                        onClick={(e) => handleDeleteQuiz(e, quiz.id)}
                       >
                         <Trash2 className="w-3 h-3 text-red-500" />
                       </Button>
@@ -221,10 +221,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
             {selectedPath === 'bundle' && (
               <Button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleUseBundleClick();
-                }}
+                onClick={handleUseBundleClick}
                 className="w-full bg-blue-600 hover:bg-blue-700"
                 size="lg"
               >
@@ -284,10 +281,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
             {selectedPath === 'custom' && (
               <Button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleStartBuildingClick();
-                }}
+                onClick={handleStartBuildingClick}
                 className="w-full bg-purple-600 hover:bg-purple-700"
                 size="lg"
               >
