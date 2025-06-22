@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Sparkles, Settings, Clock, Eye, Edit, Trash2, Info } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { toast } from 'sonner';
 
 interface QuizBundleSelectionProps {
   roleTitle: string;
@@ -59,8 +60,9 @@ const suggestedBundle: BundleQuiz[] = [
 
 export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSelectionProps) {
   const [selectedPath, setSelectedPath] = useState<'bundle' | 'custom' | null>(null);
+  const [bundleQuizzes, setBundleQuizzes] = useState<BundleQuiz[]>(suggestedBundle);
 
-  const totalTime = suggestedBundle.reduce((acc, quiz) => {
+  const totalTime = bundleQuizzes.reduce((acc, quiz) => {
     const minutes = parseInt(quiz.timeEstimate);
     return acc + minutes;
   }, 0);
@@ -68,10 +70,25 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
   const handlePathSelection = (path: 'bundle' | 'custom') => {
     setSelectedPath(path);
     if (path === 'bundle') {
-      onPathSelected(path, { bundle: suggestedBundle });
+      onPathSelected(path, { bundle: bundleQuizzes });
     } else {
       onPathSelected(path);
     }
+  };
+
+  const handleViewQuiz = (quiz: BundleQuiz) => {
+    toast.info(`Viewing ${quiz.title} quiz details`);
+    console.log('Viewing quiz:', quiz);
+  };
+
+  const handleEditQuiz = (quiz: BundleQuiz) => {
+    toast.info(`Opening ${quiz.title} for editing`);
+    console.log('Editing quiz:', quiz);
+  };
+
+  const handleDeleteQuiz = (quizId: string) => {
+    setBundleQuizzes(prev => prev.filter(quiz => quiz.id !== quizId));
+    toast.success('Quiz removed from bundle');
   };
 
   return (
@@ -118,22 +135,43 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
             <div className="flex items-center gap-4 text-sm text-gray-600 bg-blue-50 p-3 rounded-lg">
               <Clock className="w-4 h-4" />
               <span>Total Time: ~{totalTime} minutes</span>
-              <Badge variant="secondary">{suggestedBundle.length} quizzes</Badge>
+              <Badge variant="secondary">{bundleQuizzes.length} quizzes</Badge>
             </div>
 
             <div className="space-y-3">
-              {suggestedBundle.map((quiz) => (
+              {bundleQuizzes.map((quiz) => (
                 <div key={quiz.id} className="border rounded-lg p-3 bg-gray-50">
                   <div className="flex items-center justify-between mb-2">
                     <h4 className="font-medium">{quiz.title}</h4>
                     <div className="flex items-center gap-1">
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewQuiz(quiz);
+                        }}
+                      >
                         <Eye className="w-3 h-3" />
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditQuiz(quiz);
+                        }}
+                      >
                         <Edit className="w-3 h-3" />
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteQuiz(quiz.id);
+                        }}
+                      >
                         <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
@@ -155,7 +193,10 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
             {selectedPath === 'bundle' && (
               <Button 
-                onClick={() => handlePathSelection('bundle')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePathSelection('bundle');
+                }}
                 className="w-full bg-blue-600 hover:bg-blue-700"
                 size="lg"
               >
@@ -215,7 +256,10 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
             {selectedPath === 'custom' && (
               <Button 
-                onClick={() => handlePathSelection('custom')}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePathSelection('custom');
+                }}
                 className="w-full bg-purple-600 hover:bg-purple-700"
                 size="lg"
               >
