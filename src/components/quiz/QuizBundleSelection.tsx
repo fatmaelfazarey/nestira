@@ -61,6 +61,7 @@ const suggestedBundle: BundleQuiz[] = [
 export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSelectionProps) {
   const [selectedPath, setSelectedPath] = useState<'bundle' | 'custom' | null>(null);
   const [bundleQuizzes, setBundleQuizzes] = useState<BundleQuiz[]>(suggestedBundle);
+  const [viewingQuiz, setViewingQuiz] = useState<BundleQuiz | null>(null);
 
   const totalTime = bundleQuizzes.reduce((acc, quiz) => {
     const minutes = parseInt(quiz.timeEstimate);
@@ -69,26 +70,50 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
   const handlePathSelection = (path: 'bundle' | 'custom') => {
     setSelectedPath(path);
-    if (path === 'bundle') {
-      onPathSelected(path, { bundle: bundleQuizzes });
-    } else {
-      onPathSelected(path);
-    }
   };
 
   const handleViewQuiz = (quiz: BundleQuiz) => {
-    toast.info(`Viewing ${quiz.title} quiz details`);
+    setViewingQuiz(quiz);
+    toast.success(`Viewing ${quiz.title} quiz details`, {
+      description: quiz.description
+    });
     console.log('Viewing quiz:', quiz);
   };
 
   const handleEditQuiz = (quiz: BundleQuiz) => {
-    toast.info(`Opening ${quiz.title} for editing`);
+    toast.info(`Opening ${quiz.title} for editing`, {
+      description: 'Quiz editor would open here'
+    });
     console.log('Editing quiz:', quiz);
   };
 
   const handleDeleteQuiz = (quizId: string) => {
+    const quiz = bundleQuizzes.find(q => q.id === quizId);
     setBundleQuizzes(prev => prev.filter(quiz => quiz.id !== quizId));
-    toast.success('Quiz removed from bundle');
+    toast.success(`${quiz?.title} removed from bundle`, {
+      description: 'Quiz has been successfully removed'
+    });
+  };
+
+  const handleUseBundleClick = () => {
+    if (bundleQuizzes.length === 0) {
+      toast.error('Cannot proceed with empty bundle', {
+        description: 'Please add at least one quiz to continue'
+      });
+      return;
+    }
+    
+    toast.success('Using suggested bundle', {
+      description: `Proceeding with ${bundleQuizzes.length} quizzes`
+    });
+    onPathSelected('bundle', { bundle: bundleQuizzes });
+  };
+
+  const handleStartBuildingClick = () => {
+    toast.info('Starting custom quiz builder', {
+      description: 'You can now customize your quiz'
+    });
+    onPathSelected('custom');
   };
 
   return (
@@ -108,7 +133,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
               ? 'ring-2 ring-blue-500 border-blue-200 shadow-lg' 
               : 'hover:shadow-md'
           }`}
-          onClick={() => setSelectedPath('bundle')}
+          onClick={() => handlePathSelection('bundle')}
         >
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -147,6 +172,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                       <Button 
                         variant="ghost" 
                         size="sm"
+                        className="h-8 w-8 p-0 hover:bg-blue-100"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleViewQuiz(quiz);
@@ -157,6 +183,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                       <Button 
                         variant="ghost" 
                         size="sm"
+                        className="h-8 w-8 p-0 hover:bg-green-100"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleEditQuiz(quiz);
@@ -167,12 +194,13 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                       <Button 
                         variant="ghost" 
                         size="sm"
+                        className="h-8 w-8 p-0 hover:bg-red-100"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleDeleteQuiz(quiz.id);
                         }}
                       >
-                        <Trash2 className="w-3 h-3" />
+                        <Trash2 className="w-3 h-3 text-red-500" />
                       </Button>
                     </div>
                   </div>
@@ -195,7 +223,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
               <Button 
                 onClick={(e) => {
                   e.stopPropagation();
-                  handlePathSelection('bundle');
+                  handleUseBundleClick();
                 }}
                 className="w-full bg-blue-600 hover:bg-blue-700"
                 size="lg"
@@ -213,7 +241,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
               ? 'ring-2 ring-purple-500 border-purple-200 shadow-lg' 
               : 'hover:shadow-md'
           }`}
-          onClick={() => setSelectedPath('custom')}
+          onClick={() => handlePathSelection('custom')}
         >
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -258,7 +286,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
               <Button 
                 onClick={(e) => {
                   e.stopPropagation();
-                  handlePathSelection('custom');
+                  handleStartBuildingClick();
                 }}
                 className="w-full bg-purple-600 hover:bg-purple-700"
                 size="lg"
@@ -269,6 +297,28 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
           </CardContent>
         </Card>
       </div>
+
+      {viewingQuiz && (
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg border">
+          <h3 className="font-semibold text-blue-800 mb-2">Currently Viewing: {viewingQuiz.title}</h3>
+          <p className="text-blue-700 text-sm">{viewingQuiz.description}</p>
+          <div className="flex gap-2 mt-2">
+            {viewingQuiz.tags.map((tag) => (
+              <Badge key={tag} variant="outline" className="text-xs">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="mt-3"
+            onClick={() => setViewingQuiz(null)}
+          >
+            Close Preview
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
