@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Save, ArrowLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { QuizPersonalization } from './quiz/QuizPersonalization';
+import { QuizBundleSelection } from './quiz/QuizBundleSelection';
 import { AISuggestionPanel } from './quiz/AISuggestionPanel';
 import { QuizCustomizationPanel } from './quiz/QuizCustomizationPanel';
+import { QuizReviewStep } from './quiz/QuizReviewStep';
 import { QuizDetailsCard } from './quiz/QuizDetailsCard';
 import { Question } from './quiz/types';
 import { generateAIQuestions } from './quiz/aiQuestionGenerator';
 import { QuizStepper } from './quiz/QuizStepper';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface QuizCreatorProps {
   onSave: (quiz: any) => void;
@@ -28,17 +29,20 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   const [questions, setQuestions] = useState<Question[]>([]);
   const [aiSuggestedQuestions, setAiSuggestedQuestions] = useState<Question[]>([]);
   
+  // New state for the redesigned flow
+  const [selectedRole, setSelectedRole] = useState<any>(null);
+  const [selectedPath, setSelectedPath] = useState<'bundle' | 'custom' | null>(null);
+  const [selectedTests, setSelectedTests] = useState<any[]>([]);
+  
   // UI state
-  const [personalizationParams, setPersonalizationParams] = useState<any | null>(null);
   const [currentStep, setCurrentStep] = useState(1);
 
   const steps = [
-    { id: 1, name: 'Job details' },
-    { id: 2, name: 'Choose tests' },
-    { id: 3, name: 'Add questions' },
-    { id: 4, name: 'Finalize' },
+    { id: 1, name: 'Job Role' },
+    { id: 2, name: 'Quiz Path' },
+    { id: 3, name: 'Customize' },
+    { id: 4, name: 'Review & Create' },
   ];
-
 
   // Load editing quiz data
   useEffect(() => {
@@ -47,33 +51,31 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       setQuizDescription(editingQuiz.description || '');
       setTimeLimit(editingQuiz.timeLimit || { hours: 0, minutes: 30, seconds: 0 });
       setQuestions(editingQuiz.questionsList || []);
-      setPersonalizationParams(editingQuiz.personalizationParams || null);
-      // Potentially set current step based on editingQuiz state
+      // Set other state based on editing quiz if needed
     }
   }, [editingQuiz]);
 
+  const handleRoleSelected = (roleData: any) => {
+    setSelectedRole(roleData);
+    setQuizTitle(`${roleData.title} Assessment`);
+    setCurrentStep(2);
+  };
+
+  const handlePathSelected = (path: 'bundle' | 'custom', data?: any) => {
+    setSelectedPath(path);
+    if (path === 'bundle' && data?.bundle) {
+      setSelectedTests(data.bundle);
+      setCurrentStep(4); // Skip to review for bundle
+    } else {
+      setCurrentStep(3); // Go to customization for custom path
+    }
+  };
+
   const handleGenerateQuestions = (params: any) => {
-    console.log('Generating questions for:', params);
     const generatedQuestions = generateAIQuestions(params);
     setAiSuggestedQuestions(generatedQuestions);
-    setPersonalizationParams(params);
     
     toast.success(`Generated ${generatedQuestions.length} questions based on your criteria!`);
-  };
-
-  const handleContinue = () => {
-    if (currentStep === 1) {
-      // In a real scenario, we'd collect form data from QuizPersonalization here.
-      // For now, we'll use mock data to generate questions for the next step.
-      handleGenerateQuestions({ role: 'financial-analyst', skills: ['Excel', 'Budgeting'], seniorityLevel: 'mid-level' });
-    }
-    setCurrentStep(prev => prev + 1);
-  };
-
-  const handleRegenerateQuestions = () => {
-    if (personalizationParams) {
-      handleGenerateQuestions(personalizationParams);
-    }
   };
 
   const handleAddToQuiz = (question: Question) => {
@@ -90,7 +92,6 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
       isEditing: true
     };
-    // Add custom questions at the beginning of the list
     setQuestions(prev => [newQuestion, ...prev]);
   };
 
@@ -108,14 +109,32 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
     setQuestions(reorderedQuestions);
   };
 
+  const handleCreateQuiz = (quizData: any) => {
+    const quiz = {
+      id: editingQuiz?.id || Date.now(),
+      title: quizData.name,
+      description: `Assessment for ${quizData.roleTitle}`,
+      questions: quizData.totalQuestions,
+      duration: `${quizData.totalTime}min`,
+      status: editingQuiz?.status || 'Draft',
+      createdAt: editingQuiz?.createdAt || new Date().toISOString(),
+      questionsList: questions,
+      selectedTests: quizData.tests,
+      roleTitle: quizData.roleTitle,
+      timeLimit: { hours: 0, minutes: quizData.totalTime, seconds: 0 }
+    };
+
+    onSave(quiz);
+  };
+
   const handleSaveQuiz = () => {
     if (!quizTitle.trim()) {
       toast.error('Please enter a quiz title');
       return;
     }
 
-    if (questions.length === 0) {
-      toast.error('Please add at least one question');
+    if (questions.length === 0 && selectedTests.length === 0) {
+      toast.error('Please add at least one question or test');
       return;
     }
 
@@ -128,14 +147,13 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       status: editingQuiz?.status || 'Draft',
       createdAt: editingQuiz?.createdAt || new Date().toISOString(),
       questionsList: questions,
-      personalizationParams,
+      selectedRole,
+      selectedTests,
       timeLimit
     };
 
     onSave(quiz);
   };
-
-  const isQuizComplete = quizTitle.trim() && questions.length > 0;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50">
@@ -160,14 +178,6 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
               <Button variant="outline" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button 
-                onClick={handleSaveQuiz} 
-                disabled={!isQuizComplete}
-                className="bg-accent hover:bg-accent/90 text-white"
-              >
-                <Save className="w-4 h-4 mr-2" />
-                {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
-              </Button>
             </div>
           </div>
         </div>
@@ -176,21 +186,27 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       {/* Main Content */}
       <div className="max-w-7xl mx-auto p-6 space-y-6">
         <QuizStepper steps={steps} currentStep={currentStep} />
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Left Column - Main Flow */}
-          <div className={currentStep < 4 ? "lg:col-span-3 space-y-6" : "lg:col-span-4 space-y-6"}>
-            {currentStep === 1 && <QuizPersonalization />}
-            
-            {currentStep === 2 && (
+        
+        <div className="min-h-[600px]">
+          {currentStep === 1 && (
+            <QuizPersonalization onRoleSelected={handleRoleSelected} />
+          )}
+          
+          {currentStep === 2 && selectedRole && (
+            <QuizBundleSelection 
+              roleTitle={selectedRole.title}
+              onPathSelected={handlePathSelected}
+            />
+          )}
+
+          {currentStep === 3 && selectedPath === 'custom' && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <AISuggestionPanel
                 questions={aiSuggestedQuestions}
                 onAddToQuiz={handleAddToQuiz}
-                onRegenerateQuestions={handleRegenerateQuestions}
+                onRegenerateQuestions={() => handleGenerateQuestions({ role: selectedRole?.title })}
                 isVisible={true}
               />
-            )}
-
-            {currentStep === 3 && (
               <QuizCustomizationPanel
                 questions={questions}
                 onUpdateQuestion={handleUpdateQuestion}
@@ -198,46 +214,15 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
                 onReorderQuestions={handleReorderQuestions}
                 onAddCustomQuestion={handleAddCustomQuestion}
               />
-            )}
-            {currentStep === 4 && (
-               <Card>
-                <CardHeader><CardTitle>Finalize Quiz</CardTitle></CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">Review your quiz settings and added questions before saving.</p>
-                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <QuizDetailsCard
-                      title={quizTitle}
-                      description={quizDescription}
-                      timeLimit={timeLimit}
-                      onTitleChange={setQuizTitle}
-                      onDescriptionChange={setQuizDescription}
-                      onTimeLimitChange={setTimeLimit}
-                    />
-                    <QuizCustomizationPanel
-                      questions={questions}
-                      onUpdateQuestion={handleUpdateQuestion}
-                      onRemoveQuestion={handleRemoveQuestion}
-                      onReorderQuestions={handleReorderQuestions}
-                      onAddCustomQuestion={handleAddCustomQuestion}
-                    />
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Right Column - Quiz Details */}
-          {currentStep < 4 && (
-            <div className="lg:col-span-1">
-              <QuizDetailsCard
-                title={quizTitle}
-                description={quizDescription}
-                timeLimit={timeLimit}
-                onTitleChange={setQuizTitle}
-                onDescriptionChange={setQuizDescription}
-                onTimeLimitChange={setTimeLimit}
-              />
             </div>
+          )}
+
+          {currentStep === 4 && selectedRole && (
+            <QuizReviewStep
+              roleTitle={selectedRole.title}
+              selectedTests={selectedTests}
+              onCreateQuiz={handleCreateQuiz}
+            />
           )}
         </div>
       </div>
@@ -254,19 +239,13 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
           <Button variant="ghost" onClick={onCancel}>
             Cancel
           </Button>
-          {currentStep < steps.length ? (
-            <Button onClick={handleContinue} className="bg-accent hover:bg-accent/90 text-white">
-                Continue
-            </Button>
-          ) : (
+          {currentStep < steps.length && currentStep !== 4 && (
             <Button 
-              onClick={handleSaveQuiz} 
-              disabled={!isQuizComplete}
+              onClick={() => setCurrentStep(prev => prev + 1)} 
               className="bg-accent hover:bg-accent/90 text-white"
-              size="lg"
+              disabled={currentStep === 1 && !selectedRole}
             >
-              <Save className="w-4 h-4 mr-2" />
-              {editingQuiz ? 'Update Quiz' : 'Create Quiz'}
+              Continue
             </Button>
           )}
         </div>
