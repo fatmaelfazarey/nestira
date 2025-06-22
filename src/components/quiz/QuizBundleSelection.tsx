@@ -61,7 +61,6 @@ const suggestedBundle: BundleQuiz[] = [
 export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSelectionProps) {
   const [selectedPath, setSelectedPath] = useState<'bundle' | 'custom' | null>(null);
   const [bundleQuizzes, setBundleQuizzes] = useState<BundleQuiz[]>(suggestedBundle);
-  const [viewingQuiz, setViewingQuiz] = useState<BundleQuiz | null>(null);
 
   const totalTime = bundleQuizzes.reduce((acc, quiz) => {
     const minutes = parseInt(quiz.timeEstimate);
@@ -70,59 +69,26 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
   const handlePathSelection = (path: 'bundle' | 'custom') => {
     setSelectedPath(path);
+    if (path === 'bundle') {
+      onPathSelected(path, { bundle: bundleQuizzes });
+    } else {
+      onPathSelected(path);
+    }
   };
 
-  const handleViewQuiz = (e: React.MouseEvent, quiz: BundleQuiz) => {
-    e.stopPropagation();
+  const handleViewQuiz = (quiz: BundleQuiz) => {
+    toast.info(`Viewing ${quiz.title} quiz details`);
     console.log('Viewing quiz:', quiz);
-    setViewingQuiz(quiz);
-    toast.success(`Viewing ${quiz.title}`, {
-      description: quiz.description
-    });
   };
 
-  const handleEditQuiz = (e: React.MouseEvent, quiz: BundleQuiz) => {
-    e.stopPropagation();
+  const handleEditQuiz = (quiz: BundleQuiz) => {
+    toast.info(`Opening ${quiz.title} for editing`);
     console.log('Editing quiz:', quiz);
-    toast.info(`Opening ${quiz.title} for editing`, {
-      description: 'Quiz customization would open here'
-    });
   };
 
-  const handleDeleteQuiz = (e: React.MouseEvent, quizId: string) => {
-    e.stopPropagation();
-    const quiz = bundleQuizzes.find(q => q.id === quizId);
-    if (quiz) {
-      setBundleQuizzes(prev => prev.filter(q => q.id !== quizId));
-      toast.success(`${quiz.title} removed`, {
-        description: 'Quiz has been removed from the bundle'
-      });
-    }
-  };
-
-  const handleUseBundleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (bundleQuizzes.length === 0) {
-      toast.error('Cannot proceed with empty bundle', {
-        description: 'Please add at least one quiz to continue'
-      });
-      return;
-    }
-    
-    console.log('Using bundle with quizzes:', bundleQuizzes);
-    toast.success('Using suggested bundle', {
-      description: `Proceeding with ${bundleQuizzes.length} quizzes`
-    });
-    onPathSelected('bundle', { bundle: bundleQuizzes });
-  };
-
-  const handleStartBuildingClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    console.log('Starting custom quiz builder');
-    toast.info('Starting custom quiz builder', {
-      description: 'Opening quiz customization tools'
-    });
-    onPathSelected('custom');
+  const handleDeleteQuiz = (quizId: string) => {
+    setBundleQuizzes(prev => prev.filter(quiz => quiz.id !== quizId));
+    toast.success('Quiz removed from bundle');
   };
 
   return (
@@ -142,7 +108,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
               ? 'ring-2 ring-blue-500 border-blue-200 shadow-lg' 
               : 'hover:shadow-md'
           }`}
-          onClick={() => handlePathSelection('bundle')}
+          onClick={() => setSelectedPath('bundle')}
         >
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -181,26 +147,32 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        className="h-8 w-8 p-0 hover:bg-blue-100"
-                        onClick={(e) => handleViewQuiz(e, quiz)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleViewQuiz(quiz);
+                        }}
                       >
                         <Eye className="w-3 h-3" />
                       </Button>
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        className="h-8 w-8 p-0 hover:bg-green-100"
-                        onClick={(e) => handleEditQuiz(e, quiz)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditQuiz(quiz);
+                        }}
                       >
                         <Edit className="w-3 h-3" />
                       </Button>
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        className="h-8 w-8 p-0 hover:bg-red-100"
-                        onClick={(e) => handleDeleteQuiz(e, quiz.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteQuiz(quiz.id);
+                        }}
                       >
-                        <Trash2 className="w-3 h-3 text-red-500" />
+                        <Trash2 className="w-3 h-3" />
                       </Button>
                     </div>
                   </div>
@@ -221,7 +193,10 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
             {selectedPath === 'bundle' && (
               <Button 
-                onClick={handleUseBundleClick}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePathSelection('bundle');
+                }}
                 className="w-full bg-blue-600 hover:bg-blue-700"
                 size="lg"
               >
@@ -238,7 +213,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
               ? 'ring-2 ring-purple-500 border-purple-200 shadow-lg' 
               : 'hover:shadow-md'
           }`}
-          onClick={() => handlePathSelection('custom')}
+          onClick={() => setSelectedPath('custom')}
         >
           <CardHeader>
             <div className="flex items-center gap-2">
@@ -281,7 +256,10 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
 
             {selectedPath === 'custom' && (
               <Button 
-                onClick={handleStartBuildingClick}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePathSelection('custom');
+                }}
                 className="w-full bg-purple-600 hover:bg-purple-700"
                 size="lg"
               >
@@ -291,28 +269,6 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
           </CardContent>
         </Card>
       </div>
-
-      {viewingQuiz && (
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg border">
-          <h3 className="font-semibold text-blue-800 mb-2">Currently Viewing: {viewingQuiz.title}</h3>
-          <p className="text-blue-700 text-sm">{viewingQuiz.description}</p>
-          <div className="flex gap-2 mt-2">
-            {viewingQuiz.tags.map((tag) => (
-              <Badge key={tag} variant="outline" className="text-xs">
-                {tag}
-              </Badge>
-            ))}
-          </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="mt-3"
-            onClick={() => setViewingQuiz(null)}
-          >
-            Close Preview
-          </Button>
-        </div>
-      )}
     </div>
   );
 }
