@@ -173,28 +173,37 @@ function SortableQuizItem({
                 <p className="text-sm text-gray-600">{quiz.description}</p>
               </div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={onPreview}
-                className="h-8 w-8 p-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPreview();
+                }}
+                className="h-8 w-8 p-0 hover:bg-blue-100"
               >
                 <Eye className="w-4 h-4" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={onEdit}
-                className="h-8 w-8 p-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit();
+                }}
+                className="h-8 w-8 p-0 hover:bg-yellow-100"
               >
                 <Edit className="w-4 h-4" />
               </Button>
               <Button 
                 variant="ghost" 
                 size="sm"
-                onClick={onRemove}
-                className="h-8 w-8 p-0 text-red-600 hover:text-red-700"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRemove();
+                }}
+                className="h-8 w-8 p-0 text-red-600 hover:text-red-700 hover:bg-red-100"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -328,20 +337,26 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                         <p className="text-sm text-gray-600">{quiz.description}</p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-3">
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        onClick={() => handlePreviewQuiz(quiz)}
-                        className="h-8 w-8 p-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePreviewQuiz(quiz);
+                        }}
+                        className="h-8 w-8 p-0 hover:bg-blue-100"
                       >
                         <Eye className="w-4 h-4" />
                       </Button>
                       <Button 
                         variant="ghost" 
                         size="sm"
-                        onClick={() => handleSelectQuiz(quiz)}
-                        className="h-8 w-8 p-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelectQuiz(quiz);
+                        }}
+                        className="h-8 w-8 p-0 hover:bg-green-100"
                       >
                         <Plus className="w-4 h-4" />
                       </Button>
