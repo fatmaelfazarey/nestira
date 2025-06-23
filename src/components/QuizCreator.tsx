@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -30,7 +31,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   
   // New state for the redesigned flow
   const [selectedRole, setSelectedRole] = useState<any>(null);
-  const [selectedPath, setSelectedPath] = useState<'bundle' | 'custom' | null>(null);
+  const [selectedPath, setSelectedPath] = useState<'bundle' | 'custom' | 'mixed' | null>(null);
   const [selectedTests, setSelectedTests] = useState<any[]>([]);
   
   // UI state
@@ -50,7 +51,6 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       setQuizDescription(editingQuiz.description || '');
       setTimeLimit(editingQuiz.timeLimit || { hours: 0, minutes: 30, seconds: 0 });
       setQuestions(editingQuiz.questionsList || []);
-      // Set other state based on editing quiz if needed
     }
   }, [editingQuiz]);
 
@@ -65,13 +65,17 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
     setAiSuggestedQuestions(initialQuestions);
   };
 
-  const handlePathSelected = (path: 'bundle' | 'custom', data?: any) => {
+  const handlePathSelected = (path: 'bundle' | 'custom' | 'mixed', data?: any) => {
     console.log('Path selected:', path, data);
     setSelectedPath(path);
+    
     if (path === 'bundle' && data?.bundle) {
       setSelectedTests(data.bundle);
       setCurrentStep(4); // Skip to review for bundle
-    } else {
+    } else if (path === 'mixed' && data?.selectedQuizzes) {
+      setSelectedTests(data.selectedQuizzes);
+      setCurrentStep(3); // Go to customization for mixed
+    } else if (path === 'custom') {
       setCurrentStep(3); // Go to customization for custom path
     }
   };
@@ -178,7 +182,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
                 Back
               </Button>
               <div>
-                <h1 className="text-2xl font-bold text-primary">
+                <h1 className="text-2xl font-bold text-[#00102c]">
                   {editingQuiz ? 'Edit Quiz' : 'Create New Quiz'}
                 </h1>
                 <p className="text-sm text-gray-600">Powered by Nestira Finance</p>
@@ -210,21 +214,40 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
             />
           )}
 
-          {currentStep === 3 && selectedPath === 'custom' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <AISuggestionPanel
-                questions={aiSuggestedQuestions}
-                onAddToQuiz={handleAddToQuiz}
-                onRegenerateQuestions={() => handleGenerateQuestions({ role: selectedRole?.title })}
-                isVisible={true}
-              />
-              <QuizCustomizationPanel
-                questions={questions}
-                onUpdateQuestion={handleUpdateQuestion}
-                onRemoveQuestion={handleRemoveQuestion}
-                onReorderQuestions={handleReorderQuestions}
-                onAddCustomQuestion={handleAddCustomQuestion}
-              />
+          {currentStep === 3 && (selectedPath === 'custom' || selectedPath === 'mixed') && (
+            <div className="space-y-6">
+              {selectedPath === 'mixed' && selectedTests.length > 0 && (
+                <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-orange-800 mb-2">Selected Quiz Templates</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                    {selectedTests.map((test, index) => (
+                      <div key={test.id || index} className="bg-white rounded p-3 border border-orange-300">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-lg">{test.icon || '📋'}</span>
+                          <span className="font-medium text-sm">{test.title}</span>
+                        </div>
+                        <div className="text-xs text-gray-600">{test.timeEstimate}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <AISuggestionPanel
+                  questions={aiSuggestedQuestions}
+                  onAddToQuiz={handleAddToQuiz}
+                  onRegenerateQuestions={() => handleGenerateQuestions({ role: selectedRole?.title })}
+                  isVisible={true}
+                />
+                <QuizCustomizationPanel
+                  questions={questions}
+                  onUpdateQuestion={handleUpdateQuestion}
+                  onRemoveQuestion={handleRemoveQuestion}
+                  onReorderQuestions={handleReorderQuestions}
+                  onAddCustomQuestion={handleAddCustomQuestion}
+                />
+              </div>
             </div>
           )}
 
@@ -253,11 +276,11 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
           {currentStep < steps.length && currentStep !== 4 && (
             <Button 
               onClick={() => setCurrentStep(prev => prev + 1)} 
-              className="bg-accent hover:bg-accent/90 text-white"
+              className="bg-[#ff5f1b] hover:bg-[#e54e0f] text-white"
               disabled={
                 (currentStep === 1 && !canContinueFromStep1) ||
                 (currentStep === 2 && !canContinueFromStep2) ||
-                (currentStep === 3 && !canContinueFromStep3)
+                (currentStep === 3 && selectedPath === 'custom' && !canContinueFromStep3)
               }
             >
               Continue
