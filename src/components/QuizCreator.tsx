@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Save, ArrowLeft } from 'lucide-react';
@@ -39,7 +38,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
 
   const steps = [
     { id: 1, name: 'Job Role' },
-    { id: 2, name: 'Quiz Path' },
+    { id: 2, name: 'Mix & Match' },
     { id: 3, name: 'Customize' },
     { id: 4, name: 'Review & Create' },
   ];
@@ -69,10 +68,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
     console.log('Path selected:', path, data);
     setSelectedPath(path);
     
-    if (path === 'bundle' && data?.bundle) {
-      setSelectedTests(data.bundle);
-      setCurrentStep(4); // Skip to review for bundle
-    } else if (path === 'mixed' && data?.selectedQuizzes) {
+    if (path === 'mixed' && data?.selectedQuizzes) {
       setSelectedTests(data.selectedQuizzes);
       setCurrentStep(3); // Go to customization for mixed
     } else if (path === 'custom') {
@@ -139,7 +135,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   };
 
   const canContinueFromStep1 = selectedRole !== null;
-  const canContinueFromStep2 = selectedPath !== null;
+  const canContinueFromStep2 = selectedTests.length > 0;
   const canContinueFromStep3 = selectedPath === 'custom' && (questions.length > 0 || selectedTests.length > 0);
 
   const handleSaveQuiz = () => {
@@ -214,9 +210,9 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
             />
           )}
 
-          {currentStep === 3 && (selectedPath === 'custom' || selectedPath === 'mixed') && (
+          {currentStep === 3 && selectedPath === 'mixed' && (
             <div className="space-y-6">
-              {selectedPath === 'mixed' && selectedTests.length > 0 && (
+              {selectedTests.length > 0 && (
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                   <h3 className="font-semibold text-orange-800 mb-2">Selected Quiz Templates</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -279,8 +275,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
               className="bg-[#ff5f1b] hover:bg-[#e54e0f] text-white"
               disabled={
                 (currentStep === 1 && !canContinueFromStep1) ||
-                (currentStep === 2 && !canContinueFromStep2) ||
-                (currentStep === 3 && selectedPath === 'custom' && !canContinueFromStep3)
+                (currentStep === 2 && selectedTests.length === 0)
               }
             >
               Continue
