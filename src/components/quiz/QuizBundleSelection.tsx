@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -173,7 +172,7 @@ function SortableQuizItem({
                 <p className="text-sm text-gray-600">{quiz.description}</p>
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-4">
               <Button 
                 variant="ghost" 
                 size="sm"
@@ -337,7 +336,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
                         <p className="text-sm text-gray-600">{quiz.description}</p>
                       </div>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-4">
                       <Button 
                         variant="ghost" 
                         size="sm"
