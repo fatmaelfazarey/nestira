@@ -265,204 +265,205 @@ const QuizBuilder = () => {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Filters Panel */}
-          <div className="lg:col-span-1">
-            <Card className="border-orange-200 bg-orange-50/30">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <Filter className="w-5 h-5 text-orange-500" />
-                  <span className="text-lg font-semibold text-gray-800">Filters & Sorting</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center space-x-2">
-                  <Flame className="w-5 h-5 text-orange-500" />
-                  <Label htmlFor="trending-switch" className="font-semibold text-gray-700">Trending</Label>
-                  <Switch
-                    id="trending-switch"
-                    checked={trendingOnly}
-                    onCheckedChange={setTrendingOnly}
+        {/* Horizontal Filters Panel */}
+        <Card className="border-orange-200 bg-orange-50/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-3">
+              <Filter className="w-5 h-5 text-orange-500" />
+              <span className="text-lg font-semibold text-gray-800">Filters & Sorting</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+              {/* Trending Filter */}
+              <div className="flex items-center space-x-2">
+                <Flame className="w-5 h-5 text-orange-500" />
+                <Label htmlFor="trending-switch" className="font-semibold text-gray-700">Trending</Label>
+                <Switch
+                  id="trending-switch"
+                  checked={trendingOnly}
+                  onCheckedChange={setTrendingOnly}
+                />
+              </div>
+              
+              {/* Source Filter */}
+              <div className="space-y-2">
+                <Label className="font-semibold text-gray-700">Source</Label>
+                <ToggleGroup
+                  type="single"
+                  variant="outline"
+                  value={filterSource}
+                  onValueChange={(value) => { if (value) setFilterSource(value); }}
+                  className="flex flex-col items-start gap-1"
+                  aria-label="Filter quizzes by source"
+                >
+                  <ToggleGroupItem value="all" className="w-full justify-start text-xs px-2 py-1">All</ToggleGroupItem>
+                  <ToggleGroupItem value="Nestira" className="w-full justify-start text-xs px-2 py-1">Nestira</ToggleGroupItem>
+                  <ToggleGroupItem value="Me" className="w-full justify-start text-xs px-2 py-1">Me</ToggleGroupItem>
+                </ToggleGroup>
+              </div>
+
+              {/* Job Title Search */}
+              <div className="space-y-2">
+                <Label htmlFor="search-job-title" className="font-semibold text-gray-700">Job Title</Label>
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
+                  <Input
+                    id="search-job-title"
+                    placeholder="e.g. Financial Analyst"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-10 w-full"
                   />
                 </div>
-                
-                <div className="space-y-2">
-                  <Label className="font-semibold text-gray-700">Source</Label>
-                  <ToggleGroup
-                    type="single"
-                    variant="outline"
-                    value={filterSource}
-                    onValueChange={(value) => { if (value) setFilterSource(value); }}
-                    className="flex flex-col items-start gap-2"
-                    aria-label="Filter quizzes by source"
-                  >
-                    <ToggleGroupItem value="all" className="w-full justify-start">Show All</ToggleGroupItem>
-                    <ToggleGroupItem value="Nestira" className="w-full justify-start">Made by Nestira</ToggleGroupItem>
-                    <ToggleGroupItem value="Me" className="w-full justify-start">Made by Me</ToggleGroupItem>
-                  </ToggleGroup>
-                </div>
+              </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="search-job-title" className="font-semibold text-gray-700">Filter by job title</Label>
-                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                    <Input
-                      id="search-job-title"
-                      placeholder="e.g. Financial Analyst"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-10 w-full"
-                    />
-                  </div>
+              {/* Skills Filter - Collapsible sections for horizontal layout */}
+              <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-2">
+                <Label className="font-semibold text-gray-700">Filter by Skills</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {skillCategories.map((category) => (
+                    <div key={category.name} className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
+                        <category.icon className="w-4 h-4 text-orange-500" />
+                        <span className="text-xs">{category.name}</span>
+                      </div>
+                      <div className="space-y-1 max-h-32 overflow-y-auto">
+                        {category.skills.slice(0, 3).map((skill) => (
+                          <div key={skill} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={`skill-${skill}`}
+                              checked={selectedSkills.includes(skill)}
+                              onCheckedChange={(checked) => {
+                                handleSkillChange(skill, !!checked);
+                              }}
+                            />
+                            <Label
+                              htmlFor={`skill-${skill}`}
+                              className="text-xs font-normal text-gray-600 cursor-pointer leading-tight"
+                            >
+                              {skill}
+                            </Label>
+                          </div>
+                        ))}
+                        {category.skills.length > 3 && (
+                          <p className="text-xs text-gray-500">+{category.skills.length - 3} more</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+            </div>
+            
+            <div className="mt-4 flex justify-end">
+              <Button variant="outline" onClick={handleResetFilters}>
+                Reset Filters
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
-                <div className="space-y-2">
-                  <Label className="font-semibold text-gray-700">Filter by Skills</Label>
-                  <Accordion type="multiple" className="w-full">
-                    {skillCategories.map((category) => (
-                      <AccordionItem value={category.name} key={category.name}>
-                        <AccordionTrigger className="text-sm font-medium hover:no-underline py-2">
+        {/* Quiz Content */}
+        <div className="space-y-8">
+          {Object.keys(groupedQuizzes).length > 0 ? (
+            Object.entries(groupedQuizzes).map(([jobTitle, quizzesInGroup]) => (
+              <div key={jobTitle}>
+                <h2 className="text-xl font-semibold text-gray-800 mb-4 px-1">{jobTitle}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {quizzesInGroup.map((quiz) => (
+                    <Card key={quiz.id} className="hover:shadow-md transition-shadow">
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <category.icon className="w-4 h-4 text-orange-500" />
-                            <span className="text-xs">{category.name}</span>
-                          </div>
-                        </AccordionTrigger>
-                        <AccordionContent className="pt-2 pl-4 pb-2">
-                          <div className="space-y-2">
-                            {category.skills.map((skill) => (
-                              <div key={skill} className="flex items-center space-x-2">
-                                <Checkbox
-                                  id={`skill-${skill}`}
-                                  checked={selectedSkills.includes(skill)}
-                                  onCheckedChange={(checked) => {
-                                    handleSkillChange(skill, !!checked);
-                                  }}
-                                />
-                                <Label
-                                  htmlFor={`skill-${skill}`}
-                                  className="text-xs font-normal text-gray-600 cursor-pointer"
-                                >
-                                  {skill}
-                                </Label>
-                              </div>
-                            ))}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </div>
-
-                <Button variant="outline" onClick={handleResetFilters} className="w-full">
-                  Reset Filters
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Quiz Content */}
-          <div className="lg:col-span-3">
-            <div className="space-y-8">
-              {Object.keys(groupedQuizzes).length > 0 ? (
-                Object.entries(groupedQuizzes).map(([jobTitle, quizzesInGroup]) => (
-                  <div key={jobTitle}>
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4 px-1">{jobTitle}</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {quizzesInGroup.map((quiz) => (
-                        <Card key={quiz.id} className="hover:shadow-md transition-shadow">
-                          <CardHeader>
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-2">
-                                <CardTitle className="text-lg">{quiz.title}</CardTitle>
-                                {quiz.assignedCandidates > 0 && (
-                                  <Badge variant="secondary" className="text-xs">
-                                    {quiz.assignedCandidates} assigned
-                                  </Badge>
-                                )}
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <Switch
-                                  checked={quiz.isActive}
-                                  onCheckedChange={() => toggleQuizActive(quiz.id)}
-                                />
-                                <span className="text-xs text-gray-500">
-                                  {quiz.isActive ? 'Active' : 'Inactive'}
-                                </span>
-                              </div>
-                            </div>
-                            <div className="flex items-center gap-4 text-sm text-gray-600">
-                              <span>{quiz.questions} questions</span>
-                              <span>{quiz.duration}</span>
-                              <span className={`px-2 py-1 rounded-full text-xs ${
-                                quiz.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                              }`}>
-                                {quiz.status}
-                              </span>
-                            </div>
-                            
-                            {/* Candidate Statistics */}
+                            <CardTitle className="text-lg">{quiz.title}</CardTitle>
                             {quiz.assignedCandidates > 0 && (
-                              <div className="space-y-2 pt-2 border-t">
-                                <div className="flex gap-4 text-xs">
-                                  <div className="flex items-center gap-1 text-green-600">
-                                    <CheckCircle className="w-3 h-3" />
-                                    <span>Passed: {quiz.passedCandidates}</span>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-red-600">
-                                    <XCircle className="w-3 h-3" />
-                                    <span>Failed: {quiz.failedCandidates}</span>
-                                  </div>
-                                  {quiz.pendingCandidates > 0 && (
-                                    <div className="flex items-center gap-1 text-orange-600">
-                                      <span>Pending: {quiz.pendingCandidates}</span>
-                                    </div>
-                                  )}
-                                </div>
-                              </div>
+                              <Badge variant="secondary" className="text-xs">
+                                {quiz.assignedCandidates} assigned
+                              </Badge>
                             )}
-                          </CardHeader>
-                          <CardContent className="pt-0">
-                            <div className="flex gap-2 flex-wrap">
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => editQuizHandler(quiz)}
-                              >
-                                <Settings className="w-4 h-4 mr-1" />
-                                Edit
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm"
-                                onClick={() => previewQuizHandler(quiz)}
-                              >
-                                <Play className="w-4 h-4 mr-1" />
-                                Preview
-                              </Button>
-                              {quiz.isActive && (
-                                <Button 
-                                  variant="outline" 
-                                  size="sm"
-                                  onClick={() => assignQuizHandler(quiz)}
-                                >
-                                  <UserPlus className="w-4 h-4 mr-1" />
-                                  Assign
-                                </Button>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Switch
+                              checked={quiz.isActive}
+                              onCheckedChange={() => toggleQuizActive(quiz.id)}
+                            />
+                            <span className="text-xs text-gray-500">
+                              {quiz.isActive ? 'Active' : 'Inactive'}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 text-sm text-gray-600">
+                          <span>{quiz.questions} questions</span>
+                          <span>{quiz.duration}</span>
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                            quiz.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                          }`}>
+                            {quiz.status}
+                          </span>
+                        </div>
+                        
+                        {/* Candidate Statistics */}
+                        {quiz.assignedCandidates > 0 && (
+                          <div className="space-y-2 pt-2 border-t">
+                            <div className="flex gap-4 text-xs">
+                              <div className="flex items-center gap-1 text-green-600">
+                                <CheckCircle className="w-3 h-3" />
+                                <span>Passed: {quiz.passedCandidates}</span>
+                              </div>
+                              <div className="flex items-center gap-1 text-red-600">
+                                <XCircle className="w-3 h-3" />
+                                <span>Failed: {quiz.failedCandidates}</span>
+                              </div>
+                              {quiz.pendingCandidates > 0 && (
+                                <div className="flex items-center gap-1 text-orange-600">
+                                  <span>Pending: {quiz.pendingCandidates}</span>
+                                </div>
                               )}
                             </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
-                  </div>
-                ))
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-gray-500">No quizzes match your filters.</p>
+                          </div>
+                        )}
+                      </CardHeader>
+                      <CardContent className="pt-0">
+                        <div className="flex gap-2 flex-wrap">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => editQuizHandler(quiz)}
+                          >
+                            <Settings className="w-4 h-4 mr-1" />
+                            Edit
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => previewQuizHandler(quiz)}
+                          >
+                            <Play className="w-4 h-4 mr-1" />
+                            Preview
+                          </Button>
+                          {quiz.isActive && (
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => assignQuizHandler(quiz)}
+                            >
+                              <UserPlus className="w-4 h-4 mr-1" />
+                              Assign
+                            </Button>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              )}
+              </div>
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No quizzes match your filters.</p>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
