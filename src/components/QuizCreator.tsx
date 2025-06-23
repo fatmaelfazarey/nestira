@@ -32,9 +32,11 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
   const [selectedRole, setSelectedRole] = useState<any>(null);
   const [selectedPath, setSelectedPath] = useState<'bundle' | 'custom' | 'mixed' | null>(null);
   const [selectedTests, setSelectedTests] = useState<any[]>([]);
+  const [editingQuizFromBundle, setEditingQuizFromBundle] = useState<any>(null);
   
   // UI state
   const [currentStep, setCurrentStep] = useState(1);
+  const [previousStep, setPreviousStep] = useState<number | null>(null);
 
   const steps = [
     { id: 1, name: 'Job Role' },
@@ -73,6 +75,18 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       setCurrentStep(3); // Go to customization for mixed
     } else if (path === 'custom') {
       setCurrentStep(3); // Go to customization for custom path
+    }
+  };
+
+  const handleEditQuizFromBundle = (quiz: any) => {
+    console.log('Editing quiz from bundle:', quiz);
+    setEditingQuizFromBundle(quiz);
+    setPreviousStep(currentStep);
+    setCurrentStep(3);
+    
+    // Load the quiz questions for editing
+    if (quiz.questionsList) {
+      setQuestions(quiz.questionsList);
     }
   };
 
@@ -166,6 +180,18 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
     onSave(quiz);
   };
 
+  const handleBackClick = () => {
+    if (editingQuizFromBundle && previousStep !== null) {
+      // If we're editing a quiz from bundle, go back to previous step
+      setCurrentStep(previousStep);
+      setEditingQuizFromBundle(null);
+      setPreviousStep(null);
+    } else {
+      // Normal back navigation
+      setCurrentStep(prev => prev - 1);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-gray-50">
       {/* Header */}
@@ -207,12 +233,22 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
             <QuizBundleSelection 
               roleTitle={selectedRole.title}
               onPathSelected={handlePathSelected}
+              onEditQuiz={handleEditQuizFromBundle}
             />
           )}
 
-          {currentStep === 3 && selectedPath === 'mixed' && (
+          {currentStep === 3 && (
             <div className="space-y-6">
-              {selectedTests.length > 0 && (
+              {editingQuizFromBundle && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="font-semibold text-blue-800 mb-2">
+                    Editing: {editingQuizFromBundle.title}
+                  </h3>
+                  <p className="text-sm text-blue-600">{editingQuizFromBundle.description}</p>
+                </div>
+              )}
+              
+              {selectedTests.length > 0 && !editingQuizFromBundle && (
                 <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
                   <h3 className="font-semibold text-orange-800 mb-2">Selected Quiz Templates</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -261,7 +297,7 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       <div className="sticky bottom-0 bg-white border-t border-gray-200 p-4">
         <div className="max-w-7xl mx-auto flex justify-end items-center gap-3">
           {currentStep > 1 && (
-            <Button variant="outline" onClick={() => setCurrentStep(prev => prev - 1)} className="mr-auto">
+            <Button variant="outline" onClick={handleBackClick} className="mr-auto">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Back
             </Button>
@@ -274,8 +310,8 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
               onClick={() => setCurrentStep(prev => prev + 1)} 
               className="bg-[#ff5f1b] hover:bg-[#e54e0f] text-white"
               disabled={
-                (currentStep === 1 && !canContinueFromStep1) ||
-                (currentStep === 2 && selectedTests.length === 0)
+                (currentStep === 1 && !selectedRole) ||
+                (currentStep === 2 && selectedTests.length === 0 && !editingQuizFromBundle)
               }
             >
               Continue

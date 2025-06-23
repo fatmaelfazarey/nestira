@@ -5,7 +5,6 @@ import { Badge } from '@/components/ui/badge';
 import { Eye, Plus, ArrowRight, Edit, Trash2, GripVertical } from 'lucide-react';
 import { toast } from 'sonner';
 import { QuizPreviewModal } from './QuizPreviewModal';
-import { QuizEditModal } from './QuizEditModal';
 import {
   DndContext,
   DragEndEvent,
@@ -29,6 +28,7 @@ import { CSS } from '@dnd-kit/utilities';
 interface QuizBundleSelectionProps {
   roleTitle: string;
   onPathSelected: (path: 'bundle' | 'custom' | 'mixed', data?: any) => void;
+  onEditQuiz?: (quiz: BundleQuiz) => void;
 }
 
 interface BundleQuiz {
@@ -226,13 +226,11 @@ function SortableQuizItem({
   );
 }
 
-export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSelectionProps) {
+export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: QuizBundleSelectionProps) {
   const [availableQuizzes, setAvailableQuizzes] = useState<BundleQuiz[]>(suggestedBundle);
   const [selectedQuizzes, setSelectedQuizzes] = useState<BundleQuiz[]>([]);
   const [previewQuiz, setPreviewQuiz] = useState<BundleQuiz | null>(null);
-  const [editingQuiz, setEditingQuiz] = useState<BundleQuiz | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [isEditOpen, setIsEditOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -263,17 +261,9 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
   };
 
   const handleEditQuiz = (quiz: BundleQuiz) => {
-    setEditingQuiz(quiz);
-    setIsEditOpen(true);
-  };
-
-  const handleSaveEditedQuiz = (updatedQuiz: BundleQuiz) => {
-    setSelectedQuizzes(prev => 
-      prev.map(q => q.id === updatedQuiz.id ? updatedQuiz : q)
-    );
-    toast.success(`${updatedQuiz.title} updated successfully`);
-    setIsEditOpen(false);
-    setEditingQuiz(null);
+    if (onEditQuiz) {
+      onEditQuiz(quiz);
+    }
   };
 
   const handlePreviewQuiz = (quiz: BundleQuiz) => {
@@ -486,17 +476,6 @@ export function QuizBundleSelection({ roleTitle, onPathSelected }: QuizBundleSel
           questionsList: previewQuiz?.questionsList || [],
           timeLimit: { hours: 0, minutes: parseInt(previewQuiz?.timeEstimate || '0'), seconds: 0 }
         }}
-      />
-
-      {/* Quiz Edit Modal */}
-      <QuizEditModal
-        isOpen={isEditOpen}
-        onClose={() => {
-          setIsEditOpen(false);
-          setEditingQuiz(null);
-        }}
-        quiz={editingQuiz}
-        onSave={handleSaveEditedQuiz}
       />
     </div>
   );
