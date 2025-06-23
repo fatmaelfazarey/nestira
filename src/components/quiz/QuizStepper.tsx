@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Check } from 'lucide-react';
 
 interface Step {
   id: number;
@@ -15,31 +16,35 @@ export function QuizStepper({ steps, currentStep }: QuizStepperProps) {
   return (
     <div className="flex items-center justify-center mb-8">
       <div className="flex items-center space-x-4">
-        {steps.map((step, index) => (
-          <React.Fragment key={step.id}>
-            <div className="flex items-center">
-              <div
-                className={`flex items-center justify-center w-8 h-8 rounded-full border-2 ${
-                  step.id <= currentStep
-                    ? 'bg-blue-600 border-blue-600 text-white'
-                    : 'border-gray-300 text-gray-500'
-                }`}
-              >
-                <span className="text-sm font-medium">{step.id}</span>
+        {steps.map((step, index) => {
+          const isCompleted = currentStep > step.id;
+          const isCurrent = currentStep === step.id;
+          
+          return (
+            <React.Fragment key={step.id}>
+              <div className="flex items-center">
+                <div className={`
+                  w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium
+                  ${isCompleted ? 'bg-green-500 text-white' : ''}
+                  ${isCurrent ? 'bg-[#ff5f1b] text-white' : ''}
+                  ${!isCompleted && !isCurrent ? 'bg-gray-200 text-gray-600' : ''}
+                `}>
+                  {isCompleted ? <Check className="w-5 h-5" /> : step.id}
+                </div>
+                <span className={`ml-2 text-sm font-medium ${
+                  isCurrent ? 'text-[#ff5f1b]' : 'text-gray-600'
+                }`}>
+                  {step.name}
+                </span>
               </div>
-              <span
-                className={`ml-2 text-sm font-medium ${
-                  step.id <= currentStep ? 'text-blue-600' : 'text-gray-500'
-                }`}
-              >
-                {step.name}
-              </span>
-            </div>
-            {index < steps.length - 1 && (
-              <div className="w-8 h-px bg-gray-300"></div>
-            )}
-          </React.Fragment>
-        ))}
+              {index < steps.length - 1 && (
+                <div className={`w-8 h-0.5 ${
+                  currentStep > step.id ? 'bg-green-500' : 'bg-gray-200'
+                }`} />
+              )}
+            </React.Fragment>
+          );
+        })}
       </div>
     </div>
   );
