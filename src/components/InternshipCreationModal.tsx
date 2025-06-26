@@ -20,10 +20,12 @@ import {
   Trophy,
   ArrowLeft,
   Eye,
-  Plus
+  Plus,
+  Lightbulb
 } from 'lucide-react';
 import { JobTitleSuggestions } from './job-creation/JobTitleSuggestions';
 import { SkillsSelector } from './job-creation/SkillsSelector';
+import { AIJobDescriptionGenerator } from './job-creation/AIJobDescriptionGenerator';
 
 interface InternshipCreationModalProps {
   open: boolean;
@@ -38,14 +40,50 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
   const [duration, setDuration] = useState('');
   const [durationType, setDurationType] = useState('months');
   const [stipendAmount, setStipendAmount] = useState('');
-  const [skills, setSkills] = useState<string[]>([]);
-  const [developmentAreas, setDevelopmentAreas] = useState<string[]>([]);
-  const [preferredMajors, setPreferredMajors] = useState<string[]>([]);
+  const [stipendCurrency, setStipendCurrency] = useState('AED');
+  const [preferredTechnicalSkills, setPreferredTechnicalSkills] = useState<string[]>([]);
+  const [learningOutcomes, setLearningOutcomes] = useState<string[]>([]);
   const [mentorshipProvided, setMentorshipProvided] = useState(true);
   const [conversionOpportunity, setConversionOpportunity] = useState(false);
   const [workMode, setWorkMode] = useState('');
   const [description, setDescription] = useState('');
+  const [isGeneratingDescription, setIsGeneratingDescription] = useState(false);
   const [languages, setLanguages] = useState<string[]>([]);
+
+  // Generate AI description when key fields change
+  useEffect(() => {
+    if (jobTitle && department && location && duration) {
+      generateAIDescription();
+    }
+  }, [jobTitle, department, location, duration, durationType]);
+
+  const generateAIDescription = async () => {
+    setIsGeneratingDescription(true);
+    
+    // Simulate AI generation delay
+    setTimeout(() => {
+      const aiDescription = `Join our ${department} team as a ${jobTitle} for a ${duration} ${durationType} internship program in ${location}. This hands-on learning opportunity will provide you with real-world experience in financial operations, analytical thinking, and professional development.
+
+Key Responsibilities:
+• Assist with financial analysis and reporting tasks
+• Support budget preparation and variance analysis
+• Learn industry-standard financial software and tools
+• Participate in team meetings and strategic discussions
+• Complete assigned projects under senior staff guidance
+
+What Makes This Internship Special:
+• Direct mentorship from experienced professionals
+• Exposure to real client work and business challenges
+• Structured learning path with clear skill development goals
+• Networking opportunities within the finance industry
+• Potential pathway to full-time employment
+
+We're looking for motivated students or recent graduates who are eager to learn and contribute to our dynamic team. This internship will provide valuable experience that will jumpstart your career in finance.`;
+
+      setDescription(aiDescription);
+      setIsGeneratingDescription(false);
+    }, 2000);
+  };
 
   const handleSubmit = () => {
     console.log('Creating internship...');
@@ -63,7 +101,7 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
       level: 'Entry-level',
       industry: department,
       experience: '0-1 years',
-      skills,
+      skills: preferredTechnicalSkills,
       certifications: [],
       employmentType: 'Internship',
       workMode,
@@ -71,11 +109,11 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
       languages,
       visaStatus: [],
       duration: `${duration} ${durationType}`,
-      stipend: stipendAmount,
+      stipend: `${stipendAmount} ${stipendCurrency}`,
       mentorship: mentorshipProvided,
       conversionPath: conversionOpportunity,
-      developmentAreas,
-      preferredMajors
+      preferredTechnicalSkills,
+      learningOutcomes
     };
 
     if (onInternshipCreated) {
@@ -118,7 +156,7 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
                   <Label htmlFor="jobTitle" className="flex items-center gap-2 font-medium mb-2">
                     Role Title
                   </Label>
-                  <JobTitleSuggestions value={jobTitle} onSelect={setJobTitle} />
+                  <JobTitleSuggestions value={jobTitle} onSelect={setJobTitle} isInternship={true} />
                 </div>
                 <div>
                   <Label htmlFor="department" className="flex items-center gap-2 font-medium mb-2">
@@ -189,12 +227,26 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
                     <DollarSign className="w-4 h-4 inline mr-1" />
                     Monthly Stipend
                   </Label>
-                  <Input
-                    type="number"
-                    placeholder="Amount in AED"
-                    value={stipendAmount}
-                    onChange={(e) => setStipendAmount(e.target.value)}
-                  />
+                  <div className="flex gap-2">
+                    <Input
+                      type="number"
+                      placeholder="Amount"
+                      value={stipendAmount}
+                      onChange={(e) => setStipendAmount(e.target.value)}
+                      className="flex-1"
+                    />
+                    <Select value={stipendCurrency} onValueChange={setStipendCurrency}>
+                      <SelectTrigger className="w-24">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="AED">AED</SelectItem>
+                        <SelectItem value="USD">USD</SelectItem>
+                        <SelectItem value="SAR">SAR</SelectItem>
+                        <SelectItem value="EGP">EGP</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
               </div>
 
@@ -228,26 +280,19 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
             </CardHeader>
             <CardContent className="space-y-4">
               <SkillsSelector
-                label="Required Skills"
-                skills={skills}
-                onSkillsChange={setSkills}
-                placeholder="Add required skills"
+                label="Preferred Technical Skills"
+                skills={preferredTechnicalSkills}
+                onSkillsChange={setPreferredTechnicalSkills}
+                placeholder="Add preferred technical skills"
+                suggestions={['Excel', 'Financial Modeling', 'Power BI', 'SAP', 'QuickBooks', 'SQL', 'Python', 'Tableau']}
               />
 
               <SkillsSelector
-                label="Skill Development Areas"
-                skills={developmentAreas}
-                onSkillsChange={setDevelopmentAreas}
-                placeholder="What skills will they develop?"
-                suggestions={['Communication', 'Leadership', 'Project Management', 'Data Analysis', 'Digital Marketing']}
-              />
-
-              <SkillsSelector
-                label="Preferred Majors or Backgrounds"
-                skills={preferredMajors}
-                onSkillsChange={setPreferredMajors}
-                placeholder="Add preferred academic backgrounds"
-                suggestions={['Business Administration', 'Finance', 'Marketing', 'Computer Science', 'Engineering']}
+                label="What They Will Learn"
+                skills={learningOutcomes}
+                onSkillsChange={setLearningOutcomes}
+                placeholder="Add learning outcomes"
+                suggestions={['Financial Analysis', 'Budget Planning', 'Risk Assessment', 'Client Communication', 'Data Analysis', 'Report Writing', 'Team Collaboration', 'Industry Software']}
               />
 
               <div className="space-y-4 pt-4 border-t">
@@ -294,19 +339,20 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
             </CardContent>
           </Card>
 
-          {/* Description */}
+          {/* AI-Generated Description */}
           <Card className="shadow-sm border-l-4 border-l-indigo-500 bg-indigo-50/30">
             <CardHeader className="pb-4 bg-indigo-50/50">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-indigo-800">
-                Internship Description
+                <Lightbulb className="w-5 h-5 text-indigo-600" />
+                AI-Generated Internship Description
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <Textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe the internship opportunity, responsibilities, and what the intern will learn..."
-                className="min-h-32"
+              <AIJobDescriptionGenerator
+                description={description}
+                onDescriptionChange={setDescription}
+                onRegenerate={generateAIDescription}
+                isGenerating={isGeneratingDescription}
               />
             </CardContent>
           </Card>

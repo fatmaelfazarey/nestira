@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -35,19 +34,19 @@ export function JobTitleSuggestions({ value, onSelect, isInternship = false }: J
   const internshipTitleSuggestions = [
     'Finance Intern',
     'Accounting Intern',
-    'Marketing Intern',
-    'HR Intern',
-    'Operations Intern',
-    'Business Development Intern',
-    'Data Analysis Intern',
-    'Digital Marketing Intern',
-    'Content Creation Intern',
-    'Social Media Intern',
-    'Research Intern',
-    'Strategy Intern',
+    'Financial Analysis Intern',
+    'Tax Preparation Intern',
+    'Audit Intern',
     'Investment Banking Intern',
-    'Consulting Intern',
-    'Product Management Intern'
+    'Corporate Finance Intern',
+    'Financial Planning Intern',
+    'Budget Analysis Intern',
+    'Risk Management Intern',
+    'Treasury Intern',
+    'Accounts Payable Intern',
+    'Accounts Receivable Intern',
+    'Financial Reporting Intern',
+    'Credit Analysis Intern'
   ];
 
   const currentSuggestions = isInternship ? internshipTitleSuggestions : jobTitleSuggestions;
@@ -79,7 +78,7 @@ export function JobTitleSuggestions({ value, onSelect, isInternship = false }: J
       <Input
         value={value}
         onChange={handleInputChange}
-        placeholder={isInternship ? "e.g. Marketing Intern" : "e.g. Senior Financial Analyst"}
+        placeholder={isInternship ? "e.g. Finance Intern" : "e.g. Senior Financial Analyst"}
         className="w-full"
         onFocus={() => value.length > 0 && setShowSuggestions(true)}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
