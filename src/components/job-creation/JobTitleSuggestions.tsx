@@ -28,13 +28,7 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
     'Risk Analyst',
     'Treasury Analyst',
     'Budget Analyst',
-    'Credit Analyst',
-    'Finance Intern',
-    'Accounting Intern',
-    'Investment Banking Intern',
-    'Financial Analysis Intern',
-    'Risk Management Intern',
-    'Treasury Intern'
+    'Credit Analyst'
   ];
 
   useEffect(() => {
@@ -64,7 +58,7 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
       <Input
         value={value}
         onChange={handleInputChange}
-        placeholder="e.g. Senior Financial Analyst or Finance Intern"
+        placeholder="e.g. Senior Financial Analyst"
         className="w-full"
         onFocus={() => value.length > 0 && setShowSuggestions(true)}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
@@ -80,7 +74,7 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
               onClick={() => handleSuggestionClick(title)}
             >
               <div className="flex items-center gap-2">
-                <span className="text-sm">{title.includes('Intern') ? '🎓' : '🤖'}</span>
+                <span className="text-sm">🤖</span>
                 <span>{title}</span>
               </div>
             </Button>
@@ -89,33 +83,18 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
       )}
       
       {value.length === 0 && (
-        <div className="mt-2 space-y-2">
-          <div className="flex flex-wrap gap-2">
-            <span className="text-sm text-muted-foreground">Popular job suggestions:</span>
-            {jobTitleSuggestions.slice(0, 4).map((title) => (
-              <Badge
-                key={title}
-                variant="outline"
-                className="cursor-pointer hover:bg-gray-50"
-                onClick={() => handleSuggestionClick(title)}
-              >
-                {title}
-              </Badge>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <span className="text-sm text-muted-foreground">Popular internships:</span>
-            {jobTitleSuggestions.slice(-4).map((title) => (
-              <Badge
-                key={title}
-                variant="outline" 
-                className="cursor-pointer hover:bg-blue-50 border-blue-200 text-blue-700"
-                onClick={() => handleSuggestionClick(title)}
-              >
-                {title}
-              </Badge>
-            ))}
-          </div>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <span className="text-sm text-muted-foreground">Popular suggestions:</span>
+          {jobTitleSuggestions.slice(0, 4).map((title) => (
+            <Badge
+              key={title}
+              variant="outline"
+              className="cursor-pointer hover:bg-gray-50"
+              onClick={() => handleSuggestionClick(title)}
+            >
+              {title}
+            </Badge>
+          ))}
         </div>
       )}
     </div>
