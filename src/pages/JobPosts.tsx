@@ -1,8 +1,8 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Eye, Pencil, BarChart2, Archive } from 'lucide-react';
 import { useState } from 'react';
 import { JobCreationModal } from '@/components/JobCreationModal';
@@ -167,6 +167,99 @@ const JobPosts = () => {
     });
   };
 
+  // Filter jobs and internships
+  const jobPosts = jobs.filter(job => job.employmentType !== 'Internship');
+  const internships = jobs.filter(job => job.employmentType === 'Internship');
+
+  const renderJobCards = (jobList: any[]) => (
+    <div className="grid gap-4">
+      {jobList.map((job) => (
+        <Card key={job.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-3 mb-2">
+                  <h3 className="text-xl font-semibold">{job.title}</h3>
+                  <Badge 
+                    variant={job.status === 'Active' ? 'default' : 'secondary'}
+                    className={
+                      job.status === 'Active' 
+                        ? 'bg-green-100 text-green-800' 
+                        : job.status === 'Paused'
+                        ? 'bg-yellow-100 text-yellow-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }
+                  >
+                    {job.status}
+                  </Badge>
+                  {job.employmentType === 'Internship' && (
+                    <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                      Internship
+                    </Badge>
+                  )}
+                </div>
+                <p className="text-gray-600 mb-3">{job.location} • {job.type}</p>
+                <div className="flex gap-6 text-sm text-gray-600">
+                  <button 
+                    onClick={(e) => handleViewAnalytics(e, job.id)}
+                    className="hover:text-primary cursor-pointer underline"
+                  >
+                    {job.applications} applications
+                  </button>
+                  <button 
+                    onClick={(e) => handleViewAnalytics(e, job.id)}
+                    className="hover:text-primary cursor-pointer underline"
+                  >
+                    {job.views} views
+                  </button>
+                  <span>Posted {job.posted}</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={(e) => handleViewJob(e, job.id)}
+                  title="Preview Job"
+                  className="hover:bg-gray-50 active:bg-gray-100"
+                >
+                  <Eye className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={(e) => handleEditJob(e, job.id)}
+                  title="Edit Job"
+                  className="hover:bg-gray-50 active:bg-gray-100"
+                >
+                  <Pencil className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={(e) => handleViewAnalytics(e, job.id)}
+                  title="View Analytics"
+                  className="hover:bg-gray-50 active:bg-gray-100"
+                >
+                  <BarChart2 className="w-4 h-4" />
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={(e) => handleArchiveJob(e, job.id)}
+                  title={job.status === 'Active' ? 'Pause Job' : 'Activate Job'}
+                  className="hover:bg-gray-50 active:bg-gray-100"
+                >
+                  <Archive className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -185,92 +278,36 @@ const JobPosts = () => {
           </Button>
         </div>
 
-        <div className="grid gap-4">
-          {jobs.map((job) => (
-            <Card key={job.id} className="hover:shadow-md transition-shadow">
-              <CardContent className="p-6">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-xl font-semibold">{job.title}</h3>
-                      <Badge 
-                        variant={job.status === 'Active' ? 'default' : 'secondary'}
-                        className={
-                          job.status === 'Active' 
-                            ? 'bg-green-100 text-green-800' 
-                            : job.status === 'Paused'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }
-                      >
-                        {job.status}
-                      </Badge>
-                      {job.employmentType === 'Internship' && (
-                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
-                          Internship
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-gray-600 mb-3">{job.location} • {job.type}</p>
-                    <div className="flex gap-6 text-sm text-gray-600">
-                      <button 
-                        onClick={(e) => handleViewAnalytics(e, job.id)}
-                        className="hover:text-primary cursor-pointer underline"
-                      >
-                        {job.applications} applications
-                      </button>
-                      <button 
-                        onClick={(e) => handleViewAnalytics(e, job.id)}
-                        className="hover:text-primary cursor-pointer underline"
-                      >
-                        {job.views} views
-                      </button>
-                      <span>Posted {job.posted}</span>
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={(e) => handleViewJob(e, job.id)}
-                      title="Preview Job"
-                      className="hover:bg-gray-50 active:bg-gray-100"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={(e) => handleEditJob(e, job.id)}
-                      title="Edit Job"
-                      className="hover:bg-gray-50 active:bg-gray-100"
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={(e) => handleViewAnalytics(e, job.id)}
-                      title="View Analytics"
-                      className="hover:bg-gray-50 active:bg-gray-100"
-                    >
-                      <BarChart2 className="w-4 h-4" />
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={(e) => handleArchiveJob(e, job.id)}
-                      title={job.status === 'Active' ? 'Pause Job' : 'Activate Job'}
-                      className="hover:bg-gray-50 active:bg-gray-100"
-                    >
-                      <Archive className="w-4 h-4" />
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Tabs defaultValue="jobs" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="jobs">
+              Job Posts ({jobPosts.length})
+            </TabsTrigger>
+            <TabsTrigger value="internships">
+              Internships ({internships.length})
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="jobs" className="space-y-4">
+            {jobPosts.length > 0 ? (
+              renderJobCards(jobPosts)
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No job posts yet. Create your first job posting!</p>
+              </div>
+            )}
+          </TabsContent>
+          
+          <TabsContent value="internships" className="space-y-4">
+            {internships.length > 0 ? (
+              renderJobCards(internships)
+            ) : (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No internships yet. Create your first internship posting!</p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </div>
 
       <JobCreationModal 
