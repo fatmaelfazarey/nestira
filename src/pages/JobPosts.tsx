@@ -58,25 +58,25 @@ const JobPosts = () => {
     },
     {
       id: 3,
-      title: "Accounting Specialist",
+      title: "Finance Intern",
       location: "Cairo, Egypt",
-      type: "Contract",
+      type: "Internship",
       status: "Active",
       applications: 31,
       views: 203,
       posted: "5 days ago",
-      function: "Accounting",
+      function: "Finance",
       level: "Entry-level",
-      industry: "Manufacturing",
-      experience: "1-3 years",
-      skills: ["Bookkeeping", "QuickBooks", "Financial Reporting"],
-      certifications: ["Certified Bookkeeper"],
-      employmentType: "Contract",
-      workMode: "Remote",
-      description: "We need an Accounting Specialist for a 6-month contract position. Experience with QuickBooks and financial reporting is essential.",
-      salary: "$30,000 - $45,000",
+      industry: "Financial Services",
+      experience: "0-1 years",
+      skills: ["Excel", "Communication", "Analytical Skills"],
+      certifications: [],
+      employmentType: "Internship",
+      workMode: "Hybrid",
+      description: "Exciting internship opportunity for students interested in finance. You'll work alongside experienced professionals and gain hands-on experience in financial analysis and reporting.",
+      salary: "$500/month stipend",
       languages: ["English", "Arabic"],
-      visaStatus: ["Egyptian National", "Work Permit"]
+      visaStatus: ["Student Visa", "Egyptian National"]
     }
   ]);
 
@@ -90,7 +90,7 @@ const JobPosts = () => {
   const handleCreateNewJob = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Create new job clicked');
+    console.log('Create new job/internship clicked');
     setIsJobCreationModalOpen(true);
   };
 
@@ -172,8 +172,8 @@ const JobPosts = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Job Posts</h1>
-            <p className="text-gray-600">Manage your job posts and track performance</p>
+            <h1 className="text-3xl font-bold text-gray-900">Job Posts & Internships</h1>
+            <p className="text-gray-600">Manage your job posts, internships and track performance</p>
           </div>
           <Button 
             className="bg-accent hover:bg-accent/90"
@@ -181,7 +181,7 @@ const JobPosts = () => {
             type="button"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Create New Job
+            Post Job or Internship
           </Button>
         </div>
 
@@ -205,6 +205,11 @@ const JobPosts = () => {
                       >
                         {job.status}
                       </Badge>
+                      {job.employmentType === 'Internship' && (
+                        <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200">
+                          Internship
+                        </Badge>
+                      )}
                     </div>
                     <p className="text-gray-600 mb-3">{job.location} • {job.type}</p>
                     <div className="flex gap-6 text-sm text-gray-600">

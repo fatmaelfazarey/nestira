@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -138,6 +139,19 @@ export function JobCreationModal({ open, onOpenChange, onJobCreated, existingJob
         setWorkMode('Hybrid');
         setVisaStatus(['Citizen', 'Residency Visa (Transferable)']);
         setGender('both');
+      } else if (title.toLowerCase().includes('intern')) {
+        setJobFunction('Finance & Accounting');
+        setCareerLevel('Entry Level');
+        setIndustry('Financial Services');
+        setMinExperience('0');
+        setMaxExperience('1');
+        setSkills(['Excel', 'Communication', 'Analytical Skills']);
+        setCertifications([]);
+        setLanguages(['English']);
+        setEmploymentType('Internship');
+        setWorkMode('Hybrid');
+        setVisaStatus(['Citizen', 'Student Visa']);
+        setGender('both');
       }
     }, 1000);
   };
@@ -198,7 +212,7 @@ We offer a competitive compensation package and excellent career growth opportun
   };
 
   const handleSubmit = () => {
-    console.log(isEditing ? 'Updating job...' : 'Posting job...');
+    console.log(isEditing ? 'Updating job...' : 'Posting job/internship...');
     
     // Create job object
     const jobData = {
@@ -276,7 +290,7 @@ We offer a competitive compensation package and excellent career growth opportun
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl font-semibold">
               <Plus className="w-6 h-6 text-accent" />
-              {isEditing ? 'Edit Job Post' : 'Create New Job Post'}
+              {isEditing ? 'Edit Job Post' : 'Post Job or Internship'}
             </DialogTitle>
           </DialogHeader>
 
@@ -397,6 +411,7 @@ We offer a competitive compensation package and excellent career growth opportun
                         className="flex-1"
                       />
                     </div>
+                    <p className="text-sm text-gray-500 mt-1">For internships, use 0-1 years</p>
                   </div>
                 </div>
 
@@ -471,7 +486,7 @@ We offer a competitive compensation package and excellent career growth opportun
                 <div className="border-t border-gray-200 pt-6">
                   <Label className="font-medium mb-3 block">Visa Status</Label>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    {['Citizen', 'Residency Visa (Transferable)', 'Residency Visa (Non-Transferable)', 'Visit Visa', 'No Visa'].map((status) => (
+                    {['Citizen', 'Residency Visa (Transferable)', 'Residency Visa (Non-Transferable)', 'Student Visa', 'Visit Visa', 'No Visa'].map((status) => (
                       <div key={status} className="flex items-center space-x-2">
                         <Checkbox
                           id={status}
@@ -520,7 +535,7 @@ We offer a competitive compensation package and excellent career growth opportun
               </CardContent>
             </Card>
 
-            {/* Scoring & Matching Section - Orange Theme - Now Always Open */}
+            {/* Scoring & Matching Section - Orange Theme */}
             <Card className="shadow-sm border-l-4 border-l-orange-500 bg-orange-50/30">
               <CardHeader className="pb-4 bg-orange-50/50">
                 <CardTitle className="flex items-center gap-2 text-lg font-semibold text-orange-800">
@@ -556,7 +571,7 @@ We offer a competitive compensation package and excellent career growth opportun
               </CardContent>
             </Card>
 
-            {/* Compensation & Availability Section - Emerald Theme - Now Always Open */}
+            {/* Compensation & Availability Section - Emerald Theme */}
             <Card className="shadow-sm border-l-4 border-l-emerald-500 bg-emerald-50/30">
               <CardHeader className="pb-4 bg-emerald-50/50">
                 <CardTitle className="flex items-center gap-2 text-lg font-semibold text-emerald-800">
@@ -566,7 +581,9 @@ We offer a competitive compensation package and excellent career growth opportun
               </CardHeader>
               <CardContent className="space-y-6">
                 <div>
-                  <Label className="font-medium mb-3 block">Salary Option</Label>
+                  <Label className="font-medium mb-3 block">
+                    {employmentType === 'Internship' ? 'Stipend Option' : 'Salary Option'}
+                  </Label>
                   <RadioGroup value={salaryMode} onValueChange={setSalaryMode}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="negotiable" id="negotiable" />
@@ -580,6 +597,12 @@ We offer a competitive compensation package and excellent career growth opportun
                       <RadioGroupItem value="fixed" id="fixed" />
                       <Label htmlFor="fixed">Fixed</Label>
                     </div>
+                    {employmentType === 'Internship' && (
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="unpaid" id="unpaid" />
+                        <Label htmlFor="unpaid">Unpaid</Label>
+                      </div>
+                    )}
                   </RadioGroup>
 
                   {salaryMode === 'range' && (
@@ -605,7 +628,7 @@ We offer a competitive compensation package and excellent career growth opportun
                   {salaryMode === 'fixed' && (
                     <Input
                       type="number"
-                      placeholder="Fixed salary"
+                      placeholder={employmentType === 'Internship' ? 'Fixed stipend' : 'Fixed salary'}
                       value={salaryFixed}
                       onChange={(e) => setSalaryFixed(e.target.value)}
                       className="mt-3 w-48"
@@ -615,7 +638,7 @@ We offer a competitive compensation package and excellent career growth opportun
 
                 <div>
                   <Label htmlFor="noticePeriod" className="font-medium mb-2 block">
-                    Notice Period
+                    {employmentType === 'Internship' ? 'Availability' : 'Notice Period'}
                   </Label>
                   <Select value={noticePeriod} onValueChange={setNoticePeriod}>
                     <SelectTrigger className="w-48">
@@ -637,7 +660,7 @@ We offer a competitive compensation package and excellent career growth opportun
               <CardHeader className="pb-4 bg-indigo-50/50">
                 <CardTitle className="flex items-center gap-2 text-lg font-semibold text-indigo-800">
                   <Brain className="w-5 h-5 text-indigo-600" />
-                  AI-Generated Job Description
+                  AI-Generated {employmentType === 'Internship' ? 'Internship' : 'Job'} Description
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -661,11 +684,11 @@ We offer a competitive compensation package and excellent career growth opportun
               <div className="flex gap-3">
                 <Button variant="outline" onClick={handlePreviewJob} className="flex items-center gap-2">
                   <Eye className="w-4 h-4" />
-                  Preview Job
+                  Preview {employmentType === 'Internship' ? 'Internship' : 'Job'}
                 </Button>
                 <Button onClick={handleSubmit} className="bg-accent hover:bg-accent/90 flex items-center gap-2">
                   <Plus className="w-4 h-4" />
-                  {isEditing ? 'Update Job' : 'Post Job'}
+                  {isEditing ? `Update ${employmentType === 'Internship' ? 'Internship' : 'Job'}` : `Post ${employmentType === 'Internship' ? 'Internship' : 'Job'}`}
                 </Button>
               </div>
             </div>
