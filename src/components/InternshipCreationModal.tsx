@@ -21,7 +21,9 @@ import {
   ArrowLeft,
   Eye,
   Plus,
-  Lightbulb
+  Lightbulb,
+  Building,
+  Globe
 } from 'lucide-react';
 import { JobTitleSuggestions } from './job-creation/JobTitleSuggestions';
 import { SkillsSelector } from './job-creation/SkillsSelector';
@@ -35,13 +37,17 @@ interface InternshipCreationModalProps {
 
 export function InternshipCreationModal({ open, onOpenChange, onInternshipCreated }: InternshipCreationModalProps) {
   const [jobTitle, setJobTitle] = useState('');
-  const [department, setDepartment] = useState('');
+  const department = 'Finance & Accounting'; // Fixed department
+  const [industry, setIndustry] = useState('');
+  const [companyName, setCompanyName] = useState('');
+  const [companyUrl, setCompanyUrl] = useState('');
   const [location, setLocation] = useState('');
   const [duration, setDuration] = useState('');
   const [durationType, setDurationType] = useState('months');
   const [stipendAmount, setStipendAmount] = useState('');
   const [stipendCurrency, setStipendCurrency] = useState('AED');
   const [preferredTechnicalSkills, setPreferredTechnicalSkills] = useState<string[]>([]);
+  const [requiredInterpersonalSkills, setRequiredInterpersonalSkills] = useState<string[]>([]);
   const [learningOutcomes, setLearningOutcomes] = useState<string[]>([]);
   const [mentorshipProvided, setMentorshipProvided] = useState(true);
   const [conversionOpportunity, setConversionOpportunity] = useState(false);
@@ -52,10 +58,10 @@ export function InternshipCreationModal({ open, onOpenChange, onInternshipCreate
 
   // Generate AI description when key fields change
   useEffect(() => {
-    if (jobTitle && department && location && duration) {
+    if (jobTitle && location && duration) {
       generateAIDescription();
     }
-  }, [jobTitle, department, location, duration, durationType]);
+  }, [jobTitle, location, duration, durationType]);
 
   const generateAIDescription = async () => {
     setIsGeneratingDescription(true);
@@ -99,7 +105,7 @@ We're looking for motivated students or recent graduates who are eager to learn 
       posted: 'Just now',
       function: department,
       level: 'Entry-level',
-      industry: department,
+      industry: industry,
       experience: '0-1 years',
       skills: preferredTechnicalSkills,
       certifications: [],
@@ -113,7 +119,10 @@ We're looking for motivated students or recent graduates who are eager to learn 
       mentorship: mentorshipProvided,
       conversionPath: conversionOpportunity,
       preferredTechnicalSkills,
-      learningOutcomes
+      requiredInterpersonalSkills,
+      learningOutcomes,
+      companyName,
+      companyUrl
     };
 
     if (onInternshipCreated) {
@@ -142,6 +151,63 @@ We're looking for motivated students or recent graduates who are eager to learn 
         </DialogHeader>
 
         <div className="space-y-8 mt-6">
+          {/* Company Information */}
+          <Card className="shadow-sm border-l-4 border-l-blue-500 bg-blue-50/30">
+            <CardHeader className="pb-4 bg-blue-50/50">
+              <CardTitle className="flex items-center gap-2 text-lg font-semibold text-blue-800">
+                <Building className="w-5 h-5 text-blue-600" />
+                Company Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="companyName" className="font-medium mb-2 block">
+                    Company Name
+                  </Label>
+                  <Input
+                    id="companyName"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    placeholder="e.g., ABC Financial Services"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="companyUrl" className="flex items-center gap-2 font-medium mb-2">
+                    <Globe className="w-4 h-4" />
+                    Company Website
+                  </Label>
+                  <Input
+                    id="companyUrl"
+                    value={companyUrl}
+                    onChange={(e) => setCompanyUrl(e.target.value)}
+                    placeholder="e.g., https://company.com"
+                  />
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="industry" className="font-medium mb-2 block">
+                  Industry
+                </Label>
+                <Select value={industry} onValueChange={setIndustry}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select industry" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Banking">Banking</SelectItem>
+                    <SelectItem value="Investment Management">Investment Management</SelectItem>
+                    <SelectItem value="Insurance">Insurance</SelectItem>
+                    <SelectItem value="Corporate Finance">Corporate Finance</SelectItem>
+                    <SelectItem value="Accounting Services">Accounting Services</SelectItem>
+                    <SelectItem value="Financial Technology">Financial Technology</SelectItem>
+                    <SelectItem value="Real Estate">Real Estate</SelectItem>
+                    <SelectItem value="Consulting">Consulting</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Internship Basics */}
           <Card className="shadow-sm border-l-4 border-l-green-500 bg-green-50/30">
             <CardHeader className="pb-4 bg-green-50/50">
@@ -159,21 +225,14 @@ We're looking for motivated students or recent graduates who are eager to learn 
                   <JobTitleSuggestions value={jobTitle} onSelect={setJobTitle} isInternship={true} />
                 </div>
                 <div>
-                  <Label htmlFor="department" className="flex items-center gap-2 font-medium mb-2">
+                  <Label className="flex items-center gap-2 font-medium mb-2">
                     Department
                   </Label>
-                  <Select value={department} onValueChange={setDepartment}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select department" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Finance & Accounting">Finance & Accounting</SelectItem>
-                      <SelectItem value="Marketing">Marketing</SelectItem>
-                      <SelectItem value="Human Resources">Human Resources</SelectItem>
-                      <SelectItem value="Operations">Operations</SelectItem>
-                      <SelectItem value="Technology">Technology</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    value={department}
+                    disabled
+                    className="bg-gray-100 cursor-not-allowed"
+                  />
                 </div>
               </div>
 
@@ -270,12 +329,12 @@ We're looking for motivated students or recent graduates who are eager to learn 
             </CardContent>
           </Card>
 
-          {/* Learning & Development */}
+          {/* Skills & Requirements */}
           <Card className="shadow-sm border-l-4 border-l-purple-500 bg-purple-50/30">
             <CardHeader className="pb-4 bg-purple-50/50">
               <CardTitle className="flex items-center gap-2 text-lg font-semibold text-purple-800">
                 <BookOpen className="w-5 h-5 text-purple-600" />
-                Learning & Development
+                Skills & Requirements
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -285,6 +344,14 @@ We're looking for motivated students or recent graduates who are eager to learn 
                 onSkillsChange={setPreferredTechnicalSkills}
                 placeholder="Add preferred technical skills"
                 suggestions={['Excel', 'Financial Modeling', 'Power BI', 'SAP', 'QuickBooks', 'SQL', 'Python', 'Tableau']}
+              />
+
+              <SkillsSelector
+                label="Required Interpersonal Skills"
+                skills={requiredInterpersonalSkills}
+                onSkillsChange={setRequiredInterpersonalSkills}
+                placeholder="Add interpersonal skills"
+                suggestions={['Communication', 'Teamwork', 'Problem Solving', 'Time Management', 'Attention to Detail', 'Adaptability', 'Critical Thinking', 'Leadership']}
               />
 
               <SkillsSelector
