@@ -28,6 +28,7 @@ interface QuizFiltersProps {
   onSelectedSkillsChange: (skills: string[]) => void;
 }
 
+// Only these 4 skill categories
 const skillCategories = [
   {
     name: 'Finance, Auditing & Accounting Skills',
@@ -106,7 +107,6 @@ export function QuizFilters({
     onSelectedSkillsChange(localSelectedSkills);
     onClose();
   };
-
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
