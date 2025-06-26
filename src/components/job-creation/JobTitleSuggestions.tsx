@@ -7,9 +7,10 @@ import { Badge } from '@/components/ui/badge';
 interface JobTitleSuggestionsProps {
   value: string;
   onSelect: (title: string) => void;
+  isInternship?: boolean;
 }
 
-export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProps) {
+export function JobTitleSuggestions({ value, onSelect, isInternship = false }: JobTitleSuggestionsProps) {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -31,9 +32,29 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
     'Credit Analyst'
   ];
 
+  const internshipTitleSuggestions = [
+    'Finance Intern',
+    'Accounting Intern',
+    'Marketing Intern',
+    'HR Intern',
+    'Operations Intern',
+    'Business Development Intern',
+    'Data Analysis Intern',
+    'Digital Marketing Intern',
+    'Content Creation Intern',
+    'Social Media Intern',
+    'Research Intern',
+    'Strategy Intern',
+    'Investment Banking Intern',
+    'Consulting Intern',
+    'Product Management Intern'
+  ];
+
+  const currentSuggestions = isInternship ? internshipTitleSuggestions : jobTitleSuggestions;
+
   useEffect(() => {
     if (value.length > 0) {
-      const filtered = jobTitleSuggestions.filter(title =>
+      const filtered = currentSuggestions.filter(title =>
         title.toLowerCase().includes(value.toLowerCase())
       );
       setSuggestions(filtered.slice(0, 6));
@@ -42,7 +63,7 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
       setSuggestions([]);
       setShowSuggestions(false);
     }
-  }, [value]);
+  }, [value, isInternship]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onSelect(e.target.value);
@@ -58,7 +79,7 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
       <Input
         value={value}
         onChange={handleInputChange}
-        placeholder="e.g. Senior Financial Analyst"
+        placeholder={isInternship ? "e.g. Marketing Intern" : "e.g. Senior Financial Analyst"}
         className="w-full"
         onFocus={() => value.length > 0 && setShowSuggestions(true)}
         onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
@@ -85,7 +106,7 @@ export function JobTitleSuggestions({ value, onSelect }: JobTitleSuggestionsProp
       {value.length === 0 && (
         <div className="mt-2 flex flex-wrap gap-2">
           <span className="text-sm text-muted-foreground">Popular suggestions:</span>
-          {jobTitleSuggestions.slice(0, 4).map((title) => (
+          {currentSuggestions.slice(0, 4).map((title) => (
             <Badge
               key={title}
               variant="outline"

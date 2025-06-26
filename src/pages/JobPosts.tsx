@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Plus, Eye, Pencil, BarChart2, Archive } from 'lucide-react';
 import { useState } from 'react';
 import { JobCreationModal } from '@/components/JobCreationModal';
+import { InternshipCreationModal } from '@/components/InternshipCreationModal';
+import { RoleSelectionModal } from '@/components/RoleSelectionModal';
 import { JobPreviewModal } from '@/components/JobPreviewModal';
 import { JobAnalyticsModal } from '@/components/JobAnalyticsModal';
 import { useToast } from '@/hooks/use-toast';
@@ -58,40 +59,54 @@ const JobPosts = () => {
     },
     {
       id: 3,
-      title: "Accounting Specialist",
+      title: "Marketing Intern",
       location: "Cairo, Egypt",
-      type: "Contract",
+      type: "Internship",
       status: "Active",
       applications: 31,
       views: 203,
       posted: "5 days ago",
-      function: "Accounting",
+      function: "Marketing",
       level: "Entry-level",
-      industry: "Manufacturing",
-      experience: "1-3 years",
-      skills: ["Bookkeeping", "QuickBooks", "Financial Reporting"],
-      certifications: ["Certified Bookkeeper"],
-      employmentType: "Contract",
-      workMode: "Remote",
-      description: "We need an Accounting Specialist for a 6-month contract position. Experience with QuickBooks and financial reporting is essential.",
-      salary: "$30,000 - $45,000",
+      industry: "Technology",
+      experience: "0-1 years",
+      skills: ["Social Media", "Content Creation", "Analytics"],
+      certifications: [],
+      employmentType: "Internship",
+      workMode: "Hybrid",
+      description: "3-month marketing internship with mentorship and potential for full-time conversion.",
+      salary: "1,500 AED/month",
       languages: ["English", "Arabic"],
-      visaStatus: ["Egyptian National", "Work Permit"]
+      visaStatus: ["Egyptian National"],
+      duration: "3 months",
+      mentorship: true,
+      conversionPath: true
     }
   ]);
 
+  const [isRoleSelectionModalOpen, setIsRoleSelectionModalOpen] = useState(false);
   const [isJobCreationModalOpen, setIsJobCreationModalOpen] = useState(false);
+  const [isInternshipCreationModalOpen, setIsInternshipCreationModalOpen] = useState(false);
   const [isJobPreviewModalOpen, setIsJobPreviewModalOpen] = useState(false);
   const [isJobEditModalOpen, setIsJobEditModalOpen] = useState(false);
   const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const { toast } = useToast();
 
-  const handleCreateNewJob = (e: React.MouseEvent) => {
+  const handlePostNewRole = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Create new job clicked');
-    setIsJobCreationModalOpen(true);
+    console.log('Post new role clicked');
+    setIsRoleSelectionModalOpen(true);
+  };
+
+  const handleRoleSelected = (roleType: 'job' | 'internship') => {
+    console.log('Role selected:', roleType);
+    if (roleType === 'job') {
+      setIsJobCreationModalOpen(true);
+    } else {
+      setIsInternshipCreationModalOpen(true);
+    }
   };
 
   const handleJobCreated = (newJob: any) => {
@@ -100,6 +115,15 @@ const JobPosts = () => {
     toast({
       title: "Job Posted Successfully!",
       description: `"${newJob.title}" has been posted and is now live.`,
+    });
+  };
+
+  const handleInternshipCreated = (newInternship: any) => {
+    console.log('New internship created:', newInternship);
+    setJobs(prevJobs => [newInternship, ...prevJobs]);
+    toast({
+      title: "Internship Posted Successfully!",
+      description: `"${newInternship.title}" internship has been posted and is now live.`,
     });
   };
 
@@ -173,15 +197,15 @@ const JobPosts = () => {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Job Posts</h1>
-            <p className="text-gray-600">Manage your job posts and track performance</p>
+            <p className="text-gray-600">Manage your job posts and internships</p>
           </div>
           <Button 
             className="bg-accent hover:bg-accent/90"
-            onClick={handleCreateNewJob}
+            onClick={handlePostNewRole}
             type="button"
           >
             <Plus className="w-4 h-4 mr-2" />
-            Create New Job
+            Post New Role
           </Button>
         </div>
 
@@ -205,6 +229,11 @@ const JobPosts = () => {
                       >
                         {job.status}
                       </Badge>
+                      {job.type === 'Internship' && (
+                        <Badge className="bg-purple-100 text-purple-800">
+                          Internship
+                        </Badge>
+                      )}
                     </div>
                     <p className="text-gray-600 mb-3">{job.location} • {job.type}</p>
                     <div className="flex gap-6 text-sm text-gray-600">
@@ -268,10 +297,22 @@ const JobPosts = () => {
         </div>
       </div>
 
+      <RoleSelectionModal 
+        open={isRoleSelectionModalOpen} 
+        onOpenChange={setIsRoleSelectionModalOpen}
+        onRoleSelected={handleRoleSelected}
+      />
+
       <JobCreationModal 
         open={isJobCreationModalOpen} 
         onOpenChange={setIsJobCreationModalOpen}
         onJobCreated={handleJobCreated}
+      />
+
+      <InternshipCreationModal 
+        open={isInternshipCreationModalOpen} 
+        onOpenChange={setIsInternshipCreationModalOpen}
+        onInternshipCreated={handleInternshipCreated}
       />
 
       {selectedJob && (
