@@ -189,22 +189,22 @@ export function AppSidebar() {
 
   return (
     <>
-      <Sidebar className="border-r border-gray-200/60 bg-gradient-to-b from-slate-50 to-white">
-        <SidebarHeader className="p-6 border-b border-gray-100">
+      <Sidebar className="border-r border-gray-200/60 bg-gradient-to-b from-slate-50 to-white min-w-0 shrink-0">
+        <SidebarHeader className="p-responsive-sm border-b border-gray-100">
           <Button 
-            className="bg-accent hover:bg-accent/90 text-white w-full shadow-lg hover:shadow-xl transition-all duration-200 font-semibold py-3"
+            className="bg-accent hover:bg-accent/90 text-white w-full shadow-lg hover:shadow-xl transition-all duration-200 font-semibold py-3 min-w-0"
             onClick={handlePostNewRole}
             type="button"
           >
-            <Plus className="w-4 h-4" />
-            Post New Role
+            <Plus className="w-4 h-4 shrink-0" />
+            <span className="truncate">Post New Role</span>
           </Button>
         </SidebarHeader>
         
-        <SidebarContent className="px-4 py-2">
+        <SidebarContent className="px-2 sm:px-4 py-2 min-w-0">
           {navigationSections.map((section) => (
-            <SidebarGroup key={section.label} className="mb-8">
-              <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-[0.1em] mb-4 px-3">
+            <SidebarGroup key={section.label} className="mb-responsive">
+              <SidebarGroupLabel className="text-xs font-bold text-gray-400 uppercase tracking-[0.1em] mb-4 px-3 truncate">
                 {section.label}
               </SidebarGroupLabel>
               <SidebarGroupContent>
@@ -213,13 +213,13 @@ export function AppSidebar() {
                     <SidebarMenuItem key={item.title}>
                       <SidebarMenuButton 
                         asChild 
-                        className="hover:bg-gradient-to-r hover:from-accent/10 hover:to-accent/5 hover:border-l-4 hover:border-accent transition-all duration-200 rounded-lg group py-3"
+                        className="hover:bg-gradient-to-r hover:from-accent/10 hover:to-accent/5 hover:border-l-4 hover:border-accent transition-all duration-200 rounded-lg group py-3 min-w-0"
                       >
-                        <Link to={item.url} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-accent font-medium">
-                          <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200" />
-                          <span className="text-sm">{item.title}</span>
+                        <Link to={item.url} className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:text-accent font-medium min-w-0">
+                          <item.icon className="w-4 h-4 group-hover:scale-110 transition-transform duration-200 shrink-0" />
+                          <span className="text-responsive-sm truncate">{item.title}</span>
                           {item.badge && (
-                            <span className="ml-auto bg-gradient-to-r from-accent to-orange-600 text-white text-xs px-2.5 py-1 rounded-full font-semibold shadow-sm">
+                            <span className="ml-auto bg-gradient-to-r from-accent to-orange-600 text-white text-xs px-2.5 py-1 rounded-full font-semibold shadow-sm shrink-0">
                               {item.badge}
                             </span>
                           )}
@@ -233,7 +233,7 @@ export function AppSidebar() {
           ))}
         </SidebarContent>
 
-        <SidebarFooter className="p-3 relative overflow-hidden" style={{ backgroundColor: '#00102c' }}>
+        <SidebarFooter className="p-3 relative overflow-hidden min-w-0" style={{ backgroundColor: '#00102c' }}>
           {/* Orange circles background decoration */}
           <div className="absolute inset-0 pointer-events-none">
             <div className="absolute top-4 right-6 w-16 h-16 bg-orange-500/20 rounded-full"></div>
@@ -242,35 +242,35 @@ export function AppSidebar() {
             <div className="absolute bottom-4 right-12 w-6 h-6 bg-orange-500/30 rounded-full"></div>
           </div>
           
-          <div className="space-y-2 relative z-10">
+          <div className="space-y-2 relative z-10 min-w-0">
             {/* Nestira Recruit */}
             <Button 
               onClick={() => setIsRecruitModalOpen(true)}
-              className="w-full h-10 bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-500 hover:to-cyan-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0"
+              className="w-full h-10 bg-gradient-to-r from-emerald-400 to-cyan-500 hover:from-emerald-500 hover:to-cyan-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0 min-w-0"
             >
-              <UserCheck className="w-4 h-4" />
-              Let us hire for you →
+              <UserCheck className="w-4 h-4 shrink-0" />
+              <span className="truncate">Let us hire for you →</span>
             </Button>
 
             {/* Nestira Remote */}
             <Button 
               onClick={() => setIsRemoteModalOpen(true)}
-              className="w-full h-10 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0"
+              className="w-full h-10 bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0 min-w-0"
             >
-              <Building2 className="w-4 h-4" />
-              Hire remotely. We manage →
+              <Building2 className="w-4 h-4 shrink-0" />
+              <span className="truncate">Hire remotely. We manage →</span>
             </Button>
 
             {/* Refer & Earn */}
-            <Button asChild className="w-full h-10 bg-gradient-to-r from-yellow-400 to-red-500 hover:from-yellow-500 hover:to-red-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0">
-              <Link to="/referrals" className="flex items-center justify-center gap-2">
-                <DollarSign className="w-4 h-4" />
-                Refer and get paid →
+            <Button asChild className="w-full h-10 bg-gradient-to-r from-yellow-400 to-red-500 hover:from-yellow-500 hover:to-red-600 text-white font-bold shadow-lg hover:shadow-xl transition-all duration-200 border-0 min-w-0">
+              <Link to="/referrals" className="flex items-center justify-center gap-2 min-w-0">
+                <DollarSign className="w-4 h-4 shrink-0" />
+                <span className="truncate">Refer and get paid →</span>
               </Link>
             </Button>
           </div>
 
-          <div className="text-xs text-white text-center font-bold mt-4 relative z-10">
+          <div className="text-xs text-white text-center font-bold mt-4 relative z-10 truncate">
             Powered by <span className="text-orange-500 font-black">Nestira</span>
           </div>
         </SidebarFooter>

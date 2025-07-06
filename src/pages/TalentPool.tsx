@@ -297,18 +297,18 @@ const TalentPool = () => {
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-gray-50">
-        <div className="flex">
+        <div className="flex flex-col lg:flex-row min-w-0">
           {/* Main Content */}
-          <div className="flex-1 p-6">
+          <div className="flex-1 p-responsive min-w-0">
             {/* Header */}
-            <div className="mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">Talent Pool</h1>
-                  <p className="text-gray-600 mt-1">Discover and connect with top finance professionals</p>
+            <div className="mb-responsive">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4">
+                <div className="min-w-0 flex-1">
+                  <h1 className="text-responsive-xl font-bold text-gray-900 truncate">Talent Pool</h1>
+                  <p className="text-responsive text-gray-600 mt-1">Discover and connect with top finance professionals</p>
                 </div>
                 
-                <div className="flex items-center gap-3">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
                   <FolderManagementButton />
                   
                   <Button
@@ -358,8 +358,8 @@ const TalentPool = () => {
               </div>
 
               {/* AI Search and Progress */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                <div className="lg:col-span-2">
+              <div className="responsive-grid-2 gap-responsive mb-responsive">
+                <div className="min-w-0">
                   <AICandidateSearch
                     onSearch={handleAiSearch}
                     onClear={handleClearAiSearch}
@@ -369,7 +369,7 @@ const TalentPool = () => {
                     onAdvancedFeatures={() => setIsFilterSidebarOpen(true)}
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <CandidateCountProgress
                     count={filteredCandidates.length}
                     total={candidates.length}
@@ -378,14 +378,14 @@ const TalentPool = () => {
               </div>
 
               {/* Sort Controls */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <span className="text-sm font-medium text-gray-700">Sort by:</span>
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 min-w-0">
+                  <span className="text-responsive font-medium text-gray-700 whitespace-nowrap">Sort by:</span>
                   <Select value={sortBy} onValueChange={setSortBy}>
-                    <SelectTrigger className="w-48">
+                    <SelectTrigger className="w-full sm:w-48 min-w-0">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-50">
                       <SelectItem value="score">Match Score</SelectItem>
                       <SelectItem value="experience">Experience Level</SelectItem>
                       <SelectItem value="name">Name (A-Z)</SelectItem>
@@ -394,7 +394,7 @@ const TalentPool = () => {
                   </Select>
                 </div>
                 
-                <div className="text-sm text-gray-600">
+                <div className="text-responsive-sm text-gray-600 whitespace-nowrap">
                   Showing {sortedCandidates.length} of {candidates.length} candidates
                 </div>
               </div>
