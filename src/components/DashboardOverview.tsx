@@ -1,7 +1,6 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail } from "lucide-react";
+import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail, Plus } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
 import { useState } from "react";
@@ -216,6 +215,14 @@ const planUsageData = [{
   clickAction: "profile-views"
 }];
 
+const teamMembers = [
+  { name: "Sarah Ahmed", avatar: "SA", color: "bg-blue-500" },
+  { name: "Mohamed Hassan", avatar: "MH", color: "bg-green-500" },
+  { name: "Layla Ibrahim", avatar: "LI", color: "bg-purple-500" },
+  { name: "Omar Fathy", avatar: "OF", color: "bg-orange-500" },
+  { name: "Karim Ahmed", avatar: "KA", color: "bg-teal-500" },
+];
+
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
@@ -352,9 +359,9 @@ export function DashboardOverview() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-1 gap-6">
-        {/* Weekly Activity Chart - Full width */}
-        <Card className="p-6">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Weekly Activity Chart - Takes 2 columns */}
+        <Card className="xl:col-span-2 p-6">
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-orange-500" />
@@ -392,6 +399,41 @@ export function DashboardOverview() {
               }} />
               </LineChart>
             </ChartContainer>
+          </div>
+        </Card>
+
+        {/* Team Activity - Takes 1 column */}
+        <Card className="xl:col-span-1 p-6 bg-gray-50">
+          <div className="text-center space-y-6">
+            <h3 className="text-lg font-semibold text-gray-900">Team Activity</h3>
+            
+            {/* Team member avatars arranged in a scattered pattern */}
+            <div className="relative h-32 mb-6">
+              {teamMembers.map((member, index) => (
+                <div
+                  key={member.name}
+                  className={`absolute w-12 h-12 rounded-full ${member.color} flex items-center justify-center text-white font-semibold text-sm shadow-lg hover:scale-110 transition-transform cursor-pointer`}
+                  style={{
+                    top: index === 0 ? '10px' : index === 1 ? '60px' : index === 2 ? '20px' : index === 3 ? '80px' : '40px',
+                    left: index === 0 ? '20px' : index === 1 ? '60px' : index === 2 ? '140px' : index === 3 ? '180px' : '100px'
+                  }}
+                  title={member.name}
+                >
+                  {member.avatar}
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-gray-600 text-sm">
+                Your team members activity on different job posts will appear here
+              </p>
+              
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Team Member
+              </Button>
+            </div>
           </div>
         </Card>
       </div>
