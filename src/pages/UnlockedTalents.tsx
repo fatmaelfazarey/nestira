@@ -370,64 +370,137 @@ const UnlockedTalents = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-start">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-              Unlocked Talents
-              <CheckCircle className="w-8 h-8 text-green-500" />
-            </h1>
-            <p className="text-gray-600">Manage all your unlocked candidate profiles</p>
-            
-            <div className="mt-4 flex items-center gap-4">
-              <div className="bg-green-100 px-4 py-2 rounded-lg">
-                <span className="text-green-800 font-semibold text-lg">{unlockedCandidates.length}</span>
-                <span className="text-green-600 text-sm ml-1">Unlocked Profiles</span>
+      <div className="space-y-8">
+        {/* Unlocked Talents Section */}
+        <div className="space-y-6">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
+                Unlocked Talents
+                <CheckCircle className="w-8 h-8 text-green-500" />
+              </h1>
+              <p className="text-gray-600">Manage all your unlocked candidate profiles</p>
+              
+              <div className="mt-4 flex items-center gap-4">
+                <div className="bg-green-100 px-4 py-2 rounded-lg">
+                  <span className="text-green-800 font-semibold text-lg">{unlockedCandidates.length}</span>
+                  <span className="text-green-600 text-sm ml-1">Unlocked Profiles</span>
+                </div>
               </div>
             </div>
-          </div>
-          
-          <div className="flex items-center gap-4">
-            {/* View Controls */}
-            <div className="flex gap-2">
+            
+            <div className="flex items-center gap-4">
+              {/* View Controls */}
+              <div className="flex gap-2">
+                <Button 
+                  variant={currentView === 'grid' ? 'default' : 'outline'} 
+                  onClick={() => setCurrentView('grid')} 
+                  className="flex items-center gap-2"
+                >
+                  <Grid2X2 className="w-4 h-4" />
+                  Grid
+                </Button>
+                <Button 
+                  variant={currentView === 'table' ? 'default' : 'outline'} 
+                  onClick={() => setCurrentView('table')} 
+                  className="flex items-center gap-2"
+                >
+                  <LayoutList className="w-4 h-4" />
+                  Table
+                </Button>
+              </div>
+
+              {/* Export Button */}
               <Button 
-                variant={currentView === 'grid' ? 'default' : 'outline'} 
-                onClick={() => setCurrentView('grid')} 
-                className="flex items-center gap-2"
+                onClick={handleExportProfiles}
+                className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 font-bold border-0 shadow-lg"
               >
-                <Grid2X2 className="w-4 h-4" />
-                Grid
-              </Button>
-              <Button 
-                variant={currentView === 'table' ? 'default' : 'outline'} 
-                onClick={() => setCurrentView('table')} 
-                className="flex items-center gap-2"
-              >
-                <LayoutList className="w-4 h-4" />
-                Table
+                <Download className="w-5 h-5 mr-2" />
+                Export Profiles
               </Button>
             </div>
-
-            {/* Export Button */}
-            <Button 
-              onClick={handleExportProfiles}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 font-bold border-0 shadow-lg"
-            >
-              <Download className="w-5 h-5 mr-2" />
-              Export Profiles
-            </Button>
           </div>
+
+          {unlockedCandidates.length > 0 ? (
+            currentView === 'grid' ? renderGridView() : renderTableView()
+          ) : (
+            <div className="text-center py-12">
+              <CheckCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <p className="text-gray-500 text-lg">No unlocked talents yet.</p>
+              <p className="text-gray-400">Start unlocking candidates from the Talent Pool to see them here.</p>
+            </div>
+          )}
         </div>
 
-        {unlockedCandidates.length > 0 ? (
-          currentView === 'grid' ? renderGridView() : renderTableView()
-        ) : (
-          <div className="text-center py-12">
-            <CheckCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <p className="text-gray-500 text-lg">No unlocked talents yet.</p>
-            <p className="text-gray-400">Start unlocking candidates from the Talent Pool to see them here.</p>
+        {/* Folders Section */}
+        <div className="space-y-6 border-t pt-8">
+          <div className="flex justify-between items-start">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
+                <Folder className="w-7 h-7 text-blue-500" />
+                Folders
+              </h2>
+              <p className="text-gray-600">Organize your candidates into custom folders</p>
+              
+              <div className="mt-4 flex items-center gap-4">
+                <div className="bg-blue-100 px-4 py-2 rounded-lg">
+                  <span className="text-blue-800 font-semibold text-lg">5</span>
+                  <span className="text-blue-600 text-sm ml-1">Active Folders</span>
+                </div>
+                <div className="bg-gray-100 px-4 py-2 rounded-lg">
+                  <span className="text-gray-800 font-semibold text-lg">23</span>
+                  <span className="text-gray-600 text-sm ml-1">Total Candidates</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <Button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 font-bold border-0 shadow-lg">
+                <Plus className="w-5 h-5 mr-2" />
+                Create Folder
+              </Button>
+            </div>
           </div>
-        )}
+
+          {/* Folders Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { id: 1, name: 'Logistics coordinator', count: 12, color: 'bg-blue-500' },
+              { id: 2, name: 'Finance Managers', count: 8, color: 'bg-green-500' },  
+              { id: 3, name: 'Senior Analysts', count: 15, color: 'bg-purple-500' },
+              { id: 4, name: 'Remote Candidates', count: 23, color: 'bg-orange-500' },
+              { id: 5, name: 'High Priority', count: 6, color: 'bg-red-500' }
+            ].map(folder => (
+              <Card key={folder.id} className="hover:shadow-lg transition-all duration-300 cursor-pointer">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`w-12 h-12 ${folder.color} rounded-lg flex items-center justify-center`}>
+                      <Folder className="w-6 h-6 text-white" />
+                    </div>
+                    <Button variant="ghost" size="sm" className="text-gray-400 hover:text-gray-600">
+                      <Settings className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">{folder.name}</h3>
+                  
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">{folder.count} candidates</span>
+                    <Badge variant="secondary" className="text-xs">
+                      {folder.count}
+                    </Badge>
+                  </div>
+                  
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <Button variant="outline" size="sm" className="w-full">
+                      View Folder
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
