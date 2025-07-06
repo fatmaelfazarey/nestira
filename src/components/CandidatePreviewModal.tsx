@@ -15,9 +15,7 @@ import {
   Star,
   Unlock,
   UserPlus,
-  X,
-  Heart,
-  Users
+  X
 } from 'lucide-react';
 import { getCountryFlag } from '@/utils/talentPoolUtils';
 
@@ -175,88 +173,6 @@ export const CandidatePreviewModal: React.FC<CandidatePreviewModalProps> = ({
               </CardContent>
             </Card>
           </div>
-
-          {/* Behavioral & Culture Fit Section */}
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-semibold flex items-center gap-2">
-                  <Heart className="w-4 h-4" />
-                  Behavioral & Culture Fit
-                </h3>
-                {!isUnlocked && (
-                  <Button
-                    size="sm"
-                    onClick={() => onUnlock(candidate)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
-                  >
-                    <Unlock className="w-4 h-4 mr-2" />
-                    Unlock Profile
-                  </Button>
-                )}
-              </div>
-              
-              {isUnlocked ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <h4 className="font-medium text-sm mb-2">Work Style</h4>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                          Detail-oriented
-                        </Badge>
-                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                          Collaborative
-                        </Badge>
-                        <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200">
-                          Analytical
-                        </Badge>
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-sm mb-2">Communication Style</h4>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200">
-                          Direct
-                        </Badge>
-                        <Badge variant="outline" className="bg-teal-50 text-teal-700 border-teal-200">
-                          Data-driven
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="font-medium text-sm mb-2">Cultural Values</h4>
-                    <div className="flex flex-wrap gap-2">
-                      <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
-                        Innovation
-                      </Badge>
-                      <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
-                        Excellence
-                      </Badge>
-                      <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
-                        Integrity
-                      </Badge>
-                      <Badge variant="outline" className="bg-indigo-50 text-indigo-700 border-indigo-200">
-                        Teamwork
-                      </Badge>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-3 text-gray-500">
-                  <div className="blur-sm select-none">
-                    <p className="text-sm">Work Style: Detail-oriented, Collaborative, Analytical</p>
-                    <p className="text-sm">Communication: Direct, Data-driven</p>
-                    <p className="text-sm">Values: Innovation, Excellence, Integrity, Teamwork</p>
-                  </div>
-                  <p className="text-xs text-gray-400 italic">
-                    Behavioral profile is hidden. Click "Unlock Profile" to reveal detailed insights.
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
 
           {/* Additional Information */}
           <Card>
