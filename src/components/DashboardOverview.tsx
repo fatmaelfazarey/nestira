@@ -1,269 +1,234 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  Calendar, 
-  TrendingUp, 
-  Users, 
-  FileText, 
-  Briefcase,
-  Clock,
-  ArrowUpRight,
-  ArrowDownRight,
-  MoreVertical,
-  CheckCircle,
-  PuzzleIcon,
-  Activity,
-  Unlock,
-  Eye,
-  Target,
-  BarChart3,
-  UserCheck,
-  AlertCircle,
-  CreditCard,
-  Send,
-  Video,
-  Mail
-} from "lucide-react";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  BarChart,
-  Bar
-} from "recharts";
+import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail } from "lucide-react";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { CircularProgress } from "@/components/ui/circular-progress";
-
-const kpiData = [
-  {
-    title: "Total Jobs",
-    value: "2",
-    subtitle: "All jobs posted",
-    icon: Briefcase,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50",
-    isPositive: true,
-    clickAction: "job-listings"
-  },
-  {
-    title: "Active Jobs",
-    value: "2",
-    subtitle: "Currently running",
-    icon: Activity,
-    color: "text-green-600", 
-    bgColor: "bg-green-50",
-    isPositive: true,
-    clickAction: "recruitment-board"
-  },
-  {
-    title: "Closed Jobs",
-    value: "0",
-    subtitle: "Completed jobs",
-    icon: CheckCircle,
-    color: "text-gray-600",
-    bgColor: "bg-gray-50", 
-    isPositive: true,
-    clickAction: "job-listings"
-  },
-  {
-    title: "Total Applications",
-    value: "3",
-    subtitle: "All applications received",
-    icon: FileText,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50",
-    isPositive: true,
-    clickAction: "recruitment-board"
-  },
-  {
-    title: "Avg Applications",
-    value: "1.5",
-    subtitle: "Per job",
-    icon: TrendingUp,
-    color: "text-orange-600",
-    bgColor: "bg-orange-50",
-    isPositive: true,
-    clickAction: "recruitment-board"
-  },
-  {
-    title: "Unlocked Candidates",
-    value: "1",
-    subtitle: "Total unlocked profiles",
-    icon: Unlock,
-    color: "text-indigo-600",
-    bgColor: "bg-indigo-50",
-    isPositive: true,
-    clickAction: "unlocked-talents"
-  },
-  {
-    title: "Avg Daily Unlocks",
-    value: "0.0",
-    subtitle: "Last 30 days",
-    icon: Calendar,
-    color: "text-teal-600",
-    bgColor: "bg-teal-50",
-    isPositive: false,
-    clickAction: "talent-pool"
-  }
-];
-
-const activityData = [
-  { day: "Mon", applications: 15, interviews: 8 },
-  { day: "Tue", applications: 12, interviews: 6 },
-  { day: "Wed", applications: 18, interviews: 12 },
-  { day: "Thu", applications: 25, interviews: 15 },
-  { day: "Fri", applications: 22, interviews: 10 },
-  { day: "Sat", applications: 15, interviews: 8 },
-  { day: "Sun", applications: 19, interviews: 14 }
-];
-
-const interviewData = [
-  { month: "Apr", count: 10 },
-  { month: "May", count: 11 },
-  { month: "Jun", count: 15 },
-  { month: "Jul", count: 12 },
-  { month: "Aug", count: 14 },
-  { month: "Sep", count: 9 },
-  { month: "Oct", count: 11 }
-];
-
-const todayInterviews = [
-  {
-    time: "10:00 AM",
-    candidate: "Sarah Ahmed",
-    position: "Senior Financial Analyst"
-  },
-  {
-    time: "2:00 PM", 
-    candidate: "Mohamed Hassan",
-    position: "Finance Manager"
-  },
-  {
-    time: "4:30 PM",
-    candidate: "Layla Ibrahim", 
-    position: "Investment Associate"
-  }
-];
-
-const recentProfileViews = [
-  {
-    name: "Karim Ahmed",
-    location: "Giza, Egypt",
-    timeAgo: "3 days ago",
-    avatar: "K",
-    views: 12
-  },
-  {
-    name: "Omar Fathy Ahmed Huss...",
-    location: "Alexandria, Egypt", 
-    timeAgo: "5 days ago",
-    avatar: "O",
-    views: 8
-  },
-  {
-    name: "moamen abdulraouf",
-    location: "Cairo, Egypt",
-    timeAgo: "5 days ago", 
-    avatar: "M",
-    views: 15
-  },
-  {
-    name: "Elsayed Kewan",
-    location: "Cairo, Egypt",
-    timeAgo: "5 days ago",
-    avatar: "E",
-    views: 6
-  },
-  {
-    name: "Yasser Khairy",
-    location: "Cairo, Egypt",
-    timeAgo: "5 days ago",
-    avatar: "Y",
-    views: 9
-  }
-];
-
+const kpiData = [{
+  title: "Total Jobs",
+  value: "2",
+  subtitle: "All jobs posted",
+  icon: Briefcase,
+  color: "text-blue-600",
+  bgColor: "bg-blue-50",
+  isPositive: true,
+  clickAction: "job-listings"
+}, {
+  title: "Active Jobs",
+  value: "2",
+  subtitle: "Currently running",
+  icon: Activity,
+  color: "text-green-600",
+  bgColor: "bg-green-50",
+  isPositive: true,
+  clickAction: "recruitment-board"
+}, {
+  title: "Closed Jobs",
+  value: "0",
+  subtitle: "Completed jobs",
+  icon: CheckCircle,
+  color: "text-gray-600",
+  bgColor: "bg-gray-50",
+  isPositive: true,
+  clickAction: "job-listings"
+}, {
+  title: "Total Applications",
+  value: "3",
+  subtitle: "All applications received",
+  icon: FileText,
+  color: "text-purple-600",
+  bgColor: "bg-purple-50",
+  isPositive: true,
+  clickAction: "recruitment-board"
+}, {
+  title: "Avg Applications",
+  value: "1.5",
+  subtitle: "Per job",
+  icon: TrendingUp,
+  color: "text-orange-600",
+  bgColor: "bg-orange-50",
+  isPositive: true,
+  clickAction: "recruitment-board"
+}, {
+  title: "Unlocked Candidates",
+  value: "1",
+  subtitle: "Total unlocked profiles",
+  icon: Unlock,
+  color: "text-indigo-600",
+  bgColor: "bg-indigo-50",
+  isPositive: true,
+  clickAction: "unlocked-talents"
+}, {
+  title: "Avg Daily Unlocks",
+  value: "0.0",
+  subtitle: "Last 30 days",
+  icon: Calendar,
+  color: "text-teal-600",
+  bgColor: "bg-teal-50",
+  isPositive: false,
+  clickAction: "talent-pool"
+}];
+const activityData = [{
+  day: "Mon",
+  applications: 15,
+  interviews: 8
+}, {
+  day: "Tue",
+  applications: 12,
+  interviews: 6
+}, {
+  day: "Wed",
+  applications: 18,
+  interviews: 12
+}, {
+  day: "Thu",
+  applications: 25,
+  interviews: 15
+}, {
+  day: "Fri",
+  applications: 22,
+  interviews: 10
+}, {
+  day: "Sat",
+  applications: 15,
+  interviews: 8
+}, {
+  day: "Sun",
+  applications: 19,
+  interviews: 14
+}];
+const interviewData = [{
+  month: "Apr",
+  count: 10
+}, {
+  month: "May",
+  count: 11
+}, {
+  month: "Jun",
+  count: 15
+}, {
+  month: "Jul",
+  count: 12
+}, {
+  month: "Aug",
+  count: 14
+}, {
+  month: "Sep",
+  count: 9
+}, {
+  month: "Oct",
+  count: 11
+}];
+const todayInterviews = [{
+  time: "10:00 AM",
+  candidate: "Sarah Ahmed",
+  position: "Senior Financial Analyst"
+}, {
+  time: "2:00 PM",
+  candidate: "Mohamed Hassan",
+  position: "Finance Manager"
+}, {
+  time: "4:30 PM",
+  candidate: "Layla Ibrahim",
+  position: "Investment Associate"
+}];
+const recentProfileViews = [{
+  name: "Karim Ahmed",
+  location: "Giza, Egypt",
+  timeAgo: "3 days ago",
+  avatar: "K",
+  views: 12
+}, {
+  name: "Omar Fathy Ahmed Huss...",
+  location: "Alexandria, Egypt",
+  timeAgo: "5 days ago",
+  avatar: "O",
+  views: 8
+}, {
+  name: "moamen abdulraouf",
+  location: "Cairo, Egypt",
+  timeAgo: "5 days ago",
+  avatar: "M",
+  views: 15
+}, {
+  name: "Elsayed Kewan",
+  location: "Cairo, Egypt",
+  timeAgo: "5 days ago",
+  avatar: "E",
+  views: 6
+}, {
+  name: "Yasser Khairy",
+  location: "Cairo, Egypt",
+  timeAgo: "5 days ago",
+  avatar: "Y",
+  views: 9
+}];
 const chartConfig = {
   applications: {
     label: "Applications",
-    color: "hsl(var(--primary))",
+    color: "hsl(var(--primary))"
   },
   interviews: {
     label: "Interviews",
-    color: "hsl(28, 95%, 53%)",
+    color: "hsl(28, 95%, 53%)"
   },
   count: {
     label: "Interviews",
-    color: "hsl(var(--primary))",
+    color: "hsl(var(--primary))"
   }
 };
-
-const planUsageData = [
-  {
-    title: "Unlocked CVs",
-    current: 13,
-    total: 30,
-    icon: Unlock,
-    color: "text-blue-600",
-    bgColor: "bg-blue-50"
-  },
-  {
-    title: "Posted Jobs",
-    current: 0,
-    total: 2,
-    icon: Briefcase,
-    color: "text-green-600",
-    bgColor: "bg-green-50"
-  },
-  {
-    title: "Invitations Sent",
-    current: 0,
-    total: 10,
-    icon: Send,
-    color: "text-purple-600",
-    bgColor: "bg-purple-50"
-  },
-  {
-    title: "Video Credit",
-    current: 0,
-    total: 15,
-    icon: Video,
-    color: "text-orange-600",
-    bgColor: "bg-orange-50"
-  },
-  {
-    title: "Video Invitations Sent",
-    current: 0,
-    total: 10,
-    icon: Mail,
-    color: "text-indigo-600",
-    bgColor: "bg-indigo-50"
-  }
-];
-
+const planUsageData = [{
+  title: "Unlocked CVs",
+  current: 13,
+  total: 30,
+  icon: Unlock,
+  color: "text-blue-600",
+  bgColor: "bg-blue-50"
+}, {
+  title: "Posted Jobs",
+  current: 0,
+  total: 2,
+  icon: Briefcase,
+  color: "text-green-600",
+  bgColor: "bg-green-50"
+}, {
+  title: "Invitations Sent",
+  current: 0,
+  total: 10,
+  icon: Send,
+  color: "text-purple-600",
+  bgColor: "bg-purple-50"
+}, {
+  title: "Video Credit",
+  current: 0,
+  total: 15,
+  icon: Video,
+  color: "text-orange-600",
+  bgColor: "bg-orange-50"
+}, {
+  title: "Video Invitations Sent",
+  current: 0,
+  total: 10,
+  icon: Mail,
+  color: "text-indigo-600",
+  bgColor: "bg-indigo-50"
+}];
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
-  const { t } = useTranslation();
-
+  const {
+    t
+  } = useTranslation();
   const handleKpiClick = (action: string) => {
     console.log(`Navigating to ${action}`);
     // In a real app, this would use router navigation
     // For now, we'll just log the action
   };
-
-  return (
-    <div className="space-y-6">
+  return <div className="space-y-6">
       {/* Welcome Section */}
       <div className="p-6 rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
@@ -286,12 +251,7 @@ export function DashboardOverview() {
         {/* KPI Cards Grid - 2 rows */}
         <div className="lg:col-span-3">
           <div className="grid grid-cols-4 gap-4">
-            {kpiData.map((kpi) => (
-              <Card 
-                key={kpi.title} 
-                className={`p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor}`}
-                onClick={() => handleKpiClick(kpi.clickAction)}
-              >
+            {kpiData.map(kpi => <Card key={kpi.title} className={`p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor}`} onClick={() => handleKpiClick(kpi.clickAction)}>
                 <div className="flex flex-col items-center text-center space-y-2">
                   <div className={`p-2 rounded-lg bg-white/50`}>
                     <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
@@ -301,17 +261,13 @@ export function DashboardOverview() {
                     <p className={`text-xs font-medium ${kpi.color} opacity-80`}>{kpi.title}</p>
                   </div>
                 </div>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
 
         {/* Recent Profile Views Section */}
         <div className="lg:col-span-1">
-          <Card 
-            className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105"
-            onClick={() => setShowProfileViewsModal(true)}
-          >
+          <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <div className="p-2 rounded-lg bg-indigo-50">
@@ -320,8 +276,7 @@ export function DashboardOverview() {
                 <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
               </div>
               <div className="space-y-2">
-                {recentProfileViews.slice(0, 5).map((profile, index) => (
-                  <div key={index} className="flex items-center justify-between">
+                {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
                         {profile.avatar}
@@ -332,8 +287,7 @@ export function DashboardOverview() {
                       </div>
                     </div>
                     <span className="text-sm font-bold text-gray-900">{profile.views}</span>
-                  </div>
-                ))}
+                  </div>)}
               </div>
             </div>
           </Card>
@@ -364,32 +318,21 @@ export function DashboardOverview() {
             <ChartContainer config={chartConfig}>
               <LineChart data={activityData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis 
-                  dataKey="day" 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
-                />
-                <YAxis 
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 12, fill: '#666' }}
-                />
+                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{
+                fontSize: 12,
+                fill: '#666'
+              }} />
+                <YAxis axisLine={false} tickLine={false} tick={{
+                fontSize: 12,
+                fill: '#666'
+              }} />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Line 
-                  type="monotone" 
-                  dataKey="applications" 
-                  stroke="var(--color-applications)" 
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="interviews" 
-                  stroke="var(--color-interviews)" 
-                  strokeWidth={3}
-                  dot={{ r: 4 }}
-                />
+                <Line type="monotone" dataKey="applications" stroke="var(--color-applications)" strokeWidth={3} dot={{
+                r: 4
+              }} />
+                <Line type="monotone" dataKey="interviews" stroke="var(--color-interviews)" strokeWidth={3} dot={{
+                r: 4
+              }} />
               </LineChart>
             </ChartContainer>
           </div>
@@ -426,11 +369,7 @@ export function DashboardOverview() {
                 Quiz Builder
               </Button>
             </Link>
-            <Button 
-              variant="outline" 
-              className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800"
-              onClick={() => setShowAnalyticsModal(true)}
-            >
+            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800" onClick={() => setShowAnalyticsModal(true)}>
               <TrendingUp className="w-4 h-4 mr-3" />
               View Analytics
             </Button>
@@ -439,42 +378,7 @@ export function DashboardOverview() {
       </div>
 
       {/* Resource Usage */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-            <Activity className="w-5 h-5 text-accent" />
-            {t('resourceUsage')}
-          </h3>
-          <div className="space-y-6">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Briefcase className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium">{t('jobPostings')}</span>
-                </div>
-                <span className="text-sm text-gray-600">2/3</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-primary h-2 rounded-full" style={{ width: '66.7%' }}></div>
-              </div>
-              <p className="text-xs text-gray-500 mt-1">66.7%</p>
-            </div>
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-gray-600" />
-                  <span className="text-sm font-medium">{t('candidatesUnlocked')}</span>
-                </div>
-                <span className="text-sm text-gray-600">1/5</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className="bg-primary h-2 rounded-full" style={{ width: '20%' }}></div>
-              </div>
-              <p className="text-xs text-gray-500 mt-1">20.0%</p>
-            </div>
-          </div>
-        </Card>
-      </div>
+      
 
       {/* Profile Views Modal */}
       <Dialog open={showProfileViewsModal} onOpenChange={setShowProfileViewsModal}>
@@ -503,8 +407,7 @@ export function DashboardOverview() {
             
             <div className="space-y-4">
               <h4 className="font-semibold text-gray-900">Detailed Profile Views</h4>
-              {recentProfileViews.map((profile, index) => (
-                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              {recentProfileViews.map((profile, index) => <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-semibold">
                       {profile.avatar}
@@ -518,8 +421,7 @@ export function DashboardOverview() {
                     <div className="text-lg font-bold text-gray-900">{profile.views}</div>
                     <div className="text-xs text-gray-500">views</div>
                   </div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </DialogContent>
@@ -611,7 +513,9 @@ export function DashboardOverview() {
                     <span className="text-sm text-gray-600">45%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
+                    <div className="bg-blue-500 h-2 rounded-full" style={{
+                    width: '45%'
+                  }}></div>
                   </div>
                   
                   <div className="flex items-center justify-between">
@@ -619,7 +523,9 @@ export function DashboardOverview() {
                     <span className="text-sm text-gray-600">32%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{ width: '32%' }}></div>
+                    <div className="bg-green-500 h-2 rounded-full" style={{
+                    width: '32%'
+                  }}></div>
                   </div>
                   
                   <div className="flex items-center justify-between">
@@ -627,7 +533,9 @@ export function DashboardOverview() {
                     <span className="text-sm text-gray-600">23%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-orange-500 h-2 rounded-full" style={{ width: '23%' }}></div>
+                    <div className="bg-orange-500 h-2 rounded-full" style={{
+                    width: '23%'
+                  }}></div>
                   </div>
                 </div>
               </Card>
@@ -670,6 +578,5 @@ export function DashboardOverview() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>;
 }
