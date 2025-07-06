@@ -290,27 +290,15 @@ export function DashboardOverview() {
         </div>
 
         {/* Recent Profile Views - Takes 1/6 of the space */}
-        <Card className="xl:col-span-1 p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-indigo-50">
-                <Eye className="w-4 h-4 text-indigo-600" />
-              </div>
-              <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
+        <Card className="xl:col-span-1 p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 bg-indigo-50 border-2" onClick={() => setShowProfileViewsModal(true)}>
+          <div className="flex flex-col items-center text-center space-y-3">
+            <div className="p-3 rounded-lg bg-white/70">
+              <Eye className="w-6 h-6 text-indigo-600" />
             </div>
-            <div className="space-y-2">
-              {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                      {profile.avatar}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
-                      <p className="text-xs text-gray-500">{profile.timeAgo}</p>
-                    </div>
-                  </div>
-                  <span className="text-sm font-bold text-gray-900">{profile.views}</span>
-                </div>)}
+            <div className="space-y-1">
+              <h3 className="text-2xl font-bold text-indigo-600">{recentProfileViews.length}</h3>
+              <p className="text-sm font-semibold text-indigo-600 opacity-90">Recent Profile Views</p>
+              <p className="text-xs text-indigo-600 opacity-70">Click to view details</p>
             </div>
           </div>
         </Card>
@@ -430,6 +418,7 @@ export function DashboardOverview() {
                     <div>
                       <p className="font-medium text-gray-900">{profile.name}</p>
                       <p className="text-sm text-gray-600">{profile.location}</p>
+                      <p className="text-xs text-gray-500">{profile.timeAgo}</p>
                     </div>
                   </div>
                   <div className="text-right">
