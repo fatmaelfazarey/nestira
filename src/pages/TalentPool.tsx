@@ -248,8 +248,8 @@ const TalentPool = () => {
   };
 
   const handleViewProfile = (candidate: any) => {
-    setPreviewCandidate(candidate);
-    setShowPreviewModal(true);
+    setExpandedCandidate(candidate);
+    setShowExpandedModal(true);
   };
 
   const handleInviteToApply = (candidate: any) => {
@@ -359,7 +359,7 @@ const TalentPool = () => {
                 <AICandidateSearch
                   onSearch={handleAiSearch}
                   onClear={handleClearAiSearch}
-                  query={aiSearchQuery}
+                  currentQuery={aiSearchQuery}
                   isSearching={isAiSearching}
                   resultsCount={aiFilteredCandidates?.length}
                 />
@@ -367,7 +367,7 @@ const TalentPool = () => {
               <div>
                 <CandidateCountProgress
                   total={candidates.length}
-                  filteredCount={filteredCandidates.length}
+                  count={filteredCandidates.length}
                   unlocked={unlockedCandidates.size}
                 />
               </div>
@@ -484,19 +484,6 @@ const TalentPool = () => {
           setHiringStageFilter={setHiringStageFilter}
         />
       </div>
-
-      {/* Candidate Preview Modal */}
-      <CandidatePreviewModal
-        candidate={previewCandidate}
-        isOpen={showPreviewModal}
-        onClose={() => setShowPreviewModal(false)}
-        onUnlock={handleUnlock}
-        onInviteToApply={(candidate, jobId, message) => {
-          handleInviteToApply(candidate);
-          // You can extend this to handle jobId and message if needed
-        }}
-        isUnlocked={previewCandidate ? unlockedCandidates.has(previewCandidate.id) : false}
-      />
 
       {/* Expanded Candidate Modal */}
       <ExpandedCandidateModal
