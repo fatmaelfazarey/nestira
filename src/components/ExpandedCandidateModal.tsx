@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -102,17 +101,17 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
 
   if (!candidate) return null;
 
-  // Ensure all array properties have default values
+  // Safely handle all array properties with proper fallbacks
   const safeCandidate = {
     ...candidate,
-    industryExperience: candidate.industryExperience || [],
-    financeSubfields: candidate.financeSubfields || [],
-    softwareTools: candidate.softwareTools || [],
-    certifications: candidate.certifications || [],
-    skills: candidate.skills || [],
-    education: candidate.education || [],
-    interviews: candidate.interviews || [],
-    applications: candidate.applications || []
+    industryExperience: Array.isArray(candidate.industryExperience) ? candidate.industryExperience : [],
+    financeSubfields: Array.isArray(candidate.financeSubfields) ? candidate.financeSubfields : [],
+    softwareTools: Array.isArray(candidate.softwareTools) ? candidate.softwareTools : [],
+    certifications: Array.isArray(candidate.certifications) ? candidate.certifications : [],
+    skills: Array.isArray(candidate.skills) ? candidate.skills : [],
+    education: Array.isArray(candidate.education) ? candidate.education : [],
+    interviews: Array.isArray(candidate.interviews) ? candidate.interviews : [],
+    applications: Array.isArray(candidate.applications) ? candidate.applications : []
   };
 
   return (
