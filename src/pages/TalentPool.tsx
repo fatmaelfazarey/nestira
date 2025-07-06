@@ -248,8 +248,8 @@ const TalentPool = () => {
   };
 
   const handleViewProfile = (candidate: any) => {
-    setExpandedCandidate(candidate);
-    setShowExpandedModal(true);
+    setPreviewCandidate(candidate);
+    setShowPreviewModal(true);
   };
 
   const handleInviteToApply = (candidate: any) => {
@@ -484,6 +484,19 @@ const TalentPool = () => {
           setHiringStageFilter={setHiringStageFilter}
         />
       </div>
+
+      {/* Candidate Preview Modal */}
+      <CandidatePreviewModal
+        candidate={previewCandidate}
+        isOpen={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        onUnlock={handleUnlock}
+        onInviteToApply={(candidate, jobId, message) => {
+          handleInviteToApply(candidate);
+          // You can extend this to handle jobId and message if needed
+        }}
+        isUnlocked={previewCandidate ? unlockedCandidates.has(previewCandidate.id) : false}
+      />
 
       {/* Expanded Candidate Modal */}
       <ExpandedCandidateModal
