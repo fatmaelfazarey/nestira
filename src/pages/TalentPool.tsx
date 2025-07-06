@@ -64,29 +64,62 @@ import { CandidateCountProgress } from "@/components/talent-pool/CandidateCountP
 import { CandidatePreviewModal } from "@/components/CandidatePreviewModal";
 import { ExpandedCandidateModal } from "@/components/ExpandedCandidateModal";
 import { useTalentPoolState } from "@/hooks/useTalentPoolState";
-import { candidatesData } from "@/data/candidatesData";
+import { candidates } from "@/data/candidatesData";
 import { CircularProgress } from "@/components/ui/circular-progress";
 
 const TalentPool = () => {
   const {
-    viewMode,
-    setViewMode,
-    sortBy,
-    setSortBy,
-    filters,
-    setFilters,
-    scoreVisibility,
-    setScoreVisibility,
-    favorites,
-    setFavorites,
-    unlockedCandidates,
-    setUnlockedCandidates,
-    selectedCandidate,
-    setSelectedCandidate,
-    showCandidateModal,
-    setShowCandidateModal,
-    isRevealed,
-    setIsRevealed
+    // Search and filters
+    searchQuery, setSearchQuery,
+    locationFilter, setLocationFilter,
+    experienceRange, setExperienceRange,
+    statusFilter, setStatusFilter,
+    skillsFilter, setSkillsFilter,
+    scoreRange, setScoreRange,
+    assessmentScoreRange, setAssessmentScoreRange,
+    selectedJob, setSelectedJob,
+    hiringStageFilter, setHiringStageFilter,
+    selectedSubfields, setSelectedSubfields,
+    selectedSoftware, setSelectedSoftware,
+    erpVersion, setErpVersion,
+    selectedCertifications, setSelectedCertifications,
+    selectedIndustries, setSelectedIndustries,
+    selectedVisaStatus, setSelectedVisaStatus,
+    employmentType, setEmploymentType,
+    workMode, setWorkMode,
+    availability, setAvailability,
+    languageProficiency, setLanguageProficiency,
+    genderFilter, setGenderFilter,
+    educationLevel, setEducationLevel,
+    selectedSpecialNeeds, setSelectedSpecialNeeds,
+    cvCompleteness, setCvCompleteness,
+    academicExcellence, setAcademicExcellence,
+    selectedScreeningTags, setSelectedScreeningTags,
+    
+    // View and UI state
+    viewMode, setViewMode,
+    sortBy, setSortBy,
+    isFilterSidebarOpen, setIsFilterSidebarOpen,
+    
+    // AI search
+    aiSearchQuery, setAiSearchQuery,
+    isAiSearching, setIsAiSearching,
+    aiFilteredCandidates, setAiFilteredCandidates,
+    handleAiSearch, handleClearAiSearch,
+    
+    // Candidate interactions
+    favorites, setFavorites,
+    unlockedCandidates, setUnlockedCandidates,
+    selectedCandidate, setSelectedCandidate,
+    
+    // Score visibility
+    isRevealed, setIsRevealed,
+    scoreVisibility, setScoreVisibility,
+    triggerReveal,
+    
+    // Helper functions
+    hasActiveFilters,
+    resetAllFilters
   } = useTalentPoolState();
 
   const [showPreviewModal, setShowPreviewModal] = useState(false);
@@ -94,66 +127,98 @@ const TalentPool = () => {
   const [showExpandedModal, setShowExpandedModal] = useState(false);
   const [expandedCandidate, setExpandedCandidate] = useState(null);
 
+  // Filter candidates based on current filters
   const filteredCandidates = useMemo(() => {
-    return candidatesData.filter(candidate => {
-      // Location filter
-      if (filters.location.length > 0 && !filters.location.includes(candidate.location)) {
-        return false;
-      }
-      
-      // Experience filter
-      if (filters.experience.length > 0 && !filters.experience.includes(candidate.experience)) {
-        return false;
-      }
-      
-      // Industry filter
-      if (filters.industry.length > 0) {
-        const hasMatchingIndustry = candidate.industryExperience.some(industry => 
-          filters.industry.includes(industry)
-        );
-        if (!hasMatchingIndustry) return false;
-      }
-      
-      // Skills filter
-      if (filters.skills.length > 0) {
-        const candidateSkills = [
-          ...candidate.financeSubfields,
-          ...candidate.softwareTools,
-          ...candidate.certifications
-        ];
-        const hasMatchingSkill = filters.skills.some(skill => 
-          candidateSkills.includes(skill)
-        );
-        if (!hasMatchingSkill) return false;
-      }
-      
-      // Salary filter
-      if (filters.salaryRange.length === 2) {
-        const [min, max] = filters.salaryRange;
-        const candidateSalary = parseInt(candidate.salaryExpectation.replace(/[^0-9]/g, ''));
-        if (candidateSalary < min * 1000 || candidateSalary > max * 1000) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
-  }, [filters]);
+    let filtered = [...candidates];
+
+    // Search query filter
+    if (searchQuery) {
+      filtered = filtered.filter(candidate =>
+        candidate.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        candidate.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        candidate.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      );
+    }
+
+    // Location filter
+    if (locationFilter !== 'all') {
+      filtered = filtered.filter(candidate => candidate.location.includes(locationFilter));
+    }
+
+    // Experience filter
+    if (experienceRange[0] > 0) {
+      filtered = filtered.filter(candidate => candidate.yearsOfExperience >= experienceRange[0]);
+    }
+
+    // Status filter
+    if (statusFilter !== 'all') {
+      filtered = filtered.filter(candidate => candidate.status === statusFilter);
+    }
+
+    // Skills filter
+    if (skillsFilter !== 'all') {
+      filtered = filtered.filter(candidate => candidate.experience.includes(skillsFilter));
+    }
+
+    // Score filter
+    if (scoreRange[0] > 0) {
+      filtered = filtered.filter(candidate => candidate.score >= scoreRange[0]);
+    }
+
+    // Assessment score filter
+    if (assessmentScoreRange[0] > 0) {
+      filtered = filtered.filter(candidate => candidate.score >= assessmentScoreRange[0]);
+    }
+
+    // Industry filter
+    if (selectedIndustries.length > 0) {
+      filtered = filtered.filter(candidate =>
+        candidate.industryExperience.some(industry => selectedIndustries.includes(industry))
+      );
+    }
+
+    // Subfields filter
+    if (selectedSubfields.length > 0) {
+      filtered = filtered.filter(candidate =>
+        candidate.financeSubfields.some(subfield => selectedSubfields.includes(subfield))
+      );
+    }
+
+    // Software filter
+    if (selectedSoftware.length > 0) {
+      filtered = filtered.filter(candidate =>
+        candidate.softwareTools.some(tool => selectedSoftware.includes(tool))
+      );
+    }
+
+    // Certifications filter
+    if (selectedCertifications.length > 0) {
+      filtered = filtered.filter(candidate =>
+        candidate.certifications.some(cert => selectedCertifications.includes(cert))
+      );
+    }
+
+    return aiFilteredCandidates || filtered;
+  }, [
+    candidates, searchQuery, locationFilter, experienceRange, statusFilter, skillsFilter,
+    scoreRange, assessmentScoreRange, selectedIndustries, selectedSubfields, selectedSoftware,
+    selectedCertifications, aiFilteredCandidates
+  ]);
 
   const sortedCandidates = useMemo(() => {
-    const candidates = [...filteredCandidates];
+    const candidatesToSort = [...filteredCandidates];
     
     switch (sortBy) {
       case 'score':
-        return candidates.sort((a, b) => b.score - a.score);
+        return candidatesToSort.sort((a, b) => b.score - a.score);
       case 'experience':
-        return candidates.sort((a, b) => b.yearsOfExperience - a.yearsOfExperience);
+        return candidatesToSort.sort((a, b) => b.yearsOfExperience - a.yearsOfExperience);
       case 'name':
-        return candidates.sort((a, b) => a.name.localeCompare(b.name));
+        return candidatesToSort.sort((a, b) => a.name.localeCompare(b.name));
       case 'recent':
-        return candidates.sort((a, b) => new Date(b.profileAdded).getTime() - new Date(a.profileAdded).getTime());
+        return candidatesToSort.sort((a, b) => new Date(b.profileAdded).getTime() - new Date(a.profileAdded).getTime());
       default:
-        return candidates;
+        return candidatesToSort;
     }
   }, [filteredCandidates, sortBy]);
 
@@ -172,17 +237,10 @@ const TalentPool = () => {
   };
 
   const handleRevealScores = () => {
-    setScoreVisibility(prev => ({ ...prev, isAnimating: true }));
-    setIsRevealed(true);
-    
-    setTimeout(() => {
-      setScoreVisibility(prev => ({ 
-        ...prev, 
-        showScores: true, 
-        isAnimating: false 
-      }));
+    if (!isRevealed) {
+      triggerReveal('manual');
       toast.success("Match scores revealed! 🎉");
-    }, 500);
+    }
   };
 
   const handleUnlock = (candidate: any) => {
@@ -199,15 +257,27 @@ const TalentPool = () => {
     toast.success(`Invitation sent to ${candidate.name}!`);
   };
 
+  // Job titles for filter
+  const jobTitles = {
+    'finance-manager': 'Finance Manager',
+    'financial-analyst': 'Financial Analyst',
+    'accounting-manager': 'Accounting Manager'
+  };
+
+  const hiringStages = [
+    'Applied',
+    'Screening',
+    'Interview',
+    'Assessment',
+    'Final Round',
+    'Offer',
+    'Hired',
+    'Rejected'
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex">
-        {/* Filter Sidebar - Simplified props */}
-        <div className="w-80 bg-white border-r border-gray-200 p-6">
-          <h3 className="font-semibold mb-4">Filters</h3>
-          {/* Simplified filter sidebar content */}
-        </div>
-
         {/* Main Content */}
         <div className="flex-1 p-6">
           {/* Header */}
@@ -219,6 +289,31 @@ const TalentPool = () => {
               </div>
               
               <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  onClick={() => setIsFilterSidebarOpen(true)}
+                  className="flex items-center gap-2"
+                >
+                  <Filter className="w-4 h-4" />
+                  Filters
+                  {hasActiveFilters() && (
+                    <Badge variant="secondary" className="ml-1">
+                      {Object.values({
+                        searchQuery: searchQuery !== '',
+                        locationFilter: locationFilter !== 'all',
+                        experienceRange: experienceRange[0] > 0,
+                        statusFilter: statusFilter !== 'all',
+                        skillsFilter: skillsFilter !== 'all',
+                        scoreRange: scoreRange[0] > 0,
+                        industries: selectedIndustries.length > 0,
+                        subfields: selectedSubfields.length > 0,
+                        software: selectedSoftware.length > 0,
+                        certifications: selectedCertifications.length > 0
+                      }).filter(Boolean).length}
+                    </Badge>
+                  )}
+                </Button>
+
                 <Button
                   variant={isRevealed ? "default" : "outline"}
                   onClick={handleRevealScores}
@@ -262,18 +357,20 @@ const TalentPool = () => {
             {/* AI Search and Progress */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
               <div className="lg:col-span-2">
-                {/* Simplified AI Search */}
-                <div className="bg-white p-4 rounded-lg border">
-                  <h3 className="font-medium mb-2">AI Candidate Search</h3>
-                  <p className="text-sm text-gray-600">Search for candidates using natural language</p>
-                </div>
+                <AICandidateSearch
+                  onSearch={handleAiSearch}
+                  onClear={handleClearAiSearch}
+                  searchQuery={aiSearchQuery}
+                  isSearching={isAiSearching}
+                  resultsCount={aiFilteredCandidates?.length}
+                />
               </div>
               <div>
-                {/* Simplified Progress */}
-                <div className="bg-white p-4 rounded-lg border">
-                  <h3 className="font-medium mb-2">Candidates Found</h3>
-                  <p className="text-2xl font-bold">{sortedCandidates.length}</p>
-                </div>
+                <CandidateCountProgress
+                  total={candidates.length}
+                  filtered={filteredCandidates.length}
+                  unlocked={unlockedCandidates.size}
+                />
               </div>
             </div>
 
@@ -295,7 +392,7 @@ const TalentPool = () => {
               </div>
               
               <div className="text-sm text-gray-600">
-                Showing {sortedCandidates.length} of {candidatesData.length} candidates
+                Showing {sortedCandidates.length} of {candidates.length} candidates
               </div>
             </div>
           </div>
@@ -327,6 +424,66 @@ const TalentPool = () => {
             />
           )}
         </div>
+
+        {/* Filter Sidebar */}
+        <FilterSidebar
+          isOpen={isFilterSidebarOpen}
+          onClose={() => setIsFilterSidebarOpen(false)}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          locationFilter={locationFilter}
+          setLocationFilter={setLocationFilter}
+          experienceRange={experienceRange}
+          setExperienceRange={setExperienceRange}
+          statusFilter={statusFilter}
+          setStatusFilter={setStatusFilter}
+          skillsFilter={skillsFilter}
+          setSkillsFilter={setSkillsFilter}
+          scoreRange={scoreRange}
+          setScoreRange={setScoreRange}
+          assessmentScoreRange={assessmentScoreRange}
+          setAssessmentScoreRange={setAssessmentScoreRange}
+          selectedSubfields={selectedSubfields}
+          setSelectedSubfields={setSelectedSubfields}
+          selectedSoftware={selectedSoftware}
+          setSelectedSoftware={setSelectedSoftware}
+          erpVersion={erpVersion}
+          setErpVersion={setErpVersion}
+          selectedCertifications={selectedCertifications}
+          setSelectedCertifications={setSelectedCertifications}
+          selectedIndustries={selectedIndustries}
+          setSelectedIndustries={setSelectedIndustries}
+          selectedVisaStatus={selectedVisaStatus}
+          setSelectedVisaStatus={setSelectedVisaStatus}
+          employmentType={employmentType}
+          setEmploymentType={setEmploymentType}
+          workMode={workMode}
+          setWorkMode={setWorkMode}
+          availability={availability}
+          setAvailability={setAvailability}
+          languageProficiency={languageProficiency}
+          setLanguageProficiency={setLanguageProficiency}
+          genderFilter={genderFilter}
+          setGenderFilter={setGenderFilter}
+          educationLevel={educationLevel}
+          setEducationLevel={setEducationLevel}
+          selectedSpecialNeeds={selectedSpecialNeeds}
+          setSelectedSpecialNeeds={setSelectedSpecialNeeds}
+          cvCompleteness={cvCompleteness}
+          setCvCompleteness={setCvCompleteness}
+          academicExcellence={academicExcellence}
+          setAcademicExcellence={setAcademicExcellence}
+          selectedScreeningTags={selectedScreeningTags}
+          setSelectedScreeningTags={setSelectedScreeningTags}
+          resetAllFilters={resetAllFilters}
+          filteredCandidatesCount={filteredCandidates.length}
+          jobTitles={jobTitles}
+          selectedJob={selectedJob}
+          setSelectedJob={setSelectedJob}
+          hiringStages={hiringStages}
+          hiringStageFilter={hiringStageFilter}
+          setHiringStageFilter={setHiringStageFilter}
+        />
       </div>
 
       {/* Expanded Candidate Modal */}
