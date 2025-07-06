@@ -81,6 +81,24 @@ export default {
 			},
 			spacing: {
 				'8': '8px',
+				'responsive': 'clamp(1rem, 2vw, 2rem)',
+				'responsive-sm': 'clamp(0.5rem, 1vw, 1rem)',
+				'responsive-lg': 'clamp(1.5rem, 3vw, 3rem)',
+			},
+			fontSize: {
+				'responsive': 'clamp(0.875rem, 1.5vw, 1rem)',
+				'responsive-sm': 'clamp(0.75rem, 1.2vw, 0.875rem)',
+				'responsive-lg': 'clamp(1rem, 2vw, 1.25rem)',
+				'responsive-xl': 'clamp(1.25rem, 3vw, 2rem)',
+			},
+			maxWidth: {
+				'responsive': 'min(100%, 1200px)',
+				'responsive-sm': 'min(100%, 800px)',
+				'responsive-lg': 'min(100%, 1600px)',
+			},
+			minWidth: {
+				'0': '0',
+				'responsive': 'min(200px, 100%)',
 			},
 			keyframes: {
 				'accordion-down': {
@@ -114,6 +132,10 @@ export default {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'fade-in': 'fade-in 0.3s ease-out'
+			},
+			screens: {
+				'xs': '475px',
+				'3xl': '1920px',
 			}
 		}
 	},

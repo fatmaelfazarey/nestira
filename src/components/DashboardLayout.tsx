@@ -2,23 +2,25 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from './AppSidebar';
 import { DashboardHeader } from './DashboardHeader';
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
-export function DashboardLayout({
-  children
-}: DashboardLayoutProps) {
-  return <SidebarProvider>
+
+export function DashboardLayout({ children }: DashboardLayoutProps) {
+  return (
+    <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-white to-gray-50">
         <AppSidebar />
-        <main className="flex-1 flex flex-col backdrop-blur-sm">
+        <main className="flex-1 flex flex-col backdrop-blur-sm min-w-0">
           <DashboardHeader />
-          <div className="flex-1 p-4 md:p-6 lg:p-8">
-            <div className="max-w-7xl mx-auto">
+          <div className="flex-1 p-responsive overflow-x-auto">
+            <div className="w-full max-w-none mx-auto space-responsive-lg">
               {children}
             </div>
           </div>
         </main>
       </div>
-    </SidebarProvider>;
+    </SidebarProvider>
+  );
 }

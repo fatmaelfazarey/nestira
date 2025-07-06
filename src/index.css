@@ -49,6 +49,12 @@
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px; /* Base font size for rem calculations */
+    scroll-behavior: smooth;
   }
 
   body {
@@ -56,28 +62,74 @@
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     letter-spacing: -0.01em;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
   }
 
-  /* Modern card styling */
+  /* Responsive container widths */
+  .container {
+    width: 100%;
+    max-width: none;
+    padding-left: clamp(1rem, 2vw, 2rem);
+    padding-right: clamp(1rem, 2vw, 2rem);
+    margin: 0 auto;
+  }
+
+  /* Modern card styling with flexible spacing */
   .card {
     @apply backdrop-blur-sm bg-white/80 border-gray-200/60 shadow-sm hover:shadow-md transition-all duration-200;
+    border-radius: clamp(0.5rem, 1vw, 0.75rem);
   }
 
-  /* Enhanced button styling */
+  /* Enhanced button styling with flexible sizing */
   .btn-primary {
     @apply bg-gradient-to-r from-accent to-orange-600 hover:from-accent/90 hover:to-orange-600/90 shadow-lg hover:shadow-xl transition-all duration-200;
+    padding: clamp(0.5rem, 1vw, 0.75rem) clamp(1rem, 2vw, 1.5rem);
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
   }
 
-  /* Modern input styling */
+  /* Modern input styling with flexible sizing */
   .input-modern {
     @apply bg-white/80 border-gray-200/60 focus:border-accent/50 focus:ring-accent/20 backdrop-blur-sm;
+    padding: clamp(0.5rem, 1vw, 0.75rem);
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+  }
+
+  /* Responsive typography */
+  h1 { font-size: clamp(1.5rem, 4vw, 3rem); line-height: 1.2; }
+  h2 { font-size: clamp(1.25rem, 3vw, 2.25rem); line-height: 1.3; }
+  h3 { font-size: clamp(1.125rem, 2.5vw, 1.875rem); line-height: 1.4; }
+  h4 { font-size: clamp(1rem, 2vw, 1.5rem); line-height: 1.4; }
+  h5 { font-size: clamp(0.875rem, 1.5vw, 1.25rem); line-height: 1.5; }
+  h6 { font-size: clamp(0.75rem, 1.2vw, 1.125rem); line-height: 1.5; }
+
+  /* Responsive grid system */
+  .responsive-grid {
+    display: grid;
+    gap: clamp(1rem, 2vw, 2rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  }
+
+  .responsive-grid-2 {
+    display: grid;
+    gap: clamp(1rem, 2vw, 2rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  }
+
+  .responsive-grid-3 {
+    display: grid;
+    gap: clamp(1rem, 2vw, 2rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
   }
 }
 
 @layer components {
-  /* Glassmorphism effect */
+  /* Glassmorphism effect with responsive backdrop */
   .glass {
     @apply backdrop-blur-md bg-white/10 border border-white/20;
+    border-radius: clamp(0.5rem, 1vw, 1rem);
   }
 
   /* Modern gradient text */
@@ -85,8 +137,116 @@
     @apply bg-gradient-to-r from-accent to-orange-600 bg-clip-text text-transparent;
   }
 
-  /* Enhanced shadows */
+  /* Enhanced shadows with responsive sizing */
   .shadow-modern {
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    box-shadow: 
+      0 clamp(2px, 0.5vw, 4px) clamp(4px, 1vw, 6px) -1px rgba(0, 0, 0, 0.1), 
+      0 clamp(1px, 0.25vw, 2px) clamp(2px, 0.5vw, 4px) -1px rgba(0, 0, 0, 0.06), 
+      0 0 0 1px rgba(255, 255, 255, 0.05);
+  }
+
+  /* Flexible flex utilities */
+  .flex-responsive {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.5rem, 1vw, 1rem);
+    align-items: center;
+  }
+
+  .flex-responsive-col {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(0.5rem, 1vw, 1rem);
+  }
+
+  /* Responsive spacing utilities */
+  .space-responsive > * + * {
+    margin-top: clamp(0.5rem, 1vw, 1rem);
+  }
+
+  .space-responsive-lg > * + * {
+    margin-top: clamp(1rem, 2vw, 2rem);
+  }
+
+  /* Responsive padding and margin */
+  .p-responsive {
+    padding: clamp(1rem, 2vw, 2rem);
+  }
+
+  .p-responsive-sm {
+    padding: clamp(0.5rem, 1vw, 1rem);
+  }
+
+  .m-responsive {
+    margin: clamp(1rem, 2vw, 2rem);
+  }
+
+  .m-responsive-sm {
+    margin: clamp(0.5rem, 1vw, 1rem);
+  }
+
+  /* Responsive text sizing */
+  .text-responsive {
+    font-size: clamp(0.875rem, 1.5vw, 1rem);
+  }
+
+  .text-responsive-sm {
+    font-size: clamp(0.75rem, 1.2vw, 0.875rem);
+  }
+
+  .text-responsive-lg {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+  }
+}
+
+/* Media queries for specific breakpoints */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .responsive-grid,
+  .responsive-grid-2,
+  .responsive-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+}
+
+/* Zoom-safe utilities */
+@media (resolution >= 2dppx) and (max-width: 1200px) {
+  .container {
+    max-width: 90vw;
+  }
+}
+
+/* High zoom level adjustments */
+@media (min-resolution: 1.5dppx) {
+  .shadow-modern {
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+  }
+}
+
+/* Print styles */
+@media print {
+  body {
+    font-size: 12pt;
+    line-height: 1.4;
+  }
+  
+  .card {
+    border: 1px solid #ccc;
+    break-inside: avoid;
   }
 }

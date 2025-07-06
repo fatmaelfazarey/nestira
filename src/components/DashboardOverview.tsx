@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail, Plus } from "lucide-react";
@@ -226,14 +227,10 @@ const teamMembers = [
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
-  const {
-    t
-  } = useTranslation();
+  const { t } = useTranslation();
 
   const handleKpiClick = (action: string) => {
     console.log(`Navigating to ${action}`);
-    // In a real app, this would use router navigation
-    // For now, we'll just log the action
   };
 
   const handlePlanUsageClick = (action?: string) => {
@@ -242,81 +239,89 @@ export function DashboardOverview() {
     }
   };
 
-  return <div className="space-y-6">
+  return (
+    <div className="space-responsive-lg">
       {/* Welcome Section */}
-      <div className="p-6 rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
+      <div className="p-responsive rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
         <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/30 rounded-full opacity-60"></div>
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="bg-accent/20 p-2 rounded-lg">
+            <div className="bg-accent/20 p-2 rounded-lg shrink-0">
               <Briefcase className="w-5 h-5 text-accent" />
             </div>
-            <h1 className="text-2xl font-bold">Welcome back, Yasser!</h1>
+            <h1 className="text-responsive-lg font-bold">Welcome back, Yasser!</h1>
           </div>
-          <p className="text-sm text-slate-300">
+          <p className="text-responsive-sm text-slate-300">
             Here's what's happening with your hiring pipeline today.
           </p>
         </div>
       </div>
 
       {/* Plan Usage Section */}
-      <Card className="p-6">
+      <Card className="p-responsive">
         <div className="flex items-center gap-2 mb-6">
-          <CreditCard className="w-5 h-5 text-gray-600" />
-          <h2 className="text-lg font-semibold text-gray-900">Plan Usage</h2>
+          <CreditCard className="w-5 h-5 text-gray-600 shrink-0" />
+          <h2 className="text-responsive-lg font-semibold text-gray-900">Plan Usage</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div className="responsive-grid-3">
           {planUsageData.map(item => {
-          const percentage = item.clickAction === 'profile-views' ? 100 : Math.round(item.current / item.total * 100);
-          return <div 
-            key={item.title} 
-            className={`p-4 rounded-lg border border-gray-200 bg-white ${item.clickAction ? 'cursor-pointer hover:shadow-md transition-all duration-200' : ''}`}
-            onClick={() => item.clickAction && handlePlanUsageClick(item.clickAction)}
-          >
+            const percentage = item.clickAction === 'profile-views' ? 100 : Math.round(item.current / item.total * 100);
+            return (
+              <div 
+                key={item.title} 
+                className={`p-responsive-sm rounded-lg border border-gray-200 bg-white ${item.clickAction ? 'cursor-pointer hover:shadow-md transition-all duration-200' : ''}`}
+                onClick={() => item.clickAction && handlePlanUsageClick(item.clickAction)}
+              >
                 <div className="flex items-center justify-between mb-3">
-                  <item.icon className={`w-5 h-5 ${item.color}`} />
+                  <item.icon className={`w-5 h-5 ${item.color} shrink-0`} />
                   {item.clickAction !== 'profile-views' && (
-                    <span className="text-sm font-medium text-gray-500">{percentage}%</span>
+                    <span className="text-responsive-sm font-medium text-gray-500">{percentage}%</span>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-sm font-medium text-gray-700">{item.title}</h3>
+                  <h3 className="text-responsive-sm font-medium text-gray-700">{item.title}</h3>
                   {item.clickAction === 'profile-views' ? (
-                    <p className="text-lg font-bold text-gray-900">{item.current}</p>
+                    <p className="text-responsive-lg font-bold text-gray-900">{item.current}</p>
                   ) : (
-                    <p className="text-lg font-bold text-gray-900">
+                    <p className="text-responsive-lg font-bold text-gray-900">
                       {item.current} / {item.total}
                     </p>
                   )}
                   {item.clickAction !== 'profile-views' && (
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-blue-500'}`} style={{
-                    width: `${percentage}%`
-                  }}></div>
+                      <div 
+                        className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-blue-500'}`} 
+                        style={{ width: `${percentage}%` }}
+                      ></div>
                     </div>
                   )}
                 </div>
-              </div>;
-        })}
+              </div>
+            );
+          })}
         </div>
       </Card>
 
       {/* KPI Metrics Row with Quick Actions */}
       <div className="grid grid-cols-1 xl:grid-cols-6 gap-4">
         {/* KPI Metrics - Takes 5 columns */}
-        <div className="xl:col-span-5 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="xl:col-span-5 responsive-grid">
           {kpiData.map((kpi, index) => (
-            <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
+            <Card 
+              key={kpi.title} 
+              className={`p-responsive hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} 
+              onClick={() => handleKpiClick(kpi.clickAction)}
+            >
               <div className="flex flex-col items-center text-center space-y-3">
-                <div className={`p-3 rounded-lg bg-white/70`}>
+                <div className="p-3 rounded-lg bg-white/70 shrink-0">
                   <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
                 </div>
-                <div className="space-y-1">
+                <div className="space-y-1 min-w-0">
                   <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
-                  <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
-                  <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
+                  <p className={`text-responsive-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
+                  <p className={`text-responsive-sm ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
                 </div>
               </div>
             </Card>
@@ -324,33 +329,33 @@ export function DashboardOverview() {
         </div>
 
         {/* Quick Actions - Takes 1 column on the right */}
-        <Card className="xl:col-span-1 p-6 bg-orange-50 border border-orange-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-            <Target className="w-5 h-5 text-orange-600" />
+        <Card className="xl:col-span-1 p-responsive bg-orange-50 border border-orange-200">
+          <h3 className="text-responsive-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <Target className="w-5 h-5 text-orange-600 shrink-0" />
             Quick Actions
           </h3>
           <div className="space-y-3">
             <Link to="/talent-pool">
-              <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
-                <Users className="w-4 h-4 mr-3" />
+              <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full text-responsive-sm">
+                <Users className="w-4 h-4 mr-3 shrink-0" />
                 Browse Talent Pool
               </Button>
             </Link>
             <Link to="/unlocked-talents">
-              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-                <UserCheck className="w-4 h-4 mr-3" />
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 text-responsive-sm">
+                <UserCheck className="w-4 h-4 mr-3 shrink-0" />
                 Unlocked Talents
               </Button>
             </Link>
             <Link to="/job-listings">
-              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-                <FileText className="w-4 h-4 mr-3" />
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 text-responsive-sm">
+                <FileText className="w-4 h-4 mr-3 shrink-0" />
                 Create Job Post
               </Button>
             </Link>
             <Link to="/quiz-builder">
-              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-                <PuzzleIcon className="w-4 h-4 mr-3" />
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 text-responsive-sm">
+                <PuzzleIcon className="w-4 h-4 mr-3 shrink-0" />
                 Quiz Builder
               </Button>
             </Link>
@@ -361,54 +366,65 @@ export function DashboardOverview() {
       {/* Charts Section */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* Weekly Activity Chart - Takes 2 columns */}
-        <Card className="xl:col-span-2 p-6">
+        <Card className="xl:col-span-2 p-responsive">
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-orange-500" />
+            <h3 className="text-responsive-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-orange-500 shrink-0" />
               Weekly Activity
             </h3>
-            <div className="flex items-center gap-4">
+            <div className="flex-responsive">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-primary"></div>
-                <span className="text-sm text-gray-600">Applications</span>
+                <div className="w-3 h-3 rounded-full bg-primary shrink-0"></div>
+                <span className="text-responsive-sm text-gray-600">Applications</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
-                <span className="text-sm text-gray-600">Interviews</span>
+                <div className="w-3 h-3 rounded-full bg-orange-500 shrink-0"></div>
+                <span className="text-responsive-sm text-gray-600">Interviews</span>
               </div>
             </div>
           </div>
-          <div className="h-64">
+          <div className="h-64 min-w-0 overflow-hidden">
             <ChartContainer config={chartConfig}>
               <LineChart data={activityData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{
-                fontSize: 12,
-                fill: '#666'
-              }} />
-                <YAxis axisLine={false} tickLine={false} tick={{
-                fontSize: 12,
-                fill: '#666'
-              }} />
+                <XAxis 
+                  dataKey="day" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 12, fill: '#666' }} 
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fontSize: 12, fill: '#666' }} 
+                />
                 <ChartTooltip content={<ChartTooltipContent />} />
-                <Line type="monotone" dataKey="applications" stroke="var(--color-applications)" strokeWidth={3} dot={{
-                r: 4
-              }} />
-                <Line type="monotone" dataKey="interviews" stroke="var(--color-interviews)" strokeWidth={3} dot={{
-                r: 4
-              }} />
+                <Line 
+                  type="monotone" 
+                  dataKey="applications" 
+                  stroke="var(--color-applications)" 
+                  strokeWidth={3} 
+                  dot={{ r: 4 }} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="interviews" 
+                  stroke="var(--color-interviews)" 
+                  strokeWidth={3} 
+                  dot={{ r: 4 }} 
+                />
               </LineChart>
             </ChartContainer>
           </div>
         </Card>
 
         {/* Team Activity - Takes 1 column */}
-        <Card className="xl:col-span-1 p-6 bg-gray-50">
-          <div className="text-center space-y-6">
-            <h3 className="text-lg font-semibold text-gray-900">Team Activity</h3>
+        <Card className="xl:col-span-1 p-responsive bg-gray-50">
+          <div className="text-center space-responsive">
+            <h3 className="text-responsive-lg font-semibold text-gray-900">Team Activity</h3>
             
             {/* Team member avatars arranged in a scattered pattern */}
-            <div className="relative h-32 mb-6">
+            <div className="relative h-32 mb-6 mx-auto max-w-60">
               {teamMembers.map((member, index) => (
                 <div
                   key={member.name}
@@ -425,12 +441,12 @@ export function DashboardOverview() {
             </div>
 
             <div className="space-y-3">
-              <p className="text-gray-600 text-sm">
+              <p className="text-gray-600 text-responsive-sm">
                 Your team members activity on different job posts will appear here
               </p>
               
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
-                <Plus className="w-4 h-4 mr-2" />
+              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-responsive-sm">
+                <Plus className="w-4 h-4 mr-2 shrink-0" />
                 Add Team Member
               </Button>
             </div>
@@ -440,47 +456,49 @@ export function DashboardOverview() {
 
       {/* Profile Views Modal */}
       <Dialog open={showProfileViewsModal} onOpenChange={setShowProfileViewsModal}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Eye className="w-5 h-5" />
+              <Eye className="w-5 h-5 shrink-0" />
               Profile Views Analytics
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
-            <div className="grid grid-cols-3 gap-4">
+          <div className="space-responsive">
+            <div className="responsive-grid-3">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">50</div>
-                <div className="text-sm text-blue-800">Total Views Today</div>
+                <div className="text-responsive-sm text-blue-800">Total Views Today</div>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
                 <div className="text-2xl font-bold text-green-600">348</div>
-                <div className="text-sm text-green-800">This Week</div>
+                <div className="text-responsive-sm text-green-800">This Week</div>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <div className="text-2xl font-bold text-purple-600">1,247</div>
-                <div className="text-sm text-purple-800">This Month</div>
+                <div className="text-responsive-sm text-purple-800">This Month</div>
               </div>
             </div>
             
             <div className="space-y-4">
               <h4 className="font-semibold text-gray-900">Detailed Profile Views</h4>
-              {recentProfileViews.map((profile, index) => <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-semibold">
+              {recentProfileViews.map((profile, index) => (
+                <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg gap-4">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-semibold shrink-0">
                       {profile.avatar}
                     </div>
-                    <div>
-                      <p className="font-medium text-gray-900">{profile.name}</p>
-                      <p className="text-sm text-gray-600">{profile.location}</p>
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-900 truncate">{profile.name}</p>
+                      <p className="text-responsive-sm text-gray-600 truncate">{profile.location}</p>
                       <p className="text-xs text-gray-500">{profile.timeAgo}</p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <div className="text-lg font-bold text-gray-900">{profile.views}</div>
                     <div className="text-xs text-gray-500">views</div>
                   </div>
-                </div>)}
+                </div>
+              ))}
             </div>
           </div>
         </DialogContent>
@@ -491,69 +509,69 @@ export function DashboardOverview() {
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5" />
+              <TrendingUp className="w-5 h-5 shrink-0" />
               Analytics Dashboard
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
+          <div className="space-responsive">
             {/* Key Metrics Overview */}
-            <div className="grid grid-cols-4 gap-4">
+            <div className="responsive-grid-2">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">2,847</div>
-                <div className="text-sm text-blue-800">Total Profile Views</div>
+                <div className="text-responsive-sm text-blue-800">Total Profile Views</div>
                 <div className="text-xs text-green-600 mt-1">↑ 23% vs last month</div>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
                 <div className="text-2xl font-bold text-green-600">156</div>
-                <div className="text-sm text-green-800">Applications Received</div>
+                <div className="text-responsive-sm text-green-800">Applications Received</div>
                 <div className="text-xs text-green-600 mt-1">↑ 15% vs last month</div>
               </div>
               <div className="text-center p-4 bg-orange-50 rounded-lg">
                 <div className="text-2xl font-bold text-orange-600">43</div>
-                <div className="text-sm text-orange-800">Interviews Scheduled</div>
+                <div className="text-responsive-sm text-orange-800">Interviews Scheduled</div>
                 <div className="text-xs text-red-600 mt-1">↓ 8% vs last month</div>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <div className="text-2xl font-bold text-purple-600">12</div>
-                <div className="text-sm text-purple-800">Candidates Hired</div>
+                <div className="text-responsive-sm text-purple-800">Candidates Hired</div>
                 <div className="text-xs text-green-600 mt-1">↑ 33% vs last month</div>
               </div>
             </div>
 
             {/* Job Performance Analytics */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="responsive-grid-2">
               <Card className="p-4">
                 <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4" />
+                  <TrendingUp className="w-4 h-4 shrink-0" />
                   Top Performing Jobs
                 </h4>
                 <div className="space-y-3">
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900">Senior Financial Analyst</p>
-                      <p className="text-sm text-gray-600">Posted 5 days ago</p>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-4">
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-900 truncate">Senior Financial Analyst</p>
+                      <p className="text-responsive-sm text-gray-600">Posted 5 days ago</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <div className="text-lg font-bold text-gray-900">47</div>
                       <div className="text-xs text-gray-500">applications</div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900">Finance Manager</p>
-                      <p className="text-sm text-gray-600">Posted 3 days ago</p>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-4">
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-900 truncate">Finance Manager</p>
+                      <p className="text-responsive-sm text-gray-600">Posted 3 days ago</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <div className="text-lg font-bold text-gray-900">34</div>
                       <div className="text-xs text-gray-500">applications</div>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-gray-900">Investment Associate</p>
-                      <p className="text-sm text-gray-600">Posted 8 days ago</p>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-4">
+                    <div className="min-w-0">
+                      <p className="font-medium text-gray-900 truncate">Investment Associate</p>
+                      <p className="text-responsive-sm text-gray-600">Posted 8 days ago</p>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <div className="text-lg font-bold text-gray-900">28</div>
                       <div className="text-xs text-gray-500">applications</div>
                     </div>
@@ -563,38 +581,32 @@ export function DashboardOverview() {
 
               <Card className="p-4">
                 <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                  <Target className="w-4 h-4" />
+                  <Target className="w-4 h-4 shrink-0" />
                   Application Sources
                 </h4>
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Direct Applications</span>
-                    <span className="text-sm text-gray-600">45%</span>
+                    <span className="text-responsive-sm font-medium">Direct Applications</span>
+                    <span className="text-responsive-sm text-gray-600">45%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-500 h-2 rounded-full" style={{
-                    width: '45%'
-                  }}></div>
+                    <div className="bg-blue-500 h-2 rounded-full" style={{ width: '45%' }}></div>
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Talent Pool Search</span>
-                    <span className="text-sm text-gray-600">32%</span>
+                    <span className="text-responsive-sm font-medium">Talent Pool Search</span>
+                    <span className="text-responsive-sm text-gray-600">32%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-500 h-2 rounded-full" style={{
-                    width: '32%'
-                  }}></div>
+                    <div className="bg-green-500 h-2 rounded-full" style={{ width: '32%' }}></div>
                   </div>
                   
                   <div className="flex items-center justify-between">
-                    <span className="text-sm font-medium">Referrals</span>
-                    <span className="text-sm text-gray-600">23%</span>
+                    <span className="text-responsive-sm font-medium">Referrals</span>
+                    <span className="text-responsive-sm text-gray-600">23%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-orange-500 h-2 rounded-full" style={{
-                    width: '23%'
-                  }}></div>
+                    <div className="bg-orange-500 h-2 rounded-full" style={{ width: '23%' }}></div>
                   </div>
                 </div>
               </Card>
@@ -603,10 +615,10 @@ export function DashboardOverview() {
             {/* Time-to-Hire Analytics */}
             <Card className="p-4">
               <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Activity className="w-4 h-4" />
+                <Activity className="w-4 h-4 shrink-0" />
                 Hiring Pipeline Performance
               </h4>
-              <div className="grid grid-cols-5 gap-4">
+              <div className="responsive-grid">
                 <div className="text-center">
                   <div className="text-xl font-bold text-gray-900">156</div>
                   <div className="text-xs text-gray-600">Applications</div>
@@ -637,5 +649,6 @@ export function DashboardOverview() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>;
+    </div>
+  );
 }
