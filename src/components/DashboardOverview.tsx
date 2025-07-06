@@ -407,35 +407,45 @@ export function DashboardOverview() {
               </div>
             </div>
           </div>
-          <div className="h-64 min-w-0 overflow-hidden">
-            <ChartContainer config={chartConfig}>
-              <LineChart data={activityData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+          <div className="h-80 w-full">
+            <ChartContainer config={chartConfig} className="h-full w-full">
+              <LineChart 
+                data={activityData}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" opacity={0.8} />
                 <XAxis 
                   dataKey="day" 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 12, fill: '#666' }} 
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  tickMargin={10}
                 />
                 <YAxis 
                   axisLine={false} 
                   tickLine={false} 
-                  tick={{ fontSize: 12, fill: '#666' }} 
+                  tick={{ fontSize: 12, fill: '#64748b' }}
+                  tickMargin={10}
                 />
-                <ChartTooltip content={<ChartTooltipContent />} />
+                <ChartTooltip 
+                  content={<ChartTooltipContent />}
+                  cursor={{ stroke: '#e2e8f0', strokeWidth: 1 }}
+                />
                 <Line 
                   type="monotone" 
                   dataKey="applications" 
-                  stroke="var(--color-applications)" 
+                  stroke="hsl(var(--primary))"
                   strokeWidth={3} 
-                  dot={{ r: 4 }} 
+                  dot={{ r: 5, fill: "hsl(var(--primary))", strokeWidth: 2, stroke: "#fff" }}
+                  activeDot={{ r: 7, stroke: "hsl(var(--primary))", strokeWidth: 2, fill: "#fff" }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="interviews" 
-                  stroke="var(--color-interviews)" 
+                  stroke="#f97316"
                   strokeWidth={3} 
-                  dot={{ r: 4 }} 
+                  dot={{ r: 5, fill: "#f97316", strokeWidth: 2, stroke: "#fff" }}
+                  activeDot={{ r: 7, stroke: "#f97316", strokeWidth: 2, fill: "#fff" }}
                 />
               </LineChart>
             </ChartContainer>
