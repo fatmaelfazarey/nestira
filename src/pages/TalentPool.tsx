@@ -128,7 +128,6 @@ const TalentPool = () => {
   const [showExpandedModal, setShowExpandedModal] = useState(false);
   const [expandedCandidate, setExpandedCandidate] = useState(null);
   const [showFindMyMatchModal, setShowFindMyMatchModal] = useState(false);
-  const [showAdvancedFeaturesModal, setShowAdvancedFeaturesModal] = useState(false);
 
   // Filter candidates based on current filters
   const filteredCandidates = useMemo(() => {
@@ -381,7 +380,7 @@ const TalentPool = () => {
                   currentQuery={aiSearchQuery}
                   isSearching={isAiSearching}
                   onFindMyMatch={() => setShowFindMyMatchModal(true)}
-                  onAdvancedFeatures={() => setShowAdvancedFeaturesModal(true)}
+                  onAdvancedFeatures={() => setIsFilterSidebarOpen(true)}
                 />
               </div>
               <div>
@@ -518,12 +517,6 @@ const TalentPool = () => {
         isOpen={showFindMyMatchModal}
         onClose={() => setShowFindMyMatchModal(false)}
         onJobSelected={handleJobSelected}
-      />
-
-      <AdvancedFeaturesModal
-        isOpen={showAdvancedFeaturesModal}
-        onClose={() => setShowAdvancedFeaturesModal(false)}
-        onApplyFilters={handleAdvancedFeatureSelected}
       />
     </div>
   );
