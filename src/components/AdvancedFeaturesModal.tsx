@@ -4,91 +4,66 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Brain, Target, Zap, TrendingUp, Filter, Users, Star } from 'lucide-react';
-
-interface AdvancedFeature {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-  action: string;
-}
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
+import { Settings, Filter, X, Search, MapPin, Briefcase, GraduationCap, Languages, Globe, Users, Star, Calendar, DollarSign } from 'lucide-react';
 
 interface AdvancedFeaturesModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onFeatureSelected: (feature: AdvancedFeature) => void;
+  onApplyFilters: (filters: any) => void;
 }
 
 export const AdvancedFeaturesModal: React.FC<AdvancedFeaturesModalProps> = ({
   isOpen,
   onClose,
-  onFeatureSelected
+  onApplyFilters
 }) => {
-  const [selectedFeature, setSelectedFeature] = useState<AdvancedFeature | null>(null);
+  const [filters, setFilters] = useState({
+    location: '',
+    experienceRange: [0, 20],
+    salaryRange: [0, 200000],
+    skills: '',
+    education: 'all',
+    languages: [],
+    availability: 'all',
+    workMode: 'all',
+    visaStatus: 'all',
+    certifications: '',
+    industryExperience: '',
+    teamSize: 'all',
+    managementExperience: false,
+    remoteWork: false,
+    immediateAvailability: false
+  });
 
-  const advancedFeatures: AdvancedFeature[] = [
-    {
-      id: 'ai-matching',
-      title: 'AI Skill Matching',
-      description: 'Use advanced AI algorithms to match candidates based on skill compatibility and potential',
-      icon: <Brain className="w-5 h-5" />,
-      color: 'bg-blue-500',
-      action: 'Enable AI Matching'
-    },
-    {
-      id: 'predictive-scoring',
-      title: 'Predictive Success Scoring',
-      description: 'Predict candidate success probability based on historical data and performance patterns',
-      icon: <Target className="w-5 h-5" />,
-      color: 'bg-green-500',
-      action: 'Run Predictive Analysis'
-    },
-    {
-      id: 'smart-filtering',
-      title: 'Smart Filtering',
-      description: 'Apply intelligent filters that learn from your hiring patterns and preferences',
-      icon: <Filter className="w-5 h-5" />,
-      color: 'bg-purple-500',
-      action: 'Apply Smart Filters'
-    },
-    {
-      id: 'talent-insights',
-      title: 'Talent Market Insights',
-      description: 'Get real-time insights on talent availability, salary trends, and market competition',
-      icon: <TrendingUp className="w-5 h-5" />,
-      color: 'bg-orange-500',
-      action: 'View Market Insights'
-    },
-    {
-      id: 'batch-operations',
-      title: 'Batch Operations',
-      description: 'Perform bulk actions on multiple candidates simultaneously for efficient processing',
-      icon: <Users className="w-5 h-5" />,
-      color: 'bg-indigo-500',
-      action: 'Start Batch Process'
-    },
-    {
-      id: 'performance-boost',
-      title: 'Performance Boost',
-      description: 'Optimize search performance and enhance candidate discovery with advanced algorithms',
-      icon: <Zap className="w-5 h-5" />,
-      color: 'bg-yellow-500',
-      action: 'Boost Performance'
-    }
-  ];
-
-  const handleFeatureSelect = (feature: AdvancedFeature) => {
-    setSelectedFeature(feature);
+  const handleApplyFilters = () => {
+    onApplyFilters(filters);
+    onClose();
   };
 
-  const handleUseFeature = () => {
-    if (selectedFeature) {
-      onFeatureSelected(selectedFeature);
-      onClose();
-      setSelectedFeature(null);
-    }
+  const handleResetFilters = () => {
+    setFilters({
+      location: '',
+      experienceRange: [0, 20],
+      salaryRange: [0, 200000],
+      skills: '',
+      education: 'all',
+      languages: [],
+      availability: 'all',
+      workMode: 'all',
+      visaStatus: 'all',
+      certifications: '',
+      industryExperience: '',
+      teamSize: 'all',
+      managementExperience: false,
+      remoteWork: false,
+      immediateAvailability: false
+    });
   };
 
   return (
@@ -99,67 +74,250 @@ export const AdvancedFeaturesModal: React.FC<AdvancedFeaturesModalProps> = ({
             <div>
               <DialogTitle className="flex items-center gap-2 text-xl">
                 <Settings className="w-5 h-5 text-purple-500" />
-                Advanced Features
+                Advanced Filters
               </DialogTitle>
-              <p className="text-gray-600">Unlock powerful tools to enhance your talent search</p>
+              <p className="text-gray-600">Fine-tune your candidate search with advanced filtering options</p>
             </div>
             
             <div className="flex gap-3">
+              <Button variant="outline" onClick={handleResetFilters} className="px-4">
+                Reset All
+              </Button>
               <Button variant="outline" onClick={onClose} className="px-4">
                 Cancel
               </Button>
               <Button 
-                onClick={handleUseFeature} 
-                disabled={!selectedFeature} 
+                onClick={handleApplyFilters}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-6"
               >
-                <Star className="w-4 h-4 mr-2" />
-                Use Feature
+                <Filter className="w-4 h-4 mr-2" />
+                Apply Filters
               </Button>
             </div>
           </div>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-4 mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {advancedFeatures.map(feature => (
-              <Card 
-                key={feature.id} 
-                className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
-                  selectedFeature?.id === feature.id 
-                    ? 'border-purple-500 bg-purple-50' 
-                    : 'hover:border-gray-300'
-                }`}
-                onClick={() => handleFeatureSelect(feature)}
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start gap-3">
-                    <div className={`${feature.color} text-white p-2 rounded-lg`}>
-                      {feature.icon}
-                    </div>
-                    <div className="flex-1">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        {feature.title}
-                        {selectedFeature?.id === feature.id && (
-                          <Star className="w-4 h-4 text-purple-500 fill-current" />
-                        )}
-                      </CardTitle>
-                    </div>
+        <div className="flex-1 overflow-y-auto space-y-6 mt-6">
+          {/* Location & Experience */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MapPin className="w-4 h-4" />
+                Location & Experience
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="location">Location</Label>
+                  <Input
+                    id="location"
+                    placeholder="Enter city, country, or region"
+                    value={filters.location}
+                    onChange={(e) => setFilters(prev => ({ ...prev, location: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label>Years of Experience: {filters.experienceRange[0]} - {filters.experienceRange[1]} years</Label>
+                  <Slider
+                    value={filters.experienceRange}
+                    onValueChange={(value) => setFilters(prev => ({ ...prev, experienceRange: value }))}
+                    max={20}
+                    step={1}
+                    className="mt-2"
+                  />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Skills & Education */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <GraduationCap className="w-4 h-4" />
+                Skills & Education
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="skills">Required Skills</Label>
+                  <Input
+                    id="skills"
+                    placeholder="e.g., SAP, Excel, Financial Analysis"
+                    value={filters.skills}
+                    onChange={(e) => setFilters(prev => ({ ...prev, skills: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <Label>Education Level</Label>
+                  <Select value={filters.education} onValueChange={(value) => setFilters(prev => ({ ...prev, education: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Levels</SelectItem>
+                      <SelectItem value="bachelor">Bachelor's Degree</SelectItem>
+                      <SelectItem value="master">Master's Degree</SelectItem>
+                      <SelectItem value="phd">PhD</SelectItem>
+                      <SelectItem value="professional">Professional Certification</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="certifications">Certifications</Label>
+                <Input
+                  id="certifications"
+                  placeholder="e.g., CPA, ACCA, CFA"
+                  value={filters.certifications}
+                  onChange={(e) => setFilters(prev => ({ ...prev, certifications: e.target.value }))}
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Work Preferences */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Briefcase className="w-4 h-4" />
+                Work Preferences
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <Label>Work Mode</Label>
+                  <Select value={filters.workMode} onValueChange={(value) => setFilters(prev => ({ ...prev, workMode: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Modes</SelectItem>
+                      <SelectItem value="remote">Remote</SelectItem>
+                      <SelectItem value="hybrid">Hybrid</SelectItem>
+                      <SelectItem value="onsite">On-site</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Availability</Label>
+                  <Select value={filters.availability} onValueChange={(value) => setFilters(prev => ({ ...prev, availability: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="immediate">Immediate</SelectItem>
+                      <SelectItem value="2weeks">2 Weeks</SelectItem>
+                      <SelectItem value="1month">1 Month</SelectItem>
+                      <SelectItem value="3months">3+ Months</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Visa Status</Label>
+                  <Select value={filters.visaStatus} onValueChange={(value) => setFilters(prev => ({ ...prev, visaStatus: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="citizen">Citizen</SelectItem>
+                      <SelectItem value="permanent">Permanent Resident</SelectItem>
+                      <SelectItem value="work-visa">Work Visa</SelectItem>
+                      <SelectItem value="sponsorship">Need Sponsorship</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Salary & Team */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <DollarSign className="w-4 h-4" />
+                Salary & Leadership
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Salary Range: ${filters.salaryRange[0].toLocaleString()} - ${filters.salaryRange[1].toLocaleString()}</Label>
+                <Slider
+                  value={filters.salaryRange}
+                  onValueChange={(value) => setFilters(prev => ({ ...prev, salaryRange: value }))}
+                  max={200000}
+                  step={5000}
+                  className="mt-2"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Team Size Experience</Label>
+                  <Select value={filters.teamSize} onValueChange={(value) => setFilters(prev => ({ ...prev, teamSize: value }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Sizes</SelectItem>
+                      <SelectItem value="individual">Individual Contributor</SelectItem>
+                      <SelectItem value="small">Small Team (2-5)</SelectItem>
+                      <SelectItem value="medium">Medium Team (6-15)</SelectItem>
+                      <SelectItem value="large">Large Team (15+)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <Label>Management Experience</Label>
+                    <Switch
+                      checked={filters.managementExperience}
+                      onCheckedChange={(checked) => setFilters(prev => ({ ...prev, managementExperience: checked }))}
+                    />
                   </div>
-                </CardHeader>
-                
-                <CardContent className="space-y-3">
-                  <p className="text-sm text-gray-600">{feature.description}</p>
-                  <Badge 
-                    variant="outline" 
-                    className={`${feature.color.replace('bg-', 'text-')} border-current`}
-                  >
-                    {feature.action}
-                  </Badge>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <div className="flex items-center justify-between">
+                    <Label>Remote Work Experience</Label>
+                    <Switch
+                      checked={filters.remoteWork}
+                      onCheckedChange={(checked) => setFilters(prev => ({ ...prev, remoteWork: checked }))}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label>Immediate Availability</Label>
+                    <Switch
+                      checked={filters.immediateAvailability}
+                      onCheckedChange={(checked) => setFilters(prev => ({ ...prev, immediateAvailability: checked }))}
+                    />
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Industry Experience */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Globe className="w-4 h-4" />
+                Industry Experience
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div>
+                <Label htmlFor="industryExperience">Industry Sectors</Label>
+                <Input
+                  id="industryExperience"
+                  placeholder="e.g., Banking, Healthcare, Technology, Manufacturing"
+                  value={filters.industryExperience}
+                  onChange={(e) => setFilters(prev => ({ ...prev, industryExperience: e.target.value }))}
+                />
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </DialogContent>
     </Dialog>

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -266,9 +265,14 @@ const TalentPool = () => {
     // Here you would implement the logic to filter candidates based on the job requirements
   };
 
-  const handleAdvancedFeatureSelected = (feature: any) => {
-    toast.success(`${feature.title} activated!`);
-    // Here you would implement the logic for the selected advanced feature
+  const handleAdvancedFeatureSelected = (filters: any) => {
+    console.log('Advanced filters applied:', filters);
+    // Apply the filters to the current filter state
+    if (filters.location) setLocationFilter(filters.location);
+    if (filters.experienceRange) setExperienceRange(filters.experienceRange);
+    if (filters.skills) setSkillsFilter(filters.skills);
+    // Add more filter applications as needed
+    toast.success('Advanced filters applied!');
   };
 
   // Job titles for filter
@@ -519,7 +523,7 @@ const TalentPool = () => {
       <AdvancedFeaturesModal
         isOpen={showAdvancedFeaturesModal}
         onClose={() => setShowAdvancedFeaturesModal(false)}
-        onFeatureSelected={handleAdvancedFeatureSelected}
+        onApplyFilters={handleAdvancedFeatureSelected}
       />
     </div>
   );
