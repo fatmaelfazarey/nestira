@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -101,6 +102,19 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
 
   if (!candidate) return null;
 
+  // Ensure all array properties have default values
+  const safeCandidate = {
+    ...candidate,
+    industryExperience: candidate.industryExperience || [],
+    financeSubfields: candidate.financeSubfields || [],
+    softwareTools: candidate.softwareTools || [],
+    certifications: candidate.certifications || [],
+    skills: candidate.skills || [],
+    education: candidate.education || [],
+    interviews: candidate.interviews || [],
+    applications: candidate.applications || []
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-0">
@@ -108,27 +122,27 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
               <Avatar className="w-16 h-16">
-                <AvatarImage src={candidate.photo} alt={candidate.name} />
-                <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+                <AvatarImage src={safeCandidate.photo} alt={safeCandidate.name} />
+                <AvatarFallback>{safeCandidate.name.charAt(0)}</AvatarFallback>
               </Avatar>
               <div>
                 <DialogTitle className="text-2xl font-bold flex items-center gap-2">
-                  {candidate.name}
-                  <span>{getCountryFlag(candidate.country)}</span>
+                  {safeCandidate.name}
+                  <span>{getCountryFlag(safeCandidate.country)}</span>
                 </DialogTitle>
-                <p className="text-gray-600">{candidate.title}</p>
+                <p className="text-gray-600">{safeCandidate.title}</p>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="secondary">
                     <MapPin className="w-3 h-3 mr-1" />
-                    {candidate.location}
+                    {safeCandidate.location}
                   </Badge>
                   <Badge variant="secondary">
                     <Briefcase className="w-3 h-3 mr-1" />
-                    {candidate.experience} experience
+                    {safeCandidate.experience} experience
                   </Badge>
                   <Badge variant="secondary">
                     <DollarSign className="w-3 h-3 mr-1" />
-                    {candidate.salaryExpectation}
+                    {safeCandidate.salaryExpectation}
                   </Badge>
                 </div>
               </div>
@@ -137,7 +151,7 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
               <Button 
                 variant="ghost" 
                 size="icon" 
-                onClick={() => onToggleFavorite(candidate.id)}
+                onClick={() => onToggleFavorite(safeCandidate.id)}
               >
                 <Star className={`w-5 h-5 ${isFavorite ? 'fill-yellow-500 text-yellow-500' : 'text-gray-400'}`} />
               </Button>
@@ -170,43 +184,43 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p className="text-sm font-medium text-gray-700">Full Name</p>
-                        <p className="text-sm text-gray-600">{candidate.name}</p>
+                        <p className="text-sm text-gray-600">{safeCandidate.name}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Location</p>
-                        <p className="text-sm text-gray-600">{candidate.location}</p>
+                        <p className="text-sm text-gray-600">{safeCandidate.location}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Email</p>
                         <p className="text-sm text-gray-600">
-                          <a href={`mailto:${candidate.email}`} className="text-blue-500 hover:underline">
-                            {candidate.email}
+                          <a href={`mailto:${safeCandidate.email}`} className="text-blue-500 hover:underline">
+                            {safeCandidate.email}
                           </a>
                         </p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Phone</p>
-                        <p className="text-sm text-gray-600">{candidate.phone}</p>
+                        <p className="text-sm text-gray-600">{safeCandidate.phone}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">LinkedIn</p>
                         <p className="text-sm text-gray-600">
-                          <a href={candidate.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                          <a href={safeCandidate.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
                             View LinkedIn Profile
                           </a>
                         </p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Availability</p>
-                        <p className="text-sm text-gray-600">{candidate.availability}</p>
+                        <p className="text-sm text-gray-600">{safeCandidate.availability}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Preferred Role Type</p>
-                        <p className="text-sm text-gray-600">{candidate.preferredRoleType}</p>
+                        <p className="text-sm text-gray-600">{safeCandidate.preferredRoleType}</p>
                       </div>
                       <div>
                         <p className="text-sm font-medium text-gray-700">Work Authorization</p>
-                        <p className="text-sm text-gray-600">{candidate.workAuthorization}</p>
+                        <p className="text-sm text-gray-600">{safeCandidate.workAuthorization}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -220,55 +234,47 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {candidate.applications.map((app, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div>
-                          <p className="font-medium text-sm">{app.jobTitle}</p>
-                          <p className="text-xs text-gray-500">Applied on {app.dateApplied}</p>
+                    {safeCandidate.applications.length > 0 ? (
+                      safeCandidate.applications.map((app, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div>
+                            <p className="font-medium text-sm">{app.jobTitle}</p>
+                            <p className="text-xs text-gray-500">Applied on {app.dateApplied}</p>
+                          </div>
+                          <div>
+                            {app.status === 'pending' && (
+                              <Badge variant="outline" className="text-xs">
+                                <Clock className="w-3 h-3 mr-1" />
+                                Pending
+                              </Badge>
+                            )}
+                            {app.status === 'reviewed' && (
+                              <Badge variant="secondary" className="text-xs">
+                                <Eye className="w-3 h-3 mr-1" />
+                                Reviewed
+                              </Badge>
+                            )}
+                            {app.status === 'offered' && (
+                              <Badge className="bg-green-100 text-green-600 border-green-200 text-xs">
+                                <CheckCircle className="w-3 h-3 mr-1" />
+                                Offered
+                              </Badge>
+                            )}
+                            {app.status === 'rejected' && (
+                              <Badge variant="destructive" className="text-xs">
+                                <XCircle className="w-3 h-3 mr-1" />
+                                Rejected
+                              </Badge>
+                            )}
+                          </div>
                         </div>
-                        <div>
-                          {app.status === 'pending' && (
-                            <Badge variant="outline" className="text-xs">
-                              <Clock className="w-3 h-3 mr-1" />
-                              Pending
-                            </Badge>
-                          )}
-                          {app.status === 'reviewed' && (
-                            <Badge variant="secondary" className="text-xs">
-                              <Eye className="w-3 h-3 mr-1" />
-                              Reviewed
-                            </Badge>
-                          )}
-                          {app.status === 'offered' && (
-                            <Badge className="bg-green-100 text-green-600 border-green-200 text-xs">
-                              <CheckCircle className="w-3 h-3 mr-1" />
-                              Offered
-                            </Badge>
-                          )}
-                          {app.status === 'rejected' && (
-                            <Badge variant="destructive" className="text-xs">
-                              <XCircle className="w-3 h-3 mr-1" />
-                              Rejected
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-600">No applications on record.</p>
+                    )}
                   </CardContent>
                 </Card>
               </div>
-
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <MessageSquare className="w-5 h-5 text-orange-600" />
-                    Notes
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-gray-600">{candidate.notes || 'No notes available for this candidate.'}</p>
-                </CardContent>
-              </Card>
             </TabsContent>
 
             <TabsContent value="experience" className="space-y-6">
@@ -280,9 +286,9 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {candidate.industryExperience.length > 0 ? (
+                  {safeCandidate.industryExperience.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
-                      {candidate.industryExperience.map((exp, index) => (
+                      {safeCandidate.industryExperience.map((exp, index) => (
                         <Badge key={index} variant="secondary">
                           {exp}
                         </Badge>
@@ -305,9 +311,9 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {candidate.skills.length > 0 ? (
+                    {safeCandidate.skills.length > 0 ? (
                       <div className="flex flex-wrap gap-2">
-                        {candidate.skills.map((skill, index) => (
+                        {safeCandidate.skills.map((skill, index) => (
                           <Badge key={index} variant="secondary">
                             {skill}
                           </Badge>
@@ -327,9 +333,9 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {candidate.education.length > 0 ? (
+                    {safeCandidate.education.length > 0 ? (
                       <div className="space-y-3">
-                        {candidate.education.map((edu, index) => (
+                        {safeCandidate.education.map((edu, index) => (
                           <div key={index} className="p-3 bg-gray-50 rounded-lg">
                             <p className="font-medium text-sm">{edu.degree}</p>
                             <p className="text-xs text-gray-500">{edu.institution}, {edu.graduationYear}</p>
@@ -362,7 +368,7 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                             <FileText className="w-5 h-5 text-red-600" />
                           </div>
                           <div>
-                            <p className="font-medium text-sm">Cover_Letter_Sarah_Johnson.pdf</p>
+                            <p className="font-medium text-sm">Cover_Letter_{safeCandidate.name.replace(' ', '_')}.pdf</p>
                             <p className="text-xs text-gray-500">142 KB • PDF</p>
                           </div>
                         </div>
@@ -400,7 +406,7 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                             <FileText className="w-5 h-5 text-green-600" />
                           </div>
                           <div>
-                            <p className="font-medium text-sm">Sarah_Johnson_Resume_2024.pdf</p>
+                            <p className="font-medium text-sm">{safeCandidate.name.replace(' ', '_')}_Resume_2024.pdf</p>
                             <p className="text-xs text-gray-500">256 KB • PDF</p>
                           </div>
                         </div>
@@ -435,15 +441,15 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <p className="font-medium text-gray-700">Full Name</p>
-                        <p className="text-gray-600">{candidate.name}</p>
+                        <p className="text-gray-600">{safeCandidate.name}</p>
                       </div>
                       <div>
                         <p className="font-medium text-gray-700">Location</p>
-                        <p className="text-gray-600">{candidate.location}</p>
+                        <p className="text-gray-600">{safeCandidate.location}</p>
                       </div>
                       <div>
                         <p className="font-medium text-gray-700">Experience Level</p>
-                        <p className="text-gray-600">{candidate.experience}</p>
+                        <p className="text-gray-600">{safeCandidate.experience}</p>
                       </div>
                       <div>
                         <p className="font-medium text-gray-700">Availability</p>
@@ -470,23 +476,27 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {candidate.certifications.map((cert, index) => (
-                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 bg-orange-100 rounded flex items-center justify-center">
-                            <Award className="w-4 h-4 text-orange-600" />
+                    {safeCandidate.certifications.length > 0 ? (
+                      safeCandidate.certifications.map((cert, index) => (
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div className="w-8 h-8 bg-orange-100 rounded flex items-center justify-center">
+                              <Award className="w-4 h-4 text-orange-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-sm">{cert}</p>
+                              <p className="text-xs text-gray-500">Valid until 2025</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-medium text-sm">{cert}</p>
-                            <p className="text-xs text-gray-500">Valid until 2025</p>
-                          </div>
+                          <Button size="sm" variant="outline" className="text-xs">
+                            <Eye className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
                         </div>
-                        <Button size="sm" variant="outline" className="text-xs">
-                          <Eye className="w-3 h-3 mr-1" />
-                          View
-                        </Button>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-sm text-gray-600">No certifications on file.</p>
+                    )}
                   </CardContent>
                 </Card>
               </div>
