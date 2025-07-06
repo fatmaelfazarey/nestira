@@ -61,82 +61,74 @@ export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
     <Card className="w-full">
       <CardContent className="p-6">
         <div className="space-y-4">
-          {/* Search Options Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            {/* AI Talent Search */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-4 h-4 text-purple-500" />
-                <span className="font-medium text-sm">AI Talent Search</span>
-              </div>
-              
-              <div className="flex gap-2">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-                  <Input
-                    placeholder="Describe your ideal candidate..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyPress={handleKeyPress}
-                    className="pl-10 pr-10"
-                    disabled={isSearching}
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery('')}
-                      className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-                <Button 
-                  onClick={handleSearch}
-                  disabled={!searchQuery.trim() || isSearching}
-                  className="bg-purple-600 hover:bg-purple-700"
-                >
-                  {isSearching ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Search className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
+          {/* AI Talent Search */}
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-4 h-4 text-purple-500" />
+              <span className="font-medium text-sm">AI Talent Search</span>
             </div>
-
-            {/* From Job Post */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-2">
-                <FileText className="w-4 h-4 text-blue-500" />
-                <span className="font-medium text-sm">From Job Post</span>
+            
+            <div className="flex gap-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                <Input
+                  placeholder="Describe your ideal candidate..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  className="pl-10 pr-10"
+                  disabled={isSearching}
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery('')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
               </div>
-              
-              <Button
-                onClick={onFindMyMatch}
-                variant="outline"
-                className="w-full justify-start text-left h-10 border-2 border-dashed hover:border-blue-500 hover:bg-blue-50"
+              <Button 
+                onClick={handleSearch}
+                disabled={!searchQuery.trim() || isSearching}
+                className="bg-purple-600 hover:bg-purple-700"
               >
-                <Target className="w-4 h-4 mr-2 text-blue-500" />
-                Match from Job Description
+                {isSearching ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Search className="w-4 h-4" />
+                )}
               </Button>
             </div>
+          </div>
+
+          {/* Additional Search Options */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {/* From Job Post */}
+            <Button
+              onClick={onFindMyMatch}
+              variant="outline"
+              className="justify-start text-left h-12 border-2 border-dashed hover:border-blue-500 hover:bg-blue-50"
+            >
+              <FileText className="w-4 h-4 mr-2 text-blue-500" />
+              <div className="text-left">
+                <div className="font-medium text-sm">From Job Post</div>
+                <div className="text-xs text-gray-500">Match from Job Description</div>
+              </div>
+            </Button>
 
             {/* Advanced Features */}
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-2">
-                <Settings className="w-4 h-4 text-green-500" />
-                <span className="font-medium text-sm">Advanced Features</span>
+            <Button
+              onClick={onAdvancedFeatures}
+              variant="outline"
+              className="justify-start text-left h-12 border-2 border-dashed hover:border-green-500 hover:bg-green-50"
+            >
+              <Settings className="w-4 h-4 mr-2 text-green-500" />
+              <div className="text-left">
+                <div className="font-medium text-sm">Advanced Features</div>
+                <div className="text-xs text-gray-500">Open Advanced Filters</div>
               </div>
-              
-              <Button
-                onClick={onAdvancedFeatures}
-                variant="outline"
-                className="w-full justify-start text-left h-10 border-2 border-dashed hover:border-green-500 hover:bg-green-50"
-              >
-                <Settings className="w-4 h-4 mr-2 text-green-500" />
-                Open Advanced Filters
-              </Button>
-            </div>
+            </Button>
           </div>
 
           {/* Current Search Display */}
