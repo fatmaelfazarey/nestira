@@ -1,3 +1,4 @@
+
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -8,10 +9,11 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, ChevronRight, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock, Unlock, UserPlus } from 'lucide-react';
+import { MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, ChevronRight, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock, Unlock, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { AssessmentAnswersModal } from './AssessmentAnswersModal';
+import { AddToFolderButton } from './AddToFolderButton';
 
 interface Candidate {
   id: number;
@@ -329,9 +331,11 @@ export function ExpandedCandidateModal({
               <Badge variant="secondary" className="bg-green-100 text-green-800">Verified</Badge>
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="ghost" size="sm" onClick={onToggleFavorite} className="text-yellow-500 hover:text-yellow-600">
-                <Star className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
-              </Button>
+              <AddToFolderButton 
+                candidate={candidate}
+                variant="outline"
+                size="sm"
+              />
               {!isUnlocked && (
                 <Button 
                   size="sm" 
