@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, MapPin, Briefcase, Calendar, DollarSign, Grid2X2, LayoutList, Download, Mail, Phone, CheckCircle } from 'lucide-react';
+import { Star, MapPin, Briefcase, Calendar, DollarSign, Grid2X2, LayoutList, Download, Mail, Phone, CheckCircle, Folder, Plus, Settings } from 'lucide-react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { getCountryFlag, formatDate } from '@/utils/talentPoolUtils';
 
