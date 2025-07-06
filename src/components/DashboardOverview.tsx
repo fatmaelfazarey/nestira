@@ -205,6 +205,14 @@ const planUsageData = [{
   icon: Mail,
   color: "text-indigo-600",
   bgColor: "bg-indigo-50"
+}, {
+  title: "Profile Views",
+  current: recentProfileViews.length,
+  total: 50,
+  icon: Eye,
+  color: "text-indigo-600",
+  bgColor: "bg-indigo-50",
+  clickAction: "profile-views"
 }];
 
 export function DashboardOverview() {
@@ -218,6 +226,12 @@ export function DashboardOverview() {
     console.log(`Navigating to ${action}`);
     // In a real app, this would use router navigation
     // For now, we'll just log the action
+  };
+
+  const handlePlanUsageClick = (action?: string) => {
+    if (action === 'profile-views') {
+      setShowProfileViewsModal(true);
+    }
   };
 
   return <div className="space-y-6">
@@ -245,24 +259,36 @@ export function DashboardOverview() {
           <h2 className="text-lg font-semibold text-gray-900">Plan Usage</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {planUsageData.map(item => {
-          const percentage = Math.round(item.current / item.total * 100);
-          return <div key={item.title} className="p-4 rounded-lg border border-gray-200 bg-white">
+          const percentage = item.clickAction === 'profile-views' ? 100 : Math.round(item.current / item.total * 100);
+          return <div 
+            key={item.title} 
+            className={`p-4 rounded-lg border border-gray-200 bg-white ${item.clickAction ? 'cursor-pointer hover:shadow-md transition-all duration-200' : ''}`}
+            onClick={() => item.clickAction && handlePlanUsageClick(item.clickAction)}
+          >
                 <div className="flex items-center justify-between mb-3">
                   <item.icon className={`w-5 h-5 ${item.color}`} />
-                  <span className="text-sm font-medium text-gray-500">{percentage}%</span>
+                  {item.clickAction !== 'profile-views' && (
+                    <span className="text-sm font-medium text-gray-500">{percentage}%</span>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <h3 className="text-sm font-medium text-gray-700">{item.title}</h3>
-                  <p className="text-lg font-bold text-gray-900">
-                    {item.current} / {item.total}
-                  </p>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-blue-500'}`} style={{
-                  width: `${percentage}%`
-                }}></div>
-                  </div>
+                  {item.clickAction === 'profile-views' ? (
+                    <p className="text-lg font-bold text-gray-900">{item.current}</p>
+                  ) : (
+                    <p className="text-lg font-bold text-gray-900">
+                      {item.current} / {item.total}
+                    </p>
+                  )}
+                  {item.clickAction !== 'profile-views' && (
+                    <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-blue-500'}`} style={{
+                    width: `${percentage}%`
+                  }}></div>
+                    </div>
+                  )}
                 </div>
               </div>;
         })}
@@ -270,8 +296,7 @@ export function DashboardOverview() {
       </Card>
 
       {/* KPI Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {/* KPI Metrics - Takes 5 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
         {kpiData.map((kpi, index) => (
           <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
             <div className="flex flex-col items-center text-center space-y-3">
@@ -286,20 +311,6 @@ export function DashboardOverview() {
             </div>
           </Card>
         ))}
-
-        {/* Recent Profile Views - Takes 1 column */}
-        <Card className="p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 bg-indigo-50 border-2" onClick={() => setShowProfileViewsModal(true)}>
-          <div className="flex flex-col items-center text-center space-y-3">
-            <div className="p-3 rounded-lg bg-white/70">
-              <Eye className="w-6 h-6 text-indigo-600" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-2xl font-bold text-indigo-600">{recentProfileViews.length}</h3>
-              <p className="text-sm font-semibold text-indigo-600 opacity-90">Profile Views</p>
-              <p className="text-xs text-indigo-600 opacity-70">Click to view</p>
-            </div>
-          </div>
-        </Card>
       </div>
 
       {/* Charts and Quick Actions Section */}
