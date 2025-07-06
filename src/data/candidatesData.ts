@@ -70,3 +70,6 @@ export const candidates = [
     salaryExpectation: "180,000 - 220,000 SAR"
   }
 ];
+
+// Also export as candidatesData for backward compatibility
+export const candidatesData = candidates;

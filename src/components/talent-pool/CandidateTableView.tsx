@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -6,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, Unlock, User } from 'lucide-react';
+import { Star, Unlock, User, Eye, UserPlus } from 'lucide-react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { formatBlurredName, getCountryFlag } from '@/utils/talentPoolUtils';
 
@@ -18,6 +17,8 @@ interface CandidateTableViewProps {
   unlockedCandidates: Set<number>;
   onToggleFavorite: (id: number) => void;
   onUnlock: (candidate: any) => void;
+  onViewProfile?: (candidate: any) => void;
+  onInviteToApply?: (candidate: any) => void;
 }
 
 export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
@@ -27,11 +28,20 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
   favorites,
   unlockedCandidates,
   onToggleFavorite,
-  onUnlock
+  onUnlock,
+  onViewProfile,
+  onInviteToApply
 }) => {
-  const handleShowProfile = (candidate: any) => {
-    // This will be handled by the parent component through the existing expanded modal logic
-    onUnlock(candidate);
+  const handleViewProfile = (candidate: any) => {
+    if (onViewProfile) {
+      onViewProfile(candidate);
+    }
+  };
+
+  const handleInviteToApply = (candidate: any) => {
+    if (onInviteToApply) {
+      onInviteToApply(candidate);
+    }
   };
 
   return (
@@ -53,15 +63,15 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                   <TableHead className="min-w-[120px]">Tools</TableHead>
                   <TableHead className="min-w-[120px]">Certifications</TableHead>
                   <TableHead className="min-w-[120px]">Salary</TableHead>
-                  <TableHead className="min-w-[100px]">Actions</TableHead>
+                  <TableHead className="min-w-[150px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {sortedCandidates.map(candidate => {
                   const isUnlocked = unlockedCandidates.has(candidate.id);
-                  const shouldBlurProfile = !isUnlocked; // Profile only unblurs when unlocked
-                  const shouldBlurTags = !isUnlocked; // Tags only unblur when unlocked
-                  const shouldShowScore = (isRevealed && scoreVisibility.showScores) || isUnlocked; // Score shows after matching method OR when unlocked
+                  const shouldBlurProfile = !isUnlocked;
+                  const shouldBlurTags = !isUnlocked;
+                  const shouldShowScore = (isRevealed && scoreVisibility.showScores) || isUnlocked;
                   
                   return (
                     <TableRow key={candidate.id}>
@@ -119,6 +129,7 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[100px]">
                         <span className="text-xs text-gray-500">Last active: 2 days ago</span>
                       </TableCell>
+                      
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.industryExperience.slice(0, 2).map((industry: string) => (
@@ -212,8 +223,9 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                         </div>
                       </TableCell>
                       <TableCell className="min-w-[120px] text-sm">{candidate.salaryExpectation}</TableCell>
-                      <TableCell className="min-w-[100px]">
-                        <div className="flex gap-2">
+                      
+                      <TableCell className="min-w-[150px]">
+                        <div className="flex gap-1">
                           <Button 
                             variant="ghost" 
                             size="sm" 
@@ -222,22 +234,34 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                           >
                             <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
                           </Button>
+                          
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="text-xs px-2"
+                            onClick={() => handleViewProfile(candidate)}
+                          >
+                            <Eye className="w-3 h-3 mr-1" />
+                            View
+                          </Button>
+                          
                           {!isUnlocked ? (
                             <Button 
                               size="sm" 
-                              className="bg-accent hover:bg-accent/90 transition-all ease-in-out duration-300" 
+                              className="bg-accent hover:bg-accent/90 text-xs px-2" 
                               onClick={() => onUnlock(candidate)}
                             >
-                              <Unlock className="w-4 h-4" />
+                              <Unlock className="w-3 h-3 mr-1" />
+                              Unlock
                             </Button>
                           ) : (
                             <Button 
-                              variant="ghost" 
                               size="sm" 
-                              className="transition-all ease-in-out duration-300" 
-                              onClick={() => handleShowProfile(candidate)}
+                              className="bg-green-600 hover:bg-green-700 text-white text-xs px-2"
+                              onClick={() => handleInviteToApply(candidate)}
                             >
-                              <User className="w-4 h-4" />
+                              <UserPlus className="w-3 h-3 mr-1" />
+                              Invite
                             </Button>
                           )}
                         </div>

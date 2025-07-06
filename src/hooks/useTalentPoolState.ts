@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { candidates } from '@/data/candidatesData';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
@@ -20,6 +21,10 @@ export const useTalentPoolState = () => {
   const [unlockedCandidates, setUnlockedCandidates] = useState<Set<number>>(new Set<number>());
   const [isFindMyMatchOpen, setIsFindMyMatchOpen] = useState(false);
   const [matchedJobPost, setMatchedJobPost] = useState<any>(null);
+
+  // Add missing view mode state
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+  const [showCandidateModal, setShowCandidateModal] = useState(false);
 
   // Reveal logic state
   const [isRevealed, setIsRevealed] = useState(false);
@@ -53,6 +58,34 @@ export const useTalentPoolState = () => {
   const [cvCompleteness, setCvCompleteness] = useState('all');
   const [academicExcellence, setAcademicExcellence] = useState(false);
   const [selectedScreeningTags, setSelectedScreeningTags] = useState<string[]>([]);
+
+  // Add unified filters object
+  const filters = {
+    location: locationFilter === 'all' ? [] : [locationFilter],
+    experience: skillsFilter === 'all' ? [] : [skillsFilter],
+    industry: selectedIndustries,
+    skills: [...selectedSubfields, ...selectedSoftware, ...selectedCertifications],
+    salaryRange: scoreRange.length === 2 ? scoreRange : []
+  };
+
+  const setFilters = (newFilters: any) => {
+    if (newFilters.location) setLocationFilter(newFilters.location.length > 0 ? newFilters.location[0] : 'all');
+    if (newFilters.experience) setSkillsFilter(newFilters.experience.length > 0 ? newFilters.experience[0] : 'all');
+    if (newFilters.industry) setSelectedIndustries(newFilters.industry);
+    if (newFilters.skills) {
+      // Split skills into different categories - this is a simplified approach
+      setSelectedSubfields(newFilters.skills.filter((skill: string) => 
+        ['Financial Planning', 'Budget Management', 'Cost Analysis', 'Risk Assessment', 'Financial Modeling', 'Data Analysis', 'Management Accounting', 'IFRS Compliance', 'Team Leadership'].includes(skill)
+      ));
+      setSelectedSoftware(newFilters.skills.filter((skill: string) => 
+        ['SAP', 'Oracle', 'QuickBooks', 'Tableau', 'Power BI', 'SQL Server', 'Python', 'R', 'Microsoft Dynamics', 'Excel Advanced'].includes(skill)
+      ));
+      setSelectedCertifications(newFilters.skills.filter((skill: string) => 
+        ['CPA', 'CFA Level 2', 'FRM', 'PMP', 'ACCA', 'IFRS Certificate'].includes(skill)
+      ));
+    }
+    if (newFilters.salaryRange) setScoreRange(newFilters.salaryRange);
+  };
 
   // Check if any filters are applied
   const hasActiveFilters = () => {
@@ -225,6 +258,11 @@ export const useTalentPoolState = () => {
     cvCompleteness, setCvCompleteness,
     academicExcellence, setAcademicExcellence,
     selectedScreeningTags, setSelectedScreeningTags,
+    
+    // Add missing properties
+    viewMode, setViewMode,
+    showCandidateModal, setShowCandidateModal,
+    filters, setFilters,
     
     // Helper functions
     hasActiveFilters,
