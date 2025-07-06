@@ -418,16 +418,9 @@ export function ExpandedCandidateModal({
                           </div>
                         </>
                       ) : (
-                        <>
-                          <div className="flex items-center justify-center gap-2 text-sm">
-                            <Mail className="w-4 h-4 text-gray-500" />
-                            <span className="text-gray-400">***@*****.com</span>
-                          </div>
-                          <div className="flex items-center justify-center gap-2 text-sm">
-                            <Phone className="w-4 h-4 text-gray-500" />
-                            <span className="text-gray-400">+*** *** ****</span>
-                          </div>
-                        </>
+                        <div className="text-center py-2">
+                          <p className="text-sm text-gray-500">Unlock to show contact info</p>
+                        </div>
                       )}
                     </div>
                   </div>
