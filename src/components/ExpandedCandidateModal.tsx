@@ -28,7 +28,9 @@ import {
   Lock,
   Download,
   MessageSquare,
-  FileText
+  FileText,
+  Brain,
+  Heart
 } from 'lucide-react';
 import { getCountryFlag } from '@/utils/talentPoolUtils';
 import { CircularProgress } from '@/components/ui/circular-progress';
@@ -63,6 +65,15 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
     problemSolving: 90,
     attention: 84,
     communication: 87
+  };
+
+  const behavioralAssessment = {
+    culturalFit: 85,
+    teamwork: 92,
+    leadership: 78,
+    adaptability: 88,
+    workEthic: 94,
+    stressManagement: 82
   };
 
   const LockedSection = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
@@ -177,10 +188,11 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
           </div>
 
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="experience">Experience</TabsTrigger>
               <TabsTrigger value="assessment">Assessment Results</TabsTrigger>
+              <TabsTrigger value="behavioral">Behavioral & Cultural</TabsTrigger>
               <TabsTrigger value="documents">Documents</TabsTrigger>
             </TabsList>
 
@@ -253,6 +265,57 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                 </Card>
               </div>
 
+              {/* Education & Experience Section - Now in Overview */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Education */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <GraduationCap className="w-5 h-5" />
+                      Education
+                    </h3>
+                    <div className="space-y-3">
+                      <div>
+                        <h4 className="font-medium">MBA in Finance</h4>
+                        <p className="text-gray-600">Harvard Business School • 2018</p>
+                      </div>
+                      <div>
+                        <h4 className="font-medium">Bachelor of Accounting</h4>
+                        <p className="text-gray-600">University of California • 2016</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Years of Experience Breakdown */}
+                <Card>
+                  <CardContent className="p-6">
+                    <h3 className="font-semibold mb-4 flex items-center gap-2">
+                      <Calendar className="w-5 h-5" />
+                      Experience Breakdown
+                    </h3>
+                    <div className="space-y-2">
+                      <div className="flex justify-between">
+                        <span>Total Experience</span>
+                        <span className="font-medium">{candidate.yearsOfExperience} years</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Financial Analysis</span>
+                        <span className="font-medium">5 years</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Team Leadership</span>
+                        <span className="font-medium">3 years</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Budget Management</span>
+                        <span className="font-medium">4 years</span>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
               {/* Professional Summary */}
               <Card>
                 <CardContent className="p-6">
@@ -320,7 +383,7 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
 
             <TabsContent value="assessment" className="space-y-6">
               {/* Assessment Results - Locked */}
-              <LockedSection title="Assessment Results" icon={TrendingUp}>
+              <LockedSection title="Technical Assessment Results" icon={TrendingUp}>
                 <div className="space-y-6">
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="text-center p-4 bg-green-50 rounded-lg">
@@ -360,15 +423,7 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                   </Button>
                   <Button variant="outline" className="justify-start text-left h-auto py-3 px-4">
                     <Download className="w-5 h-5 mr-3" />
-                    <span>Download CV</span>
-                  </Button>
-                  <Button variant="outline" className="justify-start text-left h-auto py-3 px-4">
-                    <Download className="w-5 h-5 mr-3" />
-                    <span>Download Cover Letter</span>
-                  </Button>
-                  <Button variant="outline" className="justify-start text-left h-auto py-3 px-4">
-                    <User className="w-5 h-5 mr-3" />
-                    <span>Download Profile</span>
+                    <span>Download Assessment Report</span>
                   </Button>
                   <Button variant="outline" className="justify-start text-left h-auto py-3 px-4">
                     <MessageSquare className="w-5 h-5 mr-3" />
@@ -382,6 +437,69 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
               </LockedSection>
             </TabsContent>
 
+            <TabsContent value="behavioral" className="space-y-6">
+              {/* Behavioral & Cultural Assessment - Locked */}
+              <LockedSection title="Behavioral & Cultural Assessment" icon={Brain}>
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">{behavioralAssessment.culturalFit}%</div>
+                      <div className="text-sm text-gray-600">Cultural Fit</div>
+                    </div>
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">{behavioralAssessment.teamwork}%</div>
+                      <div className="text-sm text-gray-600">Teamwork</div>
+                    </div>
+                    <div className="text-center p-4 bg-purple-50 rounded-lg">
+                      <div className="text-2xl font-bold text-purple-600">{behavioralAssessment.leadership}%</div>
+                      <div className="text-sm text-gray-600">Leadership</div>
+                    </div>
+                    <div className="text-center p-4 bg-orange-50 rounded-lg">
+                      <div className="text-2xl font-bold text-orange-600">{behavioralAssessment.adaptability}%</div>
+                      <div className="text-sm text-gray-600">Adaptability</div>
+                    </div>
+                    <div className="text-center p-4 bg-pink-50 rounded-lg">
+                      <div className="text-2xl font-bold text-pink-600">{behavioralAssessment.workEthic}%</div>
+                      <div className="text-sm text-gray-600">Work Ethic</div>
+                    </div>
+                    <div className="text-center p-4 bg-indigo-50 rounded-lg">
+                      <div className="text-2xl font-bold text-indigo-600">{behavioralAssessment.stressManagement}%</div>
+                      <div className="text-sm text-gray-600">Stress Management</div>
+                    </div>
+                  </div>
+
+                  <div className="mt-6">
+                    <h4 className="font-semibold mb-3">Cultural Assessment Summary</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-gray-700">
+                        This candidate demonstrates strong alignment with collaborative work environments and shows excellent 
+                        adaptability to change. Their work ethic scores are particularly high, indicating reliability and 
+                        dedication. Leadership potential is moderate, suggesting they work well in both follower and leader roles.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </LockedSection>
+
+              {/* Behavioral Actions - Locked */}
+              <LockedSection title="Behavioral Assessment Actions" icon={Heart}>
+                <div className="grid grid-cols-1 gap-3">
+                  <Button className="bg-purple-500 hover:bg-purple-600 text-white justify-start text-left h-auto py-3 px-4">
+                    <Brain className="w-5 h-5 mr-3" />
+                    <span>Assign Behavioral Assessment</span>
+                  </Button>
+                  <Button variant="outline" className="justify-start text-left h-auto py-3 px-4">
+                    <Download className="w-5 h-5 mr-3" />
+                    <span>Download Behavioral Report</span>
+                  </Button>
+                  <Button variant="outline" className="justify-start text-left h-auto py-3 px-4">
+                    <Heart className="w-5 h-5 mr-3" />
+                    <span>Schedule Culture Fit Interview</span>
+                  </Button>
+                </div>
+              </LockedSection>
+            </TabsContent>
+
             <TabsContent value="documents" className="space-y-6">
               {/* Documents - Locked */}
               <LockedSection title="Documents & Files" icon={FileText}>
@@ -390,7 +508,7 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     <div className="flex items-center gap-3">
                       <FileText className="w-6 h-6 text-blue-600" />
                       <div>
-                        <div className="font-medium">Resume_JohnDoe_2024.pdf</div>
+                        <div className="font-medium">CV - Resume_JohnDoe_2024.pdf</div>
                         <div className="text-sm text-gray-500">Updated 2 weeks ago • 2.1 MB</div>
                       </div>
                     </div>
@@ -403,7 +521,7 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                     <div className="flex items-center gap-3">
                       <FileText className="w-6 h-6 text-green-600" />
                       <div>
-                        <div className="font-medium">CoverLetter_JohnDoe.pdf</div>
+                        <div className="font-medium">Cover Letter - CoverLetter_JohnDoe.pdf</div>
                         <div className="text-sm text-gray-500">Updated 2 weeks ago • 1.5 MB</div>
                       </div>
                     </div>
@@ -414,7 +532,20 @@ export const ExpandedCandidateModal: React.FC<ExpandedCandidateModalProps> = ({
                   </div>
                   <div className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center gap-3">
-                      <Award className="w-6 h-6 text-purple-600" />
+                      <User className="w-6 h-6 text-purple-600" />
+                      <div>
+                        <div className="font-medium">Profile - Complete_Profile_JohnDoe.pdf</div>
+                        <div className="text-sm text-gray-500">Generated today • 3.2 MB</div>
+                      </div>
+                    </div>
+                    <Button size="sm" variant="outline">
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                  <div className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Award className="w-6 h-6 text-orange-600" />
                       <div>
                         <div className="font-medium">CPA_Certificate.pdf</div>
                         <div className="text-sm text-gray-500">Verified • 1.2 MB</div>
