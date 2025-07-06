@@ -3,10 +3,10 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CandidateModalHeader } from '@/components/candidate-modal/CandidateModalHeader';
+import { CandidateSidebar } from '@/components/candidate-modal/CandidateSidebar';
 import { CandidateOverviewTab } from '@/components/candidate-modal/CandidateOverviewTab';
 import { CandidateAssessmentsTab } from '@/components/candidate-modal/CandidateAssessmentsTab';
 import { CandidateBehavioralTab } from '@/components/candidate-modal/CandidateBehavioralTab';
-import { CandidateDocumentsTab } from '@/components/candidate-modal/CandidateDocumentsTab';
 import { AssessmentAnswersModal } from '@/components/AssessmentAnswersModal';
 
 interface CandidatePreviewModalProps {
@@ -47,50 +47,60 @@ export const CandidatePreviewModal: React.FC<CandidatePreviewModalProps> = ({
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto p-0">
           <CandidateModalHeader
+            candidate={candidate}
             onUnlock={handleUnlock}
             onInviteToApply={handleInviteToApply}
             onClose={onClose}
+            isUnlocked={isUnlocked}
           />
 
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="assessments">Assessment Results</TabsTrigger>
-              <TabsTrigger value="behavioral">Behavioral & Culture Fit</TabsTrigger>
-              <TabsTrigger value="documents">Documents</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="overview" className="space-y-6">
-              <CandidateOverviewTab
+          <div className="flex">
+            {/* Left Sidebar */}
+            <div className="w-80 bg-gray-50 p-6 space-y-6">
+              <CandidateSidebar
                 candidate={candidate}
                 isUnlocked={isUnlocked}
               />
-            </TabsContent>
+            </div>
 
-            <TabsContent value="assessments">
-              <CandidateAssessmentsTab
-                isUnlocked={isUnlocked}
-                onUnlock={handleUnlock}
-                onViewAssessment={handleViewAssessment}
-              />
-            </TabsContent>
+            {/* Main Content */}
+            <div className="flex-1 p-6">
+              <Tabs defaultValue="overview" className="space-y-6">
+                <TabsList className="grid w-full grid-cols-3">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="behavioral" className="flex items-center gap-2">
+                    <span className="w-2 h-2 bg-orange-500 rounded-full"></span>
+                    Behavioral & Culture Fit
+                  </TabsTrigger>
+                  <TabsTrigger value="assessments">Assessment Results</TabsTrigger>
+                </TabsList>
 
-            <TabsContent value="behavioral">
-              <CandidateBehavioralTab
-                isUnlocked={isUnlocked}
-                onUnlock={handleUnlock}
-              />
-            </TabsContent>
+                <TabsContent value="overview" className="space-y-6">
+                  <CandidateOverviewTab
+                    candidate={candidate}
+                    isUnlocked={isUnlocked}
+                  />
+                </TabsContent>
 
-            <TabsContent value="documents">
-              <CandidateDocumentsTab
-                isUnlocked={isUnlocked}
-                onUnlock={handleUnlock}
-              />
-            </TabsContent>
-          </Tabs>
+                <TabsContent value="assessments">
+                  <CandidateAssessmentsTab
+                    isUnlocked={isUnlocked}
+                    onUnlock={handleUnlock}
+                    onViewAssessment={handleViewAssessment}
+                  />
+                </TabsContent>
+
+                <TabsContent value="behavioral">
+                  <CandidateBehavioralTab
+                    isUnlocked={isUnlocked}
+                    onUnlock={handleUnlock}
+                  />
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
