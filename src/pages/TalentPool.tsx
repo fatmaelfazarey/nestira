@@ -335,25 +335,6 @@ const TalentPool = () => {
                       </Badge>
                     )}
                   </Button>
-
-                  <Button
-                    variant={isRevealed ? "default" : "outline"}
-                    onClick={handleRevealScores}
-                    disabled={isRevealed}
-                    className={isRevealed ? "bg-green-600 hover:bg-green-700" : ""}
-                  >
-                    {isRevealed ? (
-                      <>
-                        <CheckCircle className="w-4 h-4 mr-2" />
-                        Scores Revealed
-                      </>
-                    ) : (
-                      <>
-                        <Eye className="w-4 h-4 mr-2" />
-                        Reveal Match Scores
-                      </>
-                    )}
-                  </Button>
                   
                   <div className="flex bg-gray-100 rounded-lg p-1">
                     <Button
