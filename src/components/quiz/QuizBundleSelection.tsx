@@ -10,6 +10,7 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
+  DragOverEvent,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
@@ -226,6 +227,85 @@ function SortableQuizItem({
   );
 }
 
+function DraggableAvailableQuiz({ 
+  quiz, 
+  onSelect, 
+  onPreview 
+}: {
+  quiz: BundleQuiz;
+  onSelect: () => void;
+  onPreview: () => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: `available-${quiz.id}` });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style}>
+      <Card className="bg-blue-50 border border-blue-200 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing">
+        <CardContent className="p-4">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-3" {...attributes} {...listeners}>
+              <GripVertical className="w-4 h-4 text-gray-400" />
+              <span className="text-2xl">{quiz.icon}</span>
+              <div>
+                <h4 className="font-semibold text-gray-900">{quiz.title}</h4>
+                <p className="text-sm text-gray-600">{quiz.description}</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onPreview();
+                }}
+                className="h-8 w-8 p-0 hover:bg-blue-100"
+              >
+                <Eye className="w-4 h-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect();
+                }}
+                className="h-8 w-8 p-0 hover:bg-green-100"
+              >
+                <Plus className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <div className="flex flex-wrap gap-1">
+              {quiz.tags.map((tag) => (
+                <Badge key={tag} variant="outline" className="text-xs">
+                  {tag}
+                </Badge>
+              ))}
+            </div>
+            <span className="text-sm font-medium text-gray-700">{quiz.timeEstimate}</span>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: QuizBundleSelectionProps) {
   const [availableQuizzes, setAvailableQuizzes] = useState<BundleQuiz[]>(suggestedBundle);
   const [selectedQuizzes, setSelectedQuizzes] = useState<BundleQuiz[]>([]);
@@ -289,14 +369,38 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
     setActiveId(event.active.id as string);
   };
 
+  const handleDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    
+    if (!over) return;
+    
+    const activeId = active.id as string;
+    const overId = over.id as string;
+    
+    // Handle dragging from available to selected
+    if (activeId.startsWith('available-') && overId === 'quiz-bundle-droppable') {
+      const quizId = activeId.replace('available-', '');
+      const quiz = availableQuizzes.find(q => q.id === quizId);
+      if (quiz) {
+        setSelectedQuizzes(prev => [...prev, quiz]);
+        setAvailableQuizzes(prev => prev.filter(q => q.id !== quizId));
+        toast.success(`${quiz.title} added to your quiz bundle`);
+      }
+    }
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    if (active.id !== over?.id) {
+    // Handle reordering within selected quizzes
+    if (active.id !== over?.id && !active.id.toString().startsWith('available-')) {
       const oldIndex = selectedQuizzes.findIndex((item) => item.id === active.id);
       const newIndex = selectedQuizzes.findIndex((item) => item.id === over?.id);
-      const reorderedQuizzes = arrayMove(selectedQuizzes, oldIndex, newIndex);
-      setSelectedQuizzes(reorderedQuizzes);
+      
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const reorderedQuizzes = arrayMove(selectedQuizzes, oldIndex, newIndex);
+        setSelectedQuizzes(reorderedQuizzes);
+      }
     }
 
     setActiveId(null);
@@ -323,90 +427,58 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Available Quiz Templates */}
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-gray-800">Available Quiz Templates</h3>
-          <div className="space-y-3">
-            {availableQuizzes.map((quiz) => (
-              <Card key={quiz.id} className="bg-blue-50 border border-blue-200 hover:shadow-md transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <span className="text-2xl">{quiz.icon}</span>
-                      <div>
-                        <h4 className="font-semibold text-gray-900">{quiz.title}</h4>
-                        <p className="text-sm text-gray-600">{quiz.description}</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-4">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePreviewQuiz(quiz);
-                        }}
-                        className="h-8 w-8 p-0 hover:bg-blue-100"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleSelectQuiz(quiz);
-                        }}
-                        className="h-8 w-8 p-0 hover:bg-green-100"
-                      >
-                        <Plus className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-wrap gap-1">
-                      {quiz.tags.map((tag) => (
-                        <Badge key={tag} variant="outline" className="text-xs">
-                          {tag}
-                        </Badge>
-                      ))}
-                    </div>
-                    <span className="text-sm font-medium text-gray-700">{quiz.timeEstimate}</span>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Your Quiz Bundle */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold text-gray-800">Your Quiz Bundle</h3>
-            <div className="text-sm text-gray-600">
-              {selectedQuizzes.length} quizzes • ~{selectedTotalTime} min
-            </div>
-          </div>
-          
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-          >
-            <div className="space-y-3 min-h-[400px]">
-              {selectedQuizzes.length === 0 ? (
-                <Card className="border-2 border-dashed border-gray-300 bg-gray-50 h-full flex items-center justify-center">
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Available Quiz Templates */}
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold text-gray-800">Available Quiz Templates</h3>
+            <div className="space-y-3">
+              <SortableContext items={availableQuizzes.map(q => `available-${q.id}`)} strategy={verticalListSortingStrategy}>
+                {availableQuizzes.map((quiz) => (
+                  <DraggableAvailableQuiz
+                    key={quiz.id}
+                    quiz={quiz}
+                    onSelect={() => handleSelectQuiz(quiz)}
+                    onPreview={() => handlePreviewQuiz(quiz)}
+                  />
+                ))}
+              </SortableContext>
+              {availableQuizzes.length === 0 && (
+                <Card className="border-2 border-dashed border-gray-300 bg-gray-50">
                   <CardContent className="p-8 text-center">
-                    <div className="text-gray-400 mb-4">
-                      <Plus className="w-12 h-12 mx-auto mb-2" />
-                      <p>No quizzes selected yet</p>
-                      <p className="text-sm">Add templates from the left or create custom quizzes</p>
+                    <div className="text-gray-400">
+                      <p>All templates have been added to your bundle</p>
                     </div>
                   </CardContent>
                 </Card>
+              )}
+            </div>
+          </div>
+
+          {/* Your Quiz Bundle */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-gray-800">Your Quiz Bundle</h3>
+              <div className="text-sm text-gray-600">
+                {selectedQuizzes.length} quizzes • ~{selectedTotalTime} min
+              </div>
+            </div>
+            
+            <div id="quiz-bundle-droppable" className="space-y-3 min-h-[400px] p-4 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50/50">
+              {selectedQuizzes.length === 0 ? (
+                <div className="h-full flex items-center justify-center">
+                  <div className="text-center text-gray-400">
+                    <Plus className="w-12 h-12 mx-auto mb-2" />
+                    <p className="font-medium">Drop quiz templates here</p>
+                    <p className="text-sm">Or use the + button to add them</p>
+                  </div>
+                </div>
               ) : (
                 <SortableContext items={selectedQuizzes.map(q => q.id)} strategy={verticalListSortingStrategy}>
                   {selectedQuizzes.map((quiz) => (
@@ -436,35 +508,38 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
               </Card>
             </div>
 
-            <DragOverlay>
-              {activeId ? (
-                <div className="p-4 bg-white border rounded-lg shadow-lg opacity-90">
-                  <div className="flex items-center gap-2">
-                    <GripVertical className="w-4 h-4 text-gray-400" />
-                    <span className="text-sm font-medium">
-                      {selectedQuizzes.find(q => q.id === activeId)?.title}
-                    </span>
-                  </div>
-                </div>
-              ) : null}
-            </DragOverlay>
-          </DndContext>
-
-          {/* Continue Button */}
-          {selectedQuizzes.length > 0 && (
-            <div className="pt-4">
-              <Button 
-                onClick={handleContinue}
-                className="w-full bg-[#ff5f1b] hover:bg-[#e54e0f]"
-                size="lg"
-              >
-                Continue with Selected Quizzes
-                <ArrowRight className="w-4 h-4 ml-2" />
-              </Button>
-            </div>
-          )}
+            {/* Continue Button */}
+            {selectedQuizzes.length > 0 && (
+              <div className="pt-4">
+                <Button 
+                  onClick={handleContinue}
+                  className="w-full bg-[#ff5f1b] hover:bg-[#e54e0f]"
+                  size="lg"
+                >
+                  Continue with Selected Quizzes
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+
+        <DragOverlay>
+          {activeId ? (
+            <div className="p-4 bg-white border rounded-lg shadow-lg opacity-90">
+              <div className="flex items-center gap-2">
+                <GripVertical className="w-4 h-4 text-gray-400" />
+                <span className="text-sm font-medium">
+                  {activeId.startsWith('available-') 
+                    ? availableQuizzes.find(q => q.id === activeId.replace('available-', ''))?.title
+                    : selectedQuizzes.find(q => q.id === activeId)?.title
+                  }
+                </span>
+              </div>
+            </div>
+          ) : null}
+        </DragOverlay>
+      </DndContext>
 
       {/* Quiz Preview Modal */}
       <QuizPreviewModal
