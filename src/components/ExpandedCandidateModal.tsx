@@ -871,7 +871,7 @@ export function ExpandedCandidateModal({
                   )}
                 </TabsContent>
 
-                {/* Assessment Results Tab - Updated with unlock functionality */}
+                {/* Assessment Results Tab */}
                 <TabsContent value="assessment-results" className="flex-1 overflow-y-auto p-6 mt-0">
                   {!isUnlocked ? (
                     <div className="flex items-center justify-center h-full">
@@ -1088,7 +1088,7 @@ export function ExpandedCandidateModal({
                   )}
                 </TabsContent>
 
-                {/* Documents Tab - Updated with unlock functionality */}
+                {/* Documents Tab */}
                 <TabsContent value="documents" className="flex-1 overflow-y-auto p-6 space-y-6 mt-0">
                   {!isUnlocked ? (
                     <div className="flex items-center justify-center h-full">
