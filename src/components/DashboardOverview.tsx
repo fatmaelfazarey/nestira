@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail, Plus } from "lucide-react";
@@ -6,6 +5,8 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { CircularProgress } from "@/components/ui/circular-progress";
@@ -216,7 +217,7 @@ const planUsageData = [{
   clickAction: "profile-views"
 }];
 
-const teamMembers = [
+const defaultTeamMembers = [
   { name: "Sarah Ahmed", avatar: "SA", color: "bg-blue-500" },
   { name: "Mohamed Hassan", avatar: "MH", color: "bg-green-500" },
   { name: "Layla Ibrahim", avatar: "LI", color: "bg-purple-500" },
@@ -227,6 +228,10 @@ const teamMembers = [
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+  const [showAddTeamMemberModal, setShowAddTeamMemberModal] = useState(false);
+  const [teamMembers, setTeamMembers] = useState(defaultTeamMembers);
+  const [newMemberName, setNewMemberName] = useState('');
+  const [newMemberEmail, setNewMemberEmail] = useState('');
   const { t } = useTranslation();
 
   const handleKpiClick = (action: string) => {
@@ -236,6 +241,25 @@ export function DashboardOverview() {
   const handlePlanUsageClick = (action?: string) => {
     if (action === 'profile-views') {
       setShowProfileViewsModal(true);
+    }
+  };
+
+  const handleAddTeamMember = () => {
+    if (newMemberName.trim()) {
+      const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-teal-500', 'bg-red-500', 'bg-indigo-500', 'bg-pink-500'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      const avatar = newMemberName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+      
+      const newMember = {
+        name: newMemberName,
+        avatar: avatar,
+        color: randomColor
+      };
+      
+      setTeamMembers([...teamMembers, newMember]);
+      setNewMemberName('');
+      setNewMemberEmail('');
+      setShowAddTeamMemberModal(false);
     }
   };
 
@@ -430,8 +454,8 @@ export function DashboardOverview() {
                   key={member.name}
                   className={`absolute w-12 h-12 rounded-full ${member.color} flex items-center justify-center text-white font-semibold text-sm shadow-lg hover:scale-110 transition-transform cursor-pointer`}
                   style={{
-                    top: index === 0 ? '10px' : index === 1 ? '60px' : index === 2 ? '20px' : index === 3 ? '80px' : '40px',
-                    left: index === 0 ? '20px' : index === 1 ? '60px' : index === 2 ? '140px' : index === 3 ? '180px' : '100px'
+                    top: index === 0 ? '10px' : index === 1 ? '60px' : index === 2 ? '20px' : index === 3 ? '80px' : index === 4 ? '40px' : `${20 + (index % 3) * 25}px`,
+                    left: index === 0 ? '20px' : index === 1 ? '60px' : index === 2 ? '140px' : index === 3 ? '180px' : index === 4 ? '100px' : `${40 + (index % 4) * 35}px`
                   }}
                   title={member.name}
                 >
@@ -445,7 +469,10 @@ export function DashboardOverview() {
                 Your team members activity on different job posts will appear here
               </p>
               
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-responsive-sm">
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white text-responsive-sm"
+                onClick={() => setShowAddTeamMemberModal(true)}
+              >
                 <Plus className="w-4 h-4 mr-2 shrink-0" />
                 Add Team Member
               </Button>
@@ -646,6 +673,55 @@ export function DashboardOverview() {
                 </div>
               </div>
             </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Team Member Modal */}
+      <Dialog open={showAddTeamMemberModal} onOpenChange={setShowAddTeamMemberModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5 shrink-0" />
+              Add Team Member
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="memberName">Full Name</Label>
+              <Input
+                id="memberName"
+                placeholder="Enter team member's name"
+                value={newMemberName}
+                onChange={(e) => setNewMemberName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="memberEmail">Email Address</Label>
+              <Input
+                id="memberEmail"
+                type="email"
+                placeholder="Enter email address"
+                value={newMemberEmail}
+                onChange={(e) => setNewMemberEmail(e.target.value)}
+              />
+            </div>
+            <div className="flex gap-3 pt-4">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={() => setShowAddTeamMemberModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                className="flex-1 bg-blue-600 hover:bg-blue-700"
+                onClick={handleAddTeamMember}
+                disabled={!newMemberName.trim()}
+              >
+                Add Member
+              </Button>
+            </div>
           </div>
         </DialogContent>
       </Dialog>
