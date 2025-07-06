@@ -282,42 +282,32 @@ export function DashboardOverview() {
       </div>
 
       {/* Plan Details & Usage Section */}
-      <Card className="p-6 bg-gradient-to-br from-slate-50 to-white border-2 border-gray-200/80">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-lg bg-accent/10">
-            <CreditCard className="w-6 h-6 text-accent" />
-          </div>
-          <h2 className="text-xl font-bold text-gray-900">Plan Details & Usage</h2>
+      <Card className="p-4">
+        <div className="flex items-center gap-2 mb-4">
+          <CreditCard className="w-5 h-5 text-gray-600" />
+          <h2 className="text-lg font-semibold text-gray-900">Plan Usage</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
           {planUsageData.map((item) => {
             const percentage = Math.round((item.current / item.total) * 100);
             return (
-              <div key={item.title} className={`p-4 rounded-lg ${item.bgColor} border border-gray-200/50`}>
-                <div className="flex items-center justify-between mb-3">
-                  <div className={`p-2 rounded-lg bg-white/80`}>
-                    <item.icon className={`w-4 h-4 ${item.color}`} />
-                  </div>
-                  <CircularProgress 
-                    value={percentage} 
-                    size={40} 
-                    strokeWidth={4}
-                    showPercentage={false}
-                    compact={true}
-                  />
+              <div key={item.title} className="p-3 rounded-lg border border-gray-200 bg-white">
+                <div className="flex items-center justify-between mb-2">
+                  <item.icon className={`w-4 h-4 ${item.color}`} />
+                  <span className="text-xs text-gray-500">{percentage}%</span>
                 </div>
                 <div className="space-y-1">
-                  <h3 className={`text-sm font-semibold ${item.color}`}>{item.title}</h3>
-                  <p className="text-lg font-bold text-gray-900">
-                    {item.current} out of {item.total}
+                  <h3 className="text-xs font-medium text-gray-700">{item.title}</h3>
+                  <p className="text-sm font-semibold text-gray-900">
+                    {item.current} / {item.total}
                   </p>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div className="w-full bg-gray-200 rounded-full h-1.5">
                     <div 
-                      className={`h-2 rounded-full transition-all duration-500 ${
+                      className={`h-1.5 rounded-full transition-all duration-300 ${
                         percentage >= 80 ? 'bg-green-500' : 
                         percentage >= 60 ? 'bg-orange-500' : 
-                        'bg-red-500'
+                        'bg-blue-500'
                       }`}
                       style={{ width: `${percentage}%` }}
                     ></div>
