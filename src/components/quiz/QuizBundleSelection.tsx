@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Eye, Plus, ArrowRight, Edit, Trash2, GripVertical } from 'lucide-react';
+import { Eye, Plus, ArrowRight, Edit, Trash2, GripVertical, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 import { QuizPreviewModal } from './QuizPreviewModal';
+import { QuizFilters } from './QuizFilters';
 import {
   DndContext,
   DragEndEvent,
@@ -40,6 +41,9 @@ interface BundleQuiz {
   description: string;
   icon: string;
   questionsList?: any[];
+  source?: string;
+  skills?: string[];
+  personalizationParams?: { jobTitle?: string };
 }
 
 const suggestedBundle: BundleQuiz[] = [
@@ -50,6 +54,9 @@ const suggestedBundle: BundleQuiz[] = [
     timeEstimate: '15 min',
     description: 'Essential interpersonal and communication abilities',
     icon: '🤝',
+    source: 'Nestira',
+    skills: ['Communication', 'Active Listening'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'ss1',
@@ -67,6 +74,9 @@ const suggestedBundle: BundleQuiz[] = [
     timeEstimate: '20 min',
     description: 'Cognitive abilities and analytical thinking',
     icon: '🧠',
+    source: 'Nestira',
+    skills: ['Critical Thinking', 'Problem Solving'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'lr1',
@@ -84,6 +94,9 @@ const suggestedBundle: BundleQuiz[] = [
     timeEstimate: '30 min',
     description: 'Proficiency with relevant tools and software',
     icon: '💻',
+    source: 'Nestira',
+    skills: ['Microsoft Excel (Advanced)', 'Power BI'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'ts1',
@@ -101,6 +114,9 @@ const suggestedBundle: BundleQuiz[] = [
     timeEstimate: '10 min',
     description: 'Alignment with company culture and values',
     icon: '🏢',
+    source: 'Nestira',
+    skills: ['Culture Add', 'Communication'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'cf1',
@@ -117,6 +133,9 @@ const suggestedBundle: BundleQuiz[] = [
     timeEstimate: '25 min',
     description: 'Core financial knowledge and technical skills',
     icon: '📊',
+    source: 'Nestira',
+    skills: ['Financial Accounting (IFRS)', 'Financial Planning & Analysis (FP&A)', 'Budgeting'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'ft1',
@@ -137,6 +156,9 @@ const additionalQuizzes: BundleQuiz[] = [
     timeEstimate: '12 min',
     description: 'Evaluate ability to manage time and prioritize tasks effectively',
     icon: '⏰',
+    source: 'Nestira',
+    skills: ['Problem Solving'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'tm1',
@@ -154,6 +176,9 @@ const additionalQuizzes: BundleQuiz[] = [
     timeEstimate: '18 min',
     description: 'Understanding of risk evaluation and mitigation strategies',
     icon: '⚠️',
+    source: 'Nestira',
+    skills: ['Internal Auditing / ISAs', 'Critical Thinking'],
+    personalizationParams: { jobTitle: 'Risk Manager' },
     questionsList: [
       {
         id: 'ra1',
@@ -171,6 +196,9 @@ const additionalQuizzes: BundleQuiz[] = [
     timeEstimate: '22 min',
     description: 'Ability to analyze and interpret financial data',
     icon: '📈',
+    source: 'Me',
+    skills: ['Numerical Reasoning', 'Critical Thinking'],
+    personalizationParams: { jobTitle: 'Data Analyst' },
     questionsList: [
       {
         id: 'da1',
@@ -188,6 +216,9 @@ const additionalQuizzes: BundleQuiz[] = [
     timeEstimate: '16 min',
     description: 'Knowledge of financial regulations and compliance requirements',
     icon: '⚖️',
+    source: 'Nestira',
+    skills: ['Financial Accounting (US GAAP)', 'Internal Auditing / ISAs'],
+    personalizationParams: { jobTitle: 'Compliance Officer' },
     questionsList: [
       {
         id: 'rc1',
@@ -205,6 +236,9 @@ const additionalQuizzes: BundleQuiz[] = [
     timeEstimate: '14 min',
     description: 'Ability to present financial information clearly and effectively',
     icon: '🎯',
+    source: 'Me',
+    skills: ['Communication', 'Presentation Skills'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'ps1',
@@ -222,6 +256,9 @@ const additionalQuizzes: BundleQuiz[] = [
     timeEstimate: '13 min',
     description: 'Understanding of professional ethics and integrity in finance',
     icon: '🛡️',
+    source: 'Nestira',
+    skills: ['Culture Add'],
+    personalizationParams: { jobTitle: 'Financial Analyst' },
     questionsList: [
       {
         id: 'ei1',
@@ -418,6 +455,13 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [showMoreQuizzes, setShowMoreQuizzes] = useState(false);
+  const [moreQuizzesPool, setMoreQuizzesPool] = useState<BundleQuiz[]>(additionalQuizzes);
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterSource, setFilterSource] = useState('all');
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -431,16 +475,38 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
     return acc + minutes;
   }, 0);
 
+  // Filter more quizzes based on filter criteria
+  const filteredMoreQuizzes = moreQuizzesPool.filter(quiz => {
+    const titleMatch = (quiz.personalizationParams?.jobTitle ?? '').toLowerCase().includes(searchQuery.toLowerCase());
+    const sourceMatch = filterSource === 'all' || quiz.source === filterSource;
+    const skillMatch = selectedSkills.length === 0 || selectedSkills.some(skill => quiz.skills?.includes(skill));
+    return titleMatch && sourceMatch && skillMatch;
+  });
+
+  const activeFilterCount =
+    (searchQuery ? 1 : 0) +
+    (filterSource !== 'all' ? 1 : 0) +
+    (selectedSkills.length > 0 ? 1 : 0);
+
   const handleSelectQuiz = (quiz: BundleQuiz) => {
     setSelectedQuizzes(prev => [...prev, quiz]);
     setAvailableQuizzes(prev => prev.filter(q => q.id !== quiz.id));
+    if (showMoreQuizzes) {
+      setMoreQuizzesPool(prev => prev.filter(q => q.id !== quiz.id));
+    }
     toast.success(`${quiz.title} added to your quiz`);
   };
 
   const handleRemoveQuiz = (quizId: string) => {
     const quiz = selectedQuizzes.find(q => q.id === quizId);
     if (quiz && !quiz.id.startsWith('custom-')) {
-      setAvailableQuizzes(prev => [...prev, quiz]);
+      // Check if it was from the original suggested bundle or additional quizzes
+      const wasFromSuggested = suggestedBundle.some(sq => sq.id === quiz.id);
+      if (wasFromSuggested) {
+        setAvailableQuizzes(prev => [...prev, quiz]);
+      } else {
+        setMoreQuizzesPool(prev => [...prev, quiz]);
+      }
     }
     setSelectedQuizzes(prev => prev.filter(q => q.id !== quizId));
     toast.success('Quiz removed from bundle');
@@ -472,13 +538,8 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
   };
 
   const handleShowMoreQuizzes = () => {
-    const newQuizzes = additionalQuizzes.filter(quiz => 
-      !availableQuizzes.some(existing => existing.id === quiz.id) &&
-      !selectedQuizzes.some(selected => selected.id === quiz.id)
-    );
-    setAvailableQuizzes(prev => [...prev, ...newQuizzes]);
     setShowMoreQuizzes(true);
-    toast.success(`${newQuizzes.length} more quizzes loaded!`);
+    toast.success('More quizzes are now available!');
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -496,10 +557,11 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
     // Handle dragging from available to selected
     if (activeId.startsWith('available-') && overId === 'quiz-bundle-droppable') {
       const quizId = activeId.replace('available-', '');
-      const quiz = availableQuizzes.find(q => q.id === quizId);
+      const quiz = availableQuizzes.find(q => q.id === quizId) || moreQuizzesPool.find(q => q.id === quizId);
       if (quiz) {
         setSelectedQuizzes(prev => [...prev, quiz]);
         setAvailableQuizzes(prev => prev.filter(q => q.id !== quizId));
+        setMoreQuizzesPool(prev => prev.filter(q => q.id !== quizId));
         toast.success(`${quiz.title} added to your quiz bundle`);
       }
     }
@@ -555,17 +617,6 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-gray-800">Available Quiz Templates</h3>
-              {!showMoreQuizzes && (
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={handleShowMoreQuizzes}
-                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
-                >
-                  <Plus className="w-4 h-4 mr-2" />
-                  Show More Quizzes
-                </Button>
-              )}
             </div>
             <div className="space-y-3">
               <SortableContext items={availableQuizzes.map(q => `available-${q.id}`)} strategy={verticalListSortingStrategy}>
@@ -653,6 +704,60 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
           </div>
         </div>
 
+        {/* Show More Quizzes Section */}
+        {!showMoreQuizzes ? (
+          <div className="text-center pt-8">
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={handleShowMoreQuizzes}
+              className="text-blue-600 border-blue-200 hover:bg-blue-50"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Show More Quizzes
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-6 pt-8 border-t">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-gray-800">More Quiz Options</h3>
+              <div className="flex gap-3">
+                <Button 
+                  variant="outline"
+                  onClick={() => setIsFilterOpen(true)}
+                  className="border-orange-200 text-orange-600 hover:bg-orange-50"
+                >
+                  <Filter className="w-4 h-4 mr-2" />
+                  Filters {activeFilterCount > 0 && (
+                    <span className="ml-2 bg-orange-500 text-white rounded-full px-2 py-1 text-xs">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </Button>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <SortableContext items={filteredMoreQuizzes.map(q => `available-${q.id}`)} strategy={verticalListSortingStrategy}>
+                {filteredMoreQuizzes.map((quiz) => (
+                  <DraggableAvailableQuiz
+                    key={quiz.id}
+                    quiz={quiz}
+                    onSelect={() => handleSelectQuiz(quiz)}
+                    onPreview={() => handlePreviewQuiz(quiz)}
+                  />
+                ))}
+              </SortableContext>
+            </div>
+            
+            {filteredMoreQuizzes.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-gray-500">No quizzes match your filters.</p>
+              </div>
+            )}
+          </div>
+        )}
+
         <DragOverlay>
           {activeId ? (
             <div className="p-4 bg-white border rounded-lg shadow-lg opacity-90">
@@ -660,7 +765,8 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
                 <GripVertical className="w-4 h-4 text-gray-400" />
                 <span className="text-sm font-medium">
                   {activeId.startsWith('available-') 
-                    ? availableQuizzes.find(q => q.id === activeId.replace('available-', ''))?.title
+                    ? (availableQuizzes.find(q => q.id === activeId.replace('available-', ''))?.title ||
+                       moreQuizzesPool.find(q => q.id === activeId.replace('available-', ''))?.title)
                     : selectedQuizzes.find(q => q.id === activeId)?.title
                   }
                 </span>
@@ -680,6 +786,18 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
           questionsList: previewQuiz?.questionsList || [],
           timeLimit: { hours: 0, minutes: parseInt(previewQuiz?.timeEstimate || '0'), seconds: 0 }
         }}
+      />
+
+      {/* Quiz Filters Modal */}
+      <QuizFilters
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        filterSource={filterSource}
+        onFilterSourceChange={setFilterSource}
+        selectedSkills={selectedSkills}
+        onSelectedSkillsChange={setSelectedSkills}
       />
     </div>
   );
