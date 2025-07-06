@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail } from "lucide-react";
@@ -270,52 +269,47 @@ export function DashboardOverview() {
         </div>
       </Card>
 
-      {/* Main Metrics with Recent Profile Views - Modified Layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
-        {/* KPI Metrics - Takes 5/6 of the space */}
-        <div className="xl:col-span-5">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {kpiData.map(kpi => <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className={`p-3 rounded-lg bg-white/70`}>
-                    <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+      {/* KPI Metrics Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {kpiData.map(kpi => <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className={`p-3 rounded-lg bg-white/70`}>
+                <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+              </div>
+              <div className="space-y-1">
+                <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
+                <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
+                <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
+              </div>
+            </div>
+          </Card>)}
+      </div>
+
+      {/* Recent Profile Views */}
+      <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-indigo-50">
+              <Eye className="w-4 h-4 text-indigo-600" />
+            </div>
+            <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
+          </div>
+          <div className="space-y-2">
+            {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                    {profile.avatar}
                   </div>
-                  <div className="space-y-1">
-                    <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
-                    <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
-                    <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
+                    <p className="text-xs text-gray-500">{profile.timeAgo}</p>
                   </div>
                 </div>
-              </Card>)}
+                <span className="text-sm font-bold text-gray-900">{profile.views}</span>
+              </div>)}
           </div>
         </div>
-
-        {/* Recent Profile Views - Takes 1/6 of the space */}
-        <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-indigo-50">
-                <Eye className="w-4 h-4 text-indigo-600" />
-              </div>
-              <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
-            </div>
-            <div className="space-y-2">
-              {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                      {profile.avatar}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
-                      <p className="text-xs text-gray-500">{profile.timeAgo}</p>
-                    </div>
-                  </div>
-                  <span className="text-sm font-bold text-gray-900">{profile.views}</span>
-                </div>)}
-            </div>
-          </div>
-        </Card>
-      </div>
+      </Card>
 
       {/* Charts and Quick Actions Section */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
