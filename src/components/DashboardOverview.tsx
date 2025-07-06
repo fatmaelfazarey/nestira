@@ -269,36 +269,34 @@ export function DashboardOverview() {
         </div>
       </Card>
 
-      {/* KPI Metrics and Recent Profile Views Row */}
-      <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
-        {/* KPI Metrics - Takes 5/6 of the space */}
-        <div className="xl:col-span-5">
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {kpiData.map(kpi => <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
-                <div className="flex flex-col items-center text-center space-y-3">
-                  <div className={`p-3 rounded-lg bg-white/70`}>
-                    <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
-                    <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
-                    <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
-                  </div>
-                </div>
-              </Card>)}
-          </div>
-        </div>
+      {/* KPI Metrics Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+        {/* KPI Metrics - Takes 5 columns */}
+        {kpiData.map((kpi, index) => (
+          <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className={`p-3 rounded-lg bg-white/70`}>
+                <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+              </div>
+              <div className="space-y-1">
+                <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
+                <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
+                <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
+              </div>
+            </div>
+          </Card>
+        ))}
 
-        {/* Recent Profile Views - Takes 1/6 of the space */}
-        <Card className="xl:col-span-1 p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 bg-indigo-50 border-2" onClick={() => setShowProfileViewsModal(true)}>
+        {/* Recent Profile Views - Takes 1 column */}
+        <Card className="p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 bg-indigo-50 border-2" onClick={() => setShowProfileViewsModal(true)}>
           <div className="flex flex-col items-center text-center space-y-3">
             <div className="p-3 rounded-lg bg-white/70">
               <Eye className="w-6 h-6 text-indigo-600" />
             </div>
             <div className="space-y-1">
               <h3 className="text-2xl font-bold text-indigo-600">{recentProfileViews.length}</h3>
-              <p className="text-sm font-semibold text-indigo-600 opacity-90">Recent Profile Views</p>
-              <p className="text-xs text-indigo-600 opacity-70">Click to view details</p>
+              <p className="text-sm font-semibold text-indigo-600 opacity-90">Profile Views</p>
+              <p className="text-xs text-indigo-600 opacity-70">Click to view</p>
             </div>
           </div>
         </Card>
