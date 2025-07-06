@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -491,8 +490,6 @@ const TalentPool = () => {
         onClose={() => setShowExpandedModal(false)}
         isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false}
         onToggleFavorite={() => expandedCandidate && handleToggleFavorite(expandedCandidate.id)}
-        onUnlock={handleUnlock}
-        onInviteToApply={handleInviteToApply}
         isUnlocked={expandedCandidate ? unlockedCandidates.has(expandedCandidate.id) : false}
       />
     </div>
