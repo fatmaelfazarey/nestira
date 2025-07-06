@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Folder, Plus, ArrowLeft, X, UserPlus, MapPin, Briefcase, Star } from 'lucide-react';
+import { Folder, Plus, ArrowLeft, X, UserPlus, MapPin, Briefcase, Star, Users } from 'lucide-react';
 import { FolderManagementButton } from '@/components/FolderManagementButton';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -272,15 +272,20 @@ const Folders = () => {
               </Button>
               <Separator orientation="vertical" className="h-6" />
               <div className="flex items-center gap-3">
-                <Folder className="w-6 h-6 text-blue-600" />
+                <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl">
+                  <Folder className="w-7 h-7 text-blue-600" />
+                </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">{selectedFolder.name}</h1>
-                  <p className="text-gray-600">{selectedFolder.candidates.length} candidates</p>
+                  <p className="text-gray-600 flex items-center gap-1">
+                    <Users className="w-4 h-4" />
+                    {selectedFolder.candidates.length} candidates
+                  </p>
                 </div>
               </div>
             </div>
             
-            <Button onClick={handleAddCandidate} className="flex items-center gap-2">
+            <Button onClick={handleAddCandidate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
               <UserPlus className="w-4 h-4" />
               Add Candidate
             </Button>
@@ -288,12 +293,14 @@ const Folders = () => {
 
           {/* Candidates Grid */}
           {selectedFolder.candidates.length === 0 ? (
-            <Card className="p-8">
-              <div className="text-center">
-                <Folder className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No candidates in this folder</h3>
-                <p className="text-gray-600 mb-4">Add candidates to this folder to organize your talent pool</p>
-                <Button onClick={handleAddCandidate}>
+            <Card className="p-12 text-center bg-gradient-to-br from-gray-50 to-white border-dashed border-2">
+              <div className="max-w-sm mx-auto">
+                <div className="p-4 bg-gray-100 rounded-full w-fit mx-auto mb-4">
+                  <Folder className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No candidates yet</h3>
+                <p className="text-gray-600 mb-6">Start building your talent pool by adding candidates to this folder</p>
+                <Button onClick={handleAddCandidate} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
                   <UserPlus className="w-4 h-4 mr-2" />
                   Add First Candidate
                 </Button>
@@ -302,18 +309,18 @@ const Folders = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {selectedFolder.candidates.map((candidate) => (
-                <Card key={candidate.id} className="hover:shadow-md transition-shadow">
+                <Card key={candidate.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/50 hover:from-blue-50/30 hover:to-indigo-50/30">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-12 h-12">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <Avatar className="w-14 h-14 ring-2 ring-white shadow-lg">
                           <AvatarImage src={candidate.avatar} />
-                          <AvatarFallback className="bg-blue-100 text-blue-600 font-medium">
+                          <AvatarFallback className="bg-gradient-to-br from-blue-100 to-indigo-200 text-blue-700 font-semibold text-lg">
                             {candidate.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
                         <div className="min-w-0 flex-1">
-                          <h3 className="font-semibold text-gray-900 truncate">{candidate.name}</h3>
+                          <h3 className="font-bold text-gray-900 truncate text-lg">{candidate.name}</h3>
                           <p className="text-sm text-gray-600 truncate">{candidate.title}</p>
                         </div>
                       </div>
@@ -321,14 +328,14 @@ const Folders = () => {
                         variant="ghost"
                         size="sm"
                         onClick={() => handleRemoveCandidate(candidate.id)}
-                        className="text-gray-400 hover:text-red-500 shrink-0"
+                        className="text-gray-300 hover:text-red-500 hover:bg-red-50 shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-200"
                       >
                         <X className="w-4 h-4" />
                       </Button>
                     </div>
                   </CardHeader>
                   
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-4">
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-1 text-gray-600">
                         <MapPin className="w-3 h-3" />
@@ -341,22 +348,24 @@ const Folders = () => {
                     </div>
                     
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                        <span className="font-medium">{candidate.score}%</span>
-                        <span className="text-sm text-gray-600">match</span>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 bg-gradient-to-r from-yellow-100 to-orange-100 px-2 py-1 rounded-full">
+                          <Star className="w-3 h-3 text-yellow-600 fill-current" />
+                          <span className="font-semibold text-yellow-700 text-sm">{candidate.score}%</span>
+                        </div>
+                        <span className="text-xs text-gray-500">match</span>
                       </div>
                     </div>
                     
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-wrap gap-1.5">
                       {candidate.tags.slice(0, 2).map((tag, index) => (
-                        <Badge key={index} variant="secondary" className="text-xs">
+                        <Badge key={index} variant="secondary" className="text-xs bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-0">
                           {tag}
                         </Badge>
                       ))}
                       {candidate.tags.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{candidate.tags.length - 2}
+                        <Badge variant="outline" className="text-xs border-dashed bg-white/50">
+                          +{candidate.tags.length - 2} more
                         </Badge>
                       )}
                     </div>
@@ -377,48 +386,59 @@ const Folders = () => {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">Folders</h1>
-              <p className="text-gray-600">Organize your candidates into folders</p>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                Folders
+              </h1>
+              <p className="text-gray-600 mt-1">Organize and manage your talent pipeline</p>
             </div>
             
             <div className="flex items-center gap-3">
               <Button 
                 variant="outline" 
                 onClick={handleAddCandidateFromList}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 border-2 hover:bg-gray-50"
               >
                 <UserPlus className="w-4 h-4" />
-                Add Candidates
+                Browse Candidates
               </Button>
-              <FolderManagementButton>
+              <FolderManagementButton className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0">
                 <Plus className="w-4 h-4 mr-2" />
                 Manage Folders
               </FolderManagementButton>
             </div>
           </div>
 
-          {/* Folders List */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Folders Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {folders.map((folder) => (
               <Card 
                 key={folder.id} 
-                className="cursor-pointer hover:shadow-md transition-all duration-200 hover:border-blue-200"
+                className="group cursor-pointer hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/80 hover:from-blue-50/50 hover:to-indigo-50/50 hover:scale-105"
                 onClick={() => handleFolderClick(folder)}
               >
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-blue-100 rounded-lg">
-                        <Folder className="w-5 h-5 text-blue-600" />
+                  <div className="space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="p-3 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-xl group-hover:from-blue-200 group-hover:to-indigo-300 transition-all duration-300">
+                        <Folder className="w-6 h-6 text-blue-600 group-hover:text-blue-700" />
                       </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{folder.name}</h3>
-                        <p className="text-sm text-gray-600">{folder.count} candidates</p>
-                      </div>
+                      <Badge 
+                        variant="outline" 
+                        className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-0 font-semibold px-3 py-1"
+                      >
+                        {folder.count}
+                      </Badge>
                     </div>
-                    <Badge variant="outline" className="bg-gray-50">
-                      {folder.count}
-                    </Badge>
+                    
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-blue-900 transition-colors">
+                        {folder.name}
+                      </h3>
+                      <p className="text-sm text-gray-500 flex items-center gap-1">
+                        <Users className="w-3 h-3" />
+                        {folder.count} {folder.count === 1 ? 'candidate' : 'candidates'}
+                      </p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -426,12 +446,14 @@ const Folders = () => {
           </div>
 
           {folders.length === 0 && (
-            <Card className="p-8">
-              <div className="text-center">
-                <Folder className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No folders created yet</h3>
-                <p className="text-gray-600 mb-4">Create folders to organize your candidates</p>
-                <FolderManagementButton>
+            <Card className="p-12 text-center bg-gradient-to-br from-gray-50 to-white border-dashed border-2">
+              <div className="max-w-sm mx-auto">
+                <div className="p-4 bg-gray-100 rounded-full w-fit mx-auto mb-4">
+                  <Folder className="w-8 h-8 text-gray-400" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No folders yet</h3>
+                <p className="text-gray-600 mb-6">Create your first folder to start organizing candidates</p>
+                <FolderManagementButton className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0">
                   <Plus className="w-4 h-4 mr-2" />
                   Create First Folder
                 </FolderManagementButton>
