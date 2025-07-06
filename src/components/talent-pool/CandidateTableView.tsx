@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { Star, Unlock, User, Eye, UserPlus } from 'lucide-react';
+import { Star, Unlock, User, Eye, UserPlus, Plus } from 'lucide-react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { formatBlurredName, getCountryFlag } from '@/utils/talentPoolUtils';
+import { AddToFolderButton } from '@/components/AddToFolderButton';
 
 interface CandidateTableViewProps {
   sortedCandidates: any[];
@@ -63,7 +64,7 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                   <TableHead className="min-w-[120px]">Tools</TableHead>
                   <TableHead className="min-w-[120px]">Certifications</TableHead>
                   <TableHead className="min-w-[120px]">Salary</TableHead>
-                  <TableHead className="min-w-[150px]">Actions</TableHead>
+                  <TableHead className="min-w-[180px]">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -224,8 +225,8 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       </TableCell>
                       <TableCell className="min-w-[120px] text-sm">{candidate.salaryExpectation}</TableCell>
                       
-                      <TableCell className="min-w-[150px]">
-                        <div className="flex gap-1">
+                      <TableCell className="min-w-[180px]">
+                        <div className="flex gap-1 flex-wrap">
                           <Button 
                             variant="ghost" 
                             size="sm" 
@@ -234,6 +235,15 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                           >
                             <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
                           </Button>
+                          
+                          <AddToFolderButton 
+                            candidate={candidate} 
+                            size="sm"
+                            showIcon={true}
+                            className="text-xs px-2"
+                          >
+                            <Plus className="w-3 h-3" />
+                          </AddToFolderButton>
                           
                           <Button 
                             size="sm" 

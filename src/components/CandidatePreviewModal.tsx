@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -18,6 +17,7 @@ import {
   X
 } from 'lucide-react';
 import { getCountryFlag } from '@/utils/talentPoolUtils';
+import { AddToFolderButton } from '@/components/AddToFolderButton';
 
 interface CandidatePreviewModalProps {
   candidate: any;
@@ -51,6 +51,11 @@ export const CandidatePreviewModal: React.FC<CandidatePreviewModalProps> = ({
         <DialogHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
           <DialogTitle className="text-xl">Candidate Preview</DialogTitle>
           <div className="flex items-center gap-2">
+            <AddToFolderButton 
+              candidate={candidate}
+              variant="outline"
+              size="sm"
+            />
             <Button
               size="sm"
               className="bg-accent hover:bg-accent/90"

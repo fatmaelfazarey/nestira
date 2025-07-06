@@ -7,6 +7,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 import { Star, MapPin, Briefcase, Unlock, DollarSign, User, UserPlus, Eye } from 'lucide-react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { formatBlurredName, getCountryFlag } from '@/utils/talentPoolUtils';
+import { AddToFolderButton } from '@/components/AddToFolderButton';
 
 interface CandidateGridViewProps {
   sortedCandidates: any[];
@@ -103,6 +104,11 @@ export const CandidateGridView: React.FC<CandidateGridViewProps> = ({
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Add to Folder Button */}
+                <div className="mb-3">
+                  <AddToFolderButton candidate={candidate} />
+                </div>
+
                 <div className="flex items-center gap-2 text-sm text-gray-600">
                   <MapPin className="w-4 h-4" />
                   {candidate.location}
