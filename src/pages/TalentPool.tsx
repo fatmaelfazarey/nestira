@@ -360,7 +360,6 @@ const TalentPool = () => {
                 <AICandidateSearch
                   onSearch={handleAiSearch}
                   onClear={handleClearAiSearch}
-                  searchQuery={aiSearchQuery}
                   isSearching={isAiSearching}
                   resultsCount={aiFilteredCandidates?.length}
                 />
@@ -368,7 +367,7 @@ const TalentPool = () => {
               <div>
                 <CandidateCountProgress
                   total={candidates.length}
-                  filtered={filteredCandidates.length}
+                  filteredCount={filteredCandidates.length}
                   unlocked={unlockedCandidates.size}
                 />
               </div>
@@ -423,67 +422,67 @@ const TalentPool = () => {
               onInviteToApply={handleInviteToApply}
             />
           )}
-        </div>
 
-        {/* Filter Sidebar */}
-        <FilterSidebar
-          isOpen={isFilterSidebarOpen}
-          onClose={() => setIsFilterSidebarOpen(false)}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          experienceRange={experienceRange}
-          setExperienceRange={setExperienceRange}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          skillsFilter={skillsFilter}
-          setSkillsFilter={setSkillsFilter}
-          scoreRange={scoreRange}
-          setScoreRange={setScoreRange}
-          assessmentScoreRange={assessmentScoreRange}
-          setAssessmentScoreRange={setAssessmentScoreRange}
-          selectedSubfields={selectedSubfields}
-          setSelectedSubfields={setSelectedSubfields}
-          selectedSoftware={selectedSoftware}
-          setSelectedSoftware={setSelectedSoftware}
-          erpVersion={erpVersion}
-          setErpVersion={setErpVersion}
-          selectedCertifications={selectedCertifications}
-          setSelectedCertifications={setSelectedCertifications}
-          selectedIndustries={selectedIndustries}
-          setSelectedIndustries={setSelectedIndustries}
-          selectedVisaStatus={selectedVisaStatus}
-          setSelectedVisaStatus={setSelectedVisaStatus}
-          employmentType={employmentType}
-          setEmploymentType={setEmploymentType}
-          workMode={workMode}
-          setWorkMode={setWorkMode}
-          availability={availability}
-          setAvailability={setAvailability}
-          languageProficiency={languageProficiency}
-          setLanguageProficiency={setLanguageProficiency}
-          genderFilter={genderFilter}
-          setGenderFilter={setGenderFilter}
-          educationLevel={educationLevel}
-          setEducationLevel={setEducationLevel}
-          selectedSpecialNeeds={selectedSpecialNeeds}
-          setSelectedSpecialNeeds={setSelectedSpecialNeeds}
-          cvCompleteness={cvCompleteness}
-          setCvCompleteness={setCvCompleteness}
-          academicExcellence={academicExcellence}
-          setAcademicExcellence={setAcademicExcellence}
-          selectedScreeningTags={selectedScreeningTags}
-          setSelectedScreeningTags={setSelectedScreeningTags}
-          resetAllFilters={resetAllFilters}
-          filteredCandidatesCount={filteredCandidates.length}
-          jobTitles={jobTitles}
-          selectedJob={selectedJob}
-          setSelectedJob={setSelectedJob}
-          hiringStages={hiringStages}
-          hiringStageFilter={hiringStageFilter}
-          setHiringStageFilter={setHiringStageFilter}
-        />
+          {/* Filter Sidebar */}
+          <FilterSidebar
+            isOpen={isFilterSidebarOpen}
+            onClose={() => setIsFilterSidebarOpen(false)}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            experienceRange={experienceRange}
+            setExperienceRange={setExperienceRange}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            skillsFilter={skillsFilter}
+            setSkillsFilter={setSkillsFilter}
+            scoreRange={scoreRange}
+            setScoreRange={setScoreRange}
+            assessmentScoreRange={assessmentScoreRange}
+            setAssessmentScoreRange={setAssessmentScoreRange}
+            selectedSubfields={selectedSubfields}
+            setSelectedSubfields={setSelectedSubfields}
+            selectedSoftware={selectedSoftware}
+            setSelectedSoftware={setSelectedSoftware}
+            erpVersion={erpVersion}
+            setErpVersion={setErpVersion}
+            selectedCertifications={selectedCertifications}
+            setSelectedCertifications={setSelectedCertifications}
+            selectedIndustries={selectedIndustries}
+            setSelectedIndustries={setSelectedIndustries}
+            selectedVisaStatus={selectedVisaStatus}
+            setSelectedVisaStatus={setSelectedVisaStatus}
+            employmentType={employmentType}
+            setEmploymentType={setEmploymentType}
+            workMode={workMode}
+            setWorkMode={setWorkMode}
+            availability={availability}
+            setAvailability={setAvailability}
+            languageProficiency={languageProficiency}
+            setLanguageProficiency={setLanguageProficiency}
+            genderFilter={genderFilter}
+            setGenderFilter={setGenderFilter}
+            educationLevel={educationLevel}
+            setEducationLevel={setEducationLevel}
+            selectedSpecialNeeds={selectedSpecialNeeds}
+            setSelectedSpecialNeeds={setSelectedSpecialNeeds}
+            cvCompleteness={cvCompleteness}
+            setCvCompleteness={setCvCompleteness}
+            academicExcellence={academicExcellence}
+            setAcademicExcellence={setAcademicExcellence}
+            selectedScreeningTags={selectedScreeningTags}
+            setSelectedScreeningTags={setSelectedScreeningTags}
+            resetAllFilters={resetAllFilters}
+            filteredCandidatesCount={filteredCandidates.length}
+            jobTitles={jobTitles}
+            selectedJob={selectedJob}
+            setSelectedJob={setSelectedJob}
+            hiringStages={hiringStages}
+            hiringStageFilter={hiringStageFilter}
+            setHiringStageFilter={setHiringStageFilter}
+          />
+        </div>
       </div>
 
       {/* Expanded Candidate Modal */}
