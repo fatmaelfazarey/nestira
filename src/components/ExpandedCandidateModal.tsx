@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock, Unlock, UserPlus } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, ChevronRight, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock, Unlock, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { AssessmentAnswersModal } from './AssessmentAnswersModal';
@@ -521,10 +521,44 @@ export function ExpandedCandidateModal({
                     Message Candidate
                   </Button>
                   
-                  <Button variant="outline" className="w-full">
-                    <StickyNote className="w-4 h-4 mr-2" />
-                    Add Note
-                  </Button>
+                  {/* Notes Card */}
+                  <div className="bg-white rounded-lg border border-gray-200 p-4">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="font-semibold text-gray-900 text-sm uppercase tracking-wide">NOTES</h4>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Eye className="w-3 h-3" />
+                        Only visible to you & your team
+                      </div>
+                    </div>
+                    
+                    {/* Input Area */}
+                    <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200 mb-3">
+                      <Avatar className="w-8 h-8 flex-shrink-0">
+                        <AvatarFallback className="bg-blue-600 text-white text-xs font-semibold">
+                          YK
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 flex items-center gap-2">
+                        <input 
+                          type="text" 
+                          placeholder="@mention your teammates"
+                          className="flex-1 bg-transparent text-sm text-gray-600 placeholder-gray-400 outline-none"
+                        />
+                        <Button size="sm" variant="ghost" className="p-1 h-auto">
+                          <ChevronRight className="w-4 h-4 text-gray-400" />
+                        </Button>
+                      </div>
+                    </div>
+                    
+                    {/* Empty State */}
+                    <div className="text-center py-6">
+                      <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <MessageSquare className="w-6 h-6 text-yellow-600" />
+                      </div>
+                      <p className="text-lg font-medium text-yellow-600 mb-1">No Notes Yet</p>
+                      <p className="text-sm text-gray-500">@mention your teammates</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
