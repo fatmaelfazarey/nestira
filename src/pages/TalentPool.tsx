@@ -67,6 +67,7 @@ import { AdvancedFeaturesModal } from "@/components/AdvancedFeaturesModal";
 import { useTalentPoolState } from "@/hooks/useTalentPoolState";
 import { candidates } from "@/data/candidatesData";
 import { CircularProgress } from "@/components/ui/circular-progress";
+import { FolderManagementButton } from "@/components/FolderManagementButton";
 
 const TalentPool = () => {
   const {
@@ -306,6 +307,8 @@ const TalentPool = () => {
               </div>
               
               <div className="flex items-center gap-3">
+                <FolderManagementButton />
+                
                 <Button
                   variant="outline"
                   onClick={() => setIsFilterSidebarOpen(true)}
