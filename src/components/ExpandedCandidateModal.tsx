@@ -725,7 +725,15 @@ export function ExpandedCandidateModal({
                       <div className="text-center p-8 bg-white rounded-lg shadow-sm border">
                         <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
                         <h3 className="text-lg font-semibold text-gray-900 mb-2">Unlock to access this candidate's behavioral fit profile</h3>
-                        <p className="text-gray-600">Complete candidate unlock to view detailed behavioral insights and culture fit analysis.</p>
+                        <p className="text-gray-600 mb-4">Complete candidate unlock to view detailed behavioral insights and culture fit analysis.</p>
+                        <Button 
+                          size="lg" 
+                          className="bg-accent hover:bg-accent/90"
+                          onClick={handleUnlock}
+                        >
+                          <Unlock className="w-4 h-4 mr-2" />
+                          Unlock Profile
+                        </Button>
                       </div>
                     </div>
                   ) : (

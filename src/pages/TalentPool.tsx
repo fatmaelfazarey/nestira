@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -360,7 +359,7 @@ const TalentPool = () => {
                 <AICandidateSearch
                   onSearch={handleAiSearch}
                   onClear={handleClearAiSearch}
-                  searchQuery={aiSearchQuery}
+                  query={aiSearchQuery}
                   isSearching={isAiSearching}
                   resultsCount={aiFilteredCandidates?.length}
                 />
@@ -368,7 +367,7 @@ const TalentPool = () => {
               <div>
                 <CandidateCountProgress
                   total={candidates.length}
-                  filtered={filteredCandidates.length}
+                  filteredCount={filteredCandidates.length}
                   unlocked={unlockedCandidates.size}
                 />
               </div>
