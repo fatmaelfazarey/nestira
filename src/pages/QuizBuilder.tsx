@@ -119,8 +119,6 @@ const QuizBuilder = () => {
     },
   ]);
 
-
-
   const handleSaveQuiz = (newQuiz: any) => {
     if (editingQuiz) {
       // Update existing quiz, preserving fields like 'source'
@@ -165,6 +163,24 @@ const QuizBuilder = () => {
   const assignQuizHandler = (quiz: any) => {
     console.log('Opening assign for quiz:', quiz);
     setAssignQuiz(quiz);
+  };
+
+  const navigateToPassedCandidates = (quizId: number) => {
+    console.log('Navigating to passed candidates for quiz:', quizId);
+    toast.info('Navigating to passed candidates...');
+    // Here you would typically navigate to a candidates page with filters
+  };
+
+  const navigateToFailedCandidates = (quizId: number) => {
+    console.log('Navigating to failed candidates for quiz:', quizId);
+    toast.info('Navigating to failed candidates...');
+    // Here you would typically navigate to a candidates page with filters
+  };
+
+  const navigateToPendingCandidates = (quizId: number) => {
+    console.log('Navigating to pending candidates for quiz:', quizId);
+    toast.info('Navigating to pending candidates...');
+    // Here you would typically navigate to a candidates page with filters
   };
 
   const filteredQuizzes = quizzes.filter(quiz => {
@@ -234,7 +250,6 @@ const QuizBuilder = () => {
           </div>
         </div>
 
-
         {/* Quiz Content */}
         <div className="space-y-8">
           {Object.keys(groupedQuizzes).length > 0 ? (
@@ -279,23 +294,23 @@ const QuizBuilder = () => {
                           <div className="space-y-2 pt-2 border-t">
                              <div className="flex gap-4 text-xs">
                                <button 
-                                 className="flex items-center gap-1 text-green-600 hover:text-green-700 transition-colors cursor-pointer"
-                                 onClick={() => console.log('Navigate to passed candidates for quiz:', quiz.id)}
+                                 className="flex items-center gap-1 text-green-600 hover:text-green-700 transition-colors cursor-pointer hover:underline"
+                                 onClick={() => navigateToPassedCandidates(quiz.id)}
                                >
                                  <CheckCircle className="w-3 h-3" />
                                  <span>Passed: {quiz.passedCandidates}</span>
                                </button>
                                <button 
-                                 className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors cursor-pointer"
-                                 onClick={() => console.log('Navigate to failed candidates for quiz:', quiz.id)}
+                                 className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors cursor-pointer hover:underline"
+                                 onClick={() => navigateToFailedCandidates(quiz.id)}
                                >
                                  <XCircle className="w-3 h-3" />
                                  <span>Failed: {quiz.failedCandidates}</span>
                                </button>
                                {quiz.pendingCandidates > 0 && (
                                  <button 
-                                   className="flex items-center gap-1 text-orange-600 hover:text-orange-700 transition-colors cursor-pointer"
-                                   onClick={() => console.log('Navigate to pending candidates for quiz:', quiz.id)}
+                                   className="flex items-center gap-1 text-orange-600 hover:text-orange-700 transition-colors cursor-pointer hover:underline"
+                                   onClick={() => navigateToPendingCandidates(quiz.id)}
                                  >
                                    <span>Pending: {quiz.pendingCandidates}</span>
                                  </button>

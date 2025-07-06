@@ -11,7 +11,6 @@ import {
   DragEndEvent,
   DragOverlay,
   DragStartEvent,
-  DragOverEvent,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
@@ -369,7 +368,7 @@ function SortableQuizItem({
   );
 }
 
-function DraggableAvailableQuiz({ 
+function AvailableQuizCard({ 
   quiz, 
   onSelect, 
   onPreview 
@@ -378,73 +377,55 @@ function DraggableAvailableQuiz({
   onSelect: () => void;
   onPreview: () => void;
 }) {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: `available-${quiz.id}` });
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
-
   return (
-    <div ref={setNodeRef} style={style}>
-      <Card className="bg-blue-50 border border-blue-200 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing">
-        <CardContent className="p-4">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex items-center gap-3" {...attributes} {...listeners}>
-              <GripVertical className="w-4 h-4 text-gray-400" />
-              <span className="text-2xl">{quiz.icon}</span>
-              <div>
-                <h4 className="font-semibold text-gray-900">{quiz.title}</h4>
-                <p className="text-sm text-gray-600">{quiz.description}</p>
-              </div>
-            </div>
-            <div className="flex gap-4">
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onPreview();
-                }}
-                className="h-8 w-8 p-0 hover:bg-blue-100"
-              >
-                <Eye className="w-4 h-4" />
-              </Button>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelect();
-                }}
-                className="h-8 w-8 p-0 hover:bg-green-100"
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
+    <Card className="bg-blue-50 border border-blue-200 hover:shadow-md transition-shadow">
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{quiz.icon}</span>
+            <div>
+              <h4 className="font-semibold text-gray-900">{quiz.title}</h4>
+              <p className="text-sm text-gray-600">{quiz.description}</p>
             </div>
           </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex flex-wrap gap-1">
-              {quiz.tags.map((tag) => (
-                <Badge key={tag} variant="outline" className="text-xs">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
-            <span className="text-sm font-medium text-gray-700">{quiz.timeEstimate}</span>
+          <div className="flex gap-4">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onPreview();
+              }}
+              className="h-8 w-8 p-0 hover:bg-blue-100"
+            >
+              <Eye className="w-4 h-4" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect();
+              }}
+              className="h-8 w-8 p-0 hover:bg-green-100"
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex flex-wrap gap-1">
+            {quiz.tags.map((tag) => (
+              <Badge key={tag} variant="outline" className="text-xs">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+          <span className="text-sm font-medium text-gray-700">{quiz.timeEstimate}</span>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -546,32 +527,11 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
     setActiveId(event.active.id as string);
   };
 
-  const handleDragOver = (event: DragOverEvent) => {
-    const { active, over } = event;
-    
-    if (!over) return;
-    
-    const activeId = active.id as string;
-    const overId = over.id as string;
-    
-    // Handle dragging from available to selected
-    if (activeId.startsWith('available-') && overId === 'quiz-bundle-droppable') {
-      const quizId = activeId.replace('available-', '');
-      const quiz = availableQuizzes.find(q => q.id === quizId) || moreQuizzesPool.find(q => q.id === quizId);
-      if (quiz) {
-        setSelectedQuizzes(prev => [...prev, quiz]);
-        setAvailableQuizzes(prev => prev.filter(q => q.id !== quizId));
-        setMoreQuizzesPool(prev => prev.filter(q => q.id !== quizId));
-        toast.success(`${quiz.title} added to your quiz bundle`);
-      }
-    }
-  };
-
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
-    // Handle reordering within selected quizzes
-    if (active.id !== over?.id && !active.id.toString().startsWith('available-')) {
+    // Handle reordering within selected quizzes only
+    if (active.id !== over?.id) {
       const oldIndex = selectedQuizzes.findIndex((item) => item.id === active.id);
       const newIndex = selectedQuizzes.findIndex((item) => item.id === over?.id);
       
@@ -605,43 +565,40 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
         </p>
       </div>
 
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDragEnd={handleDragEnd}
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Available Quiz Templates */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-gray-800">Available Quiz Templates</h3>
-            </div>
-            <div className="space-y-3">
-              <SortableContext items={availableQuizzes.map(q => `available-${q.id}`)} strategy={verticalListSortingStrategy}>
-                {availableQuizzes.map((quiz) => (
-                  <DraggableAvailableQuiz
-                    key={quiz.id}
-                    quiz={quiz}
-                    onSelect={() => handleSelectQuiz(quiz)}
-                    onPreview={() => handlePreviewQuiz(quiz)}
-                  />
-                ))}
-              </SortableContext>
-              {availableQuizzes.length === 0 && (
-                <Card className="border-2 border-dashed border-gray-300 bg-gray-50">
-                  <CardContent className="p-8 text-center">
-                    <div className="text-gray-400">
-                      <p>All templates have been added to your bundle</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Available Quiz Templates */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-gray-800">Available Quiz Templates</h3>
           </div>
+          <div className="space-y-3">
+            {availableQuizzes.map((quiz) => (
+              <AvailableQuizCard
+                key={quiz.id}
+                quiz={quiz}
+                onSelect={() => handleSelectQuiz(quiz)}
+                onPreview={() => handlePreviewQuiz(quiz)}
+              />
+            ))}
+            {availableQuizzes.length === 0 && (
+              <Card className="border-2 border-dashed border-gray-300 bg-gray-50">
+                <CardContent className="p-8 text-center">
+                  <div className="text-gray-400">
+                    <p>All templates have been added to your bundle</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
 
-          {/* Your Quiz Bundle */}
+        {/* Your Quiz Bundle - DndContext only for selected quizzes */}
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+        >
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold text-gray-800">Your Quiz Bundle</h3>
@@ -650,13 +607,13 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
               </div>
             </div>
             
-            <div id="quiz-bundle-droppable" className="space-y-3 min-h-[400px] p-4 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50/50">
+            <div className="space-y-3 min-h-[400px] p-4 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50/50">
               {selectedQuizzes.length === 0 ? (
                 <div className="h-full flex items-center justify-center">
                   <div className="text-center text-gray-400">
                     <Plus className="w-12 h-12 mx-auto mb-2" />
-                    <p className="font-medium">Drop quiz templates here</p>
-                    <p className="text-sm">Or use the + button to add them</p>
+                    <p className="font-medium">Add quiz templates here</p>
+                    <p className="text-sm">Use the + button to add them</p>
                   </div>
                 </div>
               ) : (
@@ -702,79 +659,73 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
               </div>
             )}
           </div>
+
+          <DragOverlay>
+            {activeId ? (
+              <div className="p-4 bg-white border rounded-lg shadow-lg opacity-90">
+                <div className="flex items-center gap-2">
+                  <GripVertical className="w-4 h-4 text-gray-400" />
+                  <span className="text-sm font-medium">
+                    {selectedQuizzes.find(q => q.id === activeId)?.title}
+                  </span>
+                </div>
+              </div>
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+      </div>
+
+      {/* Show More Quizzes Section */}
+      {!showMoreQuizzes ? (
+        <div className="text-center pt-8">
+          <Button 
+            variant="outline" 
+            size="lg"
+            onClick={handleShowMoreQuizzes}
+            className="text-blue-600 border-blue-200 hover:bg-blue-50"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Show More Quizzes
+          </Button>
         </div>
-
-        {/* Show More Quizzes Section */}
-        {!showMoreQuizzes ? (
-          <div className="text-center pt-8">
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={handleShowMoreQuizzes}
-              className="text-blue-600 border-blue-200 hover:bg-blue-50"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Show More Quizzes
-            </Button>
+      ) : (
+        <div className="space-y-6 pt-8 border-t">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold text-gray-800">More Quiz Options</h3>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline"
+                onClick={() => setIsFilterOpen(true)}
+                className="border-orange-200 text-orange-600 hover:bg-orange-50"
+              >
+                <Filter className="w-4 h-4 mr-2" />
+                Filters {activeFilterCount > 0 && (
+                  <span className="ml-2 bg-orange-500 text-white rounded-full px-2 py-1 text-xs">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            </div>
           </div>
-        ) : (
-          <div className="space-y-6 pt-8 border-t">
-            <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold text-gray-800">More Quiz Options</h3>
-              <div className="flex gap-3">
-                <Button 
-                  variant="outline"
-                  onClick={() => setIsFilterOpen(true)}
-                  className="border-orange-200 text-orange-600 hover:bg-orange-50"
-                >
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filters {activeFilterCount > 0 && (
-                    <span className="ml-2 bg-orange-500 text-white rounded-full px-2 py-1 text-xs">
-                      {activeFilterCount}
-                    </span>
-                  )}
-                </Button>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <SortableContext items={filteredMoreQuizzes.map(q => `available-${q.id}`)} strategy={verticalListSortingStrategy}>
-                {filteredMoreQuizzes.map((quiz) => (
-                  <DraggableAvailableQuiz
-                    key={quiz.id}
-                    quiz={quiz}
-                    onSelect={() => handleSelectQuiz(quiz)}
-                    onPreview={() => handlePreviewQuiz(quiz)}
-                  />
-                ))}
-              </SortableContext>
-            </div>
-            
-            {filteredMoreQuizzes.length === 0 && (
-              <div className="text-center py-12">
-                <p className="text-gray-500">No quizzes match your filters.</p>
-              </div>
-            )}
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {filteredMoreQuizzes.map((quiz) => (
+              <AvailableQuizCard
+                key={quiz.id}
+                quiz={quiz}
+                onSelect={() => handleSelectQuiz(quiz)}
+                onPreview={() => handlePreviewQuiz(quiz)}
+              />
+            ))}
           </div>
-        )}
-
-        <DragOverlay>
-          {activeId ? (
-            <div className="p-4 bg-white border rounded-lg shadow-lg opacity-90">
-              <div className="flex items-center gap-2">
-                <GripVertical className="w-4 h-4 text-gray-400" />
-                <span className="text-sm font-medium">
-                  {activeId.startsWith('available-') 
-                    ? (availableQuizzes.find(q => q.id === activeId.replace('available-', ''))?.title ||
-                       moreQuizzesPool.find(q => q.id === activeId.replace('available-', ''))?.title)
-                    : selectedQuizzes.find(q => q.id === activeId)?.title
-                  }
-                </span>
-              </div>
+          
+          {filteredMoreQuizzes.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500">No quizzes match your filters.</p>
             </div>
-          ) : null}
-        </DragOverlay>
-      </DndContext>
+          )}
+        </div>
+      )}
 
       {/* Quiz Preview Modal */}
       <QuizPreviewModal
