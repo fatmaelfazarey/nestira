@@ -22,8 +22,6 @@ interface QuizFiltersProps {
   onSearchQueryChange: (query: string) => void;
   filterSource: string;
   onFilterSourceChange: (source: string) => void;
-  trendingOnly: boolean;
-  onTrendingOnlyChange: (trending: boolean) => void;
   selectedSkills: string[];
   onSelectedSkillsChange: (skills: string[]) => void;
 }
@@ -67,24 +65,21 @@ export function QuizFilters({
   onSearchQueryChange,
   filterSource,
   onFilterSourceChange,
-  trendingOnly,
-  onTrendingOnlyChange,
   selectedSkills,
   onSelectedSkillsChange,
 }: QuizFiltersProps) {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [localFilterSource, setLocalFilterSource] = useState(filterSource);
-  const [localTrendingOnly, setLocalTrendingOnly] = useState(trendingOnly);
+  
   const [localSelectedSkills, setLocalSelectedSkills] = useState(selectedSkills);
 
   useEffect(() => {
     if (isOpen) {
       setLocalSearchQuery(searchQuery);
       setLocalFilterSource(filterSource);
-      setLocalTrendingOnly(trendingOnly);
       setLocalSelectedSkills(selectedSkills);
     }
-  }, [isOpen, searchQuery, filterSource, trendingOnly, selectedSkills]);
+  }, [isOpen, searchQuery, filterSource, selectedSkills]);
 
   const handleSkillChange = (skill: string, checked: boolean) => {
     const newSkills = checked
@@ -96,14 +91,12 @@ export function QuizFilters({
   const handleResetFilters = () => {
     setLocalSearchQuery('');
     setLocalFilterSource('all');
-    setLocalTrendingOnly(false);
     setLocalSelectedSkills([]);
   };
 
   const handleApplyFilters = () => {
     onSearchQueryChange(localSearchQuery);
     onFilterSourceChange(localFilterSource);
-    onTrendingOnlyChange(localTrendingOnly);
     onSelectedSkillsChange(localSelectedSkills);
     onClose();
   };
@@ -118,15 +111,6 @@ export function QuizFilters({
           </SheetTitle>
         </SheetHeader>
         <div className="flex-1 overflow-y-auto py-6 space-y-6">
-          <div className="flex items-center space-x-2 pt-2">
-            <Flame className="w-5 h-5 text-orange-500" />
-            <Label htmlFor="trending-switch" className="font-semibold text-gray-700">Trending</Label>
-            <Switch
-              id="trending-switch"
-              checked={localTrendingOnly}
-              onCheckedChange={setLocalTrendingOnly}
-            />
-          </div>
           
           <div className="space-y-2">
             <Label className="font-semibold text-gray-700">Source</Label>

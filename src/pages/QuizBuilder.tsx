@@ -3,11 +3,12 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { QuizCreator } from '@/components/QuizCreator';
 import { QuizPreviewModal } from '@/components/quiz/QuizPreviewModal';
 import { QuizAssignModal } from '@/components/quiz/QuizAssignModal';
+import { QuizFilters } from '@/components/quiz/QuizFilters';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle, Search, Filter, Flame, Landmark, BrainCog, MessagesSquare, GanttChartSquare } from 'lucide-react';
+import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle, Filter } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -27,9 +28,8 @@ const QuizBuilder = () => {
   const [assignQuiz, setAssignQuiz] = useState<any>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterSource, setFilterSource] = useState('all');
-  const [trendingOnly, setTrendingOnly] = useState(false);
   const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [isFilterSheetOpen, setIsFilterSheetOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [quizzes, setQuizzes] = useState([
     { 
       id: 1, 
@@ -119,50 +119,7 @@ const QuizBuilder = () => {
     },
   ]);
 
-  const skillCategories = [
-    {
-      name: 'Finance, Auditing & Accounting Skills',
-      icon: Landmark,
-      skills: [
-        'Financial Accounting (IFRS)', 'Financial Accounting (US GAAP)', 'Accounts Payable / Receivable (AP/AR)', 'Costing of Products and Services', 'Financial Math', 'Budgeting', 'Financial Planning & Analysis (FP&A)', 'Advanced Accounting (IFRS / GAAP)', 'Internal Auditing / ISAs', 'Financial Due Diligence', 'Financial Modeling in Excel'
-      ]
-    },
-    {
-      name: 'Behavioral & Cognitive Tests',
-      icon: BrainCog,
-      skills: [
-        'DISC', 'Big 5 (OCEAN)', 'Culture Add', 'Behavioral Competency Profiler', 'Problem Solving', 'Critical Thinking', 'Numerical Reasoning'
-      ]
-    },
-    {
-      name: 'Communication & Interpersonal',
-      icon: MessagesSquare,
-      skills: [
-        'Communication', 'Active Listening', 'Presentation Skills'
-      ]
-    },
-    {
-      name: 'Tools Proficiency',
-      icon: GanttChartSquare,
-      skills: [
-        'Microsoft Excel (Advanced)', 'Power BI', 'QuickBooks / Xero'
-      ]
-    }
-  ];
 
-  const handleSkillChange = (skill: string, checked: boolean) => {
-    const newSkills = checked
-      ? [...selectedSkills, skill]
-      : selectedSkills.filter(s => s !== skill);
-    setSelectedSkills(newSkills);
-  };
-
-  const handleResetFilters = () => {
-    setSearchQuery('');
-    setFilterSource('all');
-    setTrendingOnly(false);
-    setSelectedSkills([]);
-  };
 
   const handleSaveQuiz = (newQuiz: any) => {
     if (editingQuiz) {
@@ -213,15 +170,13 @@ const QuizBuilder = () => {
   const filteredQuizzes = quizzes.filter(quiz => {
     const titleMatch = (quiz.personalizationParams?.jobTitle ?? '').toLowerCase().includes(searchQuery.toLowerCase());
     const sourceMatch = filterSource === 'all' || quiz.source === filterSource;
-    const trendingMatch = !trendingOnly || quiz.isTrending;
     const skillMatch = selectedSkills.length === 0 || selectedSkills.every(skill => quiz.skills?.includes(skill));
-    return titleMatch && sourceMatch && trendingMatch && skillMatch;
+    return titleMatch && sourceMatch && skillMatch;
   });
 
   const activeFilterCount =
     (searchQuery ? 1 : 0) +
     (filterSource !== 'all' ? 1 : 0) +
-    (trendingOnly ? 1 : 0) +
     (selectedSkills.length > 0 ? 1 : 0);
 
   const groupedQuizzes = filteredQuizzes.reduce((acc, quiz) => {
@@ -256,113 +211,29 @@ const QuizBuilder = () => {
             <h1 className="text-3xl font-bold text-gray-900">Quiz Builder</h1>
             <p className="text-gray-600">Create and manage assessment quizzes</p>
           </div>
-          <Button 
-            className="bg-accent hover:bg-accent/90 text-white"
-            onClick={() => setShowCreator(true)}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Create New Quiz
-          </Button>
+          <div className="flex gap-3">
+            <Button 
+              variant="outline"
+              onClick={() => setIsFilterOpen(true)}
+              className="border-orange-200 text-orange-600 hover:bg-orange-50"
+            >
+              <Filter className="w-4 h-4 mr-2" />
+              Filters {activeFilterCount > 0 && (
+                <span className="ml-2 bg-orange-500 text-white rounded-full px-2 py-1 text-xs">
+                  {activeFilterCount}
+                </span>
+              )}
+            </Button>
+            <Button 
+              className="bg-accent hover:bg-accent/90 text-white"
+              onClick={() => setShowCreator(true)}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Create New Quiz
+            </Button>
+          </div>
         </div>
 
-        {/* Horizontal Filters Panel */}
-        <Card className="border-orange-200 bg-orange-50/30">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <Filter className="w-5 h-5 text-orange-500" />
-              <span className="text-lg font-semibold text-gray-800">Filters & Sorting</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 gap-6">
-              {/* Trending Filter */}
-              <div className="flex items-center space-x-2">
-                <Flame className="w-5 h-5 text-orange-500" />
-                <Label htmlFor="trending-switch" className="font-semibold text-gray-700">Trending</Label>
-                <Switch
-                  id="trending-switch"
-                  checked={trendingOnly}
-                  onCheckedChange={setTrendingOnly}
-                />
-              </div>
-              
-              {/* Source Filter */}
-              <div className="space-y-2">
-                <Label className="font-semibold text-gray-700">Source</Label>
-                <ToggleGroup
-                  type="single"
-                  variant="outline"
-                  value={filterSource}
-                  onValueChange={(value) => { if (value) setFilterSource(value); }}
-                  className="flex flex-col items-start gap-1"
-                  aria-label="Filter quizzes by source"
-                >
-                  <ToggleGroupItem value="all" className="w-full justify-start text-xs px-2 py-1">All</ToggleGroupItem>
-                  <ToggleGroupItem value="Nestira" className="w-full justify-start text-xs px-2 py-1">Nestira</ToggleGroupItem>
-                  <ToggleGroupItem value="Me" className="w-full justify-start text-xs px-2 py-1">Me</ToggleGroupItem>
-                </ToggleGroup>
-              </div>
-
-              {/* Job Title Search */}
-              <div className="space-y-2">
-                <Label htmlFor="search-job-title" className="font-semibold text-gray-700">Job Title</Label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
-                  <Input
-                    id="search-job-title"
-                    placeholder="e.g. Financial Analyst"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 w-full"
-                  />
-                </div>
-              </div>
-
-              {/* Skills Filter - Collapsible sections for horizontal layout */}
-              <div className="col-span-1 md:col-span-2 lg:col-span-3 space-y-2">
-                <Label className="font-semibold text-gray-700">Filter by Skills</Label>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {skillCategories.map((category) => (
-                    <div key={category.name} className="space-y-2">
-                      <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
-                        <category.icon className="w-4 h-4 text-orange-500" />
-                        <span className="text-xs">{category.name}</span>
-                      </div>
-                      <div className="space-y-1 max-h-32 overflow-y-auto">
-                        {category.skills.slice(0, 3).map((skill) => (
-                          <div key={skill} className="flex items-center space-x-2">
-                            <Checkbox
-                              id={`skill-${skill}`}
-                              checked={selectedSkills.includes(skill)}
-                              onCheckedChange={(checked) => {
-                                handleSkillChange(skill, !!checked);
-                              }}
-                            />
-                            <Label
-                              htmlFor={`skill-${skill}`}
-                              className="text-xs font-normal text-gray-600 cursor-pointer leading-tight"
-                            >
-                              {skill}
-                            </Label>
-                          </div>
-                        ))}
-                        {category.skills.length > 3 && (
-                          <p className="text-xs text-gray-500">+{category.skills.length - 3} more</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <div className="mt-4 flex justify-end">
-              <Button variant="outline" onClick={handleResetFilters}>
-                Reset Filters
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* Quiz Content */}
         <div className="space-y-8">
@@ -483,6 +354,17 @@ const QuizBuilder = () => {
           onAssign={assignQuizToCandidates}
         />
       )}
+
+      <QuizFilters
+        isOpen={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        searchQuery={searchQuery}
+        onSearchQueryChange={setSearchQuery}
+        filterSource={filterSource}
+        onFilterSourceChange={setFilterSource}
+        selectedSkills={selectedSkills}
+        onSelectedSkillsChange={setSelectedSkills}
+      />
     </DashboardLayout>
   );
 };
