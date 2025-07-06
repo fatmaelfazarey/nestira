@@ -1,9 +1,10 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Sparkles, Search, X, ChevronRight, ChevronLeft } from 'lucide-react';
+import { Sparkles, Search, X, ChevronRight, ChevronLeft, FileText, Settings } from 'lucide-react';
 
 interface AICandidateSearchProps {
   onSearch: (query: string) => void;
@@ -11,6 +12,7 @@ interface AICandidateSearchProps {
   currentQuery?: string;
   onClear: () => void;
   onFindMyMatch?: () => void;
+  onAdvancedFeatures?: () => void;
 }
 
 export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
@@ -18,7 +20,8 @@ export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
   isSearching,
   currentQuery,
   onClear,
-  onFindMyMatch
+  onFindMyMatch,
+  onAdvancedFeatures
 }) => {
   const [query, setQuery] = useState('');
 
@@ -43,7 +46,7 @@ export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
 
   return (
     <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-dashed border-blue-200">
-      <CardContent className="p-6 px-[77px] py-[11px] my-0">
+      <CardContent className="p-6">
         <div className="flex items-center gap-2 mb-4">
           <Sparkles className="w-5 h-5 text-blue-600" />
           <h3 className="text-lg font-semibold text-gray-900">AI Talent Search</h3>
@@ -77,19 +80,46 @@ export const AICandidateSearch: React.FC<AICandidateSearchProps> = ({
             </Button>
           </div>
 
-          {/* Enhanced Find My Match Button with arrows and spacing */}
-          {onFindMyMatch && (
-            <div className="flex items-center justify-center gap-4 px-8">
-              <ChevronRight className="w-6 h-6 text-[#86e5a1] animate-pulse" />
+          {/* Three search options */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* From Job Post */}
+            {onFindMyMatch && (
+              <div className="flex items-center justify-center">
+                <Button
+                  onClick={onFindMyMatch}
+                  className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-6 py-3 font-semibold text-sm border-0 shadow-lg transform hover:scale-105 transition-all duration-200 w-full"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  From Job Post
+                </Button>
+              </div>
+            )}
+
+            {/* AI Talent Search - Center */}
+            <div className="flex items-center justify-center">
               <Button
-                onClick={onFindMyMatch}
-                className="bg-[#86e5a1] hover:bg-[#6dd387] text-[#00102c] px-8 py-3 font-bold text-base border-0 shadow-xl transform hover:scale-105 transition-all duration-200 justify-center"
+                onClick={handleSearch}
+                disabled={!query.trim() || isSearching}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 font-semibold text-sm w-full"
               >
-                Find My Match From Job Post
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI Search
               </Button>
-              <ChevronLeft className="w-6 h-6 text-[#86e5a1] animate-pulse" />
             </div>
-          )}
+
+            {/* Advanced Features */}
+            {onAdvancedFeatures && (
+              <div className="flex items-center justify-center">
+                <Button
+                  onClick={onAdvancedFeatures}
+                  className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 font-semibold text-sm border-0 shadow-lg transform hover:scale-105 transition-all duration-200 w-full"
+                >
+                  <Settings className="w-4 h-4 mr-2" />
+                  Advanced Features
+                </Button>
+              </div>
+            )}
+          </div>
 
           {currentQuery && (
             <div className="flex items-center gap-2 p-3 bg-blue-100 rounded-lg">

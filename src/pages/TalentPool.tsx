@@ -63,6 +63,8 @@ import { CandidateTableView } from "@/components/talent-pool/CandidateTableView"
 import { CandidateCountProgress } from "@/components/talent-pool/CandidateCountProgress";
 import { CandidatePreviewModal } from "@/components/CandidatePreviewModal";
 import { ExpandedCandidateModal } from "@/components/ExpandedCandidateModal";
+import { FindMyMatchModal } from "@/components/FindMyMatchModal";
+import { AdvancedFeaturesModal } from "@/components/AdvancedFeaturesModal";
 import { useTalentPoolState } from "@/hooks/useTalentPoolState";
 import { candidates } from "@/data/candidatesData";
 import { CircularProgress } from "@/components/ui/circular-progress";
@@ -126,6 +128,8 @@ const TalentPool = () => {
   const [previewCandidate, setPreviewCandidate] = useState(null);
   const [showExpandedModal, setShowExpandedModal] = useState(false);
   const [expandedCandidate, setExpandedCandidate] = useState(null);
+  const [showFindMyMatchModal, setShowFindMyMatchModal] = useState(false);
+  const [showAdvancedFeaturesModal, setShowAdvancedFeaturesModal] = useState(false);
 
   // Filter candidates based on current filters
   const filteredCandidates = useMemo(() => {
@@ -257,6 +261,16 @@ const TalentPool = () => {
     toast.success(`Invitation sent to ${candidate.name}!`);
   };
 
+  const handleJobSelected = (job: any) => {
+    toast.success(`Searching candidates for ${job.title}...`);
+    // Here you would implement the logic to filter candidates based on the job requirements
+  };
+
+  const handleAdvancedFeatureSelected = (feature: any) => {
+    toast.success(`${feature.title} activated!`);
+    // Here you would implement the logic for the selected advanced feature
+  };
+
   // Job titles for filter
   const jobTitles = {
     'finance-manager': 'Finance Manager',
@@ -362,6 +376,8 @@ const TalentPool = () => {
                   onClear={handleClearAiSearch}
                   currentQuery={aiSearchQuery}
                   isSearching={isAiSearching}
+                  onFindMyMatch={() => setShowFindMyMatchModal(true)}
+                  onAdvancedFeatures={() => setShowAdvancedFeaturesModal(true)}
                 />
               </div>
               <div>
@@ -484,16 +500,26 @@ const TalentPool = () => {
         />
       </div>
 
-      {/* Expanded Candidate Modal */}
+      {/* Modals */}
       <ExpandedCandidateModal
         candidate={expandedCandidate}
         isOpen={showExpandedModal}
         onClose={() => setShowExpandedModal(false)}
         isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false}
         onToggleFavorite={() => expandedCandidate && handleToggleFavorite(expandedCandidate.id)}
-        onUnlock={handleUnlock}
-        onInviteToApply={handleInviteToApply}
         isUnlocked={expandedCandidate ? unlockedCandidates.has(expandedCandidate.id) : false}
+      />
+
+      <FindMyMatchModal
+        isOpen={showFindMyMatchModal}
+        onClose={() => setShowFindMyMatchModal(false)}
+        onJobSelected={handleJobSelected}
+      />
+
+      <AdvancedFeaturesModal
+        isOpen={showAdvancedFeaturesModal}
+        onClose={() => setShowAdvancedFeaturesModal(false)}
+        onFeatureSelected={handleAdvancedFeatureSelected}
       />
     </div>
   );
