@@ -516,21 +516,6 @@ export function ExpandedCandidateModal({
                     Assign Assessment
                   </Button>
                   
-                  <Button variant="outline" className="w-full" onClick={handleDownloadCV}>
-                    <Download className="w-4 h-4 mr-2" />
-                    Download CV 
-                  </Button>
-                  
-                  <Button variant="outline" className="w-full" onClick={handleDownloadCoverLetter}>
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Cover Letter
-                  </Button>
-                  
-                  <Button variant="outline" className="w-full" onClick={handleDownloadProfile}>
-                    <User className="w-4 h-4 mr-2" />
-                    Download Profile
-                  </Button>
-                  
                   <Button variant="outline" className="w-full">
                     <MessageSquare className="w-4 h-4 mr-2" />
                     Message Candidate
@@ -548,13 +533,14 @@ export function ExpandedCandidateModal({
             <div className="flex-1 overflow-hidden bg-gray-50">
               <Tabs defaultValue="overview" className="h-full flex flex-col">
                 <div className="border-b bg-white px-6">
-                  <TabsList className="grid w-full max-w-2xl grid-cols-3">
+                  <TabsList className="grid w-full max-w-3xl grid-cols-4">
                     <TabsTrigger value="overview">Overview</TabsTrigger>
                     <TabsTrigger value="behavioral-culture" className="bg-gradient-to-r from-purple-50 to-blue-50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-100 data-[state=active]:to-blue-100 text-purple-700 data-[state=active]:text-purple-800">
                       <Brain className="w-4 h-4 mr-2 text-[#ff5f1b]" />
                       Behavioral & Culture Fit
                     </TabsTrigger>
                     <TabsTrigger value="assessment-results">Assessment Results</TabsTrigger>
+                    <TabsTrigger value="documents">Documents</TabsTrigger>
                   </TabsList>
                 </div>
 
@@ -1041,6 +1027,153 @@ export function ExpandedCandidateModal({
                                 </div>
                               </div>
                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+
+                {/* Documents Tab */}
+                <TabsContent value="documents" className="flex-1 overflow-y-auto p-6 space-y-6 mt-0">
+                  <div className="space-y-6">
+                    {/* Header */}
+                    <div className="text-center">
+                      <h1 className="text-3xl font-bold text-gray-900">Documents</h1>
+                      <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
+                        Access and download candidate documents and materials
+                      </p>
+                    </div>
+
+                    {/* Cover Letter Section */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                          <FileText className="w-5 h-5" />
+                          Cover Letter
+                        </h3>
+                        <Button variant="outline" onClick={handleDownloadCoverLetter}>
+                          <Download className="w-4 h-4 mr-2" />
+                          Download
+                        </Button>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg border text-sm">
+                        <p className="text-gray-700 mb-2">
+                          I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis, I have developed strong analytical skills and expertise in various financial tools and methodologies. My background includes working with SAP, Oracle, and advanced Excel functions to provide comprehensive financial insights...
+                        </p>
+                        <p className="text-xs text-gray-500 italic">Preview - Click download to view full document</p>
+                      </div>
+                    </div>
+
+                    {/* CV Section */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                          <User className="w-5 h-5" />
+                          Curriculum Vitae
+                        </h3>
+                        <Button variant="outline" onClick={handleDownloadCV}>
+                          <Download className="w-4 h-4 mr-2" />
+                          Download CV
+                        </Button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-gray-900 mb-2">Professional Experience</h4>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            <li>• Senior Financial Analyst - Emirates NBD (2021-Present)</li>
+                            <li>• Financial Analyst - ADNOC (2019-2021)</li>
+                            <li>• Junior Financial Analyst - First Abu Dhabi Bank (2017-2019)</li>
+                          </ul>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          <h4 className="font-medium text-gray-900 mb-2">Education & Certifications</h4>
+                          <ul className="text-sm text-gray-600 space-y-1">
+                            <li>• {candidate.education}</li>
+                            <li>• CPA Certified</li>
+                            <li>• CFA Level 2</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Profile Summary */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                          <User className="w-5 h-5" />
+                          Profile Summary
+                        </h3>
+                        <Button variant="outline" onClick={handleDownloadProfile}>
+                          <Download className="w-4 h-4 mr-2" />
+                          Download Profile
+                        </Button>
+                      </div>
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <p className="text-sm text-gray-600 mb-3">
+                          Complete candidate profile including skills assessment, behavioral analysis, and professional background summary.
+                        </p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <span>• Skills & Expertise Overview</span>
+                          <span>• Assessment Results</span>
+                          <span>• Behavioral Fit Analysis</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Certifications & Proof of Experience */}
+                    <div className="bg-white rounded-lg shadow-sm p-6">
+                      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <Award className="w-5 h-5" />
+                        Certifications & Documents
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-gray-900">CPA Certificate</h4>
+                              <p className="text-sm text-gray-600">Certified Public Accountant</p>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              <Download className="w-3 h-3 mr-1" />
+                              View
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-gray-900">CFA Level 2</h4>
+                              <p className="text-sm text-gray-600">Chartered Financial Analyst</p>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              <Download className="w-3 h-3 mr-1" />
+                              View
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-gray-900">Employment Verification</h4>
+                              <p className="text-sm text-gray-600">Emirates NBD</p>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              <Download className="w-3 h-3 mr-1" />
+                              View
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <h4 className="font-medium text-gray-900">Reference Letters</h4>
+                              <p className="text-sm text-gray-600">Professional References</p>
+                            </div>
+                            <Button variant="outline" size="sm">
+                              <Download className="w-3 h-3 mr-1" />
+                              View
+                            </Button>
                           </div>
                         </div>
                       </div>
