@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail } from "lucide-react";
@@ -269,26 +270,57 @@ export function DashboardOverview() {
         </div>
       </Card>
 
-      {/* Main Metrics - 5 Key KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-        {kpiData.map(kpi => <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
-            <div className="flex flex-col items-center text-center space-y-3">
-              <div className={`p-3 rounded-lg bg-white/70`}>
-                <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+      {/* Main Metrics with Recent Profile Views */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+        {/* KPI Metrics - Takes 3/4 of the space */}
+        <div className="xl:col-span-3">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {kpiData.map(kpi => <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
+                <div className="flex flex-col items-center text-center space-y-3">
+                  <div className={`p-3 rounded-lg bg-white/70`}>
+                    <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
+                    <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
+                    <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
+                  </div>
+                </div>
+              </Card>)}
+          </div>
+        </div>
+
+        {/* Recent Profile Views - Takes 1/4 of the space */}
+        <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-indigo-50">
+                <Eye className="w-4 h-4 text-indigo-600" />
               </div>
-              <div className="space-y-1">
-                <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
-                <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
-                <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
-              </div>
+              <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
             </div>
-          </Card>)}
+            <div className="space-y-2">
+              {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                      {profile.avatar}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
+                      <p className="text-xs text-gray-500">{profile.timeAgo}</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-gray-900">{profile.views}</span>
+                </div>)}
+            </div>
+          </div>
+        </Card>
       </div>
 
       {/* Charts and Quick Actions Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Weekly Activity Chart */}
-        <Card className="p-6 lg:col-span-2">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Weekly Activity Chart - Takes 2/3 of the space */}
+        <Card className="p-6 xl:col-span-2">
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-orange-500" />
@@ -329,66 +361,40 @@ export function DashboardOverview() {
           </div>
         </Card>
 
-        {/* Recent Profile Views Section */}
-        <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
+        {/* Quick Actions - Takes 1/3 of the space */}
+        <Card className="p-6 bg-orange-50 border border-orange-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+            <Target className="w-5 h-5 text-orange-600" />
+            Quick Actions
+          </h3>
           <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-indigo-50">
-                <Eye className="w-4 h-4 text-indigo-600" />
-              </div>
-              <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
-            </div>
-            <div className="space-y-2">
-              {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                      {profile.avatar}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
-                      <p className="text-xs text-gray-500">{profile.timeAgo}</p>
-                    </div>
-                  </div>
-                  <span className="text-sm font-bold text-gray-900">{profile.views}</span>
-                </div>)}
-            </div>
+            <Link to="/talent-pool">
+              <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
+                <Users className="w-4 h-4 mr-3" />
+                Browse Talent Pool
+              </Button>
+            </Link>
+            <Link to="/unlocked-talents">
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
+                <UserCheck className="w-4 h-4 mr-3" />
+                Unlocked Talents
+              </Button>
+            </Link>
+            <Link to="/job-listings">
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
+                <FileText className="w-4 h-4 mr-3" />
+                Create Job Post
+              </Button>
+            </Link>
+            <Link to="/quiz-builder">
+              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
+                <PuzzleIcon className="w-4 h-4 mr-3" />
+                Quiz Builder
+              </Button>
+            </Link>
           </div>
         </Card>
       </div>
-
-      {/* Quick Actions */}
-      <Card className="p-6 bg-orange-50 border border-orange-200">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-          <Target className="w-5 h-5 text-orange-600" />
-          Quick Actions
-        </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-          <Link to="/talent-pool">
-            <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
-              <Users className="w-4 h-4 mr-3" />
-              Browse Talent Pool
-            </Button>
-          </Link>
-          <Link to="/unlocked-talents">
-            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-              <UserCheck className="w-4 h-4 mr-3" />
-              Unlocked Talents
-            </Button>
-          </Link>
-          <Link to="/job-listings">
-            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-              <FileText className="w-4 h-4 mr-3" />
-              Create Job Post
-            </Button>
-          </Link>
-          <Link to="/quiz-builder">
-            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-              <PuzzleIcon className="w-4 h-4 mr-3" />
-              Quiz Builder
-            </Button>
-          </Link>
-        </div>
-      </Card>
 
       {/* Profile Views Modal */}
       <Dialog open={showProfileViewsModal} onOpenChange={setShowProfileViewsModal}>
