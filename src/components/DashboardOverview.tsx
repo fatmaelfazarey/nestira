@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Link } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { CircularProgress } from "@/components/ui/circular-progress";
+
 const kpiData = [{
   title: "Total Jobs",
   value: "2",
@@ -18,36 +19,18 @@ const kpiData = [{
   isPositive: true,
   clickAction: "job-listings"
 }, {
-  title: "Active Jobs",
-  value: "2",
-  subtitle: "Currently running",
-  icon: Activity,
-  color: "text-green-600",
-  bgColor: "bg-green-50",
-  isPositive: true,
-  clickAction: "recruitment-board"
-}, {
-  title: "Closed Jobs",
-  value: "0",
-  subtitle: "Completed jobs",
-  icon: CheckCircle,
-  color: "text-gray-600",
-  bgColor: "bg-gray-50",
-  isPositive: true,
-  clickAction: "job-listings"
-}, {
-  title: "Total Applications",
+  title: "Applications Received",
   value: "3",
-  subtitle: "All applications received",
+  subtitle: "Total applications",
   icon: FileText,
   color: "text-purple-600",
   bgColor: "bg-purple-50",
   isPositive: true,
   clickAction: "recruitment-board"
 }, {
-  title: "Avg Applications",
+  title: "Avg Applications per Job",
   value: "1.5",
-  subtitle: "Per job",
+  subtitle: "Per job posted",
   icon: TrendingUp,
   color: "text-orange-600",
   bgColor: "bg-orange-50",
@@ -63,15 +46,16 @@ const kpiData = [{
   isPositive: true,
   clickAction: "unlocked-talents"
 }, {
-  title: "Avg Daily Unlocks",
-  value: "0.0",
-  subtitle: "Last 30 days",
+  title: "Interviews Scheduled",
+  value: "3",
+  subtitle: "Upcoming interviews",
   icon: Calendar,
   color: "text-teal-600",
   bgColor: "bg-teal-50",
-  isPositive: false,
-  clickAction: "talent-pool"
+  isPositive: true,
+  clickAction: "interviews"
 }];
+
 const activityData = [{
   day: "Mon",
   applications: 15,
@@ -101,6 +85,7 @@ const activityData = [{
   applications: 19,
   interviews: 14
 }];
+
 const interviewData = [{
   month: "Apr",
   count: 10
@@ -123,6 +108,7 @@ const interviewData = [{
   month: "Oct",
   count: 11
 }];
+
 const todayInterviews = [{
   time: "10:00 AM",
   candidate: "Sarah Ahmed",
@@ -136,6 +122,7 @@ const todayInterviews = [{
   candidate: "Layla Ibrahim",
   position: "Investment Associate"
 }];
+
 const recentProfileViews = [{
   name: "Karim Ahmed",
   location: "Giza, Egypt",
@@ -167,6 +154,7 @@ const recentProfileViews = [{
   avatar: "Y",
   views: 9
 }];
+
 const chartConfig = {
   applications: {
     label: "Applications",
@@ -181,6 +169,7 @@ const chartConfig = {
     color: "hsl(var(--primary))"
   }
 };
+
 const planUsageData = [{
   title: "Unlocked CVs",
   current: 13,
@@ -217,17 +206,20 @@ const planUsageData = [{
   color: "text-indigo-600",
   bgColor: "bg-indigo-50"
 }];
+
 export function DashboardOverview() {
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const {
     t
   } = useTranslation();
+
   const handleKpiClick = (action: string) => {
     console.log(`Navigating to ${action}`);
     // In a real app, this would use router navigation
     // For now, we'll just log the action
   };
+
   return <div className="space-y-6">
       {/* Welcome Section */}
       <div className="p-6 rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
@@ -246,28 +238,28 @@ export function DashboardOverview() {
         </div>
       </div>
 
-      {/* Plan Details & Usage Section */}
-      <Card className="p-4">
-        <div className="flex items-center gap-2 mb-4">
+      {/* Plan Usage Section */}
+      <Card className="p-6">
+        <div className="flex items-center gap-2 mb-6">
           <CreditCard className="w-5 h-5 text-gray-600" />
           <h2 className="text-lg font-semibold text-gray-900">Plan Usage</h2>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {planUsageData.map(item => {
           const percentage = Math.round(item.current / item.total * 100);
-          return <div key={item.title} className="p-3 rounded-lg border border-gray-200 bg-white">
-                <div className="flex items-center justify-between mb-2">
-                  <item.icon className={`w-4 h-4 ${item.color}`} />
-                  <span className="text-xs text-gray-500">{percentage}%</span>
+          return <div key={item.title} className="p-4 rounded-lg border border-gray-200 bg-white">
+                <div className="flex items-center justify-between mb-3">
+                  <item.icon className={`w-5 h-5 ${item.color}`} />
+                  <span className="text-sm font-medium text-gray-500">{percentage}%</span>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-xs font-medium text-gray-700">{item.title}</h3>
-                  <p className="text-sm font-semibold text-gray-900">
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-gray-700">{item.title}</h3>
+                  <p className="text-lg font-bold text-gray-900">
                     {item.current} / {item.total}
                   </p>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
-                    <div className={`h-1.5 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-blue-500'}`} style={{
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-blue-500'}`} style={{
                   width: `${percentage}%`
                 }}></div>
                   </div>
@@ -277,58 +269,26 @@ export function DashboardOverview() {
         </div>
       </Card>
 
-      {/* KPI Cards and Recent Profile Views Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* KPI Cards Grid - 2 rows */}
-        <div className="lg:col-span-3">
-          <div className="grid grid-cols-4 gap-4">
-            {kpiData.map(kpi => <Card key={kpi.title} className={`p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor}`} onClick={() => handleKpiClick(kpi.clickAction)}>
-                <div className="flex flex-col items-center text-center space-y-2">
-                  <div className={`p-2 rounded-lg bg-white/50`}>
-                    <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-                  </div>
-                  <div className="space-y-1">
-                    <h3 className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</h3>
-                    <p className={`text-xs font-medium ${kpi.color} opacity-80`}>{kpi.title}</p>
-                  </div>
-                </div>
-              </Card>)}
-          </div>
-        </div>
-
-        {/* Recent Profile Views Section */}
-        <div className="lg:col-span-1">
-          <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <div className="p-2 rounded-lg bg-indigo-50">
-                  <Eye className="w-4 h-4 text-indigo-600" />
-                </div>
-                <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
+      {/* Main Metrics - 5 Key KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {kpiData.map(kpi => <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
+            <div className="flex flex-col items-center text-center space-y-3">
+              <div className={`p-3 rounded-lg bg-white/70`}>
+                <kpi.icon className={`w-6 h-6 ${kpi.color}`} />
               </div>
-              <div className="space-y-2">
-                {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                        {profile.avatar}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
-                        <p className="text-xs text-gray-500">{profile.timeAgo}</p>
-                      </div>
-                    </div>
-                    <span className="text-sm font-bold text-gray-900">{profile.views}</span>
-                  </div>)}
+              <div className="space-y-1">
+                <h3 className={`text-2xl font-bold ${kpi.color}`}>{kpi.value}</h3>
+                <p className={`text-sm font-semibold ${kpi.color} opacity-90`}>{kpi.title}</p>
+                <p className={`text-xs ${kpi.color} opacity-70`}>{kpi.subtitle}</p>
               </div>
             </div>
-          </Card>
-        </div>
+          </Card>)}
       </div>
 
       {/* Charts and Quick Actions Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Weekly Activity Chart */}
-        <Card className="p-6">
+        <Card className="p-6 lg:col-span-2">
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-orange-500" />
@@ -369,47 +329,66 @@ export function DashboardOverview() {
           </div>
         </Card>
 
-        {/* Quick Actions */}
-        <Card className="p-6 bg-orange-50 border border-orange-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-            <Target className="w-5 h-5 text-orange-600" />
-            Quick Actions
-          </h3>
-          <div className="grid grid-cols-1 gap-3">
-            <Link to="/talent-pool">
-              <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
-                <Users className="w-4 h-4 mr-3" />
-                Browse Talent Pool
-              </Button>
-            </Link>
-            <Link to="/unlocked-talents">
-              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-                <UserCheck className="w-4 h-4 mr-3" />
-                Unlocked Talents
-              </Button>
-            </Link>
-            <Link to="/job-listings">
-              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-                <FileText className="w-4 h-4 mr-3" />
-                Create Job Post
-              </Button>
-            </Link>
-            <Link to="/quiz-builder">
-              <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-                <PuzzleIcon className="w-4 h-4 mr-3" />
-                Quiz Builder
-              </Button>
-            </Link>
-            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800" onClick={() => setShowAnalyticsModal(true)}>
-              <TrendingUp className="w-4 h-4 mr-3" />
-              View Analytics
-            </Button>
+        {/* Recent Profile Views Section */}
+        <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-indigo-50">
+                <Eye className="w-4 h-4 text-indigo-600" />
+              </div>
+              <h3 className="text-sm font-medium text-gray-900">Recent Profile Views</h3>
+            </div>
+            <div className="space-y-2">
+              {recentProfileViews.slice(0, 5).map((profile, index) => <div key={index} className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                      {profile.avatar}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-medium text-gray-900 truncate">{profile.name}</p>
+                      <p className="text-xs text-gray-500">{profile.timeAgo}</p>
+                    </div>
+                  </div>
+                  <span className="text-sm font-bold text-gray-900">{profile.views}</span>
+                </div>)}
+            </div>
           </div>
         </Card>
       </div>
 
-      {/* Resource Usage */}
-      
+      {/* Quick Actions */}
+      <Card className="p-6 bg-orange-50 border border-orange-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+          <Target className="w-5 h-5 text-orange-600" />
+          Quick Actions
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+          <Link to="/talent-pool">
+            <Button className="justify-start h-12 bg-accent hover:bg-accent/90 text-white w-full">
+              <Users className="w-4 h-4 mr-3" />
+              Browse Talent Pool
+            </Button>
+          </Link>
+          <Link to="/unlocked-talents">
+            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
+              <UserCheck className="w-4 h-4 mr-3" />
+              Unlocked Talents
+            </Button>
+          </Link>
+          <Link to="/job-listings">
+            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
+              <FileText className="w-4 h-4 mr-3" />
+              Create Job Post
+            </Button>
+          </Link>
+          <Link to="/quiz-builder">
+            <Button variant="outline" className="justify-start h-12 w-full border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
+              <PuzzleIcon className="w-4 h-4 mr-3" />
+              Quiz Builder
+            </Button>
+          </Link>
+        </div>
+      </Card>
 
       {/* Profile Views Modal */}
       <Dialog open={showProfileViewsModal} onOpenChange={setShowProfileViewsModal}>

@@ -1,4 +1,3 @@
-
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipProvider, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
-import { Plus, Filter, MoreVertical, FileText, Users, Calendar, Award, UserCheck, UserX, UserMinus, Star, Info } from 'lucide-react';
+import { Plus, Filter, MoreVertical, FileText, Users, Calendar, Award, UserCheck, UserX, UserMinus, Star, Info, Tag } from 'lucide-react';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { useState, useMemo } from 'react';
@@ -23,6 +22,7 @@ interface Candidate {
   score: number;
   profilePhoto?: string;
   isLocked: boolean;
+  tags?: string[];
   skillScores: {
     accounting: number;
     negotiation: number;
@@ -97,22 +97,19 @@ const RecruitmentBoard = () => {
   const [selectedScreeningTags, setSelectedScreeningTags] = useState<string[]>([]);
   const [hiringStageFilter, setHiringStageFilter] = useState<string[]>([]);
 
-  // Funnel tracker data
+  // Simplified funnel tracker data
   const trackerStages = [
-    { id: 'inbox', name: 'CV Inbox', count: 24, icon: FileText, color: 'text-blue-600', bgColor: 'bg-blue-50' },
-    { id: 'shortlisted', name: 'Shortlisted', count: 8, icon: Users, color: 'text-sky-600', bgColor: 'bg-sky-50' },
-    { id: 'interviewed', name: 'Interviewed', count: 5, icon: Calendar, color: 'text-purple-600', bgColor: 'bg-purple-50' },
+    { id: 'new', name: 'New Applicants', count: 24, icon: FileText, color: 'text-blue-600', bgColor: 'bg-blue-50' },
+    { id: 'shortlisted', name: 'Shortlisted', count: 8, icon: Users, color: 'text-purple-600', bgColor: 'bg-purple-50' },
+    { id: 'interviewing', name: 'Interviewing', count: 5, icon: Calendar, color: 'text-orange-600', bgColor: 'bg-orange-50' },
     { id: 'offered', name: 'Offered', count: 2, icon: Award, color: 'text-yellow-600', bgColor: 'bg-yellow-50' },
     { id: 'hired', name: 'Hired', count: 1, icon: UserCheck, color: 'text-green-600', bgColor: 'bg-green-50' },
-    { id: 'rejected', name: 'Rejected', count: 6, icon: UserX, color: 'text-red-600', bgColor: 'bg-red-50' },
-    { id: 'screened-out', name: 'Screened Out', count: 3, icon: UserMinus, color: 'text-gray-600', bgColor: 'bg-gray-50' },
-    { id: 'recommended', name: 'Recommended', count: 4, icon: Star, color: 'text-orange-600', bgColor: 'bg-orange-50' },
   ];
 
   const [stages, setStages] = useState<Stage[]>([
     {
       id: 'new',
-      title: 'New',
+      title: 'New Applicants',
       color: 'border-blue-200',
       bgColor: 'bg-blue-50/30',
       candidates: [
@@ -123,6 +120,7 @@ const RecruitmentBoard = () => {
           flag: '🇺🇸', 
           score: 74, 
           isLocked: false,
+          tags: ['Recommended', 'High Potential'],
           jobId: 'financial-analyst',
           location: 'United Arab Emirates (UAE)',
           experience: 5,
@@ -138,6 +136,7 @@ const RecruitmentBoard = () => {
           flag: '🇪🇬', 
           score: 40, 
           isLocked: true,
+          tags: ['Flagged'],
           jobId: 'financial-analyst',
           location: 'Egypt',
           experience: 3,
@@ -147,20 +146,6 @@ const RecruitmentBoard = () => {
           detailedStatus: { text: 'Assessed', color: 'green' },
         },
       ]
-    },
-    {
-      id: 'assessed',
-      title: 'Assessed',
-      color: 'border-yellow-200',
-      bgColor: 'bg-yellow-50/30',
-      candidates: []
-    },
-    {
-      id: 'invited',
-      title: 'Invited',
-      color: 'border-orange-200',
-      bgColor: 'bg-orange-50/30',
-      candidates: []
     },
     {
       id: 'shortlisted',
@@ -175,6 +160,7 @@ const RecruitmentBoard = () => {
           flag: '🇱🇧', 
           score: 0, 
           isLocked: false,
+          tags: ['Strong Candidate'],
           jobId: 'investment-manager',
           location: 'United Arab Emirates (UAE)',
           experience: 6,
@@ -190,6 +176,7 @@ const RecruitmentBoard = () => {
           flag: '🇶🇦',
           score: 0,
           isLocked: true,
+          tags: ['Rejected', 'Not a Fit'],
           jobId: 'senior-accountant',
           location: 'Qatar',
           experience: 2,
@@ -198,6 +185,14 @@ const RecruitmentBoard = () => {
           skillScores: { accounting: 0, negotiation: 0, communication: 0, timeManagement: 0, cultureFit: 0 },
           detailedStatus: { text: 'Invited', color: 'yellow' },
         },
+      ]
+    },
+    {
+      id: 'interviewing',
+      title: 'Interviewing',
+      color: 'border-orange-200',
+      bgColor: 'bg-orange-50/30',
+      candidates: [
         {
           id: 7,
           firstName: 'Charlotte',
@@ -205,6 +200,7 @@ const RecruitmentBoard = () => {
           flag: '🇯🇴',
           score: 0,
           isLocked: false,
+          tags: ['Interview Scheduled'],
           jobId: 'investment-manager',
           location: 'Jordan',
           experience: 8,
@@ -213,6 +209,14 @@ const RecruitmentBoard = () => {
           skillScores: { accounting: 29, negotiation: 24, communication: 25, timeManagement: 33, cultureFit: 82 },
           detailedStatus: { text: 'Assessed', color: 'green' },
         },
+      ]
+    },
+    {
+      id: 'offered',
+      title: 'Offered',
+      color: 'border-yellow-200',
+      bgColor: 'bg-yellow-50/30',
+      candidates: [
         {
           id: 8,
           firstName: 'Mia',
@@ -220,6 +224,7 @@ const RecruitmentBoard = () => {
           flag: '🇴🇲',
           score: 0,
           isLocked: false,
+          tags: ['Offer Extended'],
           jobId: 'financial-analyst',
           location: 'Oman',
           experience: 5,
@@ -235,51 +240,6 @@ const RecruitmentBoard = () => {
       title: 'Hired',
       color: 'border-green-200',
       bgColor: 'bg-green-50/30',
-      candidates: []
-    },
-    {
-      id: 'rejected',
-      title: 'Rejected',
-      color: 'border-red-200',
-      bgColor: 'bg-red-50/30',
-      candidates: [
-        { 
-          id: 3, 
-          firstName: 'Heath', 
-          lastName: 'Winslet', 
-          flag: '🇸🇦', 
-          score: 0,
-          isLocked: false,
-          jobId: 'senior-accountant',
-          location: 'Saudi Arabia',
-          experience: 7,
-          status: 'Not Available',
-          skills: 'Senior-Level',
-          skillScores: { accounting: 0, negotiation: 0, communication: 0, timeManagement: 0, cultureFit: 82 },
-          detailedStatus: { text: 'Disqualified', color: 'red' },
-        },
-        { 
-          id: 4, 
-          firstName: 'Johnny', 
-          lastName: 'Sinatra', 
-          flag: '🇵🇰', 
-          score: 0, 
-          isLocked: true,
-          jobId: 'senior-accountant',
-          location: 'Kuwait',
-          experience: 4,
-          status: 'Not Available',
-          skills: 'Mid-Level',
-          skillScores: { accounting: 29, negotiation: 24, communication: 25, timeManagement: 33, cultureFit: 82 },
-          detailedStatus: { text: 'Assessed', color: 'green' },
-        },
-      ]
-    },
-    {
-      id: 'disqualified',
-      title: 'Disqualified',
-      color: 'border-red-400',
-      bgColor: 'bg-red-100/30',
       candidates: []
     }
   ]);
@@ -303,7 +263,6 @@ const RecruitmentBoard = () => {
     );
   }, [stages]);
 
-  // Filter candidates based on selected filters
   const allFilteredCandidates = useMemo(() => {
     return allCandidatesFromStages.filter(candidate => {
       // Search query filter
@@ -419,7 +378,6 @@ const RecruitmentBoard = () => {
       setSelectedCandidates(newSelected);
   };
   
-  // Count filtered candidates
   const filteredCandidatesCount = allFilteredCandidates.length;
 
   const resetAllFilters = () => {
@@ -456,6 +414,20 @@ const RecruitmentBoard = () => {
     setHiringStageFilter([]);
   };
 
+  const getTagColor = (tag: string) => {
+    const colors: { [key: string]: string } = {
+      'Recommended': 'bg-green-100 text-green-800',
+      'Rejected': 'bg-red-100 text-red-800',
+      'Flagged': 'bg-orange-100 text-orange-800',
+      'High Potential': 'bg-blue-100 text-blue-800',
+      'Strong Candidate': 'bg-purple-100 text-purple-800',
+      'Interview Scheduled': 'bg-yellow-100 text-yellow-800',
+      'Offer Extended': 'bg-indigo-100 text-indigo-800',
+      'Not a Fit': 'bg-gray-100 text-gray-800'
+    };
+    return colors[tag] || 'bg-gray-100 text-gray-800';
+  };
+
   const HiringStageBadge = ({ stageTitle }: { stageTitle: string }) => {
     let className = 'text-xs font-semibold h-auto py-1 px-2 border';
     let text = stageTitle.toUpperCase();
@@ -464,17 +436,18 @@ const RecruitmentBoard = () => {
       case 'Hired':
         className += ' bg-teal-500 text-white border-teal-500';
         break;
-      case 'Rejected':
-        className += ' bg-red-500 text-white border-red-500';
+      case 'Offered':
+        className += ' bg-yellow-500 text-white border-yellow-500';
+        break;
+      case 'Interviewing':
+        className += ' bg-orange-500 text-white border-orange-500';
+        break;
+      case 'Shortlisted':
+        className += ' bg-purple-500 text-white border-purple-500';
         break;
       default:
-        className += ' bg-gray-200 text-gray-700 border-gray-200';
-        text = 'NOT YET EVALUATED';
-    }
-
-    if (stageTitle === 'Shortlisted') {
-        text = 'EVALUATED';
-        className += ' bg-gray-600 text-white border-gray-600';
+        className += ' bg-blue-500 text-white border-blue-500';
+        text = 'NEW APPLICANT';
     }
     
     return (
@@ -541,16 +514,16 @@ const RecruitmentBoard = () => {
             </div>
           </div>
 
-          {/* Funnel Tracker */}
+          {/* Simplified Funnel Tracker - 5 Stages */}
           <Card className="p-4">
-            <div className="grid grid-cols-4 lg:grid-cols-8 gap-4">
+            <div className="grid grid-cols-5 gap-4">
               {trackerStages.map((stage) => {
                 const IconComponent = stage.icon;
                 return (
-                  <div key={stage.id} className={`${stage.bgColor} rounded-lg p-3 text-center`}>
-                    <IconComponent className={`w-5 h-5 mx-auto mb-1 ${stage.color}`} />
-                    <p className="text-xs font-medium text-gray-700">{stage.name}</p>
-                    <p className={`text-lg font-bold ${stage.color}`}>{stage.count}</p>
+                  <div key={stage.id} className={`${stage.bgColor} rounded-lg p-4 text-center`}>
+                    <IconComponent className={`w-6 h-6 mx-auto mb-2 ${stage.color}`} />
+                    <p className="text-sm font-medium text-gray-700">{stage.name}</p>
+                    <p className={`text-2xl font-bold ${stage.color}`}>{stage.count}</p>
                   </div>
                 );
               })}
@@ -586,6 +559,7 @@ const RecruitmentBoard = () => {
                         />
                       </TableHead>
                       <TableHead>Name</TableHead>
+                      <TableHead>Tags</TableHead>
                       <TableHead>
                         <div className="flex items-center gap-1">
                           % Nestira Insight Score
@@ -644,6 +618,15 @@ const RecruitmentBoard = () => {
                           </div>
                         </TableCell>
                         <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {candidate.tags?.map((tag, index) => (
+                              <Badge key={index} className={`text-xs ${getTagColor(tag)}`}>
+                                {tag}
+                              </Badge>
+                            )) || '-'}
+                          </div>
+                        </TableCell>
+                        <TableCell>
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button variant="link" className="font-semibold p-0 h-auto text-blue-600 hover:text-blue-800">
@@ -689,7 +672,7 @@ const RecruitmentBoard = () => {
                             value={currentStageId}
                             onValueChange={(newStageId) => handleStageChange(candidate.id, newStageId)}
                           >
-                            <SelectTrigger className="w-[120px]">
+                            <SelectTrigger className="w-[130px]">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -716,8 +699,9 @@ const RecruitmentBoard = () => {
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
                               <DropdownMenuItem>View profile</DropdownMenuItem>
+                              <DropdownMenuItem>Add tag</DropdownMenuItem>
                               <DropdownMenuItem>Move to stage</DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">Reject</DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">Mark as rejected</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </TableCell>
