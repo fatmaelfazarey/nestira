@@ -31,10 +31,13 @@ import {
   SidebarFooter
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { JobCreationModal } from "./JobCreationModal";
 import { NestiraRecruitModal } from "./NestiraRecruitModal";
 import { NestiraRemoteModal } from "./NestiraRemoteModal";
+import { RoleSelectionModal } from "./RoleSelectionModal";
+import { JobCreationModal } from "./JobCreationModal";
+import { InternshipCreationModal } from "./InternshipCreationModal";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 // Navigation items organized by sections
 const navigationSections = [
@@ -145,20 +148,56 @@ const navigationSections = [
 ];
 
 export function AppSidebar() {
-  const [isJobModalOpen, setIsJobModalOpen] = useState(false);
   const [isRecruitModalOpen, setIsRecruitModalOpen] = useState(false);
   const [isRemoteModalOpen, setIsRemoteModalOpen] = useState(false);
+  const [isRoleSelectionModalOpen, setIsRoleSelectionModalOpen] = useState(false);
+  const [isJobCreationModalOpen, setIsJobCreationModalOpen] = useState(false);
+  const [isInternshipCreationModalOpen, setIsInternshipCreationModalOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handlePostNewRole = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Post new role clicked from sidebar');
+    setIsRoleSelectionModalOpen(true);
+  };
+
+  const handleRoleSelected = (roleType: 'job' | 'internship') => {
+    console.log('Role selected:', roleType);
+    if (roleType === 'job') {
+      setIsJobCreationModalOpen(true);
+    } else {
+      setIsInternshipCreationModalOpen(true);
+    }
+  };
+
+  const handleJobCreated = (newJob: any) => {
+    console.log('New job created from sidebar:', newJob);
+    toast({
+      title: "Job Posted Successfully!",
+      description: `"${newJob.title}" has been posted and is now live.`,
+    });
+  };
+
+  const handleInternshipCreated = (newInternship: any) => {
+    console.log('New internship created from sidebar:', newInternship);
+    toast({
+      title: "Internship Posted Successfully!",
+      description: `"${newInternship.title}" internship has been posted and is now live.`,
+    });
+  };
 
   return (
     <>
       <Sidebar className="border-r border-gray-200/60 bg-gradient-to-b from-slate-50 to-white">
         <SidebarHeader className="p-6 border-b border-gray-100">
           <Button 
-            className="bg-gradient-to-r from-accent to-orange-600 hover:from-accent/90 hover:to-orange-600/90 text-white w-full shadow-lg hover:shadow-xl transition-all duration-200 font-semibold py-3"
-            onClick={() => setIsJobModalOpen(true)}
+            className="bg-accent hover:bg-accent/90 text-white w-full shadow-lg hover:shadow-xl transition-all duration-200 font-semibold py-3"
+            onClick={handlePostNewRole}
+            type="button"
           >
             <Plus className="w-4 h-4" />
-            Create Job Post
+            Post New Role
           </Button>
         </SidebarHeader>
         
@@ -237,9 +276,22 @@ export function AppSidebar() {
         </SidebarFooter>
       </Sidebar>
 
+      <RoleSelectionModal 
+        open={isRoleSelectionModalOpen} 
+        onOpenChange={setIsRoleSelectionModalOpen}
+        onRoleSelected={handleRoleSelected}
+      />
+
       <JobCreationModal 
-        open={isJobModalOpen} 
-        onOpenChange={setIsJobModalOpen} 
+        open={isJobCreationModalOpen} 
+        onOpenChange={setIsJobCreationModalOpen}
+        onJobCreated={handleJobCreated}
+      />
+
+      <InternshipCreationModal 
+        open={isInternshipCreationModalOpen} 
+        onOpenChange={setIsInternshipCreationModalOpen}
+        onInternshipCreated={handleInternshipCreated}
       />
       
       <NestiraRecruitModal 
