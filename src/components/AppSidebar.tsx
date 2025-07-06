@@ -14,7 +14,8 @@ import {
   Settings,
   UserCheck,
   Building2,
-  DollarSign
+  DollarSign,
+  Folder
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -67,6 +68,12 @@ const navigationSections = [
         title: "Unlocked Talents",
         url: "/unlocked-talents",
         icon: Users,
+        badge: null
+      },
+      {
+        title: "Folders",
+        url: "/folders",
+        icon: Folder,
         badge: null
       },
       {

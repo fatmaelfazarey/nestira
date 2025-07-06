@@ -9,6 +9,7 @@ import Index from "./pages/Index";
 import Inbox from "./pages/Inbox";
 import TalentPool from "./pages/TalentPool";
 import UnlockedTalents from "./pages/UnlockedTalents";
+import Folders from "./pages/Folders";
 import JobPosts from "./pages/JobPosts";
 import RecruitmentBoard from "./pages/RecruitmentBoard";
 import Interviews from "./pages/Interviews";
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/talent-pool" element={<TalentPool />} />
             <Route path="/unlocked-talents" element={<UnlockedTalents />} />
+            <Route path="/folders" element={<Folders />} />
             <Route path="/job-posts" element={<JobPosts />} />
             <Route path="/recruitment-board" element={<RecruitmentBoard />} />
             <Route path="/interviews" element={<Interviews />} />
