@@ -129,6 +129,111 @@ const suggestedBundle: BundleQuiz[] = [
   }
 ];
 
+const additionalQuizzes: BundleQuiz[] = [
+  {
+    id: 'time-management',
+    title: 'Time Management',
+    tags: ['Productivity', 'Organization', 'Planning'],
+    timeEstimate: '12 min',
+    description: 'Evaluate ability to manage time and prioritize tasks effectively',
+    icon: '⏰',
+    questionsList: [
+      {
+        id: 'tm1',
+        text: 'How do you prioritize multiple urgent tasks?',
+        type: 'multiple-choice',
+        options: ['First come, first served', 'Based on deadline', 'Based on impact', 'Ask supervisor'],
+        correctAnswer: 'Based on impact'
+      }
+    ]
+  },
+  {
+    id: 'risk-assessment',
+    title: 'Risk Assessment',
+    tags: ['Risk Management', 'Analysis', 'Decision Making'],
+    timeEstimate: '18 min',
+    description: 'Understanding of risk evaluation and mitigation strategies',
+    icon: '⚠️',
+    questionsList: [
+      {
+        id: 'ra1',
+        text: 'What is the primary goal of risk assessment?',
+        type: 'multiple-choice',
+        options: ['Eliminate all risks', 'Identify and mitigate risks', 'Transfer all risks', 'Ignore minor risks'],
+        correctAnswer: 'Identify and mitigate risks'
+      }
+    ]
+  },
+  {
+    id: 'data-analysis',
+    title: 'Data Analysis',
+    tags: ['Analytics', 'Statistics', 'Interpretation'],
+    timeEstimate: '22 min',
+    description: 'Ability to analyze and interpret financial data',
+    icon: '📈',
+    questionsList: [
+      {
+        id: 'da1',
+        text: 'Which measure best represents central tendency?',
+        type: 'multiple-choice',
+        options: ['Range', 'Standard deviation', 'Mean', 'Variance'],
+        correctAnswer: 'Mean'
+      }
+    ]
+  },
+  {
+    id: 'regulatory-compliance',
+    title: 'Regulatory Compliance',
+    tags: ['Compliance', 'Regulations', 'Legal'],
+    timeEstimate: '16 min',
+    description: 'Knowledge of financial regulations and compliance requirements',
+    icon: '⚖️',
+    questionsList: [
+      {
+        id: 'rc1',
+        text: 'What is the main purpose of SOX compliance?',
+        type: 'multiple-choice',
+        options: ['Tax reporting', 'Financial transparency', 'HR management', 'Marketing compliance'],
+        correctAnswer: 'Financial transparency'
+      }
+    ]
+  },
+  {
+    id: 'presentation-skills',
+    title: 'Presentation Skills',
+    tags: ['Communication', 'Public Speaking', 'Visualization'],
+    timeEstimate: '14 min',
+    description: 'Ability to present financial information clearly and effectively',
+    icon: '🎯',
+    questionsList: [
+      {
+        id: 'ps1',
+        text: 'What is the most important aspect of a financial presentation?',
+        type: 'multiple-choice',
+        options: ['Visual design', 'Data accuracy', 'Speaking confidence', 'Time management'],
+        correctAnswer: 'Data accuracy'
+      }
+    ]
+  },
+  {
+    id: 'ethics-integrity',
+    title: 'Ethics & Integrity',
+    tags: ['Ethics', 'Integrity', 'Professional Standards'],
+    timeEstimate: '13 min',
+    description: 'Understanding of professional ethics and integrity in finance',
+    icon: '🛡️',
+    questionsList: [
+      {
+        id: 'ei1',
+        text: 'What should you do if you discover a material error in financial statements?',
+        type: 'multiple-choice',
+        options: ['Ignore if small', 'Report immediately', 'Fix quietly', 'Wait for audit'],
+        correctAnswer: 'Report immediately'
+      }
+    ]
+  }
+];
+
 function SortableQuizItem({ 
   quiz, 
   onEdit, 
@@ -312,6 +417,7 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
   const [previewQuiz, setPreviewQuiz] = useState<BundleQuiz | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [showMoreQuizzes, setShowMoreQuizzes] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -363,6 +469,16 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
     };
     setSelectedQuizzes(prev => [...prev, newQuiz]);
     toast.success('Custom quiz added');
+  };
+
+  const handleShowMoreQuizzes = () => {
+    const newQuizzes = additionalQuizzes.filter(quiz => 
+      !availableQuizzes.some(existing => existing.id === quiz.id) &&
+      !selectedQuizzes.some(selected => selected.id === quiz.id)
+    );
+    setAvailableQuizzes(prev => [...prev, ...newQuizzes]);
+    setShowMoreQuizzes(true);
+    toast.success(`${newQuizzes.length} more quizzes loaded!`);
   };
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -437,7 +553,20 @@ export function QuizBundleSelection({ roleTitle, onPathSelected, onEditQuiz }: Q
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Available Quiz Templates */}
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800">Available Quiz Templates</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xl font-semibold text-gray-800">Available Quiz Templates</h3>
+              {!showMoreQuizzes && (
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleShowMoreQuizzes}
+                  className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                >
+                  <Plus className="w-4 h-4 mr-2" />
+                  Show More Quizzes
+                </Button>
+              )}
+            </div>
             <div className="space-y-3">
               <SortableContext items={availableQuizzes.map(q => `available-${q.id}`)} strategy={verticalListSortingStrategy}>
                 {availableQuizzes.map((quiz) => (
