@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -294,234 +295,236 @@ const TalentPool = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex">
-        {/* Main Content */}
-        <div className="flex-1 p-6">
-          {/* Header */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Talent Pool</h1>
-                <p className="text-gray-600 mt-1">Discover and connect with top finance professionals</p>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <FolderManagementButton />
+    <DashboardLayout>
+      <div className="min-h-screen bg-gray-50">
+        <div className="flex">
+          {/* Main Content */}
+          <div className="flex-1 p-6">
+            {/* Header */}
+            <div className="mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-900">Talent Pool</h1>
+                  <p className="text-gray-600 mt-1">Discover and connect with top finance professionals</p>
+                </div>
                 
-                <Button
-                  variant="outline"
-                  onClick={() => setIsFilterSidebarOpen(true)}
-                  className="flex items-center gap-2"
-                >
-                  <Filter className="w-4 h-4" />
-                  Filters
-                  {hasActiveFilters() && (
-                    <Badge variant="secondary" className="ml-1">
-                      {Object.values({
-                        searchQuery: searchQuery !== '',
-                        locationFilter: locationFilter !== 'all',
-                        experienceRange: experienceRange[0] > 0,
-                        statusFilter: statusFilter !== 'all',
-                        skillsFilter: skillsFilter !== 'all',
-                        scoreRange: scoreRange[0] > 0,
-                        industries: selectedIndustries.length > 0,
-                        subfields: selectedSubfields.length > 0,
-                        software: selectedSoftware.length > 0,
-                        certifications: selectedCertifications.length > 0
-                      }).filter(Boolean).length}
-                    </Badge>
-                  )}
-                </Button>
+                <div className="flex items-center gap-3">
+                  <FolderManagementButton />
+                  
+                  <Button
+                    variant="outline"
+                    onClick={() => setIsFilterSidebarOpen(true)}
+                    className="flex items-center gap-2"
+                  >
+                    <Filter className="w-4 h-4" />
+                    Filters
+                    {hasActiveFilters() && (
+                      <Badge variant="secondary" className="ml-1">
+                        {Object.values({
+                          searchQuery: searchQuery !== '',
+                          locationFilter: locationFilter !== 'all',
+                          experienceRange: experienceRange[0] > 0,
+                          statusFilter: statusFilter !== 'all',
+                          skillsFilter: skillsFilter !== 'all',
+                          scoreRange: scoreRange[0] > 0,
+                          industries: selectedIndustries.length > 0,
+                          subfields: selectedSubfields.length > 0,
+                          software: selectedSoftware.length > 0,
+                          certifications: selectedCertifications.length > 0
+                        }).filter(Boolean).length}
+                      </Badge>
+                    )}
+                  </Button>
 
-                <Button
-                  variant={isRevealed ? "default" : "outline"}
-                  onClick={handleRevealScores}
-                  disabled={isRevealed}
-                  className={isRevealed ? "bg-green-600 hover:bg-green-700" : ""}
-                >
-                  {isRevealed ? (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Scores Revealed
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="w-4 h-4 mr-2" />
-                      Reveal Match Scores
-                    </>
-                  )}
-                </Button>
+                  <Button
+                    variant={isRevealed ? "default" : "outline"}
+                    onClick={handleRevealScores}
+                    disabled={isRevealed}
+                    className={isRevealed ? "bg-green-600 hover:bg-green-700" : ""}
+                  >
+                    {isRevealed ? (
+                      <>
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Scores Revealed
+                      </>
+                    ) : (
+                      <>
+                        <Eye className="w-4 h-4 mr-2" />
+                        Reveal Match Scores
+                      </>
+                    )}
+                  </Button>
+                  
+                  <div className="flex bg-gray-100 rounded-lg p-1">
+                    <Button
+                      variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('grid')}
+                      className={viewMode === 'grid' ? 'bg-white shadow-sm' : ''}
+                    >
+                      <Grid3X3 className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant={viewMode === 'table' ? 'default' : 'ghost'}
+                      size="sm"
+                      onClick={() => setViewMode('table')}
+                      className={viewMode === 'table' ? 'bg-white shadow-sm' : ''}
+                    >
+                      <List className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              {/* AI Search and Progress */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                <div className="lg:col-span-2">
+                  <AICandidateSearch
+                    onSearch={handleAiSearch}
+                    onClear={handleClearAiSearch}
+                    currentQuery={aiSearchQuery}
+                    isSearching={isAiSearching}
+                    onFindMyMatch={() => setShowFindMyMatchModal(true)}
+                    onAdvancedFeatures={() => setIsFilterSidebarOpen(true)}
+                  />
+                </div>
+                <div>
+                  <CandidateCountProgress
+                    count={filteredCandidates.length}
+                    total={candidates.length}
+                  />
+                </div>
+              </div>
+
+              {/* Sort Controls */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <span className="text-sm font-medium text-gray-700">Sort by:</span>
+                  <Select value={sortBy} onValueChange={setSortBy}>
+                    <SelectTrigger className="w-48">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="score">Match Score</SelectItem>
+                      <SelectItem value="experience">Experience Level</SelectItem>
+                      <SelectItem value="name">Name (A-Z)</SelectItem>
+                      <SelectItem value="recent">Recently Added</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 
-                <div className="flex bg-gray-100 rounded-lg p-1">
-                  <Button
-                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('grid')}
-                    className={viewMode === 'grid' ? 'bg-white shadow-sm' : ''}
-                  >
-                    <Grid3X3 className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'table' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('table')}
-                    className={viewMode === 'table' ? 'bg-white shadow-sm' : ''}
-                  >
-                    <List className="w-4 h-4" />
-                  </Button>
+                <div className="text-sm text-gray-600">
+                  Showing {sortedCandidates.length} of {candidates.length} candidates
                 </div>
               </div>
             </div>
 
-            {/* AI Search and Progress */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              <div className="lg:col-span-2">
-                <AICandidateSearch
-                  onSearch={handleAiSearch}
-                  onClear={handleClearAiSearch}
-                  currentQuery={aiSearchQuery}
-                  isSearching={isAiSearching}
-                  onFindMyMatch={() => setShowFindMyMatchModal(true)}
-                  onAdvancedFeatures={() => setIsFilterSidebarOpen(true)}
-                />
-              </div>
-              <div>
-                <CandidateCountProgress
-                  count={filteredCandidates.length}
-                  total={candidates.length}
-                />
-              </div>
-            </div>
-
-            {/* Sort Controls */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-gray-700">Sort by:</span>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="score">Match Score</SelectItem>
-                    <SelectItem value="experience">Experience Level</SelectItem>
-                    <SelectItem value="name">Name (A-Z)</SelectItem>
-                    <SelectItem value="recent">Recently Added</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="text-sm text-gray-600">
-                Showing {sortedCandidates.length} of {candidates.length} candidates
-              </div>
-            </div>
+            {/* Candidates Display */}
+            {viewMode === 'grid' ? (
+              <CandidateGridView
+                sortedCandidates={sortedCandidates}
+                isRevealed={isRevealed}
+                scoreVisibility={scoreVisibility}
+                favorites={favorites}
+                unlockedCandidates={unlockedCandidates}
+                onToggleFavorite={handleToggleFavorite}
+                onUnlock={handleUnlock}
+                onViewProfile={handleViewProfile}
+                onInviteToApply={handleInviteToApply}
+              />
+            ) : (
+              <CandidateTableView
+                sortedCandidates={sortedCandidates}
+                isRevealed={isRevealed}
+                scoreVisibility={scoreVisibility}
+                favorites={favorites}
+                unlockedCandidates={unlockedCandidates}
+                onToggleFavorite={handleToggleFavorite}
+                onUnlock={handleUnlock}
+                onViewProfile={handleViewProfile}
+                onInviteToApply={handleInviteToApply}
+              />
+            )}
           </div>
 
-          {/* Candidates Display */}
-          {viewMode === 'grid' ? (
-            <CandidateGridView
-              sortedCandidates={sortedCandidates}
-              isRevealed={isRevealed}
-              scoreVisibility={scoreVisibility}
-              favorites={favorites}
-              unlockedCandidates={unlockedCandidates}
-              onToggleFavorite={handleToggleFavorite}
-              onUnlock={handleUnlock}
-              onViewProfile={handleViewProfile}
-              onInviteToApply={handleInviteToApply}
-            />
-          ) : (
-            <CandidateTableView
-              sortedCandidates={sortedCandidates}
-              isRevealed={isRevealed}
-              scoreVisibility={scoreVisibility}
-              favorites={favorites}
-              unlockedCandidates={unlockedCandidates}
-              onToggleFavorite={handleToggleFavorite}
-              onUnlock={handleUnlock}
-              onViewProfile={handleViewProfile}
-              onInviteToApply={handleInviteToApply}
-            />
-          )}
+          {/* Filter Sidebar */}
+          <FilterSidebar
+            isOpen={isFilterSidebarOpen}
+            onClose={() => setIsFilterSidebarOpen(false)}
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            locationFilter={locationFilter}
+            setLocationFilter={setLocationFilter}
+            experienceRange={experienceRange}
+            setExperienceRange={setExperienceRange}
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            skillsFilter={skillsFilter}
+            setSkillsFilter={setSkillsFilter}
+            scoreRange={scoreRange}
+            setScoreRange={setScoreRange}
+            assessmentScoreRange={assessmentScoreRange}
+            setAssessmentScoreRange={setAssessmentScoreRange}
+            selectedSubfields={selectedSubfields}
+            setSelectedSubfields={setSelectedSubfields}
+            selectedSoftware={selectedSoftware}
+            setSelectedSoftware={setSelectedSoftware}
+            erpVersion={erpVersion}
+            setErpVersion={setErpVersion}
+            selectedCertifications={selectedCertifications}
+            setSelectedCertifications={setSelectedCertifications}
+            selectedIndustries={selectedIndustries}
+            setSelectedIndustries={setSelectedIndustries}
+            selectedVisaStatus={selectedVisaStatus}
+            setSelectedVisaStatus={setSelectedVisaStatus}
+            employmentType={employmentType}
+            setEmploymentType={setEmploymentType}
+            workMode={workMode}
+            setWorkMode={setWorkMode}
+            availability={availability}
+            setAvailability={setAvailability}
+            languageProficiency={languageProficiency}
+            setLanguageProficiency={setLanguageProficiency}
+            genderFilter={genderFilter}
+            setGenderFilter={setGenderFilter}
+            educationLevel={educationLevel}
+            setEducationLevel={setEducationLevel}
+            selectedSpecialNeeds={selectedSpecialNeeds}
+            setSelectedSpecialNeeds={setSelectedSpecialNeeds}
+            cvCompleteness={cvCompleteness}
+            setCvCompleteness={setCvCompleteness}
+            academicExcellence={academicExcellence}
+            setAcademicExcellence={setAcademicExcellence}
+            selectedScreeningTags={selectedScreeningTags}
+            setSelectedScreeningTags={setSelectedScreeningTags}
+            resetAllFilters={resetAllFilters}
+            filteredCandidatesCount={filteredCandidates.length}
+            jobTitles={jobTitles}
+            selectedJob={selectedJob}
+            setSelectedJob={setSelectedJob}
+            hiringStages={hiringStages}
+            hiringStageFilter={hiringStageFilter}
+            setHiringStageFilter={setHiringStageFilter}
+          />
         </div>
 
-        {/* Filter Sidebar */}
-        <FilterSidebar
-          isOpen={isFilterSidebarOpen}
-          onClose={() => setIsFilterSidebarOpen(false)}
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          locationFilter={locationFilter}
-          setLocationFilter={setLocationFilter}
-          experienceRange={experienceRange}
-          setExperienceRange={setExperienceRange}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          skillsFilter={skillsFilter}
-          setSkillsFilter={setSkillsFilter}
-          scoreRange={scoreRange}
-          setScoreRange={setScoreRange}
-          assessmentScoreRange={assessmentScoreRange}
-          setAssessmentScoreRange={setAssessmentScoreRange}
-          selectedSubfields={selectedSubfields}
-          setSelectedSubfields={setSelectedSubfields}
-          selectedSoftware={selectedSoftware}
-          setSelectedSoftware={setSelectedSoftware}
-          erpVersion={erpVersion}
-          setErpVersion={setErpVersion}
-          selectedCertifications={selectedCertifications}
-          setSelectedCertifications={setSelectedCertifications}
-          selectedIndustries={selectedIndustries}
-          setSelectedIndustries={setSelectedIndustries}
-          selectedVisaStatus={selectedVisaStatus}
-          setSelectedVisaStatus={setSelectedVisaStatus}
-          employmentType={employmentType}
-          setEmploymentType={setEmploymentType}
-          workMode={workMode}
-          setWorkMode={setWorkMode}
-          availability={availability}
-          setAvailability={setAvailability}
-          languageProficiency={languageProficiency}
-          setLanguageProficiency={setLanguageProficiency}
-          genderFilter={genderFilter}
-          setGenderFilter={setGenderFilter}
-          educationLevel={educationLevel}
-          setEducationLevel={setEducationLevel}
-          selectedSpecialNeeds={selectedSpecialNeeds}
-          setSelectedSpecialNeeds={setSelectedSpecialNeeds}
-          cvCompleteness={cvCompleteness}
-          setCvCompleteness={setCvCompleteness}
-          academicExcellence={academicExcellence}
-          setAcademicExcellence={setAcademicExcellence}
-          selectedScreeningTags={selectedScreeningTags}
-          setSelectedScreeningTags={setSelectedScreeningTags}
-          resetAllFilters={resetAllFilters}
-          filteredCandidatesCount={filteredCandidates.length}
-          jobTitles={jobTitles}
-          selectedJob={selectedJob}
-          setSelectedJob={setSelectedJob}
-          hiringStages={hiringStages}
-          hiringStageFilter={hiringStageFilter}
-          setHiringStageFilter={setHiringStageFilter}
+        {/* Modals */}
+        <ExpandedCandidateModal
+          candidate={expandedCandidate}
+          isOpen={showExpandedModal}
+          onClose={() => setShowExpandedModal(false)}
+          isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false}
+          onToggleFavorite={() => expandedCandidate && handleToggleFavorite(expandedCandidate.id)}
+          isUnlocked={expandedCandidate ? unlockedCandidates.has(expandedCandidate.id) : false}
+        />
+
+        <FindMyMatchModal
+          isOpen={showFindMyMatchModal}
+          onClose={() => setShowFindMyMatchModal(false)}
+          onJobSelected={handleJobSelected}
         />
       </div>
-
-      {/* Modals */}
-      <ExpandedCandidateModal
-        candidate={expandedCandidate}
-        isOpen={showExpandedModal}
-        onClose={() => setShowExpandedModal(false)}
-        isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false}
-        onToggleFavorite={() => expandedCandidate && handleToggleFavorite(expandedCandidate.id)}
-        isUnlocked={expandedCandidate ? unlockedCandidates.has(expandedCandidate.id) : false}
-      />
-
-      <FindMyMatchModal
-        isOpen={showFindMyMatchModal}
-        onClose={() => setShowFindMyMatchModal(false)}
-        onJobSelected={handleJobSelected}
-      />
-    </div>
+    </DashboardLayout>
   );
 };
 
