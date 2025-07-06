@@ -1,71 +1,16 @@
 
 import React, { useState, useMemo } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { 
-  Users, 
-  Filter, 
-  Grid3X3, 
-  List, 
-  Search,
-  Star,
-  MapPin,
-  Briefcase,
-  DollarSign,
-  Clock,
-  Eye,
-  Brain,
-  TrendingUp,
-  BarChart3,
-  Target,
-  Zap,
-  CheckCircle,
-  AlertCircle,
-  Shuffle,
-  FileText,
-  Trophy,
-  Lightbulb,
-  Download,
-  Settings,
-  SlidersHorizontal,
-  Plus,
-  X,
-  Unlock,
-  UserPlus,
-  Mail,
-  ArrowUpDown,
-  ChevronDown,
-  ChevronUp,
-  Sparkles,
-  MessageSquare,
-  RefreshCw,
-  BookOpen,
-  Calculator,
-  Building2,
-  Factory,
-  Code2
-} from "lucide-react";
-import { AICandidateSearch } from "@/components/AICandidateSearch";
 import { FilterSidebar } from "@/components/FilterSidebar";
 import { CandidateGridView } from "@/components/talent-pool/CandidateGridView";
 import { CandidateTableView } from "@/components/talent-pool/CandidateTableView";
-import { CandidateCountProgress } from "@/components/talent-pool/CandidateCountProgress";
 import { CandidatePreviewModal } from "@/components/CandidatePreviewModal";
 import { ExpandedCandidateModal } from "@/components/ExpandedCandidateModal";
+import { TalentPoolHeader } from "@/components/talent-pool/TalentPoolHeader";
+import { TalentPoolSearch } from "@/components/talent-pool/TalentPoolSearch";
+import { TalentPoolControls } from "@/components/talent-pool/TalentPoolControls";
 import { useTalentPoolState } from "@/hooks/useTalentPoolState";
 import { candidates } from "@/data/candidatesData";
-import { CircularProgress } from "@/components/ui/circular-progress";
 
 const TalentPool = () => {
   const {
@@ -282,117 +227,43 @@ const TalentPool = () => {
         <div className="flex-1 p-6">
           {/* Header */}
           <div className="mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900">Talent Pool</h1>
-                <p className="text-gray-600 mt-1">Discover and connect with top finance professionals</p>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => setIsFilterSidebarOpen(true)}
-                  className="flex items-center gap-2"
-                >
-                  <Filter className="w-4 h-4" />
-                  Filters
-                  {hasActiveFilters() && (
-                    <Badge variant="secondary" className="ml-1">
-                      {Object.values({
-                        searchQuery: searchQuery !== '',
-                        locationFilter: locationFilter !== 'all',
-                        experienceRange: experienceRange[0] > 0,
-                        statusFilter: statusFilter !== 'all',
-                        skillsFilter: skillsFilter !== 'all',
-                        scoreRange: scoreRange[0] > 0,
-                        industries: selectedIndustries.length > 0,
-                        subfields: selectedSubfields.length > 0,
-                        software: selectedSoftware.length > 0,
-                        certifications: selectedCertifications.length > 0
-                      }).filter(Boolean).length}
-                    </Badge>
-                  )}
-                </Button>
-
-                <Button
-                  variant={isRevealed ? "default" : "outline"}
-                  onClick={handleRevealScores}
-                  disabled={isRevealed}
-                  className={isRevealed ? "bg-green-600 hover:bg-green-700" : ""}
-                >
-                  {isRevealed ? (
-                    <>
-                      <CheckCircle className="w-4 h-4 mr-2" />
-                      Scores Revealed
-                    </>
-                  ) : (
-                    <>
-                      <Eye className="w-4 h-4 mr-2" />
-                      Reveal Match Scores
-                    </>
-                  )}
-                </Button>
-                
-                <div className="flex bg-gray-100 rounded-lg p-1">
-                  <Button
-                    variant={viewMode === 'grid' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('grid')}
-                    className={viewMode === 'grid' ? 'bg-white shadow-sm' : ''}
-                  >
-                    <Grid3X3 className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'table' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('table')}
-                    className={viewMode === 'table' ? 'bg-white shadow-sm' : ''}
-                  >
-                    <List className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <TalentPoolHeader
+              isFilterSidebarOpen={isFilterSidebarOpen}
+              setIsFilterSidebarOpen={setIsFilterSidebarOpen}
+              hasActiveFilters={hasActiveFilters}
+              isRevealed={isRevealed}
+              handleRevealScores={handleRevealScores}
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              searchQuery={searchQuery}
+              locationFilter={locationFilter}
+              experienceRange={experienceRange}
+              statusFilter={statusFilter}
+              skillsFilter={skillsFilter}
+              scoreRange={scoreRange}
+              selectedIndustries={selectedIndustries}
+              selectedSubfields={selectedSubfields}
+              selectedSoftware={selectedSoftware}
+              selectedCertifications={selectedCertifications}
+            />
 
             {/* AI Search and Progress */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              <div className="lg:col-span-2">
-                <AICandidateSearch
-                  onSearch={handleAiSearch}
-                  onClear={handleClearAiSearch}
-                  currentQuery={aiSearchQuery}
-                  isSearching={isAiSearching}
-                />
-              </div>
-              <div>
-                <CandidateCountProgress
-                  total={candidates.length}
-                  count={filteredCandidates.length}
-                />
-              </div>
-            </div>
+            <TalentPoolSearch
+              handleAiSearch={handleAiSearch}
+              handleClearAiSearch={handleClearAiSearch}
+              aiSearchQuery={aiSearchQuery}
+              isAiSearching={isAiSearching}
+              totalCandidates={candidates.length}
+              filteredCandidatesCount={filteredCandidates.length}
+            />
 
             {/* Sort Controls */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <span className="text-sm font-medium text-gray-700">Sort by:</span>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="score">Match Score</SelectItem>
-                    <SelectItem value="experience">Experience Level</SelectItem>
-                    <SelectItem value="name">Name (A-Z)</SelectItem>
-                    <SelectItem value="recent">Recently Added</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              
-              <div className="text-sm text-gray-600">
-                Showing {sortedCandidates.length} of {candidates.length} candidates
-              </div>
-            </div>
+            <TalentPoolControls
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              sortedCandidatesCount={sortedCandidates.length}
+              totalCandidates={candidates.length}
+            />
           </div>
 
           {/* Candidates Display */}
