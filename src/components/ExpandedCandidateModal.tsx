@@ -871,196 +871,213 @@ export function ExpandedCandidateModal({
                   )}
                 </TabsContent>
 
-                {/* Assessment Results Tab - Redesigned */}
+                {/* Assessment Results Tab - Updated with unlock functionality */}
                 <TabsContent value="assessment-results" className="flex-1 overflow-y-auto p-6 mt-0">
-                  <div className="space-y-8">
-                    {/* Header */}
-                    <div className="text-center">
-                      <h1 className="text-3xl font-bold text-gray-900">Assessment Results</h1>
-                      <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
-                        Comprehensive technical assessment results with real-time monitoring and detailed analysis
-                      </p>
-                    </div>
-
-                    {/* Overall Score Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                      <div className="bg-blue-100 border-blue-200 rounded-lg p-4 text-center border">
-                        <Brain className="w-6 h-6 text-blue-600 mx-auto mb-2" />
-                        <p className="text-sm text-gray-500 font-medium">Overall Score</p>
-                        <p className="text-3xl font-bold text-blue-600">61%</p>
-                      </div>
-                      <div className="bg-green-100 border-green-200 rounded-lg p-4 text-center border">
-                        <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
-                        <p className="text-sm text-gray-500 font-medium">Passed</p>
-                        <p className="text-3xl font-bold text-green-600">1</p>
-                      </div>
-                      <div className="bg-red-100 border-red-200 rounded-lg p-4 text-center border">
-                        <AlertCircle className="w-6 h-6 text-red-600 mx-auto mb-2" />
-                        <p className="text-sm text-gray-500 font-medium">Needs Improvement</p>
-                        <p className="text-3xl font-bold text-red-600">2</p>
-                      </div>
-                      <div className="bg-orange-100 border-orange-200 rounded-lg p-4 text-center border">
-                        <Clock className="w-6 h-6 text-orange-600 mx-auto mb-2" />
-                        <p className="text-sm text-gray-500 font-medium">Total Time</p>
-                        <p className="text-3xl font-bold text-orange-600">1h 40m</p>
+                  {!isUnlocked ? (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center p-8 bg-white rounded-lg shadow-sm border">
+                        <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Unlock to access this candidate's assessment results</h3>
+                        <p className="text-gray-600 mb-6">Complete candidate unlock to view detailed assessment results and performance analysis.</p>
+                        <Button 
+                          onClick={handleUnlock}
+                          className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white"
+                        >
+                          <Unlock className="w-4 h-4 mr-2" />
+                          Unlock Profile
+                        </Button>
                       </div>
                     </div>
-
-                    {/* Technical Assessments */}
-                    <div className="bg-green-50 rounded-lg p-6 border border-green-200">
-                      <div className="flex items-center gap-3 mb-6">
-                        <FileText className="w-6 h-6 text-green-600" />
-                        <h3 className="text-xl font-bold text-green-900">Technical Assessments</h3>
+                  ) : (
+                    <div className="space-y-8">
+                      {/* Header */}
+                      <div className="text-center">
+                        <h1 className="text-3xl font-bold text-gray-900">Assessment Results</h1>
+                        <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
+                          Comprehensive technical assessment results with real-time monitoring and detailed analysis
+                        </p>
                       </div>
-                      
-                      <div className="space-y-4">
-                        {mockAssessments.map((assessment, index) => (
-                          <div key={index} className="flex items-center justify-between p-4 bg-white border border-green-200 rounded-lg">
-                            <div className="flex-1">
-                              <h4 className="font-semibold text-gray-900">{assessment.name}</h4>
-                              <p className="text-sm text-gray-600 mt-1 line-clamp-2">{assessment.opinion}</p>
+
+                      {/* Overall Score Stats */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div className="bg-blue-100 border-blue-200 rounded-lg p-4 text-center border">
+                          <Brain className="w-6 h-6 text-blue-600 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500 font-medium">Overall Score</p>
+                          <p className="text-3xl font-bold text-blue-600">61%</p>
+                        </div>
+                        <div className="bg-green-100 border-green-200 rounded-lg p-4 text-center border">
+                          <CheckCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500 font-medium">Passed</p>
+                          <p className="text-3xl font-bold text-green-600">1</p>
+                        </div>
+                        <div className="bg-red-100 border-red-200 rounded-lg p-4 text-center border">
+                          <AlertCircle className="w-6 h-6 text-red-600 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500 font-medium">Needs Improvement</p>
+                          <p className="text-3xl font-bold text-red-600">2</p>
+                        </div>
+                        <div className="bg-orange-100 border-orange-200 rounded-lg p-4 text-center border">
+                          <Clock className="w-6 h-6 text-orange-600 mx-auto mb-2" />
+                          <p className="text-sm text-gray-500 font-medium">Total Time</p>
+                          <p className="text-3xl font-bold text-orange-600">1h 40m</p>
+                        </div>
+                      </div>
+
+                      {/* Technical Assessments */}
+                      <div className="bg-green-50 rounded-lg p-6 border border-green-200">
+                        <div className="flex items-center gap-3 mb-6">
+                          <FileText className="w-6 h-6 text-green-600" />
+                          <h3 className="text-xl font-bold text-green-900">Technical Assessments</h3>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          {mockAssessments.map((assessment, index) => (
+                            <div key={index} className="flex items-center justify-between p-4 bg-white border border-green-200 rounded-lg">
+                              <div className="flex-1">
+                                <h4 className="font-semibold text-gray-900">{assessment.name}</h4>
+                                <p className="text-sm text-gray-600 mt-1 line-clamp-2">{assessment.opinion}</p>
+                              </div>
+                              <div className="flex items-center gap-4">
+                                <Badge 
+                                  variant={assessment.score >= 70 ? "default" : "destructive"} 
+                                  className={assessment.score >= 70 ? "bg-green-100 text-green-800 border-green-300" : "bg-red-100 text-red-800 border-red-300"}
+                                >
+                                  {assessment.status === "passed" ? "Passed" : "Needs Improvement"}
+                                </Badge>
+                                <span className="text-2xl font-bold text-gray-800">{assessment.score}%</span>
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => handleShowAnswers(assessment)}
+                                >
+                                  <Eye className="w-4 h-4 mr-2" />
+                                  View Details
+                                </Button>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-4">
-                              <Badge 
-                                variant={assessment.score >= 70 ? "default" : "destructive"} 
-                                className={assessment.score >= 70 ? "bg-green-100 text-green-800 border-green-300" : "bg-red-100 text-red-800 border-red-300"}
-                              >
-                                {assessment.status === "passed" ? "Passed" : "Needs Improvement"}
-                              </Badge>
-                              <span className="text-2xl font-bold text-gray-800">{assessment.score}%</span>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={() => handleShowAnswers(assessment)}
-                              >
-                                <Eye className="w-4 h-4 mr-2" />
-                                View Details
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Security Monitor */}
+                      <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
+                        <div className="flex items-center gap-3 mb-6">
+                          <Shield className="w-6 h-6 text-orange-600" />
+                          <h3 className="text-xl font-bold text-orange-900">Security & Integrity Monitor</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Monitor className="w-4 h-4" />
+                              Device used
+                            </span>
+                            <span className="font-semibold text-orange-900">{antiCheatData.device}</span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <MapPinIcon className="w-4 h-4" />
+                              Location
+                            </span>
+                            <span className="font-semibold text-orange-900">{antiCheatData.location}</span>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                            <span className="text-gray-700 text-sm">Single session</span>
+                            <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.filledOnce ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Camera className="w-4 h-4" />
+                              Webcam active
+                            </span>
+                            <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.webcamEnabled ? "Yes" : "No"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Maximize className="w-4 h-4" />
+                              Full-screen mode
+                            </span>
+                            <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.fullScreenActive ? "Always" : "Violated"}
+                            </Badge>
+                          </div>
+                          
+                          <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <MousePointer className="w-4 h-4" />
+                              Mouse tracking
+                            </span>
+                            <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
+                              {antiCheatData.mouseInWindow ? "Clean" : "Suspicious"}
+                            </Badge>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Assessment Recording */}
+                      <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
+                        <div className="flex items-center gap-3 mb-6">
+                          <Camera className="w-6 h-6 text-purple-600" />
+                          <h3 className="text-xl font-bold text-purple-900">Assessment Recording</h3>
+                        </div>
+                        
+                        <div className="bg-white rounded-lg overflow-hidden border border-purple-200">
+                          <div className="aspect-video bg-black flex items-center justify-center relative">
+                            <img 
+                              src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                              alt="Complete assessment recording"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+                              <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
+                                <Play className="w-5 h-5 mr-2" />
+                                Watch Full Recording
                               </Button>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Security Monitor */}
-                    <div className="bg-orange-50 rounded-lg p-6 border border-orange-200">
-                      <div className="flex items-center gap-3 mb-6">
-                        <Shield className="w-6 h-6 text-orange-600" />
-                        <h3 className="text-xl font-bold text-orange-900">Security & Integrity Monitor</h3>
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
-                          <span className="text-gray-700 flex items-center gap-2">
-                            <Monitor className="w-4 h-4" />
-                            Device used
-                          </span>
-                          <span className="font-semibold text-orange-900">{antiCheatData.device}</span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
-                          <span className="text-gray-700 flex items-center gap-2">
-                            <MapPinIcon className="w-4 h-4" />
-                            Location
-                          </span>
-                          <span className="font-semibold text-orange-900">{antiCheatData.location}</span>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
-                          <span className="text-gray-700 text-sm">Single session</span>
-                          <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                            {antiCheatData.filledOnce ? "Yes" : "No"}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
-                          <span className="text-gray-700 flex items-center gap-2">
-                            <Camera className="w-4 h-4" />
-                            Webcam active
-                          </span>
-                          <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                            {antiCheatData.webcamEnabled ? "Yes" : "No"}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
-                          <span className="text-gray-700 flex items-center gap-2">
-                            <Maximize className="w-4 h-4" />
-                            Full-screen mode
-                          </span>
-                          <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                            {antiCheatData.fullScreenActive ? "Always" : "Violated"}
-                          </Badge>
-                        </div>
-                        
-                        <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-orange-200">
-                          <span className="text-gray-700 flex items-center gap-2">
-                            <MousePointer className="w-4 h-4" />
-                            Mouse tracking
-                          </span>
-                          <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}>
-                            {antiCheatData.mouseInWindow ? "Clean" : "Suspicious"}
-                          </Badge>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Assessment Recording */}
-                    <div className="bg-purple-50 rounded-lg p-6 border border-purple-200">
-                      <div className="flex items-center gap-3 mb-6">
-                        <Camera className="w-6 h-6 text-purple-600" />
-                        <h3 className="text-xl font-bold text-purple-900">Assessment Recording</h3>
-                      </div>
-                      
-                      <div className="bg-white rounded-lg overflow-hidden border border-purple-200">
-                        <div className="aspect-video bg-black flex items-center justify-center relative">
-                          <img 
-                            src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
-                            alt="Complete assessment recording"
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                            <Button size="lg" className="bg-white/20 hover:bg-white/30 text-white border border-white/30">
-                              <Play className="w-5 h-5 mr-2" />
-                              Watch Full Recording
-                            </Button>
-                          </div>
-                        </div>
-                        <div className="p-6">
-                          <div className="flex items-center justify-between text-sm mb-4">
-                            <span className="font-semibold text-gray-900">Complete Assessment Session</span>
-                            <span className="text-gray-600 text-xs bg-gray-100 px-2 py-1 rounded">56:12 / 1:40:00</span>
-                          </div>
-                          
-                          {/* Timeline */}
-                          <div className="space-y-4">
-                            <div className="w-full bg-gray-200 rounded-full h-3 relative overflow-hidden">
-                              <div className="absolute top-0 left-0 bg-blue-500 h-3 rounded-l-full" style={{ width: '45%' }}></div>
-                              <div className="absolute top-0 bg-orange-500 h-3" style={{ left: '45%', width: '30%' }}></div>
-                              <div className="absolute top-0 bg-purple-500 h-3 rounded-r-full" style={{ left: '75%', width: '25%' }}></div>
-                              <div className="absolute top-0 left-0 bg-green-600 h-3 opacity-80 rounded-l-full" style={{ width: '56%' }}></div>
+                          <div className="p-6">
+                            <div className="flex items-center justify-between text-sm mb-4">
+                              <span className="font-semibold text-gray-900">Complete Assessment Session</span>
+                              <span className="text-gray-600 text-xs bg-gray-100 px-2 py-1 rounded">56:12 / 1:40:00</span>
                             </div>
                             
-                            <div className="grid grid-cols-3 gap-4 text-xs">
-                              <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg">
-                                <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                                <div>
-                                  <div className="font-medium text-blue-900">Technical Challenge</div>
-                                  <div className="text-blue-700">0:00-45:00</div>
-                                </div>
+                            {/* Timeline */}
+                            <div className="space-y-4">
+                              <div className="w-full bg-gray-200 rounded-full h-3 relative overflow-hidden">
+                                <div className="absolute top-0 left-0 bg-blue-500 h-3 rounded-l-full" style={{ width: '45%' }}></div>
+                                <div className="absolute top-0 bg-orange-500 h-3" style={{ left: '45%', width: '30%' }}></div>
+                                <div className="absolute top-0 bg-purple-500 h-3 rounded-r-full" style={{ left: '75%', width: '25%' }}></div>
+                                <div className="absolute top-0 left-0 bg-green-600 h-3 opacity-80 rounded-l-full" style={{ width: '56%' }}></div>
                               </div>
-                              <div className="flex items-center gap-2 p-2 bg-orange-50 rounded-lg">
-                                <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
-                                <div>
-                                  <div className="font-medium text-orange-900">Critical Thinking</div>
-                                  <div className="text-orange-700">45:00-1:15:00</div>
+                              
+                              <div className="grid grid-cols-3 gap-4 text-xs">
+                                <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg">
+                                  <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                  <div>
+                                    <div className="font-medium text-blue-900">Technical Challenge</div>
+                                    <div className="text-blue-700">0:00-45:00</div>
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="flex items-center gap-2 p-2 bg-purple-50 rounded-lg">
-                                <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                                <div>
-                                  <div className="font-medium text-purple-900">Culture Fit</div>
-                                  <div className="text-purple-700">1:15:00-1:40:00</div>
+                                <div className="flex items-center gap-2 p-2 bg-orange-50 rounded-lg">
+                                  <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+                                  <div>
+                                    <div className="font-medium text-orange-900">Critical Thinking</div>
+                                    <div className="text-orange-700">45:00-1:15:00</div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2 p-2 bg-purple-50 rounded-lg">
+                                  <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                  <div>
+                                    <div className="font-medium text-purple-900">Culture Fit</div>
+                                    <div className="text-purple-700">1:15:00-1:40:00</div>
+                                  </div>
                                 </div>
                               </div>
                             </div>
@@ -1068,154 +1085,171 @@ export function ExpandedCandidateModal({
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </TabsContent>
 
-                {/* Documents Tab */}
+                {/* Documents Tab - Updated with unlock functionality */}
                 <TabsContent value="documents" className="flex-1 overflow-y-auto p-6 space-y-6 mt-0">
-                  <div className="space-y-6">
-                    {/* Header */}
-                    <div className="text-center">
-                      <h1 className="text-3xl font-bold text-gray-900">Documents</h1>
-                      <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
-                        Access and download candidate documents and materials
-                      </p>
-                    </div>
-
-                    {/* Cover Letter Section */}
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-xl font-semibold flex items-center gap-2">
-                          <FileText className="w-5 h-5" />
-                          Cover Letter
-                        </h3>
-                        <Button variant="outline" onClick={handleDownloadCoverLetter}>
-                          <Download className="w-4 h-4 mr-2" />
-                          Download
+                  {!isUnlocked ? (
+                    <div className="flex items-center justify-center h-full">
+                      <div className="text-center p-8 bg-white rounded-lg shadow-sm border">
+                        <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-semibold text-gray-900 mb-2">Unlock to access this candidate's documents</h3>
+                        <p className="text-gray-600 mb-6">Complete candidate unlock to view CV, cover letter, certificates and other documents.</p>
+                        <Button 
+                          onClick={handleUnlock}
+                          className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white"
+                        >
+                          <Unlock className="w-4 h-4 mr-2" />
+                          Unlock Profile
                         </Button>
                       </div>
-                      <div className="bg-gray-50 p-4 rounded-lg border text-sm">
-                        <p className="text-gray-700 mb-2">
-                          I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis, I have developed strong analytical skills and expertise in various financial tools and methodologies. My background includes working with SAP, Oracle, and advanced Excel functions to provide comprehensive financial insights...
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {/* Header */}
+                      <div className="text-center">
+                        <h1 className="text-3xl font-bold text-gray-900">Documents</h1>
+                        <p className="mt-2 text-gray-600 max-w-2xl mx-auto">
+                          Access and download candidate documents and materials
                         </p>
-                        <p className="text-xs text-gray-500 italic">Preview - Click download to view full document</p>
                       </div>
-                    </div>
 
-                    {/* CV Section */}
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-xl font-semibold flex items-center gap-2">
-                          <User className="w-5 h-5" />
-                          Curriculum Vitae
-                        </h3>
-                        <Button variant="outline" onClick={handleDownloadCV}>
-                          <Download className="w-4 h-4 mr-2" />
-                          Download CV
-                        </Button>
+                      {/* Cover Letter Section */}
+                      <div className="bg-white rounded-lg shadow-sm p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-xl font-semibold flex items-center gap-2">
+                            <FileText className="w-5 h-5" />
+                            Cover Letter
+                          </h3>
+                          <Button variant="outline" onClick={handleDownloadCoverLetter}>
+                            <Download className="w-4 h-4 mr-2" />
+                            Download
+                          </Button>
+                        </div>
+                        <div className="bg-gray-50 p-4 rounded-lg border text-sm">
+                          <p className="text-gray-700 mb-2">
+                            I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis, I have developed strong analytical skills and expertise in various financial tools and methodologies. My background includes working with SAP, Oracle, and advanced Excel functions to provide comprehensive financial insights...
+                          </p>
+                          <p className="text-xs text-gray-500 italic">Preview - Click download to view full document</p>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                      {/* CV Section */}
+                      <div className="bg-white rounded-lg shadow-sm p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-xl font-semibold flex items-center gap-2">
+                            <User className="w-5 h-5" />
+                            Curriculum Vitae
+                          </h3>
+                          <Button variant="outline" onClick={handleDownloadCV}>
+                            <Download className="w-4 h-4 mr-2" />
+                            Download CV
+                          </Button>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-gray-900 mb-2">Professional Experience</h4>
+                            <ul className="text-sm text-gray-600 space-y-1">
+                              <li>• Senior Financial Analyst - Emirates NBD (2021-Present)</li>
+                              <li>• Financial Analyst - ADNOC (2019-2021)</li>
+                              <li>• Junior Financial Analyst - First Abu Dhabi Bank (2017-2019)</li>
+                            </ul>
+                          </div>
+                          <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-gray-900 mb-2">Education & Certifications</h4>
+                            <ul className="text-sm text-gray-600 space-y-1">
+                              <li>• {candidate.education}</li>
+                              <li>• CPA Certified</li>
+                              <li>• CFA Level 2</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Profile Summary */}
+                      <div className="bg-white rounded-lg shadow-sm p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="text-xl font-semibold flex items-center gap-2">
+                            <User className="w-5 h-5" />
+                            Profile Summary
+                          </h3>
+                          <Button variant="outline" onClick={handleDownloadProfile}>
+                            <Download className="w-4 h-4 mr-2" />
+                            Download Profile
+                          </Button>
+                        </div>
                         <div className="bg-gray-50 p-4 rounded-lg">
-                          <h4 className="font-medium text-gray-900 mb-2">Professional Experience</h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            <li>• Senior Financial Analyst - Emirates NBD (2021-Present)</li>
-                            <li>• Financial Analyst - ADNOC (2019-2021)</li>
-                            <li>• Junior Financial Analyst - First Abu Dhabi Bank (2017-2019)</li>
-                          </ul>
-                        </div>
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                          <h4 className="font-medium text-gray-900 mb-2">Education & Certifications</h4>
-                          <ul className="text-sm text-gray-600 space-y-1">
-                            <li>• {candidate.education}</li>
-                            <li>• CPA Certified</li>
-                            <li>• CFA Level 2</li>
-                          </ul>
+                          <p className="text-sm text-gray-600 mb-3">
+                            Complete candidate profile including skills assessment, behavioral analysis, and professional background summary.
+                          </p>
+                          <div className="flex items-center gap-4 text-xs text-gray-500">
+                            <span>• Skills & Expertise Overview</span>
+                            <span>• Assessment Results</span>
+                            <span>• Behavioral Fit Analysis</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    {/* Profile Summary */}
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                      <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-xl font-semibold flex items-center gap-2">
-                          <User className="w-5 h-5" />
-                          Profile Summary
+                      {/* Certifications & Proof of Experience */}
+                      <div className="bg-white rounded-lg shadow-sm p-6">
+                        <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                          <Award className="w-5 h-5" />
+                          Certifications & Documents
                         </h3>
-                        <Button variant="outline" onClick={handleDownloadProfile}>
-                          <Download className="w-4 h-4 mr-2" />
-                          Download Profile
-                        </Button>
-                      </div>
-                      <div className="bg-gray-50 p-4 rounded-lg">
-                        <p className="text-sm text-gray-600 mb-3">
-                          Complete candidate profile including skills assessment, behavioral analysis, and professional background summary.
-                        </p>
-                        <div className="flex items-center gap-4 text-xs text-gray-500">
-                          <span>• Skills & Expertise Overview</span>
-                          <span>• Assessment Results</span>
-                          <span>• Behavioral Fit Analysis</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Certifications & Proof of Experience */}
-                    <div className="bg-white rounded-lg shadow-sm p-6">
-                      <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <Award className="w-5 h-5" />
-                        Certifications & Documents
-                      </h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium text-gray-900">CPA Certificate</h4>
-                              <p className="text-sm text-gray-600">Certified Public Accountant</p>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium text-gray-900">CPA Certificate</h4>
+                                <p className="text-sm text-gray-600">Certified Public Accountant</p>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                <Download className="w-3 h-3 mr-1" />
+                                View
+                              </Button>
                             </div>
-                            <Button variant="outline" size="sm">
-                              <Download className="w-3 h-3 mr-1" />
-                              View
-                            </Button>
                           </div>
-                        </div>
-                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium text-gray-900">CFA Level 2</h4>
-                              <p className="text-sm text-gray-600">Chartered Financial Analyst</p>
+                          <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium text-gray-900">CFA Level 2</h4>
+                                <p className="text-sm text-gray-600">Chartered Financial Analyst</p>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                <Download className="w-3 h-3 mr-1" />
+                                View
+                              </Button>
                             </div>
-                            <Button variant="outline" size="sm">
-                              <Download className="w-3 h-3 mr-1" />
-                              View
-                            </Button>
                           </div>
-                        </div>
-                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium text-gray-900">Employment Verification</h4>
-                              <p className="text-sm text-gray-600">Emirates NBD</p>
+                          <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium text-gray-900">Employment Verification</h4>
+                                <p className="text-sm text-gray-600">Emirates NBD</p>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                <Download className="w-3 h-3 mr-1" />
+                                View
+                              </Button>
                             </div>
-                            <Button variant="outline" size="sm">
-                              <Download className="w-3 h-3 mr-1" />
-                              View
-                            </Button>
                           </div>
-                        </div>
-                        <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <h4 className="font-medium text-gray-900">Reference Letters</h4>
-                              <p className="text-sm text-gray-600">Professional References</p>
+                          <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <h4 className="font-medium text-gray-900">Reference Letters</h4>
+                                <p className="text-sm text-gray-600">Professional References</p>
+                              </div>
+                              <Button variant="outline" size="sm">
+                                <Download className="w-3 h-3 mr-1" />
+                                View
+                              </Button>
                             </div>
-                            <Button variant="outline" size="sm">
-                              <Download className="w-3 h-3 mr-1" />
-                              View
-                            </Button>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </TabsContent>
               </Tabs>
             </div>
