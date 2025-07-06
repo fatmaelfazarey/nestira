@@ -60,6 +60,7 @@ export function ExpandedCandidateModal({
   const [selectedQuizzes, setSelectedQuizzes] = useState<number[]>([]);
   const [selectedAssessment, setSelectedAssessment] = useState<any>(null);
   const [showAssessmentAnswers, setShowAssessmentAnswers] = useState(false);
+  const [internalIsUnlocked, setInternalIsUnlocked] = useState(isUnlocked);
   const [expandedSections, setExpandedSections] = useState({
     industry: true,
     financeSubfields: true,
@@ -307,6 +308,7 @@ export function ExpandedCandidateModal({
   };
 
   const handleUnlock = () => {
+    setInternalIsUnlocked(true);
     if (onUnlock) {
       onUnlock(candidate);
     }
@@ -317,6 +319,9 @@ export function ExpandedCandidateModal({
       onInviteToApply(candidate);
     }
   };
+
+  // Use internalIsUnlocked instead of isUnlocked for conditional rendering
+  const effectiveIsUnlocked = internalIsUnlocked || isUnlocked;
 
   return (
     <TooltipProvider>
@@ -335,7 +340,7 @@ export function ExpandedCandidateModal({
                 variant="outline"
                 size="sm"
               />
-              {!isUnlocked && (
+              {!effectiveIsUnlocked && (
                 <Button 
                   size="sm" 
                   className="bg-accent hover:bg-accent/90"
@@ -379,7 +384,7 @@ export function ExpandedCandidateModal({
                   
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold text-gray-900">
-                      {isUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+                      {effectiveIsUnlocked ? candidate.name : formatBlurredName(candidate.name)}
                     </h3>
                     <p className="text-[#ff5f1b] font-medium">{candidate.title}</p>
                     
@@ -401,7 +406,7 @@ export function ExpandedCandidateModal({
 
                     {/* Contact Information - Moved here */}
                     <div className="space-y-2 pt-2">
-                      {isUnlocked ? (
+                      {effectiveIsUnlocked ? (
                         <>
                           <div className="flex items-center justify-center gap-2 text-sm">
                             <Mail className="w-4 h-4 text-gray-500" />
@@ -736,7 +741,7 @@ export function ExpandedCandidateModal({
 
                 {/* Behavioral & Culture Fit Tab */}
                 <TabsContent value="behavioral-culture" className="flex-1 overflow-y-auto p-6 mt-0">
-                  {!isUnlocked ? (
+                  {!effectiveIsUnlocked ? (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center p-8 bg-white rounded-lg shadow-sm border">
                         <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -873,7 +878,7 @@ export function ExpandedCandidateModal({
 
                 {/* Assessment Results Tab */}
                 <TabsContent value="assessment-results" className="flex-1 overflow-y-auto p-6 mt-0">
-                  {!isUnlocked ? (
+                  {!effectiveIsUnlocked ? (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center p-8 bg-white rounded-lg shadow-sm border">
                         <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
@@ -1090,7 +1095,7 @@ export function ExpandedCandidateModal({
 
                 {/* Documents Tab */}
                 <TabsContent value="documents" className="flex-1 overflow-y-auto p-6 space-y-6 mt-0">
-                  {!isUnlocked ? (
+                  {!effectiveIsUnlocked ? (
                     <div className="flex items-center justify-center h-full">
                       <div className="text-center p-8 bg-white rounded-lg shadow-sm border">
                         <Lock className="w-16 h-16 text-gray-400 mx-auto mb-4" />
