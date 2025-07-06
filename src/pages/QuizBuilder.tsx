@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle, Filter } from 'lucide-react';
+import { Plus, Settings, Play, ArrowLeft, UserPlus, Users, CheckCircle, XCircle, Filter, Landmark, BrainCog, MessagesSquare, GanttChartSquare } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
@@ -195,12 +195,59 @@ const QuizBuilder = () => {
     (filterSource !== 'all' ? 1 : 0) +
     (selectedSkills.length > 0 ? 1 : 0);
 
-  const groupedQuizzes = filteredQuizzes.reduce((acc, quiz) => {
-    const jobTitle = quiz.personalizationParams?.jobTitle || 'Other';
-    if (!acc[jobTitle]) {
-      acc[jobTitle] = [];
+  // Define skill categories with icons
+  const skillCategories = [
+    {
+      name: 'Finance, Auditing & Accounting Skills',
+      icon: Landmark,
+      skills: [
+        'Financial Accounting (IFRS)', 'Financial Accounting (US GAAP)', 'Accounts Payable / Receivable (AP/AR)', 
+        'Costing of Products and Services', 'Financial Math', 'Budgeting', 'Financial Planning & Analysis (FP&A)', 
+        'Advanced Accounting (IFRS / GAAP)', 'Internal Auditing / ISAs', 'Financial Due Diligence', 'Financial Modeling in Excel'
+      ]
+    },
+    {
+      name: 'Behavioral & Cognitive Tests',
+      icon: BrainCog,
+      skills: [
+        'DISC', 'Big 5 (OCEAN)', 'Culture Add', 'Behavioral Competency Profiler', 
+        'Problem Solving', 'Critical Thinking', 'Numerical Reasoning'
+      ]
+    },
+    {
+      name: 'Communication & Interpersonal',
+      icon: MessagesSquare,
+      skills: [
+        'Communication', 'Active Listening', 'Presentation Skills'
+      ]
+    },
+    {
+      name: 'Tools Proficiency',
+      icon: GanttChartSquare,
+      skills: [
+        'Microsoft Excel (Advanced)', 'Power BI', 'QuickBooks / Xero'
+      ]
     }
-    acc[jobTitle].push(quiz);
+  ];
+
+  // Categorize quizzes by skill categories
+  const categorizeQuizBySkills = (quiz: any) => {
+    if (!quiz.skills || quiz.skills.length === 0) return 'Other';
+    
+    for (const category of skillCategories) {
+      if (quiz.skills.some((skill: string) => category.skills.includes(skill))) {
+        return category.name;
+      }
+    }
+    return 'Other';
+  };
+
+  const groupedQuizzes = filteredQuizzes.reduce((acc, quiz) => {
+    const category = categorizeQuizBySkills(quiz);
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(quiz);
     return acc;
   }, {} as Record<string, typeof quizzes>);
 
@@ -253,107 +300,115 @@ const QuizBuilder = () => {
         {/* Quiz Content */}
         <div className="space-y-8">
           {Object.keys(groupedQuizzes).length > 0 ? (
-            Object.entries(groupedQuizzes).map(([jobTitle, quizzesInGroup]) => (
-              <div key={jobTitle}>
-                <h2 className="text-xl font-semibold text-gray-800 mb-4 px-1">{jobTitle}</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {quizzesInGroup.map((quiz) => (
-                    <Card key={quiz.id} className="hover:shadow-md transition-shadow">
-                      <CardHeader>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <CardTitle className="text-lg">{quiz.title}</CardTitle>
-                            {quiz.assignedCandidates > 0 && (
-                              <Badge variant="secondary" className="text-xs">
-                                {quiz.assignedCandidates} assigned
-                              </Badge>
-                            )}
+            Object.entries(groupedQuizzes).map(([categoryName, quizzesInGroup]) => {
+              const category = skillCategories.find(cat => cat.name === categoryName);
+              const IconComponent = category?.icon || Landmark;
+              
+              return (
+                <div key={categoryName}>
+                  <div className="flex items-center gap-3 mb-4 px-1">
+                    <IconComponent className="w-6 h-6 text-orange-500" />
+                    <h2 className="text-xl font-semibold text-gray-800">{categoryName}</h2>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {quizzesInGroup.map((quiz) => (
+                      <Card key={quiz.id} className="hover:shadow-md transition-shadow">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <CardTitle className="text-lg">{quiz.title}</CardTitle>
+                              {quiz.assignedCandidates > 0 && (
+                                <Badge variant="secondary" className="text-xs">
+                                  {quiz.assignedCandidates} assigned
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Switch
+                                checked={quiz.isActive}
+                                onCheckedChange={() => toggleQuizActive(quiz.id)}
+                              />
+                              <span className="text-xs text-gray-500">
+                                {quiz.isActive ? 'Active' : 'Inactive'}
+                              </span>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Switch
-                              checked={quiz.isActive}
-                              onCheckedChange={() => toggleQuizActive(quiz.id)}
-                            />
-                            <span className="text-xs text-gray-500">
-                              {quiz.isActive ? 'Active' : 'Inactive'}
+                          <div className="flex items-center gap-4 text-sm text-gray-600">
+                            <span>{quiz.questions} questions</span>
+                            <span>{quiz.duration}</span>
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              quiz.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                            }`}>
+                              {quiz.status}
                             </span>
                           </div>
-                        </div>
-                        <div className="flex items-center gap-4 text-sm text-gray-600">
-                          <span>{quiz.questions} questions</span>
-                          <span>{quiz.duration}</span>
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                            quiz.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
-                          }`}>
-                            {quiz.status}
-                          </span>
-                        </div>
-                        
-                        {/* Candidate Statistics */}
-                        {quiz.assignedCandidates > 0 && (
-                          <div className="space-y-2 pt-2 border-t">
-                             <div className="flex gap-4 text-xs">
-                               <button 
-                                 className="flex items-center gap-1 text-green-600 hover:text-green-700 transition-colors cursor-pointer hover:underline"
-                                 onClick={() => navigateToPassedCandidates(quiz.id)}
-                               >
-                                 <CheckCircle className="w-3 h-3" />
-                                 <span>Passed: {quiz.passedCandidates}</span>
-                               </button>
-                               <button 
-                                 className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors cursor-pointer hover:underline"
-                                 onClick={() => navigateToFailedCandidates(quiz.id)}
-                               >
-                                 <XCircle className="w-3 h-3" />
-                                 <span>Failed: {quiz.failedCandidates}</span>
-                               </button>
-                               {quiz.pendingCandidates > 0 && (
+                          
+                          {/* Candidate Statistics */}
+                          {quiz.assignedCandidates > 0 && (
+                            <div className="space-y-2 pt-2 border-t">
+                               <div className="flex gap-4 text-xs">
                                  <button 
-                                   className="flex items-center gap-1 text-orange-600 hover:text-orange-700 transition-colors cursor-pointer hover:underline"
-                                   onClick={() => navigateToPendingCandidates(quiz.id)}
+                                   className="flex items-center gap-1 text-green-600 hover:text-green-700 transition-colors cursor-pointer hover:underline"
+                                   onClick={() => navigateToPassedCandidates(quiz.id)}
                                  >
-                                   <span>Pending: {quiz.pendingCandidates}</span>
+                                   <CheckCircle className="w-3 h-3" />
+                                   <span>Passed: {quiz.passedCandidates}</span>
                                  </button>
-                               )}
-                             </div>
-                          </div>
-                        )}
-                      </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="flex gap-2 flex-wrap">
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => editQuizHandler(quiz)}
-                          >
-                            <Settings className="w-4 h-4 mr-1" />
-                            Edit
-                          </Button>
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => previewQuizHandler(quiz)}
-                          >
-                            <Play className="w-4 h-4 mr-1" />
-                            Preview
-                          </Button>
-                          {quiz.isActive && (
+                                 <button 
+                                   className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors cursor-pointer hover:underline"
+                                   onClick={() => navigateToFailedCandidates(quiz.id)}
+                                 >
+                                   <XCircle className="w-3 h-3" />
+                                   <span>Failed: {quiz.failedCandidates}</span>
+                                 </button>
+                                 {quiz.pendingCandidates > 0 && (
+                                   <button 
+                                     className="flex items-center gap-1 text-orange-600 hover:text-orange-700 transition-colors cursor-pointer hover:underline"
+                                     onClick={() => navigateToPendingCandidates(quiz.id)}
+                                   >
+                                     <span>Pending: {quiz.pendingCandidates}</span>
+                                   </button>
+                                 )}
+                               </div>
+                            </div>
+                          )}
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="flex gap-2 flex-wrap">
                             <Button 
                               variant="outline" 
                               size="sm"
-                              onClick={() => assignQuizHandler(quiz)}
+                              onClick={() => editQuizHandler(quiz)}
                             >
-                              <UserPlus className="w-4 h-4 mr-1" />
-                              Assign
+                              <Settings className="w-4 h-4 mr-1" />
+                              Edit
                             </Button>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => previewQuizHandler(quiz)}
+                            >
+                              <Play className="w-4 h-4 mr-1" />
+                              Preview
+                            </Button>
+                            {quiz.isActive && (
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => assignQuizHandler(quiz)}
+                              >
+                                <UserPlus className="w-4 h-4 mr-1" />
+                                Assign
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           ) : (
             <div className="text-center py-12">
               <p className="text-gray-500">No quizzes match your filters.</p>
