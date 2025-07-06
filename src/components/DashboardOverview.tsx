@@ -270,10 +270,10 @@ export function DashboardOverview() {
         </div>
       </Card>
 
-      {/* Main Metrics with Recent Profile Views */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
-        {/* KPI Metrics - Takes 3/4 of the space */}
-        <div className="xl:col-span-3">
+      {/* Main Metrics with Recent Profile Views - Modified Layout */}
+      <div className="grid grid-cols-1 xl:grid-cols-6 gap-6">
+        {/* KPI Metrics - Takes 5/6 of the space */}
+        <div className="xl:col-span-5">
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {kpiData.map(kpi => <Card key={kpi.title} className={`p-6 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} onClick={() => handleKpiClick(kpi.clickAction)}>
                 <div className="flex flex-col items-center text-center space-y-3">
@@ -290,7 +290,7 @@ export function DashboardOverview() {
           </div>
         </div>
 
-        {/* Recent Profile Views - Takes 1/4 of the space */}
+        {/* Recent Profile Views - Takes 1/6 of the space */}
         <Card className="p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105" onClick={() => setShowProfileViewsModal(true)}>
           <div className="space-y-3">
             <div className="flex items-center gap-2">
