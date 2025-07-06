@@ -359,7 +359,7 @@ const TalentPool = () => {
                 <AICandidateSearch
                   onSearch={handleAiSearch}
                   onClear={handleClearAiSearch}
-                  query={aiSearchQuery}
+                  currentQuery={aiSearchQuery}
                   isSearching={isAiSearching}
                   resultsCount={aiFilteredCandidates?.length}
                 />
@@ -367,7 +367,7 @@ const TalentPool = () => {
               <div>
                 <CandidateCountProgress
                   total={candidates.length}
-                  filteredCount={filteredCandidates.length}
+                  count={filteredCandidates.length}
                   unlocked={unlockedCandidates.size}
                 />
               </div>
