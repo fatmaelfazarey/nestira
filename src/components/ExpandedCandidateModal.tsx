@@ -8,7 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock } from 'lucide-react';
+import { Star, MapPin, Briefcase, Mail, Phone, Calendar, Download, MessageSquare, StickyNote, X, Shield, Clock, DollarSign, Home, Play, FileText, Eye, CheckCircle, AlertCircle, ChevronDown, ChevronUp, Award, Code, Building, GraduationCap, User, TrendingUp, Info, Brain, HelpCircle, Monitor, MapPinIcon, Camera, Maximize, MousePointer, ExternalLink, Factory, Users, Target, Zap, Lock, Unlock, UserPlus } from 'lucide-react';
 import { useState } from 'react';
 import { CircularProgress } from '@/components/ui/circular-progress';
 import { AssessmentAnswersModal } from './AssessmentAnswersModal';
@@ -39,6 +39,9 @@ interface ExpandedCandidateModalProps {
   onClose: () => void;
   isFavorite: boolean;
   onToggleFavorite: () => void;
+  onUnlock?: (candidate: Candidate) => void;
+  onInviteToApply?: (candidate: Candidate) => void;
+  isUnlocked?: boolean;
 }
 
 export function ExpandedCandidateModal({
@@ -46,7 +49,10 @@ export function ExpandedCandidateModal({
   isOpen,
   onClose,
   isFavorite,
-  onToggleFavorite
+  onToggleFavorite,
+  onUnlock,
+  onInviteToApply,
+  isUnlocked = false
 }: ExpandedCandidateModalProps) {
   const [showCoverLetter, setShowCoverLetter] = useState(false);
   const [showQuizModal, setShowQuizModal] = useState(false);
@@ -73,8 +79,6 @@ export function ExpandedCandidateModal({
     };
     return flags[countryCode] || '🌍';
   };
-
-  const isUnlocked = true; // For demo purposes
 
   const mockExperience = [{
     title: "Senior Financial Analyst",
@@ -301,6 +305,18 @@ export function ExpandedCandidateModal({
     setShowAssessmentAnswers(true);
   };
 
+  const handleUnlock = () => {
+    if (onUnlock) {
+      onUnlock(candidate);
+    }
+  };
+
+  const handleInviteToApply = () => {
+    if (onInviteToApply) {
+      onInviteToApply(candidate);
+    }
+  };
+
   return (
     <TooltipProvider>
       <Dialog open={isOpen} onOpenChange={onClose}>
@@ -315,6 +331,24 @@ export function ExpandedCandidateModal({
             <div className="flex items-center gap-2">
               <Button variant="ghost" size="sm" onClick={onToggleFavorite} className="text-yellow-500 hover:text-yellow-600">
                 <Star className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
+              </Button>
+              {!isUnlocked && (
+                <Button 
+                  size="sm" 
+                  className="bg-accent hover:bg-accent/90"
+                  onClick={handleUnlock}
+                >
+                  <Unlock className="w-4 h-4 mr-2" />
+                  Unlock
+                </Button>
+              )}
+              <Button 
+                size="sm" 
+                className="bg-green-600 hover:bg-green-700 text-white"
+                onClick={handleInviteToApply}
+              >
+                <UserPlus className="w-4 h-4 mr-2" />
+                Invite to Apply
               </Button>
               <Button variant="ghost" size="sm" onClick={onClose}>
                 <X className="w-5 h-5" />
