@@ -52,6 +52,10 @@ export function QuizCreator({ onSave, onCancel, editingQuiz }: QuizCreatorProps)
       setQuizDescription(editingQuiz.description || '');
       setTimeLimit(editingQuiz.timeLimit || { hours: 0, minutes: 30, seconds: 0 });
       setQuestions(editingQuiz.questionsList || []);
+      // Set current step to 3 (Customize) when editing
+      setCurrentStep(3);
+      // Set a default selected role if editing
+      setSelectedRole({ title: editingQuiz.personalizationParams?.jobTitle || 'Role' });
     }
   }, [editingQuiz]);
 

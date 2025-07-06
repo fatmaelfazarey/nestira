@@ -1,11 +1,11 @@
 
 import React from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, CheckCircle2 } from 'lucide-react';
+import { Clock, CheckCircle2, X } from 'lucide-react';
 import { Question } from './types';
 
 interface QuizPreviewModalProps {
@@ -36,9 +36,16 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold text-primary">
-            Quiz Preview: {quiz.title}
-          </DialogTitle>
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-2xl font-bold text-primary">
+              Quiz Preview: {quiz.title}
+            </DialogTitle>
+            <DialogClose asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <X className="h-4 w-4" />
+              </Button>
+            </DialogClose>
+          </div>
           {quiz.description && (
             <p className="text-gray-600">{quiz.description}</p>
           )}
@@ -170,11 +177,6 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
               </Card>
             ))}
 
-            <div className="flex justify-end pt-4">
-              <Button onClick={onClose} className="bg-accent hover:bg-accent/90 text-white">
-                Close Preview
-              </Button>
-            </div>
           </div>
         )}
       </DialogContent>

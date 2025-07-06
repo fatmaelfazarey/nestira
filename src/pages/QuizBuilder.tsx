@@ -277,21 +277,30 @@ const QuizBuilder = () => {
                         {/* Candidate Statistics */}
                         {quiz.assignedCandidates > 0 && (
                           <div className="space-y-2 pt-2 border-t">
-                            <div className="flex gap-4 text-xs">
-                              <div className="flex items-center gap-1 text-green-600">
-                                <CheckCircle className="w-3 h-3" />
-                                <span>Passed: {quiz.passedCandidates}</span>
-                              </div>
-                              <div className="flex items-center gap-1 text-red-600">
-                                <XCircle className="w-3 h-3" />
-                                <span>Failed: {quiz.failedCandidates}</span>
-                              </div>
-                              {quiz.pendingCandidates > 0 && (
-                                <div className="flex items-center gap-1 text-orange-600">
-                                  <span>Pending: {quiz.pendingCandidates}</span>
-                                </div>
-                              )}
-                            </div>
+                             <div className="flex gap-4 text-xs">
+                               <button 
+                                 className="flex items-center gap-1 text-green-600 hover:text-green-700 transition-colors cursor-pointer"
+                                 onClick={() => console.log('Navigate to passed candidates for quiz:', quiz.id)}
+                               >
+                                 <CheckCircle className="w-3 h-3" />
+                                 <span>Passed: {quiz.passedCandidates}</span>
+                               </button>
+                               <button 
+                                 className="flex items-center gap-1 text-red-600 hover:text-red-700 transition-colors cursor-pointer"
+                                 onClick={() => console.log('Navigate to failed candidates for quiz:', quiz.id)}
+                               >
+                                 <XCircle className="w-3 h-3" />
+                                 <span>Failed: {quiz.failedCandidates}</span>
+                               </button>
+                               {quiz.pendingCandidates > 0 && (
+                                 <button 
+                                   className="flex items-center gap-1 text-orange-600 hover:text-orange-700 transition-colors cursor-pointer"
+                                   onClick={() => console.log('Navigate to pending candidates for quiz:', quiz.id)}
+                                 >
+                                   <span>Pending: {quiz.pendingCandidates}</span>
+                                 </button>
+                               )}
+                             </div>
                           </div>
                         )}
                       </CardHeader>
