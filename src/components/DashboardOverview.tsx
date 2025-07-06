@@ -281,44 +281,6 @@ export function DashboardOverview() {
         </div>
       </div>
 
-      {/* Plan Details & Usage Section */}
-      <Card className="p-4">
-        <div className="flex items-center gap-2 mb-4">
-          <CreditCard className="w-5 h-5 text-gray-600" />
-          <h2 className="text-lg font-semibold text-gray-900">Plan Usage</h2>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-3">
-          {planUsageData.map((item) => {
-            const percentage = Math.round((item.current / item.total) * 100);
-            return (
-              <div key={item.title} className="p-3 rounded-lg border border-gray-200 bg-white">
-                <div className="flex items-center justify-between mb-2">
-                  <item.icon className={`w-4 h-4 ${item.color}`} />
-                  <span className="text-xs text-gray-500">{percentage}%</span>
-                </div>
-                <div className="space-y-1">
-                  <h3 className="text-xs font-medium text-gray-700">{item.title}</h3>
-                  <p className="text-sm font-semibold text-gray-900">
-                    {item.current} / {item.total}
-                  </p>
-                  <div className="w-full bg-gray-200 rounded-full h-1.5">
-                    <div 
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        percentage >= 80 ? 'bg-green-500' : 
-                        percentage >= 60 ? 'bg-orange-500' : 
-                        'bg-blue-500'
-                      }`}
-                      style={{ width: `${percentage}%` }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-
       {/* KPI Cards and Recent Profile Views Section */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* KPI Cards Grid - 2 rows */}
