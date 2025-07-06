@@ -6,6 +6,7 @@ import { Progress } from '@/components/ui/progress';
 import { Grid2X2, LayoutList, Filter, SlidersHorizontal, CheckCircle, Target, TrendingUp, ArrowUpDown, Users, Lock, FileText, RotateCcw } from 'lucide-react';
 import { CandidateDetailModal } from '@/components/CandidateDetailModal';
 import { ExpandedCandidateModal } from '@/components/ExpandedCandidateModal';
+import { CandidatePreviewModal } from '@/components/CandidatePreviewModal';
 import { AICandidateSearch } from '@/components/AICandidateSearch';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { FindMyMatchModal } from '@/components/FindMyMatchModal';
@@ -13,6 +14,7 @@ import { CandidateGridView } from '@/components/talent-pool/CandidateGridView';
 import { CandidateTableView } from '@/components/talent-pool/CandidateTableView';
 import { useTalentPoolState } from '@/hooks/useTalentPoolState';
 import { candidates } from '@/data/candidatesData';
+import { useState } from 'react';
 
 const TalentPool = () => {
   const {
@@ -65,6 +67,9 @@ const TalentPool = () => {
     handleAiSearch,
     handleClearAiSearch
   } = useTalentPoolState();
+
+  // Add new state for preview modal
+  const [previewCandidate, setPreviewCandidate] = useState(null);
 
   const allSkills = Array.from(new Set(candidates.flatMap(c => c.tags)));
 
@@ -141,8 +146,19 @@ const TalentPool = () => {
       localStorage.setItem('unlockedCandidates', JSON.stringify(updatedUnlocked));
     }
     
-    // Show the expanded candidate modal directly
+    // Close preview and show expanded modal
+    setPreviewCandidate(null);
     setExpandedCandidate(candidate);
+  };
+
+  const handleViewProfile = (candidate: any) => {
+    setPreviewCandidate(candidate);
+  };
+
+  const handleInviteToApply = (candidate: any) => {
+    // TODO: Implement invite to apply functionality
+    console.log('Inviting candidate to apply:', candidate.name);
+    // This could open an invite modal or send an invitation
   };
 
   const handleApplyFilters = () => {
@@ -190,6 +206,8 @@ const TalentPool = () => {
             unlockedCandidates={unlockedCandidates}
             onToggleFavorite={toggleFavorite}
             onUnlock={handleUnlock}
+            onViewProfile={handleViewProfile}
+            onInviteToApply={handleInviteToApply}
           />
         );
     }
@@ -417,6 +435,15 @@ const TalentPool = () => {
         <CandidateDetailModal candidate={selectedCandidate} isOpen={!!selectedCandidate} onClose={() => setSelectedCandidate(null)} isFavorite={selectedCandidate ? favorites.has(selectedCandidate.id) : false} onToggleFavorite={() => selectedCandidate && toggleFavorite(selectedCandidate.id)} onExpandProfile={() => selectedCandidate && handleExpandProfile(selectedCandidate)} />
 
         <ExpandedCandidateModal candidate={expandedCandidate} isOpen={!!expandedCandidate} onClose={() => setExpandedCandidate(null)} isFavorite={expandedCandidate ? favorites.has(expandedCandidate.id) : false} onToggleFavorite={() => expandedCandidate && toggleFavorite(expandedCandidate.id)} />
+
+        <CandidatePreviewModal 
+          candidate={previewCandidate}
+          isOpen={!!previewCandidate}
+          onClose={() => setPreviewCandidate(null)}
+          onUnlock={handleUnlock}
+          onInviteToApply={handleInviteToApply}
+          isUnlocked={previewCandidate ? unlockedCandidates.has(previewCandidate.id) : false}
+        />
       </div>
     </DashboardLayout>
   );
