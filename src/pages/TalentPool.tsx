@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -248,8 +249,8 @@ const TalentPool = () => {
   };
 
   const handleViewProfile = (candidate: any) => {
-    setExpandedCandidate(candidate);
-    setShowExpandedModal(true);
+    setPreviewCandidate(candidate);
+    setShowPreviewModal(true);
   };
 
   const handleInviteToApply = (candidate: any) => {
@@ -361,14 +362,12 @@ const TalentPool = () => {
                   onClear={handleClearAiSearch}
                   currentQuery={aiSearchQuery}
                   isSearching={isAiSearching}
-                  resultsCount={aiFilteredCandidates?.length}
                 />
               </div>
               <div>
                 <CandidateCountProgress
                   total={candidates.length}
                   count={filteredCandidates.length}
-                  unlocked={unlockedCandidates.size}
                 />
               </div>
             </div>
@@ -484,6 +483,16 @@ const TalentPool = () => {
           setHiringStageFilter={setHiringStageFilter}
         />
       </div>
+
+      {/* Candidate Preview Modal */}
+      <CandidatePreviewModal
+        candidate={previewCandidate}
+        isOpen={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        onUnlock={handleUnlock}
+        onInviteToApply={handleInviteToApply}
+        isUnlocked={previewCandidate ? unlockedCandidates.has(previewCandidate.id) : false}
+      />
 
       {/* Expanded Candidate Modal */}
       <ExpandedCandidateModal
