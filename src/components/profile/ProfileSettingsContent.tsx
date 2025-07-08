@@ -30,10 +30,10 @@ export function ProfileSettingsContent() {
 
   return (
     <div className={`min-h-screen bg-gradient-to-br from-slate-50 via-white to-orange-50 ${isRTL ? 'rtl' : 'ltr'}`}>
-      <div className="container mx-auto px-4 py-6 space-y-6">
-        {/* Header */}
+      <div className="container mx-auto px-4 py-8 space-y-8">
+        {/* Simplified Header */}
         <div className="flex items-center justify-between">
-          <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+          <div className={`flex items-center gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
             <Link to="/">
               <Button variant="ghost" size="sm" className="text-gray-600 hover:text-orange-600">
                 <ArrowLeft className={`w-4 h-4 ${isRTL ? 'ml-2 rotate-180' : 'mr-2'}`} />
@@ -41,36 +41,33 @@ export function ProfileSettingsContent() {
               </Button>
             </Link>
             <div className={isRTL ? 'text-right' : ''}>
-              <h1 className="text-3xl font-bold text-gray-900">{t('profileAndSettings')}</h1>
-              <p className="text-gray-600 mt-1">{t('manageAccountPreferences')}</p>
+              <h1 className="text-2xl font-bold text-gray-900">{t('profileAndSettings')}</h1>
+              <p className="text-gray-500 text-sm">{t('manageAccountPreferences')}</p>
             </div>
           </div>
           
-          {/* Save Button - Desktop */}
-          <div className="hidden lg:block">
-            <Button 
-              onClick={handleSaveChanges}
-              disabled={!hasUnsavedChanges}
-              className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg"
-            >
-              <Save className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-              {t('saveChanges')}
-            </Button>
-          </div>
+          <Button 
+            onClick={handleSaveChanges}
+            disabled={!hasUnsavedChanges}
+            className="bg-orange-600 hover:bg-orange-700 text-white"
+          >
+            <Save className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
+            {t('saveChanges')}
+          </Button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-3 space-y-6">
-            {/* User Profile */}
-            <Card className="shadow-md bg-blue-50/30 backdrop-blur-sm border-l-4 border-blue-600">
-              <CardHeader className="border-b border-gray-100 bg-blue-50/50">
-                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            {/* Simplified User Profile */}
+            <Card className="border-l-4 border-blue-500">
+              <CardHeader className="pb-4">
+                <CardTitle className={`text-lg font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <User className="w-5 h-5 text-blue-600" />
                   {t('userProfile')}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="pt-0">
                 <UserProfileSection 
                   isIndividualRecruiter={isIndividualRecruiter}
                   setIsIndividualRecruiter={setIsIndividualRecruiter}
@@ -79,16 +76,16 @@ export function ProfileSettingsContent() {
               </CardContent>
             </Card>
 
-            {/* Company Information - Only show if not individual recruiter */}
+            {/* Simplified Company Information */}
             {!isIndividualRecruiter && (
-              <Card className="shadow-md bg-green-50/30 backdrop-blur-sm border-l-4 border-green-600">
-                <CardHeader className="border-b border-gray-100 bg-green-50/50">
-                  <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <Card className="border-l-4 border-green-500">
+                <CardHeader className="pb-4">
+                  <CardTitle className={`text-lg font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <Building2 className="w-5 h-5 text-green-600" />
                     {t('companyInformation')}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent className="pt-0">
                   <CompanyInfoSection 
                     isIndividualRecruiter={isIndividualRecruiter}
                     setIsIndividualRecruiter={setIsIndividualRecruiter}
@@ -98,46 +95,46 @@ export function ProfileSettingsContent() {
               </Card>
             )}
 
-            {/* Integrations */}
-            <Card className="shadow-md bg-purple-50/30 backdrop-blur-sm border-l-4 border-purple-600">
-              <CardHeader className="border-b border-gray-100 bg-purple-50/50">
-                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            {/* Simplified Integrations */}
+            <Card className="border-l-4 border-purple-500">
+              <CardHeader className="pb-4">
+                <CardTitle className={`text-lg font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <Puzzle className="w-5 h-5 text-purple-600" />
                   {t('integrations')}
                 </CardTitle>
-                <CardDescription>{t('integrationsDesc')}</CardDescription>
+                <CardDescription className="text-sm text-gray-600">{t('integrationsDesc')}</CardDescription>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="pt-0">
                 <IntegrationsSection onChange={handleFieldChange} />
               </CardContent>
             </Card>
 
-            {/* Login & Security - Moved to the end */}
-            <Card className="shadow-md bg-orange-50/30 backdrop-blur-sm border-l-4 border-orange-600">
-              <CardHeader className="border-b border-gray-100 bg-orange-50/50">
-                <CardTitle className={`text-xl font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+            {/* Simplified Login & Security */}
+            <Card className="border-l-4 border-orange-500">
+              <CardHeader className="pb-4">
+                <CardTitle className={`text-lg font-semibold text-gray-900 flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <Shield className="w-5 h-5 text-orange-600" />
                   {t('loginAndSecurity')}
                 </CardTitle>
               </CardHeader>
-              <CardContent className="p-6">
+              <CardContent className="pt-0">
                 <LoginSecuritySection onChange={handleFieldChange} />
               </CardContent>
             </Card>
           </div>
 
-          {/* Sidebar */}
+          {/* Simplified Sidebar */}
           <div className="lg:col-span-1">
             <NavigationLinksSection />
           </div>
         </div>
 
-        {/* Mobile Save Button - Sticky */}
+        {/* Mobile Save Button */}
         <div className="lg:hidden fixed bottom-4 left-4 right-4 z-50">
           <Button 
             onClick={handleSaveChanges}
             disabled={!hasUnsavedChanges}
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white shadow-xl"
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white"
             size="lg"
           >
             <Save className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />

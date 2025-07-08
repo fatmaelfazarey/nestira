@@ -43,166 +43,164 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
   return (
     <div className="space-y-6">
       {/* User Type Selection */}
-      <div className="space-y-4">
-        <Label className="text-base font-semibold">I am recruiting as:</Label>
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-gray-900">I am recruiting as:</Label>
         <RadioGroup 
           value={isIndividualRecruiter ? 'individual' : 'company'} 
           onValueChange={handleUserTypeChange}
-          className="flex flex-col space-y-3"
+          className="space-y-2"
         >
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+          <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
             <RadioGroupItem value="individual" id="individual" />
-            <div className="flex-1">
+            <div>
               <Label htmlFor="individual" className="font-medium cursor-pointer">
                 Individual Recruiter
               </Label>
-              <p className="text-sm text-gray-500 mt-1">
-                I'm a freelance HR, headhunter, or independent talent consultant
-              </p>
+              <p className="text-xs text-gray-500">Freelance HR or independent consultant</p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+          <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
             <RadioGroupItem value="company" id="company" />
-            <div className="flex-1">
+            <div>
               <Label htmlFor="company" className="font-medium cursor-pointer">
                 Company Representative
               </Label>
-              <p className="text-sm text-gray-500 mt-1">
-                I'm representing a company or organization
-              </p>
+              <p className="text-xs text-gray-500">Representing a company or organization</p>
             </div>
           </div>
         </RadioGroup>
       </div>
 
-      <div className="border-t pt-6">
-        {/* Profile Photo */}
-        <div className="flex items-center gap-6 mb-6">
-          <Avatar className="w-20 h-20">
-            <AvatarImage src={profilePhoto} alt={fullName} />
-            <AvatarFallback className="text-lg font-semibold bg-orange-100 text-orange-600">
-              {fullName.split(' ').map(n => n[0]).join('')}
-            </AvatarFallback>
-          </Avatar>
-          
-          <div className="space-y-2">
-            <Label htmlFor="profile-photo">Profile Photo</Label>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" asChild>
-                <label htmlFor="profile-photo" className="cursor-pointer">
-                  <Upload className="w-4 h-4 mr-2" />
-                  Upload Photo
-                </label>
-              </Button>
-              <input
-                id="profile-photo"
-                type="file"
-                accept="image/*"
-                onChange={handleFileUpload}
-                className="hidden"
+      {/* Profile Photo */}
+      <div className="flex items-center gap-4">
+        <Avatar className="w-16 h-16">
+          <AvatarImage src={profilePhoto} alt={fullName} />
+          <AvatarFallback className="text-lg font-semibold bg-orange-100 text-orange-600">
+            {fullName.split(' ').map(n => n[0]).join('')}
+          </AvatarFallback>
+        </Avatar>
+        
+        <div className="space-y-2">
+          <Label htmlFor="profile-photo" className="text-sm font-medium">Profile Photo</Label>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <label htmlFor="profile-photo" className="cursor-pointer">
+                <Upload className="w-4 h-4 mr-2" />
+                Upload
+              </label>
+            </Button>
+            <input
+              id="profile-photo"
+              type="file"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+            <span className="text-xs text-gray-500">JPG, PNG up to 2MB</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Profile Information */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <Label htmlFor="full-name" className="text-sm font-medium">Full Name *</Label>
+          <Input
+            id="full-name"
+            value={fullName}
+            onChange={(e) => {
+              setFullName(e.target.value);
+              onChange();
+            }}
+            placeholder="Enter your full name"
+            className="h-9"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="role-position" className="text-sm font-medium">
+            {isIndividualRecruiter ? 'Specialization' : 'Role/Position'}
+          </Label>
+          <Input
+            id="role-position"
+            value={rolePosition}
+            onChange={(e) => {
+              setRolePosition(e.target.value);
+              onChange();
+            }}
+            placeholder={isIndividualRecruiter ? 'e.g., Finance Headhunter' : 'e.g., Senior Recruiter'}
+            className="h-9"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="phone-number" className="text-sm font-medium">Phone Number</Label>
+          <Input
+            id="phone-number"
+            value={phoneNumber}
+            onChange={(e) => {
+              setPhoneNumber(e.target.value);
+              onChange();
+            }}
+            placeholder="+20 XXX XXX XXXX"
+            className="h-9"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="business-email" className="text-sm font-medium">
+            {isIndividualRecruiter ? 'Professional Email' : 'Business Email'}
+          </Label>
+          <Input
+            id="business-email"
+            type="email"
+            value={businessEmail}
+            onChange={(e) => {
+              setBusinessEmail(e.target.value);
+              onChange();
+            }}
+            placeholder={isIndividualRecruiter ? 'your.email@domain.com' : 'your.email@company.com'}
+            className="h-9"
+          />
+        </div>
+
+        {/* Individual Recruiter Specific Fields */}
+        {isIndividualRecruiter && (
+          <>
+            <div className="space-y-2">
+              <Label htmlFor="linkedin-personal" className="text-sm font-medium">
+                LinkedIn Profile URL *
+              </Label>
+              <Input
+                id="linkedin-personal"
+                value={linkedinPersonal}
+                onChange={(e) => {
+                  setLinkedinPersonal(e.target.value);
+                  onChange();
+                }}
+                placeholder="https://linkedin.com/in/yourname"
+                className="h-9"
               />
-              <span className="text-sm text-gray-500">JPG, PNG up to 2MB</span>
             </div>
-          </div>
-        </div>
 
-        {/* Profile Information */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <Label htmlFor="full-name">Full Name *</Label>
-            <Input
-              id="full-name"
-              value={fullName}
-              onChange={(e) => {
-                setFullName(e.target.value);
-                onChange();
-              }}
-              placeholder="Enter your full name"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="role-position">
-              {isIndividualRecruiter ? 'Specialization/Service' : 'Role/Position'}
-            </Label>
-            <Input
-              id="role-position"
-              value={rolePosition}
-              onChange={(e) => {
-                setRolePosition(e.target.value);
-                onChange();
-              }}
-              placeholder={isIndividualRecruiter ? 'e.g., Finance Headhunter, Accounting Specialist' : 'e.g., Senior Recruiter, HR Manager'}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="phone-number">Phone Number</Label>
-            <Input
-              id="phone-number"
-              value={phoneNumber}
-              onChange={(e) => {
-                setPhoneNumber(e.target.value);
-                onChange();
-              }}
-              placeholder="+20 XXX XXX XXXX"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="business-email">
-              {isIndividualRecruiter ? 'Professional Email' : 'Business Email'}
-            </Label>
-            <Input
-              id="business-email"
-              type="email"
-              value={businessEmail}
-              onChange={(e) => {
-                setBusinessEmail(e.target.value);
-                onChange();
-              }}
-              placeholder={isIndividualRecruiter ? 'your.email@domain.com' : 'your.email@company.com'}
-            />
-          </div>
-
-          {/* Individual Recruiter Specific Fields */}
-          {isIndividualRecruiter && (
-            <>
-              <div className="space-y-2">
-                <Label htmlFor="linkedin-personal" className="text-sm font-medium text-gray-900">
-                  LinkedIn Profile URL (Personal) *
-                </Label>
-                <Input
-                  id="linkedin-personal"
-                  value={linkedinPersonal}
-                  onChange={(e) => {
-                    setLinkedinPersonal(e.target.value);
-                    onChange();
-                  }}
-                  placeholder="https://linkedin.com/in/yourname"
-                  className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="whatsapp-number" className="text-sm font-medium text-gray-900">
-                  WhatsApp Number *
-                </Label>
-                <Input
-                  id="whatsapp-number"
-                  value={whatsappNumber}
-                  onChange={(e) => {
-                    setWhatsappNumber(e.target.value);
-                    onChange();
-                  }}
-                  placeholder="+971 50 123 4567"
-                  className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
-                />
-              </div>
-            </>
-          )}
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="whatsapp-number" className="text-sm font-medium">
+                WhatsApp Number *
+              </Label>
+              <Input
+                id="whatsapp-number"
+                value={whatsappNumber}
+                onChange={(e) => {
+                  setWhatsappNumber(e.target.value);
+                  onChange();
+                }}
+                placeholder="+971 50 123 4567"
+                className="h-9"
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
