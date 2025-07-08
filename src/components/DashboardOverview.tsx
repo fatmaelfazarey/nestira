@@ -329,21 +329,21 @@ export function DashboardOverview() {
       </Card>
 
       {/* KPI Metrics Row with Quick Actions */}
-      <div className="grid grid-cols-1 xl:grid-cols-6 gap-4">
-        {/* KPI Metrics - Takes 5 columns */}
-        <div className="xl:col-span-5 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-6 gap-4">
+        {/* KPI Metrics - Takes 3 columns on lg, 5 columns on xl */}
+        <div className="lg:col-span-3 xl:col-span-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
           {kpiData.map((kpi, index) => (
             <Card 
               key={kpi.title} 
-              className={`p-3 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} 
+              className={`p-2 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2`} 
               onClick={() => handleKpiClick(kpi.clickAction)}
             >
-              <div className="flex flex-col items-center text-center space-y-2">
-                <div className="p-2 rounded-lg bg-white/70 shrink-0">
-                  <kpi.icon className={`w-5 h-5 ${kpi.color}`} />
+              <div className="flex flex-col items-center text-center space-y-1">
+                <div className="p-1.5 rounded-lg bg-white/70 shrink-0">
+                  <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
                 </div>
-                <div className="space-y-1 min-w-0">
-                  <h3 className={`text-xl font-bold ${kpi.color}`}>{kpi.value}</h3>
+                <div className="space-y-0.5 min-w-0">
+                  <h3 className={`text-lg font-bold ${kpi.color}`}>{kpi.value}</h3>
                   <p className={`text-xs font-semibold ${kpi.color} opacity-90 leading-tight`}>{kpi.title}</p>
                   <p className={`text-xs ${kpi.color} opacity-70 leading-tight`}>{kpi.subtitle}</p>
                 </div>
@@ -352,8 +352,8 @@ export function DashboardOverview() {
           ))}
         </div>
 
-        {/* Quick Actions - Takes 1 column on the right */}
-        <Card className="xl:col-span-1 p-responsive bg-orange-50 border border-orange-200">
+        {/* Quick Actions - Takes 1 column on lg and xl */}
+        <Card className="lg:col-span-1 xl:col-span-1 p-responsive bg-orange-50 border border-orange-200">
           <h3 className="text-responsive-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
             <Target className="w-5 h-5 text-orange-600 shrink-0" />
             Quick Actions
