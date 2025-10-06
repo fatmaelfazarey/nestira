@@ -15,7 +15,9 @@ import {
   UserCheck,
   Building2,
   DollarSign,
-  Folder
+  Folder,
+  LogIn,
+  LogOut,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
@@ -38,7 +40,10 @@ import { JobCreationModal } from "./JobCreationModal";
 import { InternshipCreationModal } from "./InternshipCreationModal";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
+const token=localStorage.getItem("token")
 // Navigation items organized by sections
 const navigationSections = [
   {
@@ -133,7 +138,7 @@ const navigationSections = [
       },
       {
         title: "Settings",
-        url: "/profile-settings",
+        url: token ?  "/profile-settings" : "/signup",
         icon: Settings,
         badge: null
       },
@@ -146,7 +151,6 @@ const navigationSections = [
     ]
   }
 ];
-
 export function AppSidebar() {
   const [isRecruitModalOpen, setIsRecruitModalOpen] = useState(false);
   const [isRemoteModalOpen, setIsRemoteModalOpen] = useState(false);
@@ -154,7 +158,31 @@ export function AppSidebar() {
   const [isJobCreationModalOpen, setIsJobCreationModalOpen] = useState(false);
   const [isInternshipCreationModalOpen, setIsInternshipCreationModalOpen] = useState(false);
   const { toast } = useToast();
+  const [loggingOut, setLoggingOut] = useState(false);
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
 
+  const handleAuthAction = async () => {
+    if (currentUser) {
+      // Logout
+      try {
+        setLoggingOut(true);
+        await logout();
+        localStorage.removeItem("token");
+        localStorage.removeItem("role");
+        toast.success("Logged out successfully!");
+        navigate("/");
+      } catch (error: any) {
+        toast.error(error.message || "Failed to logout");
+      } finally {
+        setLoggingOut(false);
+      }
+    } else {
+      // Redirect to login
+      navigate("/login");
+    }
+  };
+  console.log({token})
   const handlePostNewRole = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -273,6 +301,41 @@ export function AppSidebar() {
           <div className="text-xs text-white text-center font-bold mt-4 relative z-10 truncate">
             Powered by <span className="text-orange-500 font-black">Nestira</span>
           </div>
+                   {/* Login/Logout Button - Fixed at bottom */}
+      <div className="p-4 border-t border-border-c/20 flex-shrink-0">
+        <Button
+          onClick={handleAuthAction}
+          disabled={loggingOut}
+          className={`w-full transition-all duration-200 ${
+            currentUser
+              ? "bg-secondary-c hover:opacity-[.8] text-destructive-foreground"
+              : " hover:opacity-[.8] text-primary-c-foreground  bg-secondary-c"
+          }`}
+        >
+          {loggingOut ? (
+            <span className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Logging out...
+            </span>
+          ) : currentUser ? (
+            <>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </>
+          ) : (
+            <>
+              <LogIn className="w-4 h-4 mr-2" />
+              Login
+            </>
+          )}
+        </Button>
+        
+        {currentUser && (
+          <p className="text-xs text-center text-primary-c-foreground/60 mt-2 truncate">
+            {currentUser.email}
+          </p>
+        )}
+      </div>
         </SidebarFooter>
       </Sidebar>
 
@@ -303,6 +366,7 @@ export function AppSidebar() {
         open={isRemoteModalOpen} 
         onOpenChange={setIsRemoteModalOpen} 
       />
+ 
     </>
   );
 }
