@@ -1,13 +1,26 @@
 import React, { createContext, useState, useEffect, useContext, ReactNode } from "react";
-import { 
-  onAuthStateChanged, 
-  User, 
+import {
+  onAuthStateChanged,
+  User,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  signOut
+  signOut,
+
+
+
+  sendPasswordResetEmail,
+  updateEmail,
+  updatePassword,
+
+
+  EmailAuthProvider,
+  reauthenticateWithCredential
 } from "firebase/auth";
 import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 import { auth, db } from "../firebase";
+
+
+
 
 export interface CandidateData {
   uid: string;
@@ -50,15 +63,15 @@ export interface CandidateData {
   };
   summary?: string;
   coverLetter?: string;
-  video?: { 
-    hasVideo?: boolean; 
-    videoUrl?: string; 
-    recordingDate?: string; 
-    status: 'not_started' | 'recording' | 'uploaded' | 'approved' 
+  video?: {
+    hasVideo?: boolean;
+    videoUrl?: string;
+    recordingDate?: string;
+    status: 'not_started' | 'recording' | 'uploaded' | 'approved'
   };
-  behavioral?: { 
-    completed?: boolean; 
-    status: 'not_started' | 'in_progress' | 'completed' 
+  behavioral?: {
+    completed?: boolean;
+    status: 'not_started' | 'in_progress' | 'completed'
   };
   preferences?: {
     jobTitles: string[];
@@ -66,10 +79,10 @@ export interface CandidateData {
     workType?: string;
     visaStatus?: string;
     noticePeriod?: string;
-    salaryRange?: { 
-      min?: number; 
-      max?: number; 
-      currency?: string 
+    salaryRange?: {
+      min?: number;
+      max?: number;
+      currency?: string
     };
   };
   profilePhoto?: string;
@@ -137,8 +150,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [loading, setLoading] = useState(true);
 
   const signup = async (
-    email: string, 
-    password: string, 
+    email: string,
+    password: string,
     profileData: Partial<UserData>
   ): Promise<User> => {
     try {
@@ -220,7 +233,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const token = await userCred.user.getIdToken();
         localStorage.setItem("token", token);
-      } catch {}
+      } catch { }
 
       return userCred.user;
     } catch (error: any) {
@@ -236,7 +249,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       try {
         const token = await userCred.user.getIdToken();
         localStorage.setItem("token", token);
-      } catch {}
+      } catch { }
       return userCred.user;
     } catch (error: any) {
       console.error("Login error:", error);
@@ -249,7 +262,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await signOut(auth);
       setUserData(null);
-      try { localStorage.removeItem("token"); } catch {}
+      try { localStorage.removeItem("token"); } catch { }
     } catch (error: any) {
       console.error("Logout error:", error);
       throw new Error(error.message || "Failed to logout");
@@ -262,7 +275,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const userRef = doc(db, "users", currentUser.uid);
-      
+
       let updatedData = { ...data };
 
       if (userData?.role === "candidate") {
@@ -286,7 +299,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const calculateCandidateCompletion = (data: CandidateData): number => {
     let progress = 0;
-    
+
     if (data.basicInfo?.fullName && data.basicInfo?.email && data.basicInfo?.phone && data.basicInfo?.location) {
       progress += 15;
     }
@@ -304,32 +317,32 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (data.industry?.industries && data.industry.industries.length > 0) progress += 10;
     if (data.summary) progress += 10;
     if (data.preferences?.workType) progress += 5;
-    
+
     return progress;
   };
 
   const calculateRecruiterCompletion = (data: RecruiterData): number => {
     let progress = 0;
-    
+
     // Personal Info (30%)
     if (data.personalInfo?.fullName) progress += 10;
     if (data.personalInfo?.phone) progress += 5;
     if (data.personalInfo?.businessEmail) progress += 5;
     if (data.personalInfo?.rolePosition) progress += 5;
     if (data.personalInfo?.profilePhoto) progress += 5;
-    
+
     // Company Info (50%)
     if (data.companyInfo?.companyName) progress += 10;
     if (data.companyInfo?.linkedinUrl) progress += 10;
     if (data.companyInfo?.industry) progress += 10;
     if (data.companyInfo?.description) progress += 10;
     if (data.companyInfo?.verificationDocument) progress += 10;
-    
+
     // Integrations (20%)
     if (data.integrations?.googleMeet?.connected) progress += 7;
     if (data.integrations?.googleCalendar?.connected) progress += 7;
     if (data.integrations?.gmail?.connected) progress += 6;
-    
+
     return progress;
   };
 
@@ -338,7 +351,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       console.log("Fetching user data for:", uid);
       const userDoc = await getDoc(doc(db, "users", uid));
-      
+
       if (userDoc.exists()) {
         const data = userDoc.data() as UserData;
         console.log("User data fetched successfully:", data);
@@ -354,25 +367,63 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
 
+  // //#region update authen
+  // const resetPassword = (email: string) => {
+  //   return sendPasswordResetEmail(auth, email);
+  // }
+
+  // const updateUserEmail = async (newEmail: string, currentPassword: string) => {
+  //   const user = auth.currentUser;
+  //   if (!user) throw new Error("No user is currently signed in");
+
+  //   const credential = EmailAuthProvider.credential(user.email!, currentPassword);
+  //   await reauthenticateWithCredential(user, credential);
+  //   await updateEmail(user, newEmail);
+  // };
+
+  // const updateUserPassword = async (newPassword: string, currentPassword: string) => {
+  //   const user = auth.currentUser;
+  //   if (!user) throw new Error("No user is currently signed in");
+
+  //   const credential = EmailAuthProvider.credential(user.email!, currentPassword);
+  //   await reauthenticateWithCredential(user, credential);
+  //   await updatePassword(user, newPassword);
+  // };
+  // //#endregion
+
+  //#region update authen
+  const resetPassword = (email: string) => {
+    return sendPasswordResetEmail(auth, email);
+  }
+  const updateUserEmail = (email: string) => {
+    return updateEmail(auth.currentUser, email);
+  }
+  const updateUserPassword = (password: string) => {
+    return updatePassword(auth.currentUser, password);
+  }
+  //#endregion
+
   useEffect(() => {
     setLoading(true);
-    
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       console.log("Auth state changed:", user ? user.uid : "No user");
       setCurrentUser(user);
-      
+
       if (user) {
         await fetchUserData(user.uid);
       } else {
         console.log("No user - clearing userData");
         setUserData(null);
       }
-      
+
       setLoading(false);
     });
 
     return () => unsubscribe();
   }, []);
+
+
 
   const value: AuthContextType = {
     currentUser,
@@ -381,7 +432,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     signup,
     login,
     logout,
-    updateUserProfile
+    updateUserProfile,
+
+    resetPassword,
+    updateUserEmail,
+    updateUserPassword,
+
   };
 
   return (

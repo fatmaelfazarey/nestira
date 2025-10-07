@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { useTranslation } from '@/hooks/useTranslation';
 import { Video, Calendar, Mail, Link as LinkIcon } from 'lucide-react';
@@ -46,42 +46,71 @@ const IntegrationItem: React.FC<IntegrationItemProps> = ({ icon, title, descript
   );
 };
 
-export function IntegrationsSection({ onChange }: { onChange: () => void }) {
+export function IntegrationsSection({ onChange, currentUser, setCurrentUser }:
+  { onChange: () => void, currentUser: object, setCurrentUser: object }) {
   const { t } = useTranslation();
   const { isRTL } = useLanguage();
   const [connected, setConnected] = useState({
-    meet: false,
-    calendar: false,
-    gmail: false,
+    meet: currentUser?.integrations?.googleMeet?.connected
+    ,
+    calendar: currentUser?.integrations?.googleCalendar?.connected
+    ,
+    gmail: currentUser?.integrations?.gmail?.connected
+    ,
   });
+  useEffect(() => {
+    setConnected({
+      meet: currentUser?.integrations?.googleMeet?.connected
+      ,
+      calendar: currentUser?.integrations?.googleCalendar?.connected
+      ,
+      gmail: currentUser?.integrations?.gmail?.connected
+      ,
+    })
+
+  }, [currentUser])
 
   const handleConnect = (integration: keyof typeof connected) => {
-    setConnected(prev => ({ ...prev, [integration]: !prev[integration] }));
+    setConnected(prev => ({ ...prev, [integration.id]: !prev[integration.id] }));
+    setCurrentUser(prev => ({
+      ...prev,
+      integrations: {
+        ...prev.integrations,
+        [integration.parmName]: {
+          ...prev.integrations?.[integration.parmName],
+          connected: !connected[integration.id],
+        },
+      },
+    }));
+
     onChange();
     console.log(`${integration} connection toggled`);
   };
-  
+
   const integrations = [
     {
       id: 'meet' as const,
       icon: <Video className="w-6 h-6 text-green-600" />,
       title: 'Google Meet',
       description: t('googleMeetDesc'),
+      parmName: 'googleMeet'
     },
     {
       id: 'calendar' as const,
       icon: <Calendar className="w-6 h-6 text-blue-600" />,
       title: 'Google Calendar',
       description: t('googleCalendarDesc'),
+      parmName: 'googleCalendar'
     },
     {
       id: 'gmail' as const,
       icon: <Mail className="w-6 h-6 text-red-600" />,
       title: 'Gmail',
       description: t('gmailDesc'),
+      parmName: 'gmail'
     },
   ];
-  
+
   return (
     <div className="space-y-4">
       {integrations.map(integration => (
@@ -91,7 +120,7 @@ export function IntegrationsSection({ onChange }: { onChange: () => void }) {
           title={integration.title}
           description={integration.description}
           isConnected={connected[integration.id]}
-          onConnect={() => handleConnect(integration.id)}
+          onConnect={() => handleConnect(integration)}
           isRTL={isRTL}
         />
       ))}

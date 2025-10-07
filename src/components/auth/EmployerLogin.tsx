@@ -42,7 +42,7 @@ function EmployerLogin() {
           if (role === "recruiter") {
             navigate("/");
           } else {
-            navigate("/");
+            navigate("/candidate");
           }
         }, 500);
       } else {

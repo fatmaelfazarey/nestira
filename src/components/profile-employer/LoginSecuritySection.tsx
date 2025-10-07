@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -13,9 +13,11 @@ import { useTranslation } from '@/hooks/useTranslation';
 
 interface LoginSecuritySectionProps {
   onChange: () => void;
+  currentUser: object;
+  setCurrentUser: object
 }
 
-export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
+export function LoginSecuritySection({ onChange, currentUser, setCurrentUser }: LoginSecuritySectionProps) {
   const { t } = useTranslation();
   const [email, setEmail] = useState('user@company.com');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -32,6 +34,9 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
   const [verificationCode, setVerificationCode] = useState('');
   const [recoveryCode, setRecoveryCode] = useState('');
 
+  useEffect(() => {
+    setTwoFactorEnabled(currentUser?.security?.twoFactorEnabled);
+  }, [currentUser])
   // Password strength calculation
   const calculatePasswordStrength = (password: string) => {
     let score = 0;
@@ -44,7 +49,7 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
     };
 
     score = Object.values(checks).filter(Boolean).length;
-    
+
     if (score <= 2) return { strength: 'Weak', percentage: 33, color: 'bg-red-500' };
     if (score <= 4) return { strength: 'Medium', percentage: 66, color: 'bg-yellow-500' };
     return { strength: 'Strong', percentage: 100, color: 'bg-green-500' };
@@ -125,7 +130,7 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
       {/* Enhanced Password Reset */}
       <div className="space-y-4">
         <h4 className="font-medium text-gray-900">Change Password</h4>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="space-y-2">
             <Label htmlFor="current-password">Current Password</Label>
@@ -172,15 +177,14 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
             {newPassword && (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <Progress 
-                    value={passwordStrength.percentage} 
+                  <Progress
+                    value={passwordStrength.percentage}
                     className="flex-1 h-2"
                     indicatorClassName={passwordStrength.color}
                   />
-                  <span className={`text-xs font-medium ${
-                    passwordStrength.strength === 'Strong' ? 'text-green-600' :
+                  <span className={`text-xs font-medium ${passwordStrength.strength === 'Strong' ? 'text-green-600' :
                     passwordStrength.strength === 'Medium' ? 'text-yellow-600' : 'text-red-600'
-                  }`}>
+                    }`}>
                     {passwordStrength.strength}
                   </span>
                 </div>
@@ -335,15 +339,15 @@ export function LoginSecuritySection({ onChange }: LoginSecuritySectionProps) {
               )}
 
               <div className="flex gap-2">
-                <Button 
+                <Button
                   onClick={setupTwoFactor}
                   disabled={verificationCode.length !== 6}
                   className="bg-orange-600 hover:bg-orange-700"
                 >
                   Enable 2FA
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={cancelTwoFactorSetup}
                 >
                   Cancel

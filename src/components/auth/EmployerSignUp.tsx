@@ -287,7 +287,9 @@ export default function EmployerSignUp() {
                         ? 'border-blue-600 bg-blue-50 shadow-md' 
                         : 'border-gray-200 hover:border-blue-400 hover:shadow-sm'
                     }`}
-                    onClick={() => setRecruiterType('individual')}
+                    onClick={() => {setRecruiterType('individual');
+                      navigate('/candidate/signup')
+                    }}
                   >
                     <CardContent className="p-6 text-center">
                       <User className={`w-12 h-12 mx-auto mb-3 ${recruiterType === 'individual' ? 'text-blue-600' : 'text-gray-400'}`} />

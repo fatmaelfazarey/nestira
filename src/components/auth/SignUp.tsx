@@ -7,8 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { 
-  User, Mail, Phone, MapPin, Lock, Briefcase, GraduationCap, 
+import {
+  User, Mail, Phone, MapPin, Lock, Briefcase, GraduationCap,
   Star, Plus, X, AlertCircle, CheckCircle, Building2, Globe, Target, DollarSign, Upload, Image
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
@@ -16,9 +16,10 @@ import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
 
 export default function CandidateSignUp() {
+  const [recruiterType, setRecruiterType] = useState<'individual' | 'company'>('individual');
   const { signup } = useAuth();
   const navigate = useNavigate();
-  
+
   const [basicInfo, setBasicInfo] = useState({
     fullName: '', email: '', phone: '', location: '',
     businessEmail: '', linkedin: '', password: '', confirmPassword: '', role: ''
@@ -36,18 +37,18 @@ export default function CandidateSignUp() {
   ]);
 
   const [skills, setSkills] = useState({
-    technical: [], 
+    technical: [],
     software: [],
-    certifications: [], 
+    certifications: [],
     languages: []
   });
-  
+
   const [newSkill, setNewSkill] = useState({ category: 'technical', value: '' });
-  const [industry, setIndustry] = useState({ 
-    industries: [], 
-    subfields: [] 
+  const [industry, setIndustry] = useState({
+    industries: [],
+    subfields: []
   });
-  
+
   const [preferences, setPreferences] = useState({
     jobTitles: [],
     locations: [],
@@ -59,41 +60,41 @@ export default function CandidateSignUp() {
 
   const [newJobTitle, setNewJobTitle] = useState('');
   const [newLocation, setNewLocation] = useState('');
-  
+
   const [summary, setSummary] = useState('');
   const [coverLetter, setCoverLetter] = useState('');
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
 
   const calculateProgress = () => {
     let progress = 0;
-    
+
     // Basic Info (25%)
     if (basicInfo.fullName && basicInfo.email && basicInfo.phone && basicInfo.location) progress += 15;
     if (basicInfo.role) progress += 5;
     if (basicInfo.linkedin || profilePhoto) progress += 5;
-    
+
     // Experience (20%)
     if (experience[0].title && experience[0].company) progress += 20;
-    
+
     // Education (15%)
     if (education[0].degree && education[0].institution) progress += 15;
-    
+
     // Skills (15%)
     if (skills.technical.length > 0) progress += 5;
     if (skills.certifications.length > 0) progress += 5;
     if (skills.languages.length > 0) progress += 5;
-    
+
     // Industry (10%)
     if (industry.industries.length > 0) progress += 10;
-    
+
     // Summary (10%)
     if (summary) progress += 10;
-    
+
     // Preferences (5%)
     if (preferences.workType) progress += 5;
-    
+
     return progress;
   };
 
@@ -127,7 +128,7 @@ export default function CandidateSignUp() {
   ];
 
   const softwareTools = [
-    "Excel Advanced", "Bloomberg Terminal", "SAP", "Tableau", "Power BI", 
+    "Excel Advanced", "Bloomberg Terminal", "SAP", "Tableau", "Power BI",
     "Python", "SQL", "QuickBooks", "Oracle Financials", "MATLAB"
   ];
 
@@ -158,9 +159,9 @@ export default function CandidateSignUp() {
   };
 
   const addExperience = () => {
-    setExperience([...experience, { 
-      title: '', company: '', location: '', startDate: '', 
-      endDate: '', current: false, achievements: [''] 
+    setExperience([...experience, {
+      title: '', company: '', location: '', startDate: '',
+      endDate: '', current: false, achievements: ['']
     }]);
   };
 
@@ -177,8 +178,8 @@ export default function CandidateSignUp() {
   };
 
   const addEducation = () => {
-    setEducation([...education, { 
-      degree: '', institution: '', startDate: '', endDate: '', gpa: '' 
+    setEducation([...education, {
+      degree: '', institution: '', startDate: '', endDate: '', gpa: ''
     }]);
   };
 
@@ -254,7 +255,7 @@ export default function CandidateSignUp() {
   };
 
   const validateStep = (step) => {
-    switch(step) {
+    switch (step) {
       case 1:
         if (!basicInfo.fullName || !basicInfo.email || !basicInfo.phone || !basicInfo.location) {
           return "Please fill all required basic information fields";
@@ -294,7 +295,7 @@ export default function CandidateSignUp() {
     }
 
     setLoading(true);
-    
+
     const profileData = {
       role: "candidate" as const,
       basicInfo: {
@@ -327,17 +328,17 @@ export default function CandidateSignUp() {
 
     try {
       await signup(basicInfo.email, basicInfo.password, profileData);
-      
+
       // TODO: Upload photo to Firebase Storage if profilePhoto exists
-      
+
       toast.success('Account created successfully! Welcome aboard');
-      
+
       setTimeout(() => {
         navigate('/candidate');
       }, 500);
     } catch (error: any) {
       console.error("Signup error:", error);
-      
+
       if (error.code === "auth/email-already-in-use") {
         toast.error("This email is already registered!");
       } else if (error.code === "auth/invalid-email") {
@@ -377,6 +378,62 @@ export default function CandidateSignUp() {
             </div>
           </CardContent>
         </Card>
+
+
+        {/* Recruiter Type */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="w-5 h-5 text-blue-600" />
+              I am recruiting as:
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid md:grid-cols-2 gap-4">
+              <Card
+                className={`cursor-pointer transition-all border-2 ${recruiterType === 'individual'
+                  ? 'border-blue-600 bg-blue-50 shadow-md'
+                  : 'border-gray-200 hover:border-blue-400 hover:shadow-sm'
+                  }`}
+                onClick={() => {
+                  setRecruiterType('individual');
+                  navigate('/candidate/signup')
+                }}
+              >
+                <CardContent className="p-6 text-center">
+                  <User className={`w-12 h-12 mx-auto mb-3 ${recruiterType === 'individual' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <h3 className="font-semibold text-lg mb-2">Individual Recruiter</h3>
+                  <p className="text-sm text-gray-600">Freelance HR or independent consultant</p>
+                  {recruiterType === 'individual' && (
+                    <CheckCircle className="w-6 h-6 mx-auto mt-3 text-blue-600" />
+                  )}
+                </CardContent>
+              </Card>
+
+              <Card
+                className={`cursor-pointer transition-all border-2 ${recruiterType === 'company'
+                  ? 'border-blue-600 bg-blue-50 shadow-md'
+                  : 'border-gray-200 hover:border-blue-400 hover:shadow-sm'
+                  }`}
+                onClick={() => {
+                  setRecruiterType('company');
+                  navigate('/signup')
+                }
+                }
+              >
+                <CardContent className="p-6 text-center">
+                  <Building2 className={`w-12 h-12 mx-auto mb-3 ${recruiterType === 'company' ? 'text-blue-600' : 'text-gray-400'}`} />
+                  <h3 className="font-semibold text-lg mb-2">Company Representative</h3>
+                  <p className="text-sm text-gray-600">Representing a company or organization</p>
+                  {recruiterType === 'company' && (
+                    <CheckCircle className="w-6 h-6 mx-auto mt-3 text-blue-600" />
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
+
 
         {currentStep === 1 && (
           <Card>
@@ -437,7 +494,7 @@ export default function CandidateSignUp() {
                   </label>
                   <Input
                     value={basicInfo.fullName}
-                    onChange={(e) => setBasicInfo({...basicInfo, fullName: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, fullName: e.target.value })}
                     placeholder="Enter your full name"
                   />
                 </div>
@@ -448,7 +505,7 @@ export default function CandidateSignUp() {
                   </label>
                   <Input
                     value={basicInfo.role}
-                    onChange={(e) => setBasicInfo({...basicInfo, role: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, role: e.target.value })}
                     placeholder="e.g., Senior Financial Analyst"
                   />
                 </div>
@@ -460,7 +517,7 @@ export default function CandidateSignUp() {
                   <Input
                     type="email"
                     value={basicInfo.email}
-                    onChange={(e) => setBasicInfo({...basicInfo, email: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, email: e.target.value })}
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -471,7 +528,7 @@ export default function CandidateSignUp() {
                   </label>
                   <Input
                     value={basicInfo.phone}
-                    onChange={(e) => setBasicInfo({...basicInfo, phone: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, phone: e.target.value })}
                     placeholder="+971 50 123 4567"
                   />
                 </div>
@@ -480,7 +537,7 @@ export default function CandidateSignUp() {
                   <label className="text-sm font-semibold flex items-center gap-2">
                     <MapPin className="w-4 h-4" />Location *
                   </label>
-                  <Select value={basicInfo.location} onValueChange={(value) => setBasicInfo({...basicInfo, location: value})}>
+                  <Select value={basicInfo.location} onValueChange={(value) => setBasicInfo({ ...basicInfo, location: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select your location" />
                     </SelectTrigger>
@@ -499,7 +556,7 @@ export default function CandidateSignUp() {
                   <Input
                     type="email"
                     value={basicInfo.businessEmail}
-                    onChange={(e) => setBasicInfo({...basicInfo, businessEmail: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, businessEmail: e.target.value })}
                     placeholder="business@company.com"
                   />
                 </div>
@@ -510,7 +567,7 @@ export default function CandidateSignUp() {
                   </label>
                   <Input
                     value={basicInfo.linkedin}
-                    onChange={(e) => setBasicInfo({...basicInfo, linkedin: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, linkedin: e.target.value })}
                     placeholder="linkedin.com/in/yourprofile"
                   />
                 </div>
@@ -522,7 +579,7 @@ export default function CandidateSignUp() {
                   <Input
                     type="password"
                     value={basicInfo.password}
-                    onChange={(e) => setBasicInfo({...basicInfo, password: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, password: e.target.value })}
                     placeholder="Min 6 characters"
                   />
                 </div>
@@ -534,7 +591,7 @@ export default function CandidateSignUp() {
                   <Input
                     type="password"
                     value={basicInfo.confirmPassword}
-                    onChange={(e) => setBasicInfo({...basicInfo, confirmPassword: e.target.value})}
+                    onChange={(e) => setBasicInfo({ ...basicInfo, confirmPassword: e.target.value })}
                     placeholder="Re-enter password"
                   />
                 </div>
@@ -752,7 +809,7 @@ export default function CandidateSignUp() {
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2 mb-3">
                   {technicalSkills.map((skill) => (
                     <Button
@@ -761,7 +818,7 @@ export default function CandidateSignUp() {
                       size="sm"
                       onClick={() => {
                         if (!skills.technical.includes(skill)) {
-                          setSkills({...skills, technical: [...skills.technical, skill]});
+                          setSkills({ ...skills, technical: [...skills.technical, skill] });
                         }
                       }}
                       className="text-xs"
@@ -806,7 +863,7 @@ export default function CandidateSignUp() {
                       size="sm"
                       onClick={() => {
                         if (!skills.software.includes(tool)) {
-                          setSkills({...skills, software: [...skills.software, tool]});
+                          setSkills({ ...skills, software: [...skills.software, tool] });
                         }
                       }}
                       className="text-xs"
@@ -851,7 +908,7 @@ export default function CandidateSignUp() {
                       size="sm"
                       onClick={() => {
                         if (!skills.certifications.includes(cert)) {
-                          setSkills({...skills, certifications: [...skills.certifications, cert]});
+                          setSkills({ ...skills, certifications: [...skills.certifications, cert] });
                         }
                       }}
                       className="text-xs"
@@ -861,7 +918,7 @@ export default function CandidateSignUp() {
                     </Button>
                   ))}
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {skills.certifications.map((cert, index) => (
                     <Badge key={index} className="flex items-center gap-1 bg-green-100 text-green-800">
@@ -887,7 +944,7 @@ export default function CandidateSignUp() {
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {skills.languages.map((lang, index) => (
                     <Badge key={index} className="flex items-center gap-1 bg-purple-100 text-purple-800">
@@ -1084,7 +1141,7 @@ export default function CandidateSignUp() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold">Work Type</label>
-                  <Select value={preferences.workType} onValueChange={(value) => setPreferences({...preferences, workType: value})}>
+                  <Select value={preferences.workType} onValueChange={(value) => setPreferences({ ...preferences, workType: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select work type" />
                     </SelectTrigger>
@@ -1098,7 +1155,7 @@ export default function CandidateSignUp() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-semibold">Visa Status</label>
-                  <Select value={preferences.visaStatus} onValueChange={(value) => setPreferences({...preferences, visaStatus: value})}>
+                  <Select value={preferences.visaStatus} onValueChange={(value) => setPreferences({ ...preferences, visaStatus: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select visa status" />
                     </SelectTrigger>
@@ -1112,7 +1169,7 @@ export default function CandidateSignUp() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-semibold">Notice Period</label>
-                  <Select value={preferences.noticePeriod} onValueChange={(value) => setPreferences({...preferences, noticePeriod: value})}>
+                  <Select value={preferences.noticePeriod} onValueChange={(value) => setPreferences({ ...preferences, noticePeriod: value })}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select notice period" />
                     </SelectTrigger>
@@ -1137,7 +1194,7 @@ export default function CandidateSignUp() {
                     value={preferences.salaryRange.min}
                     onChange={(e) => setPreferences({
                       ...preferences,
-                      salaryRange: {...preferences.salaryRange, min: e.target.value}
+                      salaryRange: { ...preferences.salaryRange, min: e.target.value }
                     })}
                   />
                   <Input
@@ -1146,14 +1203,14 @@ export default function CandidateSignUp() {
                     value={preferences.salaryRange.max}
                     onChange={(e) => setPreferences({
                       ...preferences,
-                      salaryRange: {...preferences.salaryRange, max: e.target.value}
+                      salaryRange: { ...preferences.salaryRange, max: e.target.value }
                     })}
                   />
-                  <Select 
-                    value={preferences.salaryRange.currency} 
+                  <Select
+                    value={preferences.salaryRange.currency}
                     onValueChange={(value) => setPreferences({
                       ...preferences,
-                      salaryRange: {...preferences.salaryRange, currency: value}
+                      salaryRange: { ...preferences.salaryRange, currency: value }
                     })}
                   >
                     <SelectTrigger>
@@ -1180,7 +1237,7 @@ export default function CandidateSignUp() {
           >
             Previous
           </Button>
-          
+
           <Button
             onClick={handleSubmit}
             disabled={loading}

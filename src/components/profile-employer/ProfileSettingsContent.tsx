@@ -1,9 +1,9 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Save, User, Building2, Shield, Puzzle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useRouteLoaderData } from 'react-router-dom';
 import { LoginSecuritySection } from './LoginSecuritySection';
 import { UserProfileSection } from './UserProfileSection';
 import { CompanyInfoSection } from './CompanyInfoSection';
@@ -11,21 +11,103 @@ import { NavigationLinksSection } from './NavigationLinksSection';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { IntegrationsSection } from './IntegrationsSection';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from "sonner";
 
 export function ProfileSettingsContent() {
+  const { currentUser, userData, loading, updateUserProfile } = useAuth();
+  console.log({ userData })
+  // console.log('get user data is fffffffff' + { userData?.basicInfo?.fullName })
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [isIndividualRecruiter, setIsIndividualRecruiter] = useState(false);
   const { t } = useTranslation();
   const { isRTL } = useLanguage();
 
-  const handleSaveChanges = () => {
+  //#region get data
+  const [profileData, setProfileData] = useState<any>({
+    email: '',
+    personalInfo: {
+      businessEmail: "",
+      fullName: "",
+      phone: "",
+      profilePhoto: "",
+      rolePosition: "",
+    },
+    companyInfo: {
+      companyLogo: '',
+      companyName: '',
+      companySize: '',
+      companyType: '',
+      description: '',
+      industry: '',
+      linkedinUrl: '',
+      verificationDocument: '',
+      websiteUrl: '',
+      yearFounded: ''
+
+    },
+    integrations: {
+
+    },
+    security: {
+
+    }
+  });
+
+  //  connected: false,
+  useEffect(() => {
+    if (userData) {
+      setProfileData({
+        email: userData.email || '',
+        personalInfo: userData.personalInfo || {},
+        companyInfo: userData.companyInfo || {},
+        integrations: userData.integrations || {},
+        security: userData.security || {},
+      });
+
+
+      console.log('dddddddddddddd', userData.personalInfo?.fullName);
+    }
+  }, [userData]);
+
+  //#endregion
+
+
+  const handleSaveChanges = async () => {
     console.log('Saving changes...');
     setHasUnsavedChanges(false);
     // TODO: Implement save functionality
+
+    console.log('profileData :', profileData);
+    try {
+      await updateUserProfile(profileData);
+      toast.success("Profile saved successfully!");
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast.error("Failed to save profile");
+    } finally {
+
+    }
+
   };
+
+
+  //   const handleSaveProfile = async () => {
+  //   try {
+  //     setSaving(true);
+  //     await updateUserProfile(profileData);
+  //     toast.success("Profile saved successfully!");
+  //   } catch (error) {
+  //     console.error("Error saving profile:", error);
+  //     toast.error("Failed to save profile");
+  //   } finally {
+  //     setSaving(false);
+  //   }
+  // };
 
   const handleFieldChange = () => {
     setHasUnsavedChanges(true);
+    // setProfileData(profileData);
   };
 
   return (
@@ -45,8 +127,8 @@ export function ProfileSettingsContent() {
               <p className="text-gray-500 text-sm">{t('manageAccountPreferences')}</p>
             </div>
           </div>
-          
-          <Button 
+
+          <Button
             onClick={handleSaveChanges}
             disabled={!hasUnsavedChanges}
             className="bg-orange-600 hover:bg-orange-700 text-white"
@@ -68,10 +150,12 @@ export function ProfileSettingsContent() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <UserProfileSection 
+                <UserProfileSection
+                  currentUser={profileData}
+                  setCurrentUser={setProfileData}
                   isIndividualRecruiter={isIndividualRecruiter}
                   setIsIndividualRecruiter={setIsIndividualRecruiter}
-                  onChange={handleFieldChange} 
+                  onChange={handleFieldChange}
                 />
               </CardContent>
             </Card>
@@ -86,7 +170,9 @@ export function ProfileSettingsContent() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <CompanyInfoSection 
+                  <CompanyInfoSection
+                    currentUser={profileData}
+                    setCurrentUser={setProfileData}
                     isIndividualRecruiter={isIndividualRecruiter}
                     setIsIndividualRecruiter={setIsIndividualRecruiter}
                     onChange={handleFieldChange}
@@ -105,7 +191,10 @@ export function ProfileSettingsContent() {
                 <CardDescription className="text-sm text-gray-600">{t('integrationsDesc')}</CardDescription>
               </CardHeader>
               <CardContent className="pt-0">
-                <IntegrationsSection onChange={handleFieldChange} />
+                <IntegrationsSection
+                  currentUser={profileData}
+                  setCurrentUser={setProfileData}
+                  onChange={handleFieldChange} />
               </CardContent>
             </Card>
 
@@ -118,7 +207,10 @@ export function ProfileSettingsContent() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <LoginSecuritySection onChange={handleFieldChange} />
+                <LoginSecuritySection
+                  currentUser={profileData}
+                  setCurrentUser={setProfileData}
+                  onChange={handleFieldChange} />
               </CardContent>
             </Card>
           </div>
@@ -131,7 +223,7 @@ export function ProfileSettingsContent() {
 
         {/* Mobile Save Button */}
         <div className="lg:hidden fixed bottom-4 left-4 right-4 z-50">
-          <Button 
+          <Button
             onClick={handleSaveChanges}
             disabled={!hasUnsavedChanges}
             className="w-full bg-orange-600 hover:bg-orange-700 text-white"

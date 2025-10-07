@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,12 +14,16 @@ interface CompanyInfoSectionProps {
   isIndividualRecruiter: boolean;
   setIsIndividualRecruiter: (value: boolean) => void;
   onChange: () => void;
+  currentUser: object;
+  setCurrentUser: object;
 }
 
-export function CompanyInfoSection({ 
-  isIndividualRecruiter, 
-  setIsIndividualRecruiter, 
-  onChange 
+export function CompanyInfoSection({
+  isIndividualRecruiter,
+  setIsIndividualRecruiter,
+  onChange,
+  currentUser,
+  setCurrentUser
 }: CompanyInfoSectionProps) {
   const { t } = useTranslation();
   const [companyName, setCompanyName] = useState('Finance Gate Consulting');
@@ -34,6 +38,23 @@ export function CompanyInfoSection({
   const [industryOther, setIndustryOther] = useState('');
   const [linkedinCompany, setLinkedinCompany] = useState('');
   const [companyDocument, setCompanyDocument] = useState<File | null>(null);
+
+
+  useEffect(() => {
+
+    setCompanyName(currentUser?.companyInfo?.companyName);
+    setCompanyLogo(currentUser?.companyInfo?.companyLogo);
+    setIndustry(currentUser?.companyInfo?.industry);
+    setCompanySize(currentUser?.companyInfo?.companySize);
+    setCompanyType(currentUser?.companyInfo?.companyType);
+    setDescription(currentUser?.companyInfo?.description);
+    setLinkedinCompany(currentUser?.companyInfo?.linkedinUrl);
+    setCompanyDocument(currentUser?.companyInfo?.verificationDocument);
+    setWebsiteUrl(currentUser?.companyInfo?.websiteUrl);
+    setYearFounded(currentUser?.companyInfo?.yearFounded);
+
+
+  }, [currentUser]);
 
   const industries = [
     'Accounting & Auditing',
@@ -75,6 +96,7 @@ export function CompanyInfoSection({
       reader.onload = (e) => {
         setCompanyLogo(e.target?.result as string);
         onChange();
+        handleCompanyInfoChange('companyLogo', e.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -84,10 +106,19 @@ export function CompanyInfoSection({
     const file = event.target.files?.[0];
     if (file) {
       setCompanyDocument(file);
+      handleCompanyInfoChange('verificationDocument', file);
       onChange();
     }
   };
-
+  const handleCompanyInfoChange = (field: string, value: string) => {
+    setCurrentUser(prev => ({
+      ...prev,
+      companyInfo: {
+        ...prev.companyInfo,
+        [field]: value,
+      },
+    }));
+  };
   return (
     <div className="space-y-6">
       {/* Company Name & Logo */}
@@ -100,12 +131,15 @@ export function CompanyInfoSection({
             id="company-name"
             value={companyName}
             onChange={(e) => {
-              setCompanyName(e.target.value);
+              const newName = e.target.value;
+              setCompanyName(newName);
+              handleCompanyInfoChange('companyName', newName);
               onChange();
             }}
             placeholder="Enter your company name"
             className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
           />
+
         </div>
 
         <div className="space-y-2">
@@ -114,14 +148,14 @@ export function CompanyInfoSection({
           </Label>
           <div className="flex items-center gap-4">
             {companyLogo && (
-              <img 
-                src={companyLogo} 
-                alt="Company Logo" 
+              <img
+                src={companyLogo}
+                alt="Company Logo"
                 className="w-16 h-16 object-cover rounded-lg border-2 border-gray-200"
               />
             )}
             <div className="flex-1">
-              <Button variant="outline" size="sm" asChild className="border-orange-200 text-orange-600 hover:bg-orange-50">
+              <Button variant="outline" size="sm" asChild className="border-orange-200 text-orange-600 hover:bg-orange-50 hover:text-orange-500">
                 <label htmlFor="company-logo" className="cursor-pointer">
                   <Upload className="w-4 h-4 mr-2" />
                   Upload Logo
@@ -151,10 +185,11 @@ export function CompanyInfoSection({
             value={linkedinCompany}
             onChange={(e) => {
               setLinkedinCompany(e.target.value);
+              handleCompanyInfoChange('linkedinUrl', e.target.value);
               onChange();
             }}
             placeholder="https://linkedin.com/company/yourcompany"
-            className="border-gray-200 focus:border-orange-500 focus:ring-orange-200"
+            className="border-gray-200 focus:border-orange-500  focus:ring-orange-200"
             required
           />
         </div>
@@ -168,6 +203,7 @@ export function CompanyInfoSection({
           </Label>
           <Select value={industry} onValueChange={(value) => {
             setIndustry(value);
+            handleCompanyInfoChange('industry', value);
             onChange();
           }}>
             <SelectTrigger className="border-gray-200 focus:border-orange-500">
@@ -206,6 +242,8 @@ export function CompanyInfoSection({
             value={websiteUrl}
             onChange={(e) => {
               setWebsiteUrl(e.target.value);
+              handleCompanyInfoChange('websiteUrl', e.target.value);
+
               onChange();
             }}
             placeholder="https://www.yourcompany.com"
@@ -224,6 +262,7 @@ export function CompanyInfoSection({
           value={description}
           onChange={(e) => {
             setDescription(e.target.value);
+            handleCompanyInfoChange('description', e.target.value);
             onChange();
           }}
           placeholder="Brief description about your company, services, or expertise in finance & accounting recruitment..."
@@ -237,6 +276,7 @@ export function CompanyInfoSection({
         <Label className="text-sm font-medium text-gray-900">Company Size</Label>
         <RadioGroup value={companySize} onValueChange={(value) => {
           setCompanySize(value);
+          handleCompanyInfoChange('companySize', value);
           onChange();
         }}>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -263,6 +303,7 @@ export function CompanyInfoSection({
             value={yearFounded}
             onChange={(e) => {
               setYearFounded(e.target.value);
+              handleCompanyInfoChange('yearFounded', e.target.value);
               onChange();
             }}
             placeholder="e.g., 2020"
@@ -279,6 +320,7 @@ export function CompanyInfoSection({
           </Label>
           <Select value={companyType} onValueChange={(value) => {
             setCompanyType(value);
+            handleCompanyInfoChange('companyType', value);
             onChange();
           }}>
             <SelectTrigger className="border-gray-200 focus:border-orange-500">
@@ -298,6 +340,7 @@ export function CompanyInfoSection({
                 value={companyTypeOther}
                 onChange={(e) => {
                   setCompanyTypeOther(e.target.value);
+                  handleCompanyInfoChange('companyType', e.target.value);
                   onChange();
                 }}
                 placeholder="Please specify company type"
@@ -327,7 +370,7 @@ export function CompanyInfoSection({
           </TooltipProvider>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" asChild className="border-orange-200 text-orange-600 hover:bg-orange-50">
+          <Button variant="outline" size="sm" asChild className="border-orange-200 text-orange-600 hover:bg-orange-50  hover:text-orange-500">
             <label htmlFor="company-profile" className="cursor-pointer">
               <Upload className="w-4 h-4 mr-2" />
               {companyDocument ? 'Change Document' : 'Upload Document'}

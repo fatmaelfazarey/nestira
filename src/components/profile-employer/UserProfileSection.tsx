@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
@@ -11,10 +11,14 @@ interface UserProfileSectionProps {
   isIndividualRecruiter: boolean;
   setIsIndividualRecruiter: (value: boolean) => void;
   onChange: () => void;
+  currentUser: object;
+  setCurrentUser: object;
 }
 
-export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecruiter, onChange }: UserProfileSectionProps) {
+export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecruiter, onChange, currentUser, setCurrentUser }: UserProfileSectionProps) {
   const [fullName, setFullName] = useState('Ahmed Hassan');
+  console.log('currentUser : ', currentUser)
+  // const [fullName, setFullName] = useState(currentUser?.personalInfo?.fullName || 'Ahmed Hassan');
   const [rolePosition, setRolePosition] = useState('Senior Recruiter');
   const [phoneNumber, setPhoneNumber] = useState('+20 123 456 7890');
   const [businessEmail, setBusinessEmail] = useState('ahmed@company.com');
@@ -22,13 +26,25 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
   const [linkedinPersonal, setLinkedinPersonal] = useState('');
   const [whatsappNumber, setWhatsappNumber] = useState('');
 
+  useEffect(() => {
+    setFullName(currentUser?.personalInfo?.fullName);
+    setRolePosition(currentUser?.personalInfo?.rolePosition)
+    setPhoneNumber(currentUser?.personalInfo?.phone);
+    setBusinessEmail(currentUser?.personalInfo?.businessEmail);
+     setProfilePhoto(currentUser?.personalInfo?.profilePhoto);
+
+  }, [currentUser]);
+
+  console.log('currentUser : ', currentUser)
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setProfilePhoto(e.target?.result as string);
+        handlePersonalInfoChange('profilePhoto', e.target?.result as string)
         onChange();
+
       };
       reader.readAsDataURL(file);
     }
@@ -39,14 +55,22 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
     setIsIndividualRecruiter(isIndividual);
     onChange();
   };
-
+  const handlePersonalInfoChange = (field: string, value: string) => {
+    setCurrentUser(prev => ({
+      ...prev,
+      personalInfo: {
+        ...prev.personalInfo,
+        [field]: value,
+      },
+    }));
+  };
   return (
     <div className="space-y-6">
       {/* User Type Selection */}
       <div className="space-y-3">
         <Label className="text-sm font-medium text-gray-900">I am recruiting as:</Label>
-        <RadioGroup 
-          value={isIndividualRecruiter ? 'individual' : 'company'} 
+        <RadioGroup
+          value={isIndividualRecruiter ? 'individual' : 'company'}
           onValueChange={handleUserTypeChange}
           className="space-y-2"
         >
@@ -59,7 +83,7 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
               <p className="text-xs text-gray-500">Freelance HR or independent consultant</p>
             </div>
           </div>
-          
+
           <div className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
             <RadioGroupItem value="company" id="company" />
             <div>
@@ -80,7 +104,7 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
             {fullName.split(' ').map(n => n[0]).join('')}
           </AvatarFallback>
         </Avatar>
-        
+
         <div className="space-y-2">
           <Label htmlFor="profile-photo" className="text-sm font-medium">Profile Photo</Label>
           <div className="flex items-center gap-2">
@@ -94,6 +118,7 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
               id="profile-photo"
               type="file"
               accept="image/*"
+
               onChange={handleFileUpload}
               className="hidden"
             />
@@ -106,16 +131,31 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="full-name" className="text-sm font-medium">Full Name *</Label>
-          <Input
+          {/* <Input
             id="full-name"
             value={fullName}
             onChange={(e) => {
+              setCurrentUser({ ...currentUser, [currentUser?.personalInfo?.fullName]: e.target.value })
               setFullName(e.target.value);
               onChange();
             }}
             placeholder="Enter your full name"
             className="h-9"
+          /> */}
+          <Input
+            id="full-name"
+            value={fullName}
+            onChange={(e) => {
+              const newName = e.target.value;
+              setFullName(newName);
+              handlePersonalInfoChange('fullName', newName);
+              onChange();
+            }}
+
+            placeholder="Enter your full name"
+            className="h-9"
           />
+
         </div>
 
         <div className="space-y-2">
@@ -126,7 +166,10 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
             id="role-position"
             value={rolePosition}
             onChange={(e) => {
+
               setRolePosition(e.target.value);
+              handlePersonalInfoChange('rolePosition', e.target.value);
+
               onChange();
             }}
             placeholder={isIndividualRecruiter ? 'e.g., Finance Headhunter' : 'e.g., Senior Recruiter'}
@@ -141,6 +184,7 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
             value={phoneNumber}
             onChange={(e) => {
               setPhoneNumber(e.target.value);
+              handlePersonalInfoChange('phone', e.target.value);
               onChange();
             }}
             placeholder="+20 XXX XXX XXXX"
@@ -158,6 +202,11 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
             value={businessEmail}
             onChange={(e) => {
               setBusinessEmail(e.target.value);
+              setCurrentUser(pref => ({
+                ...pref,
+                email: e.target.value
+              }))
+              handlePersonalInfoChange('businessEmail', e.target.value);
               onChange();
             }}
             placeholder={isIndividualRecruiter ? 'your.email@domain.com' : 'your.email@company.com'}
