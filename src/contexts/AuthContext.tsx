@@ -14,7 +14,9 @@ import {
 
 
   EmailAuthProvider,
-  reauthenticateWithCredential
+  reauthenticateWithCredential,
+  sendEmailVerification,
+  verifyBeforeUpdateEmail
 } from "firebase/auth";
 import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
 import { auth, db } from "../firebase";
@@ -140,6 +142,13 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
   updateUserProfile: (data: Partial<UserData>) => Promise<void>;
+
+  // update mail and password
+  resetPassword: (email: string) => Promise<void>;
+  updateUserEmail: (currentPassword: string,
+    newEmail: string) => Promise<void>;
+  updateUserPassword: (currentPassword: string,
+    newPassword: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -392,15 +401,99 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   // //#endregion
 
   //#region update authen
-  const resetPassword = (email: string) => {
+  const resetPassword = (email: string): Promise<void> => {
     return sendPasswordResetEmail(auth, email);
-  }
-  const updateUserEmail = (email: string) => {
-    return updateEmail(auth.currentUser, email);
-  }
-  const updateUserPassword = (password: string) => {
-    return updatePassword(auth.currentUser, password);
-  }
+  };
+
+  // const updateUserEmail = (email: string): Promise<void> => {
+  //   if (!auth.currentUser) {
+  //     return Promise.reject(new Error("No user is currently logged in."));
+  //   }
+  //   return updateEmail(auth.currentUser, email);
+  // };
+
+  //   const testVerification = async () => {
+  //   if (auth.currentUser) {
+  //     await sendEmailVerification(auth.currentUser);
+  //     alert("Verification email sent!");
+  //   } else {
+  //     alert("No user logged in.");
+  //   }
+  // };
+
+  const reauthenticateUser = async (currentPassword: string) => {
+    if (!auth.currentUser || !auth.currentUser.email)
+      throw new Error("No user logged in");
+
+    const credential = EmailAuthProvider.credential(
+      auth.currentUser.email,
+      currentPassword
+    );
+
+    await reauthenticateWithCredential(auth.currentUser, credential);
+  };
+
+
+  const updateUserEmail = async (currentPassword: string, newEmail: string) => {
+    try {
+      // Step 1: reauthenticate
+      await reauthenticateUser(currentPassword);
+
+      // // Step 3: send verification to new email
+      // await sendEmailVerification(auth.currentUser!);
+
+      // // Step 2: update email
+      // await updateEmail(auth.currentUser!, newEmail);
+
+      await verifyBeforeUpdateEmail(auth.currentUser!, newEmail);
+
+      alert(
+        `Verification email sent to ${newEmail}. Please check your inbox and verify before logging in again.`
+      );
+    } catch (error) {
+      console.error("Error updating email:", error);
+      alert(error.message);
+    }
+  };
+
+  // const updateUserPassword = (password: string): Promise<void> => {
+  //   if (!auth.currentUser) {
+  //     console.log('auth.currentUser', auth.currentUser)
+  //     return Promise.reject(new Error("No user is currently logged in."));
+  //   }
+  //   return updatePassword(auth.currentUser, password);
+  // };
+
+  const updateUserPassword = async (
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> => {
+    if (!auth.currentUser || !auth.currentUser.email) {
+      console.log("auth.currentUser", auth.currentUser);
+      return Promise.reject(new Error("No user is currently logged in."));
+    }
+
+    const user = auth.currentUser;
+    const credential = EmailAuthProvider.credential(user.email, currentPassword);
+
+    try {
+      //  Step 1: Reauthenticate the user
+      await reauthenticateWithCredential(user, credential);
+
+      // Step 2: Update the password after successful reauthentication
+      await updatePassword(user, newPassword);
+
+      console.log("Password updated successfully!");
+    } catch (error: any) {
+      console.error("Error updating password:", error);
+
+      if (error.code === "auth/requires-recent-login") {
+        throw new Error("Please log in again before changing your password.");
+      }
+
+      throw error;
+    }
+  };
   //#endregion
 
   useEffect(() => {
@@ -418,9 +511,13 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
 
       setLoading(false);
+
     });
+    // testVerification()
 
     return () => unsubscribe();
+
+
   }, []);
 
 

@@ -10,6 +10,7 @@ import { SkillsSection } from "./SkillsSection";
 import { JobPreferencesSection } from "./JobPreferencesSection";
 import { VideoSection } from "./VideoSection";
 import { BehavioralAssessmentSection } from "./BehavioralAssessmentSection";
+import { useState } from "react";
 
 interface ProfileFormProps {
   profileData: any;
@@ -23,12 +24,15 @@ export function ProfileForm({ profileData, onProfileDataChange }: ProfileFormPro
       [section]: data
     });
   };
+ 
 
   return (
     <div className="space-y-8 animate-fade-in">
       <BasicInfoSection 
         data={profileData.basicInfo}
         onChange={(data) => updateSection('basicInfo', data)}
+   
+
       />
       
       <IndustrySection 

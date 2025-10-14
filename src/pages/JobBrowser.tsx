@@ -4,12 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Search, 
-  MapPin, 
-  Clock, 
-  Building, 
-  Bookmark, 
+import {
+  Search,
+  MapPin,
+  Clock,
+  Building,
+  Bookmark,
   BookmarkCheck,
   Filter,
   X
@@ -193,10 +193,10 @@ export default function JobBrowser() {
 
   const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         job.company.toLowerCase().includes(searchTerm.toLowerCase());
+      job.company.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesTab = activeTab === "browse" ? true : job.saved;
     const matchesCountry = filters.country.length === 0 || filters.country.includes(job.country);
-    
+
     return matchesSearch && matchesTab && matchesCountry;
   });
 
@@ -213,14 +213,14 @@ export default function JobBrowser() {
   });
 
   const handleSaveJob = (jobId: number) => {
-    setJobs(prev => prev.map(job => 
-      job.id === jobId ? { 
-        ...job, 
+    setJobs(prev => prev.map(job =>
+      job.id === jobId ? {
+        ...job,
         saved: !job.saved,
         savedDate: !job.saved ? new Date().toISOString().split('T')[0] : undefined
       } : job
     ));
-    
+
     const job = jobs.find(j => j.id === jobId);
     if (job && !job.saved) {
       toast({
@@ -234,7 +234,7 @@ export default function JobBrowser() {
     const job = jobs.find(j => j.id === jobId);
     if (job) {
       // Update the job to mark it as applied
-      setJobs(prev => prev.map(j => 
+      setJobs(prev => prev.map(j =>
         j.id === jobId ? { ...j, applied: true } : j
       ));
       setSelectedJob(job);
@@ -271,7 +271,7 @@ export default function JobBrowser() {
   const handleShareJob = (jobId: number) => {
     const job = jobs.find(j => j.id === jobId);
     if (job) {
-      navigator.clipboard.writeText(`${window.location.origin}/jobs/${jobId}`);
+      navigator.clipboard.writeText(`${window.location.origin}/candidate/jobs/${jobId}`);
       toast({
         title: "Job link copied!",
         description: "Share this opportunity with your network",
@@ -335,7 +335,7 @@ export default function JobBrowser() {
       <div className="max-w-7xl mx-auto flex">
         {/* Filter Sidebar */}
         <div className={`${showFilters ? 'block' : 'hidden'} lg:block`}>
-          <FilterSidebar 
+          <FilterSidebar
             filters={filters}
             onFiltersChange={setFilters}
             onClose={() => setShowFilters(false)}
@@ -407,8 +407,8 @@ export default function JobBrowser() {
               ))}
             </div>
           ) : (
-            <SavedJobsTab 
-              jobs={savedJobs} 
+            <SavedJobsTab
+              jobs={savedJobs}
               onSave={handleSaveJob}
               onApply={handleApplyToJob}
               onViewDetails={handleViewJobDetails}
@@ -422,8 +422,8 @@ export default function JobBrowser() {
           {filteredJobs.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-c-foreground text-lg">No jobs found matching your criteria</p>
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setSearchTerm("");
                   setFilters({

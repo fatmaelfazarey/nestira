@@ -2,17 +2,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { 
-  FileText, 
-  Clock, 
-  CircleCheck, 
-  Star, 
-  User, 
+import {
+  FileText,
+  Clock,
+  CircleCheck,
+  Star,
+  User,
   Calendar,
   Plus
 } from "lucide-react";
-import {Link } from "react-router-dom"
+import { Link } from "react-router-dom"
+import { useAuth } from "@/contexts/AuthContext";
+import { DashboardHeader } from "./DashboardHeader";
+
+
 export default function CandidateDashboard() {
+  const { userData } = useAuth();
   const usageStats = [
     {
       title: "Applications Submitted",
@@ -120,17 +125,18 @@ export default function CandidateDashboard() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* <DashboardHeader role="candidate"/> */}
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary to-primary-c-hover p-8 text-white animate-fade-in shadow-sm">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between md:flex-row flex-col">
             <div>
-              <h1 className="text-3xl font-bold mb-2">Welcome back, Sarah! 👋</h1>
+              <h1 className="text-3xl font-bold mb-2">Welcome back, {userData?.basicInfo?.fullName} 👋</h1>
               <p className="text-primary-c-foreground/80 text-lg">
                 You're making great progress on your finance career journey.
               </p>
             </div>
-            <div className="text-right">
+            <div className="text-right md:block flex justify-between items-center w-full md:w-fit">
               <p className="text-sm text-primary-c-foreground/60 mb-1">Profile Strength</p>
               <div className="flex items-center gap-3">
                 <Progress value={92} className="w-24 h-2 bg-secondary/20" />
@@ -147,8 +153,8 @@ export default function CandidateDashboard() {
           <h2 className="text-2xl font-semibold mb-6 text-foreground">Your Progress</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
             {usageStats.map((stat, index) => (
-              <Card 
-                key={stat.title} 
+              <Card
+                key={stat.title}
                 className={`${stat.bgColor} ${stat.borderColor} text-[8px] border-2 transition-all duration-200 hover:shadow-lg animate-slide-up rounded-xl`}
                 style={{ animationDelay: `${index * 100}ms` }}
               >
@@ -173,8 +179,8 @@ export default function CandidateDashboard() {
         {/* Quick Stats */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {quickStats.map((stat, index) => (
-            <Card 
-              key={stat.title} 
+            <Card
+              key={stat.title}
               className={`${stat.bgColor} transition-all duration-200 hover:shadow-md hover:scale-105 animate-scale-in rounded-xl border-2`}
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -194,7 +200,7 @@ export default function CandidateDashboard() {
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Recent Activity */}
           <div className="lg:col-span-2">
             <Card className="animate-fade-in rounded-xl shadow-sm border-2">
@@ -207,19 +213,18 @@ export default function CandidateDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 {recentActivity.map((activity, index) => (
-                  <div 
-                    key={index} 
+                  <div
+                    key={index}
                     className="flex items-center justify-between p-4 rounded-xl bg-card hover:bg-accent-c/50 transition-colors duration-200 border"
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        activity.status === 'completed' ? 'bg-success-light text-success' :
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${activity.status === 'completed' ? 'bg-success-light text-success' :
                         activity.status === 'pending' ? 'bg-warning-light text-warning' :
-                        'bg-info-light text-info'
-                      }`}>
+                          'bg-info-light text-info'
+                        }`}>
                         {activity.status === 'completed' ? <CircleCheck className="w-5 h-5" /> :
-                         activity.status === 'pending' ? <Clock className="w-5 h-5" /> :
-                         <User className="w-5 h-5" />}
+                          activity.status === 'pending' ? <Clock className="w-5 h-5" /> :
+                            <User className="w-5 h-5" />}
                       </div>
                       <div>
                         <p className="font-medium text-foreground">{activity.action}</p>
@@ -230,12 +235,12 @@ export default function CandidateDashboard() {
                     </div>
                     <div className="text-right">
                       <p className="text-sm text-muted-c-foreground">{activity.time}</p>
-                      <Badge 
-                        variant="secondary-c" 
+                      <Badge
+                        variant="secondary-c"
                         className={
                           activity.status === 'completed' ? 'bg-success-light text-success' :
-                          activity.status === 'pending' ? 'bg-warning-light text-warning' :
-                          'bg-info-light text-info'
+                            activity.status === 'pending' ? 'bg-warning-light text-warning' :
+                              'bg-info-light text-info'
                         }
                       >
                         {activity.status}
@@ -255,25 +260,25 @@ export default function CandidateDashboard() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <Link to="/candidate/jobs">
-                <Button className="w-full justify-start bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground transition-all duration-200 hover:scale-105">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Browse New Jobs
-                </Button>
+                  <Button className="w-full justify-start bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground transition-all duration-200 hover:scale-105">
+                    <Plus className="w-4 h-4 " />
+                    Browse New Jobs
+                  </Button>
                 </Link>
                 <Link to="/candidate/assessments" className="inline-block w-full">
-                <Button variant="outline" className="w-full justify-start hover:bg-warning-light hover:text-warning hover:border-warning/50 transition-all duration-200">
-                  <CircleCheck className="w-4 h-4 mr-2" />
-                  Complete Assessment
-                </Button>
+                  <Button variant="outline" className="w-full justify-start hover:bg-warning-light hover:text-warning hover:border-warning/50 transition-all duration-200">
+                    <CircleCheck className="w-4 h-4 " />
+                    Complete Assessment
+                  </Button>
                 </Link>
                 <Link to="/candidate/profile" className="inline-block w-full">
-                <Button variant="outline" className="w-full justify-start hover:bg-info-light hover:text-info hover:border-info/50 transition-all duration-200">
-                  <User className="w-4 h-4 mr-2" />
-                  Update Profile
-                </Button>
+                  <Button variant="outline" className="w-full justify-start hover:bg-info-light hover:text-info hover:border-info/50 transition-all duration-200">
+                    <User className="w-4 h-4 " />
+                    Update Profile
+                  </Button>
                 </Link>
                 <Button variant="outline" className="w-full justify-start hover:bg-primary-c/10 hover:text-primary-c hover:border-primary-c/50 transition-all duration-200">
-                  <Calendar className="w-4 h-4 mr-2" />
+                  <Calendar className="w-4 h-4 " />
                   Schedule Mock Interview <span className="text-secondary-c text-[12px]"> (coming Soon) </span>
                 </Button>
               </CardContent>

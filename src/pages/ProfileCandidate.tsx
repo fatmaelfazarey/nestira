@@ -14,14 +14,14 @@ import { toast } from "sonner";
 
 export default function Profile() {
   const { currentUser, userData, loading, updateUserProfile } = useAuth();
-  console.log({userData})
+  console.log({ userData })
   const [inputMode, setInputMode] = useState<'select' | 'upload' | 'manual'>(
     currentUser ? 'manual' : 'select'
   );
   const [showParsingModal, setShowParsingModal] = useState(false);
   const [parsedData, setParsedData] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-  
+
   // // State محلي للتعديلات (يبدأ فاضي ويتملى من userData)
   // const [profileData, setProfileData] = useState<any>({
   //   basicInfo: {},
@@ -42,10 +42,11 @@ export default function Profile() {
   //     salaryRange: { min: 0, max: 0, currency: "AED" }
   //   }
   // });
-// State محلي للتعديلات (يبدأ فاضي ويتملى من userData)
+  // State محلي للتعديلات (يبدأ فاضي ويتملى من userData)
   const [profileData, setProfileData] = useState<any>({
     basicInfo: {
       fullName: "",
+      profilePhoto: "",
       role: "",
       email: "",
       phone: "",
@@ -97,10 +98,10 @@ export default function Profile() {
 
   const calculateCompletion = () => {
     if (!profileData) return 0;
-    
+
     let completed = 0;
     const total = 11;
-    
+
     if (profileData.basicInfo?.fullName) completed++;
     if (profileData.basicInfo?.role) completed++;
     if (profileData.basicInfo?.email) completed++;
@@ -112,7 +113,7 @@ export default function Profile() {
     if (profileData.skills?.technical?.length > 0) completed++;
     if (profileData.video?.hasVideo) completed++;
     if (profileData.behavioral?.completed) completed++;
-    
+
     return Math.round((completed / total) * 100);
   };
 
@@ -209,7 +210,7 @@ export default function Profile() {
                     <span>Preview before saving</span>
                   </div>
                 </div>
-                <Button 
+                <Button
                   onClick={() => setInputMode('upload')}
                   className="w-full bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground"
                   size="lg"
@@ -246,7 +247,7 @@ export default function Profile() {
                   </div>
                 </div>
                 <Link to="/candidate/signup">
-                  <Button 
+                  <Button
                     variant="outline"
                     className="w-full hover:bg-primary-c/10 hover:text-primary-c hover:border-primary-c/50"
                     size="lg"
@@ -274,8 +275,8 @@ export default function Profile() {
       <div className="min-h-screen bg-background p-8">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               onClick={() => setInputMode(currentUser ? 'manual' : 'select')}
               className="hover:bg-muted-c"
             >
@@ -287,7 +288,7 @@ export default function Profile() {
             </div>
           </div>
 
-          <CVUploader 
+          <CVUploader
             onCVParsed={handleCVParsed}
             onParsingFailed={handleParsingFailed}
           />
@@ -312,7 +313,7 @@ export default function Profile() {
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 animate-fade-in">
+        <div className="flex items-center justify-between mb-8 animate-fade-in md:flex-row flex-col">
           <div className="flex items-center gap-4">
             <div>
               <h1 className="text-3xl font-bold text-foreground">
@@ -323,18 +324,18 @@ export default function Profile() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Button 
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button
               variant="outline"
-              className="hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300"
+              className="hover:bg-secondary-c-foreground hover:text-secondary-c hover:border-secondary-c"
               onClick={() => setInputMode('upload')}
             >
               <Upload className="w-4 h-4 mr-2" />
               Upload Resume
             </Button>
-            <Button 
+            <Button
               variant="outline"
-              className="hover:bg-success/10 hover:text-success hover:border-success/50"
+              className="hover:bg-secondary-c-foreground hover:text-secondary-c hover:border-secondary-c"
             >
               <Download className="w-4 h-4 mr-2" />
               Download Resume
@@ -342,14 +343,14 @@ export default function Profile() {
             <Button
               onClick={handleSaveProfile}
               disabled={saving}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-secondary-c hover:bg-secondary-c-hover text-white"
             >
               {saving ? "Saving..." : "Save Changes"}
             </Button>
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <Progress value={completionPercentage} className="w-20 h-2" />
               <span className="text-sm font-medium text-secondary-c">{completionPercentage}% Complete</span>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -375,7 +376,7 @@ export default function Profile() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Main Profile Form */}
           <div className="lg:col-span-3">
-            <ProfileForm 
+            <ProfileForm
               profileData={profileData}
               onProfileDataChange={setProfileData}
             />

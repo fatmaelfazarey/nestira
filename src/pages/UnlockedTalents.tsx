@@ -34,12 +34,12 @@ const UnlockedTalents = () => {
     };
 
     window.addEventListener('storage', handleStorageChange);
-    
+
     // Also listen for custom events from the same tab
     const handleUnlockEvent = () => {
       loadUnlockedCandidates();
     };
-    
+
     window.addEventListener('candidateUnlocked', handleUnlockEvent);
 
     return () => {
@@ -100,10 +100,10 @@ const UnlockedTalents = () => {
                       <p>Matching Score: {candidate.score}%</p>
                     </TooltipContent>
                   </Tooltip>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={() => toggleFavorite(candidate.id)} 
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => toggleFavorite(candidate.id)}
                     className="text-yellow-500 hover:text-yellow-600 p-1"
                   >
                     <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
@@ -188,8 +188,8 @@ const UnlockedTalents = () => {
               </div>
 
               <div className="flex justify-between items-center gap-2">
-                <Badge 
-                  variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
+                <Badge
+                  variant={candidate.status === 'Available' ? 'default' : 'secondary'}
                   className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
                 >
                   {candidate.status}
@@ -264,8 +264,8 @@ const UnlockedTalents = () => {
                       </Tooltip>
                     </TableCell>
                     <TableCell className="min-w-[80px]">
-                      <Badge 
-                        variant={candidate.status === 'Available' ? 'default' : 'secondary'} 
+                      <Badge
+                        variant={candidate.status === 'Available' ? 'default' : 'secondary'}
                         className={candidate.status === 'Available' ? 'bg-green-100 text-green-800' : ''}
                       >
                         {candidate.status}
@@ -344,10 +344,10 @@ const UnlockedTalents = () => {
                     <TableCell className="min-w-[100px] text-sm">{formatDate(candidate.unlockedDate)}</TableCell>
                     <TableCell className="min-w-[100px]">
                       <div className="flex gap-2">
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => toggleFavorite(candidate.id)} 
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleFavorite(candidate.id)}
                           className="text-yellow-500 hover:text-yellow-600 p-1"
                         >
                           <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
@@ -372,14 +372,14 @@ const UnlockedTalents = () => {
       <div className="space-y-8">
         {/* Unlocked Talents Section */}
         <div className="space-y-6">
-          <div className="flex justify-between items-start">
+          <div className="flex justify-between items-start flex-col md:flex-row gap-2">
             <div>
               <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
                 Unlocked Talents
                 <CheckCircle className="w-8 h-8 text-green-500" />
               </h1>
               <p className="text-gray-600">Manage all your unlocked candidate profiles</p>
-              
+
               <div className="mt-4 flex items-center gap-4">
                 <div className="bg-green-100 px-4 py-2 rounded-lg">
                   <span className="text-green-800 font-semibold text-lg">{unlockedCandidates.length}</span>
@@ -387,21 +387,21 @@ const UnlockedTalents = () => {
                 </div>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-4">
               {/* View Controls */}
               <div className="flex gap-2">
-                <Button 
-                  variant={currentView === 'grid' ? 'default' : 'outline'} 
-                  onClick={() => setCurrentView('grid')} 
+                <Button
+                  variant={currentView === 'grid' ? 'default' : 'outline'}
+                  onClick={() => setCurrentView('grid')}
                   className="flex items-center gap-2"
                 >
                   <Grid2X2 className="w-4 h-4" />
                   Grid
                 </Button>
-                <Button 
-                  variant={currentView === 'table' ? 'default' : 'outline'} 
-                  onClick={() => setCurrentView('table')} 
+                <Button
+                  variant={currentView === 'table' ? 'default' : 'outline'}
+                  onClick={() => setCurrentView('table')}
                   className="flex items-center gap-2"
                 >
                   <LayoutList className="w-4 h-4" />
@@ -410,7 +410,7 @@ const UnlockedTalents = () => {
               </div>
 
               {/* Export Button */}
-              <Button 
+              <Button
                 onClick={handleExportProfiles}
                 className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 font-bold border-0 shadow-lg"
               >

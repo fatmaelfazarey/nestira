@@ -17,7 +17,7 @@ import { FunnelFilters } from '@/components/FunnelFilters';
 interface Candidate {
   id: number;
   firstName: string;
-  lastName:string;
+  lastName: string;
   flag: string;
   score: number;
   profilePhoto?: string;
@@ -113,12 +113,12 @@ const RecruitmentBoard = () => {
       color: 'border-blue-200',
       bgColor: 'bg-blue-50/30',
       candidates: [
-        { 
-          id: 1, 
-          firstName: 'Lupita', 
-          lastName: 'Johnson', 
-          flag: '🇺🇸', 
-          score: 74, 
+        {
+          id: 1,
+          firstName: 'Lupita',
+          lastName: 'Johnson',
+          flag: '🇺🇸',
+          score: 74,
           isLocked: false,
           tags: ['Recommended', 'High Potential'],
           jobId: 'financial-analyst',
@@ -129,12 +129,12 @@ const RecruitmentBoard = () => {
           skillScores: { accounting: 71, negotiation: 64, communication: 78, timeManagement: 76, cultureFit: 82 },
           detailedStatus: { text: 'Assessed', color: 'green' },
         },
-        { 
-          id: 2, 
-          firstName: 'Emma', 
-          lastName: 'Lopez', 
-          flag: '🇪🇬', 
-          score: 40, 
+        {
+          id: 2,
+          firstName: 'Emma',
+          lastName: 'Lopez',
+          flag: '🇪🇬',
+          score: 40,
           isLocked: true,
           tags: ['Flagged'],
           jobId: 'financial-analyst',
@@ -153,12 +153,12 @@ const RecruitmentBoard = () => {
       color: 'border-purple-200',
       bgColor: 'bg-purple-50/30',
       candidates: [
-        { 
-          id: 5, 
-          firstName: 'Timothee', 
-          lastName: 'Kaluuya', 
-          flag: '🇱🇧', 
-          score: 0, 
+        {
+          id: 5,
+          firstName: 'Timothee',
+          lastName: 'Kaluuya',
+          flag: '🇱🇧',
+          score: 0,
           isLocked: false,
           tags: ['Strong Candidate'],
           jobId: 'investment-manager',
@@ -362,22 +362,22 @@ const RecruitmentBoard = () => {
 
   const handleSelectAll = (checked: boolean | 'indeterminate') => {
     if (checked === true) {
-        setSelectedCandidates(new Set(allFilteredCandidates.map(c => c.id)));
+      setSelectedCandidates(new Set(allFilteredCandidates.map(c => c.id)));
     } else {
-        setSelectedCandidates(new Set());
+      setSelectedCandidates(new Set());
     }
   };
 
   const handleSelectOne = (candidateId: number, checked: boolean) => {
-      const newSelected = new Set(selectedCandidates);
-      if(checked) {
-          newSelected.add(candidateId);
-      } else {
-          newSelected.delete(candidateId);
-      }
-      setSelectedCandidates(newSelected);
+    const newSelected = new Set(selectedCandidates);
+    if (checked) {
+      newSelected.add(candidateId);
+    } else {
+      newSelected.delete(candidateId);
+    }
+    setSelectedCandidates(newSelected);
   };
-  
+
   const filteredCandidatesCount = allFilteredCandidates.length;
 
   const resetAllFilters = () => {
@@ -449,11 +449,11 @@ const RecruitmentBoard = () => {
         className += ' bg-blue-500 text-white border-blue-500';
         text = 'NEW APPLICANT';
     }
-    
+
     return (
-        <Badge variant="outline" className={className}>
-            {text}
-        </Badge>
+      <Badge variant="outline" className={className}>
+        {text}
+      </Badge>
     );
   };
 
@@ -487,7 +487,7 @@ const RecruitmentBoard = () => {
       <TooltipProvider>
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex justify-between items-center">
+          {/* <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Recruitment Funnel</h1>
               <p className="text-gray-600">Nestira Finance - Manage your hiring pipeline</p>
@@ -512,18 +512,47 @@ const RecruitmentBoard = () => {
                 Add Candidate
               </Button>
             </div>
+          </div> */}
+          <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Recruitment Funnel</h1>
+              <p className="text-gray-600 text-sm sm:text-base">Nestira Finance - Manage your hiring pipeline</p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full lg:w-auto">
+              <Select value={selectedJob} onValueChange={setSelectedJob}>
+                <SelectTrigger className="w-full sm:w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="financial-analyst">Financial Analyst</SelectItem>
+                  <SelectItem value="senior-accountant">Senior Accountant</SelectItem>
+                  <SelectItem value="investment-manager">Investment Manager</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button variant="outline" className="flex items-center gap-2 flex-1 sm:flex-none" onClick={() => setIsFilterOpen(true)}>
+                <Filter className="w-4 h-4" />
+                <span className=" sm:inline">Filter</span>
+              </Button>
+              <Button className="bg-accent hover:bg-accent/90 text-white flex items-center gap-2 flex-1 sm:flex-none">
+                <Plus className="w-4 h-4" />
+                <span className="hidden sm:inline mr-2">Add Candidate</span>
+                <span className="sm:hidden">Add</span>
+              </Button>
+            </div>
           </div>
 
           {/* Simplified Funnel Tracker - 5 Stages */}
-          <Card className="p-4">
-            <div className="grid grid-cols-5 gap-4">
+
+
+          <Card className="p-3 sm:p-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3 lg:gap-4">
               {trackerStages.map((stage) => {
                 const IconComponent = stage.icon;
                 return (
-                  <div key={stage.id} className={`${stage.bgColor} rounded-lg p-4 text-center`}>
-                    <IconComponent className={`w-6 h-6 mx-auto mb-2 ${stage.color}`} />
-                    <p className="text-sm font-medium text-gray-700">{stage.name}</p>
-                    <p className={`text-2xl font-bold ${stage.color}`}>{stage.count}</p>
+                  <div key={stage.id} className={`${stage.bgColor} rounded-lg p-3 sm:p-4 text-center`}>
+                    <IconComponent className={`w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 mx-auto mb-1 sm:mb-2 ${stage.color}`} />
+                    <p className="text-xs sm:text-sm font-medium text-gray-700">{stage.name}</p>
+                    <p className={`text-lg sm:text-xl lg:text-2xl font-bold ${stage.color}`}>{stage.count}</p>
                   </div>
                 );
               })}
@@ -598,59 +627,59 @@ const RecruitmentBoard = () => {
                       const assessmentScore = calculateAssessmentScore(candidate.skillScores);
 
                       return (
-                      <TableRow key={candidate.id} data-state={selectedCandidates.has(candidate.id) ? "selected" : ""}>
-                        <TableCell className="px-4">
-                          <Checkbox
-                            checked={selectedCandidates.has(candidate.id)}
-                            onCheckedChange={(checked) => handleSelectOne(candidate.id, !!checked)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={candidate.profilePhoto} />
-                              <AvatarFallback>{candidate.firstName[0]}{candidate.lastName[0]}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
-                              <p className="text-sm text-muted-foreground">{jobTitles[candidate.jobId]}</p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            {candidate.tags?.map((tag, index) => (
-                              <Badge key={index} className={`text-xs ${getTagColor(tag)}`}>
-                                {tag}
-                              </Badge>
-                            )) || '-'}
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <Button variant="link" className="font-semibold p-0 h-auto text-blue-600 hover:text-blue-800">
-                                {candidate.score > 0 ? `${candidate.score}%` : '-'}
-                              </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
-                              <div className="space-y-2">
-                                <h4 className="font-medium leading-none">Nestira Insight Score</h4>
-                                <p className="text-sm text-muted-foreground">
-                                  This score is calculated based on our proprietary model, considering various factors for job success.
-                                </p>
+                        <TableRow key={candidate.id} data-state={selectedCandidates.has(candidate.id) ? "selected" : ""}>
+                          <TableCell className="px-4">
+                            <Checkbox
+                              checked={selectedCandidates.has(candidate.id)}
+                              onCheckedChange={(checked) => handleSelectOne(candidate.id, !!checked)}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage src={candidate.profilePhoto} />
+                                <AvatarFallback>{candidate.firstName[0]}{candidate.lastName[0]}</AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <span className="font-medium whitespace-nowrap">{candidate.firstName} {candidate.lastName}</span>
+                                <p className="text-sm text-muted-foreground">{jobTitles[candidate.jobId]}</p>
                               </div>
-                            </PopoverContent>
-                          </Popover>
-                        </TableCell>
-                        <TableCell>
-                           <Popover>
-                            <PopoverTrigger asChild>
-                               <Button variant="link" className="font-semibold p-0 h-auto text-blue-600 hover:text-blue-800">
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-wrap gap-1">
+                              {candidate.tags?.map((tag, index) => (
+                                <Badge key={index} className={`text-xs ${getTagColor(tag)}`}>
+                                  {tag}
+                                </Badge>
+                              )) || '-'}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="link" className="font-semibold p-0 h-auto text-blue-600 hover:text-blue-800">
+                                  {candidate.score > 0 ? `${candidate.score}%` : '-'}
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80">
+                                <div className="space-y-2">
+                                  <h4 className="font-medium leading-none">Nestira Insight Score</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    This score is calculated based on our proprietary model, considering various factors for job success.
+                                  </p>
+                                </div>
+                              </PopoverContent>
+                            </Popover>
+                          </TableCell>
+                          <TableCell>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <Button variant="link" className="font-semibold p-0 h-auto text-blue-600 hover:text-blue-800">
                                   {assessmentScore > 0 ? `${assessmentScore}%` : '-'}
                                 </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-80">
+                              </PopoverTrigger>
+                              <PopoverContent className="w-80">
                                 <div className="space-y-2">
                                   <h4 className="font-medium leading-none">Assessment Score Breakdown</h4>
                                   <p className="text-sm text-muted-foreground">
@@ -664,49 +693,50 @@ const RecruitmentBoard = () => {
                                   <li>Time Management: {candidate.skillScores.timeManagement}%</li>
                                   <li>Culture Fit: {candidate.skillScores.cultureFit}%</li>
                                 </ul>
-                            </PopoverContent>
-                          </Popover>
-                        </TableCell>
-                        <TableCell>
-                          <Select
-                            value={currentStageId}
-                            onValueChange={(newStageId) => handleStageChange(candidate.id, newStageId)}
-                          >
-                            <SelectTrigger className="w-[130px]">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {stages.map(stage => (
-                                <SelectItem key={stage.id} value={stage.id}>
-                                  {stage.title}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </TableCell>
-                        <TableCell>
-                           <div className="flex items-center gap-2 text-sm">
+                              </PopoverContent>
+                            </Popover>
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={currentStageId}
+                              onValueChange={(newStageId) => handleStageChange(candidate.id, newStageId)}
+                            >
+                              <SelectTrigger className="w-[130px]">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {stages.map(stage => (
+                                  <SelectItem key={stage.id} value={stage.id}>
+                                    {stage.title}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2 text-sm">
                               <span className={`w-2 h-2 rounded-full bg-${candidate.detailedStatus.color}-500`}></span>
                               <span className="whitespace-nowrap">{candidate.detailedStatus.text}</span>
-                           </div>
-                        </TableCell>
-                        <TableCell>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="icon" className="h-8 w-8">
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem>View profile</DropdownMenuItem>
-                              <DropdownMenuItem>Add tag</DropdownMenuItem>
-                              <DropdownMenuItem>Move to stage</DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">Mark as rejected</DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </TableCell>
-                      </TableRow>
-                    )})}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="h-8 w-8">
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem>View profile</DropdownMenuItem>
+                                <DropdownMenuItem>Add tag</DropdownMenuItem>
+                                <DropdownMenuItem>Move to stage</DropdownMenuItem>
+                                <DropdownMenuItem className="text-red-600">Mark as rejected</DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                   </TableBody>
                 </Table>
               </div>

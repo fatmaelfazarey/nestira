@@ -4,17 +4,26 @@ import { Button } from "@/components/ui/button";
 import { Search, Settings, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export function DashboardHeader() {
+interface DashboardHeaderProps {
+  role: 'employer' | 'candidate';
+}
+
+export function DashboardHeader({ role }: DashboardHeaderProps) {
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
     console.log('Profile clicked - navigating to settings');
-    navigate('/profile-settings');
+    if (role === 'employer') {
+      navigate('/employer/profile-settings');
+    }
+
   };
 
   const handleSettingsClick = () => {
     console.log('Settings clicked - navigating to settings');
-    navigate('/profile-settings');
+    if (role === 'employer') {
+      navigate('/employer/profile-settings');
+    }
   };
 
   return (
@@ -22,10 +31,10 @@ export function DashboardHeader() {
       <div className="flex items-center justify-between gap-4 min-w-0">
         <div className="flex items-center gap-4 min-w-0">
           <SidebarTrigger className="shrink-0" />
-          <img 
-            src="/lovable-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png" 
-            alt="Logo" 
-            className="h-8 sm:h-10 lg:h-12 shrink-0" 
+          <img
+            src="/lovable-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png"
+            alt="Logo"
+            className="h-8 sm:h-10 lg:h-12 shrink-0"
           />
         </div>
 
@@ -42,8 +51,8 @@ export function DashboardHeader() {
 
           {/* User Actions */}
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={handleSettingsClick}
               type="button"
@@ -52,8 +61,8 @@ export function DashboardHeader() {
             >
               <Settings className="w-4 h-4" />
             </Button>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="sm"
               onClick={handleProfileClick}
               type="button"

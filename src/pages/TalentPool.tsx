@@ -13,11 +13,11 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { 
-  Users, 
-  Filter, 
-  Grid3X3, 
-  List, 
+import {
+  Users,
+  Filter,
+  Grid3X3,
+  List,
   Search,
   Star,
   MapPin,
@@ -98,28 +98,28 @@ const TalentPool = () => {
     cvCompleteness, setCvCompleteness,
     academicExcellence, setAcademicExcellence,
     selectedScreeningTags, setSelectedScreeningTags,
-    
+
     // View and UI state
     viewMode, setViewMode,
     sortBy, setSortBy,
     isFilterSidebarOpen, setIsFilterSidebarOpen,
-    
+
     // AI search
     aiSearchQuery, setAiSearchQuery,
     isAiSearching, setIsAiSearching,
     aiFilteredCandidates, setAiFilteredCandidates,
     handleAiSearch, handleClearAiSearch,
-    
+
     // Candidate interactions
     favorites, setFavorites,
     unlockedCandidates, setUnlockedCandidates,
     selectedCandidate, setSelectedCandidate,
-    
+
     // Score visibility
     isRevealed, setIsRevealed,
     scoreVisibility, setScoreVisibility,
     triggerReveal,
-    
+
     // Helper functions
     hasActiveFilters,
     resetAllFilters
@@ -211,7 +211,7 @@ const TalentPool = () => {
 
   const sortedCandidates = useMemo(() => {
     const candidatesToSort = [...filteredCandidates];
-    
+
     switch (sortBy) {
       case 'score':
         return candidatesToSort.sort((a, b) => b.score - a.score);
@@ -307,10 +307,10 @@ const TalentPool = () => {
                   <h1 className="text-responsive-xl font-bold text-gray-900 truncate">Talent Pool</h1>
                   <p className="text-responsive text-gray-600 mt-1">Discover and connect with top finance professionals</p>
                 </div>
-                
+
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3 shrink-0">
                   <FolderManagementButton />
-                  
+
                   <Button
                     variant="outline"
                     onClick={() => setIsFilterSidebarOpen(true)}
@@ -319,7 +319,7 @@ const TalentPool = () => {
                     <Filter className="w-4 h-4" />
                     Filters
                     {hasActiveFilters() && (
-                      <Badge variant="secondary" className="ml-1">
+                      <Badge variant="secondary" className="ml-1 ">
                         {Object.values({
                           searchQuery: searchQuery !== '',
                           locationFilter: locationFilter !== 'all',
@@ -335,7 +335,7 @@ const TalentPool = () => {
                       </Badge>
                     )}
                   </Button>
-                  
+
                   <div className="flex bg-gray-100 rounded-lg p-1">
                     <Button
                       variant={viewMode === 'grid' ? 'default' : 'ghost'}
@@ -393,7 +393,7 @@ const TalentPool = () => {
                     </SelectContent>
                   </Select>
                 </div>
-                
+
                 <div className="text-responsive-sm text-gray-600 whitespace-nowrap">
                   Showing {sortedCandidates.length} of {candidates.length} candidates
                 </div>

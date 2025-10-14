@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Calendar, 
-  Clock, 
+import {
+  Calendar,
+  Clock,
   User,
   VideoIcon as Video,
   Phone,
@@ -151,79 +151,93 @@ export default function Interviews() {
           </CardHeader>
           <CardContent className="space-y-4">
             {upcomingInterviews.map((interview, index) => (
-              <Card 
-                key={interview.id} 
+              <Card
+                key={interview.id}
                 className="border hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02]"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-start gap-4 flex-1">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${interview.statusBg}`}>
+                <CardContent className="p-4 sm:p-6">
+                  {/* Main structure */}
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+
+                    {/* Left side: main information */}
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full">
+                      {/* Icon */}
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center ${interview.statusBg} flex-shrink-0`}>
                         <div className={interview.statusColor}>
                           {getFormatIcon(interview.format)}
                         </div>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h3 className="font-semibold text-lg text-foreground mb-1">
+
+                      {/* Details */}
+                      <div className="flex-1 min-w-0">
+                        {/* Title and status */}
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-base sm:text-lg text-foreground mb-1 truncate">
                               {interview.role}
                             </h3>
-                            <p className="text-muted-c-foreground font-medium">
+                            <p className="text-muted-c-foreground font-medium text-sm sm:text-base truncate">
                               {interview.company} • {interview.type}
                             </p>
                           </div>
-                          <Badge 
-                            className={`${interview.statusBg} ${interview.statusColor} hover:scale-105 transition-transform duration-200`}
+                          <Badge
+                            className={`${interview.statusBg} ${interview.statusColor} hover:scale-105 transition-transform duration-200 flex-shrink-0 w-fit`}
                           >
                             {interview.status}
                           </Badge>
                         </div>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm mb-4">
-                          <div>
-                            <span className="text-muted-c-foreground">Date & Time:</span>
-                            <p className="font-medium text-foreground">{interview.date} at {interview.time}</p>
+
+                        {/* Interview information */}
+                        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-sm mb-4">
+                          <div className="min-w-0">
+                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Date & Time:</span>
+                            <p className="font-medium text-foreground text-sm sm:text-base truncate">{interview.date} at {interview.time}</p>
                           </div>
-                          <div>
-                            <span className="text-muted-c-foreground">Duration:</span>
-                            <p className="font-medium text-foreground">{interview.duration}</p>
+                          <div className="min-w-0">
+                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Duration:</span>
+                            <p className="font-medium text-foreground text-sm sm:text-base">{interview.duration}</p>
                           </div>
-                          <div>
-                            <span className="text-muted-c-foreground">Format:</span>
-                            <p className="font-medium text-foreground">{interview.format}</p>
+                          <div className="min-w-0">
+                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Format:</span>
+                            <p className="font-medium text-foreground text-sm sm:text-base">{interview.format}</p>
                           </div>
-                          <div>
-                            <span className="text-muted-c-foreground">Location:</span>
-                            <p className="font-medium text-foreground">{interview.location}</p>
+                          <div className="min-w-0">
+                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Location:</span>
+                            <p className="font-medium text-foreground text-sm sm:text-base truncate">{interview.location}</p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 text-sm">
-                          <User className="w-4 h-4 text-muted-c-foreground" />
-                          <span className="text-muted-c-foreground">Interviewer:</span>
-                          <span className="font-medium text-foreground">{interview.interviewer}</span>
-                          <span className="text-muted-c-foreground">•</span>
-                          <span className="text-muted-c-foreground">{interview.interviewerTitle}</span>
+                        {/* Interviewer information */}
+                        <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 text-sm">
+                          <div className="flex items-center gap-1 xs:gap-2">
+                            <User className="w-3 h-3 sm:w-4 sm:h-4 text-muted-c-foreground flex-shrink-0" />
+                            <span className="text-muted-c-foreground text-xs sm:text-sm">Interviewer:</span>
+                            <span className="font-medium text-foreground text-xs sm:text-sm truncate">{interview.interviewer}</span>
+                          </div>
+                          <span className="text-muted-c-foreground hidden xs:inline">•</span>
+                          <span className="text-muted-c-foreground text-xs sm:text-sm truncate">{interview.interviewerTitle}</span>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col gap-2 ml-4">
+
+                    {/* Right side: buttons */}
+                    <div className="flex flex-row lg:flex-col gap-2 w-full lg:w-auto justify-between lg:justify-start">
                       {interview.format === "Video Call" && (
-                        <Button 
-                          className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200"
+                        <Button
+                          className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200 text-xs sm:text-sm whitespace-nowrap"
+                          size="sm"
                         >
-                          <Video className="w-4 h-4 mr-2" />
+                          <Video className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                           Join Meeting
                         </Button>
                       )}
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
-                        className="hover:bg-primary-c/10 hover:text-primary-c hover:border-primary-c/50 transition-all duration-200"
+                        className="hover:bg-primary-c/10 hover:text-primary-c hover:border-primary-c/50 transition-all duration-200 text-xs sm:text-sm whitespace-nowrap"
                       >
-                        <Calendar className="w-4 h-4 mr-2" />
+                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                         Reschedule
                       </Button>
                     </div>
@@ -232,6 +246,7 @@ export default function Interviews() {
               </Card>
             ))}
           </CardContent>
+
         </Card>
 
         {/* Past Interviews */}
@@ -244,58 +259,75 @@ export default function Interviews() {
           </CardHeader>
           <CardContent className="space-y-4">
             {pastInterviews.map((interview, index) => (
-              <Card 
-                key={interview.id} 
+              <Card
+                key={interview.id}
                 className="border hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02]"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-start gap-4 flex-1">
-                      <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${interview.statusBg}`}>
+                <CardContent className="p-4 sm:p-6">
+                  {/* Main structure */}
+                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+
+                    {/* Left side: Basic information */}
+                    <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full">
+                      {/* Icon */}
+                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center ${interview.statusBg} flex-shrink-0`}>
                         <div className={interview.statusColor}>
-                          <Calendar className="w-4 h-4" />
+                          <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                         </div>
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-start justify-between mb-3">
-                          <div>
-                            <h3 className="font-semibold text-lg text-foreground mb-1">
+
+                      {/* Details */}
+                      <div className="flex-1 min-w-0">
+                        {/* Title and result */}
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-base sm:text-lg text-foreground mb-1 truncate">
                               {interview.role}
                             </h3>
-                            <p className="text-muted-c-foreground font-medium">
+                            <p className="text-muted-c-foreground font-medium text-sm sm:text-base truncate">
                               {interview.company} • {interview.type}
                             </p>
                           </div>
-                          <Badge 
-                            className={`${interview.statusBg} ${interview.statusColor} hover:scale-105 transition-transform duration-200`}
+                          <Badge
+                            className={`${interview.statusBg} ${interview.statusColor} hover:scale-105 transition-transform duration-200 flex-shrink-0 w-fit`}
                           >
                             {interview.result}
                           </Badge>
                         </div>
-                        
-                        <div className="grid grid-cols-2 gap-4 text-sm mb-3">
-                          <div>
-                            <span className="text-muted-c-foreground">Date & Time:</span>
-                            <p className="font-medium text-foreground">{interview.date} at {interview.time}</p>
+
+                        {/* Interview info */}
+                        <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4 text-sm mb-3">
+                          <div className="min-w-0">
+                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Date & Time:</span>
+                            <p className="font-medium text-foreground text-sm sm:text-base truncate">
+                              {interview.date} at {interview.time}
+                            </p>
                           </div>
-                          <div>
-                            <span className="text-muted-c-foreground">Interviewer:</span>
-                            <p className="font-medium text-foreground">{interview.interviewer}</p>
+                          <div className="min-w-0">
+                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Interviewer:</span>
+                            <p className="font-medium text-foreground text-sm sm:text-base truncate">
+                              {interview.interviewer}
+                            </p>
                           </div>
                         </div>
 
+                        {/* Feedback section */}
                         <div className="bg-accent-c/30 rounded-lg p-3">
                           <span className="text-sm text-muted-c-foreground">Feedback:</span>
-                          <p className="text-sm text-foreground mt-1">{interview.feedback}</p>
+                          <p className="text-sm text-foreground mt-1 line-clamp-2 sm:line-clamp-3">
+                            {interview.feedback}
+                          </p>
                         </div>
                       </div>
                     </div>
-                    <div className="ml-4">
-                      <Button 
-                        variant="outline" 
+
+                    {/* Right side: Actions */}
+                    <div className="flex lg:flex-col justify-end lg:justify-start w-full lg:w-auto">
+                      <Button
+                        variant="outline"
                         size="sm"
-                        className="hover:bg-success/10 hover:text-success hover:border-success/50 transition-all duration-200"
+                        className="hover:bg-success/10 hover:text-success hover:border-success/50 transition-all duration-200 whitespace-nowrap w-full lg:w-auto justify-center"
                       >
                         View Details
                       </Button>
@@ -305,6 +337,7 @@ export default function Interviews() {
               </Card>
             ))}
           </CardContent>
+
         </Card>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
+import GoogleLogin from "../GoogleLogin";
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
@@ -47,7 +48,7 @@ const LoginPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      
+
       if (err.code === "auth/user-not-found") {
         toast.error("No account found with this email.");
       } else if (err.code === "auth/wrong-password") {
@@ -57,7 +58,7 @@ const LoginPage: React.FC = () => {
       } else if (err.code === "auth/too-many-requests") {
         toast.error("Too many login attempts. Please try again later.");
       } else {
-        toast.error( "Failed to login. Please try again." || err.message );
+        toast.error("Failed to login. Please try again." || err.message);
       }
     } finally {
       setLoading(false);
@@ -161,13 +162,14 @@ const LoginPage: React.FC = () => {
           {/* Sign Up Link */}
           <p className="text-center text-sm text-muted-c-foreground">
             Don't have an account?{" "}
-            <a 
-              href="/candidate/signup" 
+            <a
+              href="/candidate/signup"
               className="text-secondary-c hover:text-secondary-c-hover font-semibold hover:underline"
             >
               Create Account
             </a>
           </p>
+      
         </form>
 
         {/* Footer */}

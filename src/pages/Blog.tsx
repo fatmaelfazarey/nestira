@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { 
+import {
   Filter,
-  Clock, 
+  Clock,
   ChevronDown,
   Download,
   Mail,
@@ -141,8 +141,8 @@ export default function Blog() {
   const contentTypes = ["Blog", "Report", "Survey", "Case Study"];
   const audiences = ["Show All", "Entry Level", "Mid-Level", "Senior Level"];
   const topicFocus = [
-    "Skill Building", "Career Growth", "Remote Readiness", 
-    "Salary Insights", "Certifications & Tools", "Interview Prep", 
+    "Skill Building", "Career Growth", "Remote Readiness",
+    "Salary Insights", "Certifications & Tools", "Interview Prep",
     "Resume Tips", "AI in Finance"
   ];
 
@@ -157,9 +157,9 @@ export default function Blog() {
 
     // Apply topic filters
     if (selectedTopics.length > 0) {
-      filtered = filtered.filter(article => 
-        selectedTopics.some(topic => 
-          article.category === topic || 
+      filtered = filtered.filter(article =>
+        selectedTopics.some(topic =>
+          article.category === topic ||
           article.secondaryCategory.includes(topic)
         )
       );
@@ -169,8 +169,8 @@ export default function Blog() {
   }, [isTrendingEnabled, selectedTopics]);
 
   const handleTopicToggle = (topic: string) => {
-    setSelectedTopics(prev => 
-      prev.includes(topic) 
+    setSelectedTopics(prev =>
+      prev.includes(topic)
         ? prev.filter(t => t !== topic)
         : [...prev, topic]
     );
@@ -182,7 +182,7 @@ export default function Blog() {
 
   const handleReportDownload = (report: any) => {
     setIsLoading(true);
-    
+
     // Simulate download
     setTimeout(() => {
       // In a real app, this would trigger an actual download
@@ -198,7 +198,7 @@ export default function Blog() {
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
+
     // Simulate API call
     setTimeout(() => {
       toast({
@@ -219,7 +219,7 @@ export default function Blog() {
           <p className="text-muted-c-foreground">Grow your finance career with expert insights and practical resources</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {/* Main Content */}
           <div className="lg:col-span-3">
             {/* Filters & Sorting */}
@@ -330,8 +330,8 @@ export default function Blog() {
             {filteredArticles.length === 0 ? (
               <Card className="p-8 text-center">
                 <p className="text-muted-c-foreground">No articles match your current filters.</p>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   onClick={() => {
                     setSelectedTopics([]);
                     setIsTrendingEnabled(false);
@@ -344,8 +344,8 @@ export default function Blog() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredArticles.map((article) => (
-                  <Card 
-                    key={article.id} 
+                  <Card
+                    key={article.id}
                     className="overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
                     onClick={() => handleArticleClick(article)}
                   >
@@ -356,7 +356,7 @@ export default function Blog() {
                           <span className="text-2xl font-bold text-white">📊</span>
                         </div>
                       </div>
-                      
+
                       {/* Tags */}
                       <div className="absolute top-4 left-4 flex gap-2">
                         {article.tags.map((tag) => (
@@ -384,7 +384,7 @@ export default function Blog() {
                       <p className="text-sm text-muted-c-foreground mb-4 line-clamp-2">
                         {article.description}
                       </p>
-                      
+
                       <div className="flex items-center gap-2 text-xs text-muted-c-foreground mb-4">
                         <Badge variant="outline" className="text-xs">
                           {article.category}
@@ -434,9 +434,9 @@ export default function Blog() {
                       </p>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-muted-c-foreground">{report.downloads}</span>
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
+                        <Button
+                          size="sm"
+                          variant="outline"
                           className="h-6 px-2 text-xs"
                           onClick={(e) => {
                             e.stopPropagation();
@@ -467,15 +467,15 @@ export default function Blog() {
                   </p>
                 </div>
                 <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-                  <Input 
+                  <Input
                     type="email"
-                    placeholder="Your email address" 
+                    placeholder="Your email address"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="bg-white/20 border-white/30 text-white placeholder:text-white/70"
                     required
                   />
-                  <Button 
+                  <Button
                     type="submit"
                     className="w-full bg-white text-orange-600 hover:bg-white/90"
                     disabled={isLoading}
@@ -520,12 +520,12 @@ export default function Blog() {
                   </Button>
                 </div>
               </DialogHeader>
-              
+
               <div className="space-y-4">
                 <p className="text-muted-c-foreground text-lg leading-relaxed">
                   {selectedArticle.description}
                 </p>
-                
+
                 <div className="bg-muted-c p-4 rounded-lg">
                   <p className="text-sm text-muted-c-foreground">
                     This is a preview. Click "Full Article" above to read the complete content.

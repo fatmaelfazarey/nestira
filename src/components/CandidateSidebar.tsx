@@ -2,11 +2,11 @@ import { useState } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  User, 
-  FileText, 
-  Star, 
-  Calendar, 
+import {
+  User,
+  FileText,
+  Star,
+  Calendar,
   Square,
   CircleCheck,
   FileSpreadsheet,
@@ -46,8 +46,8 @@ export function CandidateSidebar() {
 
   const getLinkClasses = (path: string) => {
     const base = "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm  font-medium transition-all duration-200 hover:bg-accent-c/50 relative";
-    return isActive(path) 
-      ? `${base} bg-accent-c text-primary shadow-sm border-l-4 border-secondary-c` 
+    return isActive(path)
+      ? `${base} bg-accent-c text-primary shadow-sm border-l-4 border-secondary-c`
       : `${base} text-muted-foreground hover:text-primary-foreground hover:border-l-4 hover:border-secondary-c/50`;
   };
 
@@ -64,7 +64,8 @@ export function CandidateSidebar() {
         localStorage.removeItem("token");
         localStorage.removeItem("role");
         toast.success("Logged out successfully!");
-        navigate("/candidate/");
+        // navigate("/candidate/");
+        navigate("/");
       } catch (error: any) {
         toast.error(error.message || "Failed to logout");
       } finally {
@@ -77,15 +78,15 @@ export function CandidateSidebar() {
   };
 
   return (
-   <div className="w-64 bg-primary border-r border-border-c flex flex-col h-screen sticky top-0 left-0 overflow-hidden">
+    <div className="w-64 min-w-64 bg-primary border-r border-border-c flex flex-col h-screen static top-0 left-0 overflow-hidden z-50">
 
       {/* Header */}
       <div className="p-6 border-b border-border-c/20 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 flex items-center justify-center">
-            <img 
-              src="/lovable-uploads/b7d3bd2f-64c7-4971-a4e6-bd1f4e1b4de5.png" 
-              alt="Nestira Finance Logo" 
+            <img
+              src="/lovable-uploads/b7d3bd2f-64c7-4971-a4e6-bd1f4e1b4de5.png"
+              alt="Nestira Finance Logo"
               className="w-8 h-8 object-contain"
             />
           </div>
@@ -98,7 +99,7 @@ export function CandidateSidebar() {
 
       {/* Browse Jobs Button */}
       <div className="p-4 flex-shrink-0">
-        <Button 
+        <Button
           onClick={handleBrowseJobsClick}
           className="w-full bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground shadow-lg transition-all duration-200 hover:shadow-xl rounded-lg"
         >
@@ -146,7 +147,7 @@ export function CandidateSidebar() {
           </ul>
 
           {/* Video Introduction Banner */}
-          <div className="mt-4">
+          <div className="mt-4 mb-4">
             <div className="bg-card-blue rounded-xl p-4 border border-primary-c/10 relative overflow-hidden">
               <div className="absolute top-2 right-2">
                 <div className="flex gap-1">
@@ -155,7 +156,7 @@ export function CandidateSidebar() {
                   ))}
                 </div>
               </div>
-              
+
               <div className="inline-flex items-center gap-1 bg-success/20 text-success px-2 py-1 rounded-full text-xs font-medium mb-3">
                 <Zap className="w-3 h-3" />
                 5x more views!
@@ -168,7 +169,7 @@ export function CandidateSidebar() {
                 Introduce yourself to employers with a personalized video. Highlight your skills, experience, and unique qualities.
               </p>
 
-              <Button 
+              <Button
                 className="w-full bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground text-sm py-2 transition-all duration-200 hover:scale-105"
                 size="sm"
               >
@@ -177,19 +178,14 @@ export function CandidateSidebar() {
               </Button>
             </div>
           </div>
-        </div>
-      </nav>
-
-      {/* Login/Logout Button - Fixed at bottom */}
-      <div className="p-4 border-t border-border-c/20 flex-shrink-0">
-        <Button
+          <div className="mb-4 border-t border-border-c/20 ">
+             <Button
           onClick={handleAuthAction}
           disabled={loggingOut}
-          className={`w-full transition-all duration-200 ${
-            currentUser
-              ? "bg-secondary-c hover:opacity-[.8] text-destructive-foreground"
-              : " hover:opacity-[.8] text-primary-c-foreground  bg-secondary-c"
-          }`}
+          className={`w-full transition-all duration-200 ${currentUser
+            ? "bg-secondary-c hover:opacity-[.8] text-destructive-foreground"
+            : " hover:opacity-[.8] text-primary-c-foreground  bg-secondary-c"
+            }`}
         >
           {loggingOut ? (
             <span className="flex items-center gap-2">
@@ -208,13 +204,50 @@ export function CandidateSidebar() {
             </>
           )}
         </Button>
-        
+
         {currentUser && (
           <p className="text-xs text-center text-primary-c-foreground/60 mt-2 truncate">
             {currentUser.email}
           </p>
         )}
-      </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Login/Logout Button - Fixed at bottom */}
+      {/* <div className="p-4 border-t border-border-c/20 flex-shrink-0">
+        <Button
+          onClick={handleAuthAction}
+          disabled={loggingOut}
+          className={`w-full transition-all duration-200 ${currentUser
+            ? "bg-secondary-c hover:opacity-[.8] text-destructive-foreground"
+            : " hover:opacity-[.8] text-primary-c-foreground  bg-secondary-c"
+            }`}
+        >
+          {loggingOut ? (
+            <span className="flex items-center gap-2">
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Logging out...
+            </span>
+          ) : currentUser ? (
+            <>
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </>
+          ) : (
+            <>
+              <LogIn className="w-4 h-4 mr-2" />
+              Login
+            </>
+          )}
+        </Button>
+
+        {currentUser && (
+          <p className="text-xs text-center text-primary-c-foreground/60 mt-2 truncate">
+            {currentUser.email}
+          </p>
+        )} 
+      </div> */}
     </div>
   );
 }

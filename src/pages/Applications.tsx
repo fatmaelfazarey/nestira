@@ -3,27 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { 
-  FileText, 
-  Clock, 
-  CircleCheck, 
+
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  FileText,
+  Clock,
+  CircleCheck,
   User,
   Calendar
 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Applications() {
   const applications = [
-    {
-      id: 1,
-      company: "Goldman Sachs",
-      role: "Investment Banking Analyst",
-      status: "Interview Scheduled",
-      appliedDate: "2024-01-15",
-      salary: "$140k - $180k",
-      location: "New York, NY",
-      statusColor: "text-secondary-c",
-      statusBg: "bg-earnings"
-    },
+
     {
       id: 2,
       company: "JP Morgan Chase",
@@ -45,6 +38,17 @@ export default function Applications() {
       location: "Singapore",
       statusColor: "text-primary-c",
       statusBg: "bg-accent-c"
+    },
+    {
+      id: 1,
+      company: "Goldman Sachs",
+      role: "Investment Banking Analyst",
+      status: "Interview Scheduled",
+      appliedDate: "2024-01-15",
+      salary: "$140k - $180k",
+      location: "New York, NY",
+      statusColor: "text-secondary-c",
+      statusBg: "bg-earnings"
     },
     {
       id: 4,
@@ -69,6 +73,43 @@ export default function Applications() {
       statusBg: "bg-success-light"
     }
   ];
+
+  //#region search jobs
+  const [filteredApplications, setFilteredApplications] = useState(applications)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSort, setIsSort] = useState(false)
+
+
+
+  const handleSort = (shouldSort) => {
+    if (shouldSort) {
+      const sortedApp = [...applications].sort((a, b) => {
+        return new Date(b.appliedDate) - new Date(a.appliedDate);
+      });
+      setFilteredApplications(sortedApp);
+    } else {
+      setFilteredApplications(applications);
+    }
+  };
+
+  const handleFilterChange = (value: string) => {
+    setFilteredApplications(applications.filter(app => {
+      const matchesSearch = app.status == value;
+
+      return matchesSearch;
+    }));
+
+  }
+
+  useEffect(() => {
+    setFilteredApplications(applications.filter(app => {
+      const matchesSearch = app.role.toLowerCase().includes(searchTerm.toLowerCase());
+
+      return matchesSearch;
+    }));
+  }, [searchTerm])
+
+  //#endregion
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -124,14 +165,35 @@ export default function Applications() {
         <Card className="mb-6 animate-fade-in rounded-xl shadow-sm border-border-c/50">
           <CardContent className="p-6">
             <div className="flex flex-col md:flex-row gap-4">
-              <Input 
-                placeholder="Search applications..." 
+              <Input
+                placeholder="Search applications..."
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="flex-1 rounded-lg border-border-c/50 focus:border-secondary-c"
               />
-              <Button variant="outline" className="hover:bg-accent-c/50 transition-colors duration-200 rounded-lg border-border-c/50">
-                Filter by Status
-              </Button>
-              <Button variant="outline" className="hover:bg-accent-c/50 transition-colors duration-200 rounded-lg border-border-c/50">
+
+              <Select onValueChange={(value) => handleFilterChange(value)}>
+                <SelectTrigger className="w-full sm:w-[180px]">
+                  <SelectValue placeholder="Filter by Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectItem value="Applied">Applied</SelectItem>
+                    <SelectItem value="Under Review">Under Review</SelectItem>
+                    <SelectItem value="Interview Scheduled">Interview Scheduled</SelectItem>
+                    <SelectItem value="Rejected">Rejected</SelectItem>
+                    <SelectItem value="Offer Received">Offer Received</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const newSortState = !isSort;
+                  setIsSort(newSortState);
+                  handleSort(newSortState);
+                }}
+                className={`hover:bg-secondary-c/10 hover:text-secondary-c hover:border-secondary-c/50 transition-all duration-200 ${isSort ? 'text-white bg-secondary-c' : ''}`}
+              >
                 Sort by Date
               </Button>
             </div>
@@ -140,71 +202,99 @@ export default function Applications() {
 
         {/* Applications List */}
         <div className="space-y-4">
-          {applications.map((application, index) => (
-            <Card 
-              key={application.id} 
-              className="hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02] rounded-xl border-border-c/50"
-              style={{ animationDelay: `${index * 100}ms` }}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-start gap-4 flex-1">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${application.statusBg} shadow-sm`}>
-                      <div className={application.statusColor}>
-                        {getStatusIcon(application.status)}
-                      </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h3 className="font-semibold text-lg text-foreground mb-1">
-                            {application.role}
-                          </h3>
-                          <p className="text-muted-c-foreground font-medium">
-                            {application.company} • {application.location}
-                          </p>
-                        </div>
-                        <Badge 
-                          className={`${application.statusBg} ${application.statusColor} hover:scale-105 transition-transform duration-200 rounded-lg px-3 py-1`}
-                        >
-                          {application.status}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-4 text-sm text-muted-c-foreground">
-                        <span>Applied: {application.appliedDate}</span>
-                        <span>•</span>
-                        <span className="font-medium text-foreground">{application.salary}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 ml-4">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="hover:bg-accent-c hover:text-primary-c hover:border-primary-c/50 transition-all duration-200 rounded-lg"
-                    >
-                      <User className="w-4 h-4 mr-2" />
-                      View Details
-                    </Button>
-                    {application.status === "Interview Scheduled" && (
-                      <Button 
-                        size="sm"
-                        className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200 rounded-lg shadow-sm"
+          {filteredApplications.length === 0 ?
+            <div className="text-center py-12">
+              <p className="text-muted-c-foreground text-lg">No Applications were found that match your search.</p>
+            </div>
+            : filteredApplications.map((application, index) => (
+              <Card
+                key={application.id}
+                className="hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02] rounded-xl border-border-c/50"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <CardContent className="p-6">
+                  {/* Main structure */}
+                  <div className="flex items-center justify-between md:flex-row flex-col gap-4">
+
+                    {/* Left side: main information */}
+                    <div className="flex items-center gap-4 flex-1 w-full">
+                      {/* Icon */}
+                      <div
+                        className={`w-12 h-12 rounded-xl flex items-center justify-center ${application.statusBg} shadow-sm flex-shrink-0`}
                       >
-                        <Calendar className="w-4 h-4 mr-2" />
-                        Join Interview
-                      </Button>
-                    )}
+                        <div className={application.statusColor}>
+                          {getStatusIcon(application.status)}
+                        </div>
+                      </div>
+
+                      {/* Details */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-lg text-foreground mb-1 truncate">
+                              {application.role}
+                            </h3>
+                            <p className="text-muted-c-foreground font-medium truncate">
+                              {application.company} • {application.location}
+                            </p>
+                          </div>
+
+                          {/* Status badge - visible at the top on small screens */}
+                          <Badge
+                            className={`${application.statusBg} ${application.statusColor} hover:scale-105 transition-transform duration-200 rounded-lg px-3 py-1 flex-shrink-0 md:hidden`}
+                          >
+                            {application.status}
+                          </Badge>
+                        </div>
+
+                        <div className="flex flex-col xs:flex-row xs:items-center gap-2 xs:gap-4 text-sm text-muted-c-foreground">
+                          <span>Applied: {application.appliedDate}</span>
+                          <span className="hidden xs:inline">•</span>
+                          <span className="font-medium text-foreground">{application.salary}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right side: buttons and status */}
+                    <div className="flex flex-row md:flex-col items-center gap-2 w-full md:w-auto justify-between md:justify-start">
+                      {/* Status badge - visible on medium and large screens */}
+                      <Badge
+                        className={`${application.statusBg} ${application.statusColor} hover:scale-105 transition-transform duration-200 rounded-lg px-3 py-1 flex-shrink-0 hidden md:flex`}
+                      >
+                        {application.status}
+                      </Badge>
+
+                      {/* Action buttons */}
+                      <div className="flex flex-row md:flex-col gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="hover:bg-accent-c hover:text-primary-c hover:border-primary-c/50 transition-all duration-200 rounded-lg whitespace-nowrap"
+                        >
+                          <User className="w-4 h-4 mr-2" />
+                          View Details
+                        </Button>
+
+                        {application.status === "Interview Scheduled" && (
+                          <Button
+                            size="sm"
+                            className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200 rounded-lg shadow-sm whitespace-nowrap"
+                          >
+                            <Calendar className="w-4 h-4 mr-2" />
+                            Join Interview
+                          </Button>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
         </div>
 
         {/* Load More */}
         <div className="text-center mt-8">
-          <Button 
+          <Button
             variant="outline"
             className="hover:bg-accent-c hover:text-secondary-c hover:border-secondary-c/50 transition-all duration-200 hover:scale-105 rounded-lg px-6 py-2"
           >

@@ -14,10 +14,11 @@ import { useTranslation } from '@/hooks/useTranslation';
 interface LoginSecuritySectionProps {
   onChange: () => void;
   currentUser: object;
-  setCurrentUser: object
+  setCurrentUser: object;
+  setLoginSecurity: object
 }
 
-export function LoginSecuritySection({ onChange, currentUser, setCurrentUser }: LoginSecuritySectionProps) {
+export function LoginSecuritySection({ onChange, currentUser, setCurrentUser, setLoginSecurity }: LoginSecuritySectionProps) {
   const { t } = useTranslation();
   const [email, setEmail] = useState('user@company.com');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -64,13 +65,24 @@ export function LoginSecuritySection({ onChange, currentUser, setCurrentUser }: 
 
   const handleEmailChange = (value: string) => {
     setEmail(value);
+    setLoginSecurity(pre => ({ ...pre, email: value }));
     onChange();
   };
 
   const handlePasswordChange = (field: string, value: string) => {
-    if (field === 'current') setCurrentPassword(value);
-    else if (field === 'new') setNewPassword(value);
-    else if (field === 'confirm') setConfirmPassword(value);
+    if (field === 'current') {
+      setCurrentPassword(value);
+      setLoginSecurity(pre => ({ ...pre, currentPassword: value }));
+    }
+    else if (field === 'new') {
+      setNewPassword(value);
+      setLoginSecurity(pre => ({ ...pre, newPassword: value }));
+    }
+    else if (field === 'confirm') {
+      setConfirmPassword(value);
+      setLoginSecurity(pre => ({ ...pre, confirmPassword: value }));
+    }
+
     onChange();
   };
 

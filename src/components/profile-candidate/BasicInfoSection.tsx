@@ -1,16 +1,22 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Label } from '@/components/ui/label';
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { User, Upload, MapPin } from "lucide-react";
 
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useState } from "react";
+
 interface BasicInfoSectionProps {
   data: any;
   onChange: (data: any) => void;
+
 }
 
 export function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
+
   const updateField = (field: string, value: string) => {
     onChange({
       ...data,
@@ -27,6 +33,22 @@ export function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
     "Manama, Bahrain",
     "Muscat, Oman"
   ];
+  // const [profilePhoto, setProfilePhoto] = useState('');
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+
+        // setProfilePhoto(e.target?.result as string);
+
+        updateField('profilePhoto', e.target?.result as string)
+      };
+      reader.readAsDataURL(file);
+      // onChange('profilePhoto', profilePhoto)
+      //  onChange={() => updateField('profilePhoto',  profilePhoto)}
+    }
+  };
 
   return (
     <Card className="animate-fade-in rounded-xl">
@@ -37,7 +59,7 @@ export function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="flex items-center gap-6">
+        {/* <div className="flex items-center gap-6">
           <div className="w-20 h-20 bg-secondary-c/20 rounded-full flex items-center justify-center">
             <User className="w-10 h-10 text-secondary-c" />
           </div>
@@ -51,50 +73,76 @@ export function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
             </Button>
             <p className="text-xs text-muted-c-foreground mt-1">JPG, PNG up to 2MB</p>
           </div>
+        </div> */} {/* Profile Photo */}
+        <div className="flex items-center gap-4">
+          <Avatar className="w-16 h-16">
+            <AvatarImage src={data?.profilePhoto} alt={data.fullName} />
+
+          </Avatar>
+
+          <div className="space-y-2">
+            <Label htmlFor="profile-photo" className="text-sm font-medium">Profile Photo</Label>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <label htmlFor="profile-photo" className="cursor-pointer">
+                  <Upload className="w-4 h-4 mr-2" />
+                  Upload
+                </label>
+              </Button>
+              <input
+                id="profile-photo"
+                type="file"
+                onChange={handleFileUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              <span className="text-xs text-gray-500">JPG, PNG up to 2MB</span>
+            </div>
+          </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">
               Full Name *
             </label>
-            <Input 
+            <Input
               value={data.fullName}
               onChange={(e) => updateField('fullName', e.target.value)}
               placeholder="Enter your full name"
               className="transition-all duration-300 focus:ring-2 focus:ring-secondary-c/50"
             />
           </div>
-          
+
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">
               Role / Desired Position *
             </label>
-            <Input 
+            <Input
               value={data.role}
               onChange={(e) => updateField('role', e.target.value)}
               placeholder="e.g., Senior Financial Analyst"
               className="transition-all duration-300 focus:ring-2 focus:ring-secondary-c/50"
             />
           </div>
-          
+
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">
               Phone Number *
             </label>
-            <Input 
+            <Input
               value={data.phone}
               onChange={(e) => updateField('phone', e.target.value)}
               placeholder="+971 50 123 4567"
               className="transition-all duration-300 focus:ring-2 focus:ring-secondary-c/50"
             />
           </div>
-          
+
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">
               Email Address *
             </label>
-            <Input 
+            <Input
               type="email"
               value={data.email}
               onChange={(e) => updateField('email', e.target.value)}
@@ -102,13 +150,13 @@ export function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
               className="transition-all duration-300 focus:ring-2 focus:ring-secondary-c/50"
             />
           </div>
-          
+
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">
               Business Email
               <span className="text-xs text-muted-c-foreground ml-1">(optional)</span>
             </label>
-            <Input 
+            <Input
               type="email"
               value={data.businessEmail}
               onChange={(e) => updateField('businessEmail', e.target.value)}
@@ -116,12 +164,12 @@ export function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
               className="transition-all duration-300 focus:ring-2 focus:ring-secondary-c/50"
             />
           </div>
-          
+
           <div className="space-y-2">
             <label className="text-sm font-semibold text-foreground">
               LinkedIn or Portfolio URL
             </label>
-            <Input 
+            <Input
               value={data.linkedin}
               onChange={(e) => updateField('linkedin', e.target.value)}
               placeholder="linkedin.com/in/yourprofile"
@@ -129,7 +177,7 @@ export function BasicInfoSection({ data, onChange }: BasicInfoSectionProps) {
             />
           </div>
         </div>
-        
+
         <div className="space-y-2">
           <label className="text-sm font-semibold text-foreground flex items-center gap-2">
             <MapPin className="w-4 h-4" />

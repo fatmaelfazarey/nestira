@@ -132,7 +132,7 @@ export const FilterSidebar = ({
   // Updated filter options
   const countries = [
     "United Arab Emirates (UAE)",
-    "Egypt", 
+    "Egypt",
     "Kuwait",
     "Saudi Arabia",
     "Oman",
@@ -142,7 +142,7 @@ export const FilterSidebar = ({
 
   const careerLevels = [
     "Mid-Level",
-    "Executive-Level", 
+    "Executive-Level",
     "C-Suite / Top-Level Management",
     "Entry-Level",
     "Senior-Level"
@@ -150,7 +150,7 @@ export const FilterSidebar = ({
 
   const statusOptions = [
     "Available",
-    "Interviewing", 
+    "Interviewing",
     "Shortlisted"
   ];
 
@@ -179,7 +179,7 @@ export const FilterSidebar = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="right" className="w-[500px] sm:w-[600px] overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:w-[600px] overflow-y-auto">
         <SheetHeader>
           <SheetTitle className="flex items-center gap-2 text-primary">
             <Filter className="w-5 h-5 text-accent" />
@@ -194,7 +194,7 @@ export const FilterSidebar = ({
               <Search className="w-4 h-4 text-accent" />
               Basic Filters
             </h3>
-            
+
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
@@ -245,9 +245,9 @@ export const FilterSidebar = ({
               </div>
             </div>
           </div>
-          
+
           <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
-          
+
           {/* Job & Stage Filters */}
           <div className="space-y-4">
             <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
@@ -305,7 +305,7 @@ export const FilterSidebar = ({
               <BarChart3 className="w-4 h-4 text-accent" />
               Experience & Score
             </h3>
-            
+
             <div className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
@@ -334,7 +334,7 @@ export const FilterSidebar = ({
                   className="w-full"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
                   Minimum Assessment Score: {assessmentScoreRange[0]}%
@@ -359,7 +359,7 @@ export const FilterSidebar = ({
               <Briefcase className="w-4 h-4 text-accent" />
               Skills & Expertise
             </h3>
-            
+
             {/* Finance Subfields */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-gray-700">Finance Subfields</label>
@@ -425,7 +425,7 @@ export const FilterSidebar = ({
               <Building2 className="w-4 h-4 text-accent" />
               Work Preferences
             </h3>
-            
+
             <div className="grid grid-cols-1 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Employment Type</label>
@@ -518,7 +518,7 @@ export const FilterSidebar = ({
                 </h3>
                 <ChevronDown className={`w-4 h-4 transition-transform ${isAdvancedFiltersOpen ? 'rotate-180' : ''}`} />
               </CollapsibleTrigger>
-              
+
               <CollapsibleContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-4">
                   <div className="space-y-2">

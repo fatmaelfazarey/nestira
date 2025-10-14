@@ -3,10 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { 
-  MapPin, 
-  Clock, 
-  Building, 
+import {
+  MapPin,
+  Clock,
+  Building,
   DollarSign,
   Users,
   Calendar,
@@ -50,15 +50,15 @@ interface JobDetailsDialogProps {
   job: Job | null;
   open: boolean;
   onClose: () => void;
-  onSave: (jobId: number) => void;
-  onApply: (jobId: number) => void;
+  onSave: (jobId: number | null) => void;
+  onApply: (jobId: number | null) => void;
 }
 
 export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDetailsDialogProps) {
   if (!job) return null;
 
   const getWorkModeColor = (mode: string) => {
-    switch (mode.toLowerCase()) {
+    switch (mode?.toLowerCase()) {
       case 'remote': return 'bg-success/20 text-success';
       case 'hybrid': return 'bg-warning/20 text-warning';
       case 'on-site': return 'bg-primary-c/20 text-primary-c';
@@ -179,7 +179,7 @@ export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDet
             <div>
               <h3 className="text-lg font-semibold text-foreground mb-3">Required Skills</h3>
               <div className="flex flex-wrap gap-2">
-                {job.tags.map((tag) => (
+                {job.tags?.map((tag) => (
                   <Badge
                     key={tag}
                     variant="secondary-c"
@@ -201,7 +201,7 @@ export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDet
         <Separator />
 
         <div className="flex items-center justify-between pt-4">
-          <Button 
+          <Button
             variant="outline"
             onClick={onClose}
             className="hover:bg-muted-c/50 transition-all duration-200"
@@ -209,14 +209,14 @@ export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDet
             Close
           </Button>
           <div className="flex items-center gap-3">
-            <Button 
+            <Button
               variant="outline"
               className="hover:bg-primary-c/10 hover:text-primary-c hover:border-primary-c/50 transition-all duration-200"
             >
               <ExternalLink className="w-4 h-4 mr-2" />
               Company Website
             </Button>
-            <Button 
+            <Button
               onClick={() => onApply(job.id)}
               className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200 relative group"
             >

@@ -31,7 +31,7 @@ export function UserProfileSection({ isIndividualRecruiter, setIsIndividualRecru
     setRolePosition(currentUser?.personalInfo?.rolePosition)
     setPhoneNumber(currentUser?.personalInfo?.phone);
     setBusinessEmail(currentUser?.personalInfo?.businessEmail);
-     setProfilePhoto(currentUser?.personalInfo?.profilePhoto);
+    setProfilePhoto(currentUser?.personalInfo?.profilePhoto);
 
   }, [currentUser]);
 

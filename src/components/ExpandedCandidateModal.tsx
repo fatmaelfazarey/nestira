@@ -326,7 +326,7 @@ export function ExpandedCandidateModal({
   return (
     <TooltipProvider>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden p-0 bg-gray-50">
+        <DialogContent className="max-w-7xl max-h-[95vh] overflow-scroll p-0 bg-gray-50">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b bg-white">
             <div className="flex items-center gap-2">
@@ -364,9 +364,9 @@ export function ExpandedCandidateModal({
             </div>
           </div>
 
-          <div className="flex h-[calc(95vh-140px)]">
+          <div className="flex flex-col md:flex-row  ">
             {/* LEFT SIDEBAR - Fixed Width */}
-            <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
+            <div className="w-full md:w-80 bg-white border-r border-gray-200 overflow-y-auto">
               <div className="p-6 space-y-6">
                 {/* Profile Section */}
                 <div className="text-center">
@@ -558,7 +558,7 @@ export function ExpandedCandidateModal({
             </div>
 
             {/* RIGHT MAIN CONTENT - Tabbed Interface */}
-            <div className="flex-1 overflow-hidden bg-gray-50">
+            <div className="flex-1 bg-gray-50">
               <Tabs defaultValue="overview" className="h-full flex flex-col">
                 <div className="border-b bg-white px-6">
                   <TabsList className="grid w-full max-w-3xl grid-cols-4">
@@ -1372,3 +1372,1058 @@ export function ExpandedCandidateModal({
     </TooltipProvider>
   );
 }
+
+
+
+{/* <TooltipProvider>
+  <Dialog open={isOpen} onOpenChange={onClose}>
+    <DialogContent className="max-w-7xl max-h-[95vh] overflow-hidden p-0 bg-gray-50 w-full mx-2 sm:mx-4">
+      {/* Header */}
+//       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 sm:p-6 border-b bg-white gap-4">
+//         <div className="flex items-center gap-2">
+//           <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Candidate Profile</h2>
+//           <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+//           <Badge variant="secondary" className="bg-green-100 text-green-800 text-xs">Verified</Badge>
+//         </div>
+//         <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+//           <div className="flex items-center gap-1 sm:gap-2 flex-wrap justify-end">
+//             <AddToFolderButton 
+//               candidate={candidate}
+//               variant="outline"
+//               size="sm"
+//             />
+//             {!effectiveIsUnlocked && (
+//               <Button 
+//                 size="sm" 
+//                 className="bg-accent hover:bg-accent/90 text-xs"
+//                 onClick={handleUnlock}
+//               >
+//                 <Unlock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                 Unlock
+//               </Button>
+//             )}
+//             <Button 
+//               size="sm" 
+//               className="bg-green-600 hover:bg-green-700 text-white text-xs"
+//               onClick={handleInviteToApply}
+//             >
+//               <UserPlus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//               Invite
+//             </Button>
+//             <Button variant="ghost" size="sm" onClick={onClose} className="ml-1">
+//               <X className="w-4 h-4 sm:w-5 sm:h-5" />
+//             </Button>
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="flex flex-col lg:flex-row h-[calc(95vh-140px)]">
+//         {/* LEFT SIDEBAR - Responsive Width */}
+//         <div className="w-full lg:w-80 bg-white border-r border-gray-200 overflow-y-auto">
+//           <div className="p-4 sm:p-6 space-y-4 sm:space-y-6">
+//             {/* Profile Section */}
+//             <div className="text-center">
+//               <div className="relative mb-4">
+//                 <Avatar className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 mx-auto">
+//                   <AvatarImage src={candidate.photo} alt={candidate.name} />
+//                   <AvatarFallback className="text-sm sm:text-lg font-semibold">
+//                     {candidate.name.split(' ').map(n => n[0]).join('')}
+//                   </AvatarFallback>
+//                 </Avatar>
+//                 <div className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 bg-green-500 rounded-full flex items-center justify-center">
+//                   <CheckCircle className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+//                 </div>
+//               </div>
+              
+//               <div className="space-y-2">
+//                 <h3 className="text-lg sm:text-xl font-bold text-gray-900">
+//                   {effectiveIsUnlocked ? candidate.name : formatBlurredName(candidate.name)}
+//                 </h3>
+//                 <p className="text-[#ff5f1b] font-medium text-sm sm:text-base">{candidate.title}</p>
+                
+//                 <div className="flex items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm text-gray-600 flex-wrap">
+//                   <div className="flex items-center gap-1">
+//                     <Briefcase className="w-3 h-3 sm:w-4 sm:h-4" />
+//                     <span>{candidate.yearsOfExperience} years</span>
+//                   </div>
+//                   <div className="flex items-center gap-1">
+//                     <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+//                     <span>{candidate.profileAdded}</span>
+//                   </div>
+//                 </div>
+                
+//                 <div className="flex items-center justify-center gap-1 text-xs sm:text-sm text-gray-600">
+//                   <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
+//                   <span>{candidate.salaryExpectation}</span>
+//                 </div>
+
+//                 {/* Contact Information */}
+//                 <div className="space-y-2 pt-2">
+//                   {effectiveIsUnlocked ? (
+//                     <>
+//                       <div className="flex items-center justify-center gap-2 text-xs sm:text-sm">
+//                         <Mail className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+//                         <span className="text-blue-600 hover:underline cursor-pointer break-all">{candidate.email}</span>
+//                       </div>
+//                       <div className="flex items-center justify-center gap-2 text-xs sm:text-sm">
+//                         <Phone className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+//                         <span className="text-gray-700">{candidate.phone}</span>
+//                       </div>
+//                     </>
+//                   ) : (
+//                     <div className="text-center py-2">
+//                       <p className="text-xs sm:text-sm text-gray-500">Unlock to show contact info</p>
+//                     </div>
+//                   )}
+//                 </div>
+//               </div>
+//             </div>
+
+//             <Separator />
+
+//             {/* Match Score */}
+//             <div className="space-y-3">
+//               <h4 className="font-semibold text-gray-900 text-xs sm:text-sm uppercase tracking-wide">Match Score</h4>
+//               <div className="text-center">
+//                 <CircularProgress 
+//                   value={candidate.score}
+//                   size={60}
+//                   strokeWidth={8}
+//                   className="mx-auto mb-2"
+//                 />
+//                 <p className="text-xs sm:text-sm text-gray-600">Overall Match</p>
+//               </div>
+//             </div>
+
+//             <Separator />
+
+//             {/* View Cover Letter Button */}
+//             <div className="relative">
+//               <Button 
+//                 variant="outline" 
+//                 className="w-full text-[#ff5f1b] border-[#ff5f1b] hover:bg-[#ff5f1b] hover:text-white text-xs sm:text-sm" 
+//                 onClick={() => setShowCoverLetter(!showCoverLetter)}
+//               >
+//                 <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                 View Cover Letter
+//                 {showCoverLetter ? <ChevronUp className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" /> : <ChevronDown className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />}
+//               </Button>
+              
+//               {showCoverLetter && (
+//                 <div className="mt-2 p-3 bg-gray-50 rounded-lg border text-xs sm:text-sm">
+//                   <p className="text-gray-700 mb-2">
+//                     I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis...
+//                   </p>
+//                   <Button size="sm" variant="outline" onClick={handleDownloadCoverLetter} className="text-xs">
+//                     <Download className="w-3 h-3 mr-1" />
+//                     Download
+//                   </Button>
+//                 </div>
+//               )}
+//             </div>
+
+//             <Separator />
+
+//             {/* Job Preferences */}
+//             <div className="space-y-3">
+//               <h4 className="font-semibold text-gray-900 text-xs sm:text-sm uppercase tracking-wide">Job Preferences</h4>
+              
+//               <div className="space-y-3 text-xs sm:text-sm">
+//                 <div>
+//                   <p className="text-gray-600 font-medium mb-1">Preferred Titles:</p>
+//                   <p className="text-gray-800">Finance Manager, FP&A Director</p>
+//                 </div>
+                
+//                 <div>
+//                   <p className="text-gray-600 font-medium mb-1">Preferred Locations:</p>
+//                   <p className="text-gray-800">Dubai, Abu Dhabi, Riyadh</p>
+//                 </div>
+                
+//                 <div className="flex items-center gap-2">
+//                   <Clock className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+//                   <span className="text-gray-800">Immediate availability</span>
+//                 </div>
+                
+//                 <div className="flex items-center gap-2">
+//                   <DollarSign className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+//                   <span className="text-gray-800">120,000 - 150,000 AED</span>
+//                 </div>
+                
+//                 <div className="flex items-center gap-2">
+//                   <Home className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+//                   <span className="text-gray-800">Remote-ready</span>
+//                 </div>
+                
+//                 <Badge className="bg-green-100 text-green-800 text-xs">Full-time</Badge>
+//               </div>
+//             </div>
+
+//             <Separator />
+
+//             {/* Action Buttons */}
+//             <div className="space-y-2">
+//               <Button 
+//                 className="w-full bg-[#ff5f1b] hover:bg-[#e5551a] text-white text-xs sm:text-sm"
+//                 onClick={() => setShowQuizModal(true)}
+//               >
+//                 <Brain className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                 Assign Assessment
+//               </Button>
+              
+//               <Button variant="outline" className="w-full text-xs sm:text-sm">
+//                 <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                 Message Candidate
+//               </Button>
+              
+//               {/* Notes Card */}
+//               <div className="bg-white rounded-lg border border-gray-200 p-3 sm:p-4">
+//                 <div className="flex items-center justify-between mb-3">
+//                   <h4 className="font-semibold text-gray-900 text-xs sm:text-sm">NOTES®</h4>
+//                   <div className="text-xs text-gray-500 hidden sm:block">
+//                     Only visible to you & your team
+//                   </div>
+//                 </div>
+                
+//                 {/* Input Area */}
+//                 <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-gray-50 rounded-lg border border-gray-200 mb-4">
+//                   <div className="w-3 h-3 sm:w-4 sm:h-4 bg-blue-500 rounded flex items-center justify-center flex-shrink-0">
+//                     <MessageSquare className="w-2 h-2 sm:w-3 sm:h-3 text-white" />
+//                   </div>
+//                   <input 
+//                     type="text" 
+//                     placeholder="@mention your teammates"
+//                     className="flex-1 bg-transparent text-xs sm:text-sm text-gray-400 placeholder-gray-400 outline-none border-none"
+//                   />
+//                   <ChevronRight className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400 flex-shrink-0" />
+//                 </div>
+                
+//                 {/* Empty State */}
+//                 <div className="text-center py-4 sm:py-8">
+//                   <div className="w-12 h-12 sm:w-16 sm:h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4">
+//                     <MessageSquare className="w-6 h-6 sm:w-8 sm:h-8 text-yellow-600" />
+//                   </div>
+//                   <p className="text-sm sm:text-lg font-medium text-yellow-600 mb-2">No Notes Yet</p>
+//                   <p className="text-xs sm:text-sm text-gray-500">@mention your teammates</p>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* RIGHT MAIN CONTENT - Tabbed Interface */}
+//         <div className="flex-1 overflow-hidden bg-gray-50">
+//           <Tabs defaultValue="overview" className="h-full flex flex-col">
+//             <div className="border-b bg-white px-4 sm:px-6">
+//               <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 gap-1 sm:gap-2 max-w-3xl">
+//                 <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+//                 <TabsTrigger value="behavioral-culture" className="bg-gradient-to-r from-purple-50 to-blue-50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-100 data-[state=active]:to-blue-100 text-purple-700 data-[state=active]:text-purple-800 text-xs sm:text-sm">
+//                   <Brain className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2 text-[#ff5f1b]" />
+//                   <span className="hidden sm:inline">Behavioral & Culture Fit</span>
+//                   <span className="sm:hidden">Behavioral</span>
+//                 </TabsTrigger>
+//                 <TabsTrigger value="assessment-results" className="text-xs sm:text-sm">Assessment Results</TabsTrigger>
+//                 <TabsTrigger value="documents" className="text-xs sm:text-sm">Documents</TabsTrigger>
+//               </TabsList>
+//             </div>
+
+//             {/* Overview Tab */}
+//             <TabsContent value="overview" className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6 mt-0">
+//               {/* Video Introduction */}
+//               <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                 <div className="flex items-center justify-center h-32 sm:h-48 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300">
+//                   <div className="text-center">
+//                     <Play className="w-8 h-8 sm:w-12 sm:h-12 text-gray-400 mx-auto mb-2" />
+//                     <p className="text-gray-600 text-sm sm:text-base">Video Introduction</p>
+//                     <Button variant="outline" className="mt-2 text-xs sm:text-sm">
+//                       <Play className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                       Watch Introduction (2:30)
+//                     </Button>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Professional Summary */}
+//               <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                 <div className="space-y-3">
+//                   <p className="text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wide">Summary</p>
+//                   <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{candidate.summary}</p>
+//                 </div>
+//               </div>
+
+//               {/* Skills & Expertise */}
+//               <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                 <h3 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+//                   <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
+//                   Skills & Expertise
+//                 </h3>
+                
+//                 <div className="space-y-4">
+//                   {/* Industry */}
+//                   <Collapsible open={expandedSections.industry} onOpenChange={() => toggleSection('industry')}>
+//                     <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors text-sm sm:text-base">
+//                       <span className="font-medium text-orange-900 flex items-center gap-2">
+//                         <Factory className="w-3 h-3 sm:w-4 sm:h-4" />
+//                         Industry
+//                       </span>
+//                       {expandedSections.industry ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+//                     </CollapsibleTrigger>
+//                     <CollapsibleContent className="mt-2">
+//                       <div className="flex flex-wrap gap-2 p-3">
+//                         {skillCategories.industry.map(industry => (
+//                           <Badge key={industry} variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 text-xs">
+//                             {industry}
+//                           </Badge>
+//                         ))}
+//                       </div>
+//                     </CollapsibleContent>
+//                   </Collapsible>
+
+//                   {/* Finance Subfields */}
+//                   <Collapsible open={expandedSections.financeSubfields} onOpenChange={() => toggleSection('financeSubfields')}>
+//                     <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors text-sm sm:text-base">
+//                       <span className="font-medium text-blue-900 flex items-center gap-2">
+//                         <Building className="w-3 h-3 sm:w-4 sm:h-4" />
+//                         Finance Subfields
+//                       </span>
+//                       {expandedSections.financeSubfields ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+//                     </CollapsibleTrigger>
+//                     <CollapsibleContent className="mt-2">
+//                       <div className="flex flex-wrap gap-2 p-3">
+//                         {skillCategories.financeSubfields.map(skill => (
+//                           <Badge key={skill} variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 text-xs">
+//                             {skill}
+//                           </Badge>
+//                         ))}
+//                       </div>
+//                     </CollapsibleContent>
+//                   </Collapsible>
+
+//                   {/* Software & Tools */}
+//                   <Collapsible open={expandedSections.softwareTools} onOpenChange={() => toggleSection('softwareTools')}>
+//                     <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors text-sm sm:text-base">
+//                       <span className="font-medium text-purple-900 flex items-center gap-2">
+//                         <Code className="w-3 h-3 sm:w-4 sm:h-4" />
+//                         Software & Tools
+//                       </span>
+//                       {expandedSections.softwareTools ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+//                     </CollapsibleTrigger>
+//                     <CollapsibleContent className="mt-2">
+//                       <div className="flex flex-wrap gap-2 p-3">
+//                         {skillCategories.softwareTools.map(tool => (
+//                           <Badge key={tool} variant="outline" className="bg-purple-50 text-purple-700 border-purple-200 text-xs">
+//                             {tool}
+//                           </Badge>
+//                         ))}
+//                       </div>
+//                     </CollapsibleContent>
+//                   </Collapsible>
+
+//                   {/* Certifications */}
+//                   <Collapsible open={expandedSections.certifications} onOpenChange={() => toggleSection('certifications')}>
+//                     <CollapsibleTrigger className="flex items-center justify-between w-full p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors text-sm sm:text-base">
+//                       <span className="font-medium text-green-900 flex items-center gap-2">
+//                         <Award className="w-3 h-3 sm:w-4 sm:h-4" />
+//                         Certifications
+//                       </span>
+//                       {expandedSections.certifications ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+//                     </CollapsibleTrigger>
+//                     <CollapsibleContent className="mt-2">
+//                       <div className="flex flex-wrap gap-2 p-3">
+//                         {skillCategories.certifications.map(cert => (
+//                           <Badge key={cert} variant="outline" className="bg-green-50 text-green-700 border-green-200 text-xs">
+//                             {cert}
+//                           </Badge>
+//                         ))}
+//                       </div>
+//                     </CollapsibleContent>
+//                   </Collapsible>
+//                 </div>
+//               </div>
+
+//               {/* Experience Timeline */}
+//               <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                 <h3 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+//                   <Briefcase className="w-4 h-4 sm:w-5 sm:h-5" />
+//                   Experience Timeline
+//                 </h3>
+//                 <div className="space-y-6">
+//                   {mockExperience.map((exp, index) => (
+//                     <div key={index} className="relative pl-6 border-l-2 border-gray-200 last:border-l-0">
+//                       <div className="absolute w-3 h-3 bg-[#ff5f1b] rounded-full -left-[7px] top-1"></div>
+//                       <div className="space-y-2">
+//                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+//                           <div>
+//                             <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{exp.title}</h4>
+//                             <p className="text-[#ff5f1b] font-medium text-xs sm:text-sm">{exp.company}</p>
+//                           </div>
+//                           <span className="text-xs sm:text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded">{exp.duration}</span>
+//                         </div>
+//                         <ul className="text-xs sm:text-sm text-gray-700 space-y-1">
+//                           {exp.bullets.map((bullet, i) => (
+//                             <li key={i} className="flex items-start gap-2">
+//                               <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+//                               {bullet}
+//                             </li>
+//                           ))}
+//                         </ul>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </div>
+
+//               {/* Education */}
+//               <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                 <h3 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+//                   <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5" />
+//                   Education
+//                 </h3>
+//                 <div className="space-y-2">
+//                   <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{candidate.education}</h4>
+//                   <p className="text-[#ff5f1b] font-medium text-xs sm:text-sm">American University of Dubai</p>
+//                   <p className="text-xs sm:text-sm text-gray-500">2012 - 2016</p>
+//                 </div>
+//               </div>
+//             </TabsContent>
+
+//             {/* Behavioral & Culture Fit Tab */}
+//             <TabsContent value="behavioral-culture" className="flex-1 overflow-y-auto p-4 sm:p-6 mt-0">
+//               {!effectiveIsUnlocked ? (
+//                 <div className="flex items-center justify-center h-full">
+//                   <div className="text-center p-4 sm:p-8 bg-white rounded-lg shadow-sm border">
+//                     <Lock className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
+//                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Unlock to access this candidate's behavioral fit profile</h3>
+//                     <p className="text-gray-600 text-sm sm:text-base mb-6">Complete candidate unlock to view detailed behavioral insights and culture fit analysis.</p>
+//                     <Button 
+//                       onClick={handleUnlock}
+//                       className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white text-sm sm:text-base"
+//                     >
+//                       <Unlock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                       Unlock Profile
+//                     </Button>
+//                   </div>
+//                 </div>
+//               ) : (
+//                 <div className="space-y-4 sm:space-y-6">
+//                   {/* Section 1: Behavioral Summary */}
+//                   <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+//                     <div className="flex items-start gap-3 mb-4">
+//                       <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 mt-1 flex-shrink-0" />
+//                       <h3 className="text-base sm:text-lg font-semibold text-gray-900">Behavioral Summary</h3>
+//                     </div>
+//                     <p className="text-gray-700 leading-relaxed text-sm sm:text-base">{behavioralData.summary}</p>
+//                   </div>
+
+//                   {/* Section 2: Key Traits */}
+//                   <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+//                     <div className="flex items-start gap-3 mb-4">
+//                       <Target className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 mt-1 flex-shrink-0" />
+//                       <h3 className="text-base sm:text-lg font-semibold text-gray-900">Key Traits</h3>
+//                     </div>
+//                     <div className="flex flex-wrap gap-2">
+//                       {behavioralData.keyTraits.map((trait, index) => (
+//                         <Tooltip key={index}>
+//                           <TooltipTrigger>
+//                             <Badge variant="secondary" className={`${trait.color} text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-full cursor-help`}>
+//                               {trait.label}
+//                             </Badge>
+//                           </TooltipTrigger>
+//                           <TooltipContent>
+//                             <p className="text-xs">{trait.tooltip}</p>
+//                           </TooltipContent>
+//                         </Tooltip>
+//                       ))}
+//                     </div>
+//                   </div>
+
+//                   {/* Section 3: Trait Indicators */}
+//                   <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+//                     <div className="flex items-start gap-3 mb-4">
+//                       <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 mt-1 flex-shrink-0" />
+//                       <h3 className="text-base sm:text-lg font-semibold text-gray-900">Trait Indicators</h3>
+//                     </div>
+//                     <div className="space-y-4">
+//                       {behavioralData.traitIndicators.map((indicator, index) => (
+//                         <div key={index} className="space-y-2">
+//                           <div className="flex items-center justify-between">
+//                             <span className="text-xs sm:text-sm font-medium text-gray-700">{indicator.name}</span>
+//                             <span className={`text-xs px-2 py-1 rounded-full ${
+//                               indicator.level === 'Strong' ? 'bg-green-100 text-green-800' :
+//                               indicator.level === 'Moderate' ? 'bg-yellow-100 text-yellow-800' :
+//                               'bg-orange-100 text-orange-800'
+//                             }`}>
+//                               {indicator.level}
+//                             </span>
+//                           </div>
+//                           <div className="w-full bg-gray-200 rounded-full h-2">
+//                             <div 
+//                               className={`${indicator.color} h-2 rounded-full transition-all duration-300`}
+//                               style={{ width: `${indicator.value}%` }}
+//                             ></div>
+//                           </div>
+//                         </div>
+//                       ))}
+//                     </div>
+//                   </div>
+
+//                   {/* Section 4: Culture Fit Snapshot */}
+//                   <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+//                     <div className="flex items-start gap-3 mb-4">
+//                       <Users className="w-4 h-4 sm:w-5 sm:h-5 text-indigo-500 mt-1 flex-shrink-0" />
+//                       <h3 className="text-base sm:text-lg font-semibold text-gray-900">Culture Fit Snapshot</h3>
+//                     </div>
+//                     <p className="text-gray-700 leading-relaxed text-sm sm:text-base mb-4">{behavioralData.cultureFit}</p>
+//                     <div className="flex flex-wrap gap-2">
+//                       {behavioralData.environmentFit.map((env, index) => (
+//                         <Badge key={index} variant="outline" className="bg-gray-50 text-gray-700 border-gray-200 text-xs">
+//                           <span className="mr-1">{env.icon}</span>
+//                           {env.label}
+//                         </Badge>
+//                       ))}
+//                     </div>
+//                   </div>
+
+//                   {/* Section 5: Scenario Context (Collapsible) */}
+//                   <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+//                     <Collapsible open={expandedSections.scenarioContext} onOpenChange={() => toggleSection('scenarioContext')}>
+//                       <CollapsibleTrigger className="flex items-center justify-between w-full">
+//                         <div className="flex items-start gap-3">
+//                           <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500 mt-1 flex-shrink-0" />
+//                           <h3 className="text-base sm:text-lg font-semibold text-gray-900">How were these insights generated?</h3>
+//                         </div>
+//                         {expandedSections.scenarioContext ? <ChevronUp className="w-4 h-4 sm:w-5 sm:h-4" /> : <ChevronDown className="w-4 h-4 sm:w-5 sm:h-4" />}
+//                       </CollapsibleTrigger>
+//                       <CollapsibleContent className="mt-4">
+//                         <div className="space-y-3">
+//                           <p className="text-gray-700 text-sm sm:text-base">
+//                             Insights are based on 5 real-world behavioral scenarios for this role. Candidate responses were analyzed using Nestira's GPT-powered Trait Engine.
+//                           </p>
+//                           <div className="bg-gray-50 p-3 rounded-lg">
+//                             <h4 className="font-medium text-gray-800 mb-2 text-sm sm:text-base">Sample Scenario:</h4>
+//                             <p className="text-xs sm:text-sm text-gray-600 mb-2">
+//                               "You discover a significant error in last quarter's financial report that was already submitted to stakeholders. How do you handle this situation?"
+//                             </p>
+//                             <p className="text-xs text-gray-500">
+//                               <strong>Analysis:</strong> Response indicated strong integrity signals and preference for collaborative problem-solving.
+//                             </p>
+//                           </div>
+//                         </div>
+//                       </CollapsibleContent>
+//                     </Collapsible>
+//                   </div>
+
+//                   {/* Footer Button */}
+//                   <div className="flex justify-center pt-4">
+//                     <Button variant="outline" onClick={handleDownloadFitReport} className="flex items-center gap-2 text-sm">
+//                       <Download className="w-3 h-3 sm:w-4 sm:h-4" />
+//                       Download Fit Report (PDF)
+//                     </Button>
+//                   </div>
+//                 </div>
+//               )}
+//             </TabsContent>
+
+//             {/* Assessment Results Tab */}
+//             <TabsContent value="assessment-results" className="flex-1 overflow-y-auto p-4 sm:p-6 mt-0">
+//               {!effectiveIsUnlocked ? (
+//                 <div className="flex items-center justify-center h-full">
+//                   <div className="text-center p-4 sm:p-8 bg-white rounded-lg shadow-sm border">
+//                     <Lock className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
+//                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Unlock to access this candidate's assessment results</h3>
+//                     <p className="text-gray-600 text-sm sm:text-base mb-6">Complete candidate unlock to view detailed assessment results and performance analysis.</p>
+//                     <Button 
+//                       onClick={handleUnlock}
+//                       className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white text-sm sm:text-base"
+//                     >
+//                       <Unlock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                       Unlock Profile
+//                     </Button>
+//                   </div>
+//                 </div>
+//               ) : (
+//                 <div className="space-y-6 sm:space-y-8">
+//                   {/* Header */}
+//                   <div className="text-center">
+//                     <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Assessment Results</h1>
+//                     <p className="mt-2 text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+//                       Comprehensive technical assessment results with real-time monitoring and detailed analysis
+//                     </p>
+//                   </div>
+
+//                   {/* Overall Score Stats */}
+//                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
+//                     <div className="bg-blue-100 border-blue-200 rounded-lg p-3 sm:p-4 text-center border">
+//                       <Brain className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mx-auto mb-2" />
+//                       <p className="text-xs sm:text-sm text-gray-500 font-medium">Overall Score</p>
+//                       <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600">61%</p>
+//                     </div>
+//                     <div className="bg-green-100 border-green-200 rounded-lg p-3 sm:p-4 text-center border">
+//                       <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mx-auto mb-2" />
+//                       <p className="text-xs sm:text-sm text-gray-500 font-medium">Passed</p>
+//                       <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600">1</p>
+//                     </div>
+//                     <div className="bg-red-100 border-red-200 rounded-lg p-3 sm:p-4 text-center border">
+//                       <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-red-600 mx-auto mb-2" />
+//                       <p className="text-xs sm:text-sm text-gray-500 font-medium">Needs Improvement</p>
+//                       <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-600">2</p>
+//                     </div>
+//                     <div className="bg-orange-100 border-orange-200 rounded-lg p-3 sm:p-4 text-center border">
+//                       <Clock className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600 mx-auto mb-2" />
+//                       <p className="text-xs sm:text-sm text-gray-500 font-medium">Total Time</p>
+//                       <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-orange-600">1h 40m</p>
+//                     </div>
+//                   </div>
+
+//                   {/* Technical Assessments */}
+//                   <div className="bg-green-50 rounded-lg p-4 sm:p-6 border border-green-200">
+//                     <div className="flex items-center gap-3 mb-4 sm:mb-6">
+//                       <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
+//                       <h3 className="text-lg sm:text-xl font-bold text-green-900">Technical Assessments</h3>
+//                     </div>
+                    
+//                     <div className="space-y-3 sm:space-y-4">
+//                       {mockAssessments.map((assessment, index) => (
+//                         <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 bg-white border border-green-200 rounded-lg gap-3">
+//                           <div className="flex-1">
+//                             <h4 className="font-semibold text-gray-900 text-sm sm:text-base">{assessment.name}</h4>
+//                             <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{assessment.opinion}</p>
+//                           </div>
+//                           <div className="flex items-center gap-2 sm:gap-4 justify-between sm:justify-end">
+//                             <Badge 
+//                               variant={assessment.score >= 70 ? "default" : "destructive"} 
+//                               className={`text-xs ${assessment.score >= 70 ? "bg-green-100 text-green-800 border-green-300" : "bg-red-100 text-red-800 border-red-300"}`}
+//                             >
+//                               {assessment.status === "passed" ? "Passed" : "Needs Improvement"}
+//                             </Badge>
+//                             <span className="text-lg sm:text-xl font-bold text-gray-800">{assessment.score}%</span>
+//                             <Button 
+//                               variant="outline" 
+//                               size="sm" 
+//                               onClick={() => handleShowAnswers(assessment)}
+//                               className="text-xs"
+//                             >
+//                               <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                               Details
+//                             </Button>
+//                           </div>
+//                         </div>
+//                       ))}
+//                     </div>
+//                   </div>
+
+//                   {/* Security Monitor */}
+//                   <div className="bg-orange-50 rounded-lg p-4 sm:p-6 border border-orange-200">
+//                     <div className="flex items-center gap-3 mb-4 sm:mb-6">
+//                       <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
+//                       <h3 className="text-lg sm:text-xl font-bold text-orange-900">Security & Integrity Monitor</h3>
+//                     </div>
+                    
+//                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+//                       <div className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg border border-orange-200">
+//                         <span className="text-gray-700 flex items-center gap-2 text-xs sm:text-sm">
+//                           <Monitor className="w-3 h-3 sm:w-4 sm:h-4" />
+//                           Device used
+//                         </span>
+//                         <span className="font-semibold text-orange-900 text-xs sm:text-sm">{antiCheatData.device}</span>
+//                       </div>
+                      
+//                       <div className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg border border-orange-200">
+//                         <span className="text-gray-700 flex items-center gap-2 text-xs sm:text-sm">
+//                           <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
+//                           Location
+//                         </span>
+//                         <span className="font-semibold text-orange-900 text-xs sm:text-sm">{antiCheatData.location}</span>
+//                       </div>
+                      
+//                       <div className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg border border-orange-200">
+//                         <span className="text-gray-700 text-xs sm:text-sm">Single session</span>
+//                         <Badge variant={antiCheatData.filledOnce ? "default" : "destructive"} className={`text-xs ${antiCheatData.filledOnce ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+//                           {antiCheatData.filledOnce ? "Yes" : "No"}
+//                         </Badge>
+//                       </div>
+                      
+//                       <div className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg border border-orange-200">
+//                         <span className="text-gray-700 flex items-center gap-2 text-xs sm:text-sm">
+//                           <Camera className="w-3 h-3 sm:w-4 sm:h-4" />
+//                           Webcam active
+//                         </span>
+//                         <Badge variant={antiCheatData.webcamEnabled ? "default" : "destructive"} className={`text-xs ${antiCheatData.webcamEnabled ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+//                           {antiCheatData.webcamEnabled ? "Yes" : "No"}
+//                         </Badge>
+//                       </div>
+                      
+//                       <div className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg border border-orange-200">
+//                         <span className="text-gray-700 flex items-center gap-2 text-xs sm:text-sm">
+//                           <Maximize className="w-3 h-3 sm:w-4 sm:h-4" />
+//                           Full-screen mode
+//                         </span>
+//                         <Badge variant={antiCheatData.fullScreenActive ? "default" : "destructive"} className={`text-xs ${antiCheatData.fullScreenActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+//                           {antiCheatData.fullScreenActive ? "Always" : "Violated"}
+//                         </Badge>
+//                       </div>
+                      
+//                       <div className="flex items-center justify-between p-2 sm:p-3 bg-white rounded-lg border border-orange-200">
+//                         <span className="text-gray-700 flex items-center gap-2 text-xs sm:text-sm">
+//                           <MousePointer className="w-3 h-3 sm:w-4 sm:h-4" />
+//                           Mouse tracking
+//                         </span>
+//                         <Badge variant={antiCheatData.mouseInWindow ? "default" : "destructive"} className={`text-xs ${antiCheatData.mouseInWindow ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+//                           {antiCheatData.mouseInWindow ? "Clean" : "Suspicious"}
+//                         </Badge>
+//                       </div>
+//                     </div>
+//                   </div>
+
+//                   {/* Assessment Recording */}
+//                   <div className="bg-purple-50 rounded-lg p-4 sm:p-6 border border-purple-200">
+//                     <div className="flex items-center gap-3 mb-4 sm:mb-6">
+//                       <Camera className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+//                       <h3 className="text-lg sm:text-xl font-bold text-purple-900">Assessment Recording</h3>
+//                     </div>
+                    
+//                     <div className="bg-white rounded-lg overflow-hidden border border-purple-200">
+//                       <div className="aspect-video bg-black flex items-center justify-center relative">
+//                         <img 
+//                           src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+//                           alt="Complete assessment recording"
+//                           className="w-full h-full object-cover"
+//                         />
+//                         <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
+//                           <Button size="sm" className="bg-white/20 hover:bg-white/30 text-white border border-white/30 text-xs sm:text-sm">
+//                             <Play className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+//                             Watch Full Recording
+//                           </Button>
+//                         </div>
+//                       </div>
+//                       <div className="p-3 sm:p-6">
+//                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between text-sm mb-4 gap-2">
+//                           <span className="font-semibold text-gray-900 text-sm sm:text-base">Complete Assessment Session</span>
+//                           <span className="text-gray-600 text-xs bg-gray-100 px-2 py-1 rounded">56:12 / 1:40:00</span>
+//                         </div>
+                        
+//                         {/* Timeline */}
+//                         <div className="space-y-4">
+//                           <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3 relative overflow-hidden">
+//                             <div className="absolute top-0 left-0 bg-blue-500 h-2 sm:h-3 rounded-l-full" style={{ width: '45%' }}></div>
+//                             <div className="absolute top-0 bg-orange-500 h-2 sm:h-3" style={{ left: '45%', width: '30%' }}></div>
+//                             <div className="absolute top-0 bg-purple-500 h-2 sm:h-3 rounded-r-full" style={{ left: '75%', width: '25%' }}></div>
+//                             <div className="absolute top-0 left-0 bg-green-600 h-2 sm:h-3 opacity-80 rounded-l-full" style={{ width: '56%' }}></div>
+//                           </div>
+                          
+//                           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4 text-xs">
+//                             <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-lg">
+//                               <div className="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full"></div>
+//                               <div>
+//                                 <div className="font-medium text-blue-900">Technical Challenge</div>
+//                                 <div className="text-blue-700">0:00-45:00</div>
+//                               </div>
+//                             </div>
+//                             <div className="flex items-center gap-2 p-2 bg-orange-50 rounded-lg">
+//                               <div className="w-2 h-2 sm:w-3 sm:h-3 bg-orange-500 rounded-full"></div>
+//                               <div>
+//                                 <div className="font-medium text-orange-900">Critical Thinking</div>
+//                                 <div className="text-orange-700">45:00-1:15:00</div>
+//                               </div>
+//                             </div>
+//                             <div className="flex items-center gap-2 p-2 bg-purple-50 rounded-lg">
+//                               <div className="w-2 h-2 sm:w-3 sm:h-3 bg-purple-500 rounded-full"></div>
+//                               <div>
+//                                 <div className="font-medium text-purple-900">Culture Fit</div>
+//                                 <div className="text-purple-700">1:15:00-1:40:00</div>
+//                               </div>
+//                             </div>
+//                           </div>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               )}
+//             </TabsContent>
+
+//             {/* Documents Tab */}
+//             <TabsContent value="documents" className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 sm:space-y-6 mt-0">
+//               {!effectiveIsUnlocked ? (
+//                 <div className="flex items-center justify-center h-full">
+//                   <div className="text-center p-4 sm:p-8 bg-white rounded-lg shadow-sm border">
+//                     <Lock className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
+//                     <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Unlock to access this candidate's documents</h3>
+//                     <p className="text-gray-600 text-sm sm:text-base mb-6">Complete candidate unlock to view CV, cover letter, certificates and other documents.</p>
+//                     <Button 
+//                       onClick={handleUnlock}
+//                       className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white text-sm sm:text-base"
+//                     >
+//                       <Unlock className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                       Unlock Profile
+//                     </Button>
+//                   </div>
+//                 </div>
+//               ) : (
+//                 <div className="space-y-4 sm:space-y-6">
+//                   {/* Header */}
+//                   <div className="text-center">
+//                     <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Documents</h1>
+//                     <p className="mt-2 text-gray-600 text-sm sm:text-base max-w-2xl mx-auto">
+//                       Access and download candidate documents and materials
+//                     </p>
+//                   </div>
+
+//                   {/* Cover Letter Section */}
+//                   <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+//                       <h3 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+//                         <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
+//                         Cover Letter
+//                       </h3>
+//                       <Button variant="outline" onClick={handleDownloadCoverLetter} className="text-xs sm:text-sm">
+//                         <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                         Download
+//                       </Button>
+//                     </div>
+//                     <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border text-xs sm:text-sm">
+//                       <p className="text-gray-700 mb-2">
+//                         I am excited to apply for the Financial Analyst position. With my experience in financial planning and analysis, I have developed strong analytical skills and expertise in various financial tools and methodologies. My background includes working with SAP, Oracle, and advanced Excel functions to provide comprehensive financial insights...
+//                       </p>
+//                       <p className="text-xs text-gray-500 italic">Preview - Click download to view full document</p>
+//                     </div>
+//                   </div>
+
+//                   {/* CV Section */}
+//                   <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+//                       <h3 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+//                         <User className="w-4 h-4 sm:w-5 sm:h-5" />
+//                         Curriculum Vitae
+//                       </h3>
+//                       <Button variant="outline" onClick={handleDownloadCV} className="text-xs sm:text-sm">
+//                         <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                         Download CV
+//                       </Button>
+//                     </div>
+//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+//                       <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+//                         <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Professional Experience</h4>
+//                         <ul className="text-xs sm:text-sm text-gray-600 space-y-1">
+//                           <li>• Senior Financial Analyst - Emirates NBD (2021-Present)</li>
+//                           <li>• Financial Analyst - ADNOC (2019-2021)</li>
+//                           <li>• Junior Financial Analyst - First Abu Dhabi Bank (2017-2019)</li>
+//                         </ul>
+//                       </div>
+//                       <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+//                         <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base">Education & Certifications</h4>
+//                         <ul className="text-xs sm:text-sm text-gray-600 space-y-1">
+//                           <li>• {candidate.education}</li>
+//                           <li>• CPA Certified</li>
+//                           <li>• CFA Level 2</li>
+//                         </ul>
+//                       </div>
+//                     </div>
+//                   </div>
+
+//                   {/* Profile Summary */}
+//                   <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
+//                       <h3 className="text-lg sm:text-xl font-semibold flex items-center gap-2">
+//                         <User className="w-4 h-4 sm:w-5 sm:h-5" />
+//                         Profile Summary
+//                       </h3>
+//                       <Button variant="outline" onClick={handleDownloadProfile} className="text-xs sm:text-sm">
+//                         <Download className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+//                         Download Profile
+//                       </Button>
+//                     </div>
+//                     <div className="bg-gray-50 p-3 sm:p-4 rounded-lg">
+//                       <p className="text-sm text-gray-600 mb-3">
+//                         Complete candidate profile including skills assessment, behavioral analysis, and professional background summary.
+//                       </p>
+//                       <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs text-gray-500">
+//                         <span>• Skills & Expertise Overview</span>
+//                         <span>• Assessment Results</span>
+//                         <span>• Behavioral Fit Analysis</span>
+//                       </div>
+//                     </div>
+//                   </div>
+
+//                   {/* Certifications & Proof of Experience */}
+//                   <div className="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+//                     <h3 className="text-lg sm:text-xl font-semibold mb-4 flex items-center gap-2">
+//                       <Award className="w-4 h-4 sm:w-5 sm:h-5" />
+//                       Certifications & Documents
+//                     </h3>
+//                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+//                       <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+//                         <div className="flex items-center justify-between">
+//                           <div>
+//                             <h4 className="font-medium text-gray-900 text-sm sm:text-base">CPA Certificate</h4>
+//                             <p className="text-xs sm:text-sm text-gray-600">Certified Public Accountant</p>
+//                           </div>
+//                           <Button variant="outline" size="sm" className="text-xs">
+//                             <Download className="w-3 h-3 mr-1" />
+//                             View
+//                           </Button>
+//                         </div>
+//                       </div>
+//                       <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+//                         <div className="flex items-center justify-between">
+//                           <div>
+//                             <h4 className="font-medium text-gray-900 text-sm sm:text-base">CFA Level 2</h4>
+//                             <p className="text-xs sm:text-sm text-gray-600">Chartered Financial Analyst</p>
+//                           </div>
+//                           <Button variant="outline" size="sm" className="text-xs">
+//                             <Download className="w-3 h-3 mr-1" />
+//                             View
+//                           </Button>
+//                         </div>
+//                       </div>
+//                       <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+//                         <div className="flex items-center justify-between">
+//                           <div>
+//                             <h4 className="font-medium text-gray-900 text-sm sm:text-base">Employment Verification</h4>
+//                             <p className="text-xs sm:text-sm text-gray-600">Emirates NBD</p>
+//                           </div>
+//                           <Button variant="outline" size="sm" className="text-xs">
+//                             <Download className="w-3 h-3 mr-1" />
+//                             View
+//                           </Button>
+//                         </div>
+//                       </div>
+//                       <div className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:bg-gray-50 transition-colors">
+//                         <div className="flex items-center justify-between">
+//                           <div>
+//                             <h4 className="font-medium text-gray-900 text-sm sm:text-base">Reference Letters</h4>
+//                             <p className="text-xs sm:text-sm text-gray-600">Professional References</p>
+//                           </div>
+//                           <Button variant="outline" size="sm" className="text-xs">
+//                             <Download className="w-3 h-3 mr-1" />
+//                             View
+//                           </Button>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               )}
+//             </TabsContent>
+//           </Tabs>
+//         </div>
+//       </div>
+
+//       {/* Enhanced Quiz Selector Modal */}
+//       {showQuizModal && (
+//         <Dialog open={showQuizModal} onOpenChange={setShowQuizModal}>
+//           <DialogContent className="max-w-3xl max-h-[90vh] w-[95vw] mx-auto">
+//             <div className="space-y-4 sm:space-y-6">
+//               <div>
+//                 <h3 className="text-base sm:text-lg font-semibold flex items-center gap-2">
+//                   <Brain className="w-4 h-4 sm:w-5 sm:h-5" />
+//                   Assign Assessment to {candidate.name}
+//                 </h3>
+//                 <p className="text-xs sm:text-sm text-gray-600">Select one or more assessments to assign to this candidate</p>
+//               </div>
+
+//               {/* Select All/Deselect All */}
+//               <div className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4 bg-gray-50 rounded-lg border-t border-b">
+//                 <Button 
+//                   variant="outline" 
+//                   size="sm" 
+//                   onClick={handleSelectAll}
+//                   disabled={selectedQuizzes.length === availableQuizzes.length}
+//                   className="text-xs"
+//                 >
+//                   Select All
+//                 </Button>
+//                 <Button 
+//                   variant="outline" 
+//                   size="sm" 
+//                   onClick={handleDeselectAll}
+//                   disabled={selectedQuizzes.length === 0}
+//                   className="text-xs"
+//                 >
+//                   Deselect All
+//                 </Button>
+//                 <span className="text-xs sm:text-sm text-gray-600">
+//                   {selectedQuizzes.length} of {availableQuizzes.length} selected
+//                 </span>
+//               </div>
+
+//               {/* Selected Quizzes Preview */}
+//               {selectedQuizzes.length > 0 && (
+//                 <div className="space-y-2">
+//                   <h4 className="text-xs sm:text-sm font-medium text-gray-700">Selected Assessments:</h4>
+//                   <div className="flex flex-wrap gap-2">
+//                     {selectedQuizzes.map(quizId => {
+//                       const quiz = availableQuizzes.find(q => q.id === quizId);
+//                       return quiz ? (
+//                         <Badge 
+//                           key={quizId} 
+//                           variant="secondary" 
+//                           className="cursor-pointer hover:bg-red-100 text-xs"
+//                           onClick={() => removeSelectedQuiz(quizId)}
+//                         >
+//                           {quiz.title} <X className="w-2 h-2 sm:w-3 sm:h-3 ml-1" />
+//                         </Badge>
+//                       ) : null;
+//                     })}
+//                   </div>
+//                 </div>
+//               )}
+              
+//               {/* Quiz List */}
+//               <div className="space-y-3 max-h-96 overflow-y-auto">
+//                 {availableQuizzes.map(quiz => (
+//                   <div key={quiz.id} className="flex items-center justify-between p-3 sm:p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+//                     <div className="flex items-center gap-2 sm:gap-3">
+//                       <Checkbox
+//                         checked={selectedQuizzes.includes(quiz.id)}
+//                         onCheckedChange={(checked) => handleQuizSelection(quiz.id, checked as boolean)}
+//                       />
+//                       <div className="flex-1">
+//                         <div className="flex items-center gap-1 sm:gap-2 mb-1">
+//                           <FileText className="w-3 h-3 sm:w-4 sm:h-4 text-gray-500" />
+//                           <h4 className="font-medium text-sm sm:text-base">{quiz.title}</h4>
+//                         </div>
+//                         <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-xs sm:text-sm text-gray-600">
+//                           <span className="flex items-center gap-1">
+//                             <Clock className="w-3 h-3" />
+//                             {quiz.duration}
+//                           </span>
+//                           <Badge variant="outline" className="text-xs">
+//                             {quiz.difficulty}
+//                           </Badge>
+//                           <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700">
+//                             {quiz.category}
+//                           </Badge>
+//                         </div>
+//                       </div>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+              
+//               {/* Footer Actions */}
+//               <div className="flex justify-end gap-2 pt-4 border-t">
+//                 <Button variant="outline" onClick={() => setShowQuizModal(false)} className="text-xs sm:text-sm">
+//                   Cancel
+//                 </Button>
+//                 <Button 
+//                   className="bg-[#ff5f1b] hover:bg-[#e5551a] text-white text-xs sm:text-sm"
+//                   onClick={handleAssignSelected}
+//                   disabled={selectedQuizzes.length === 0}
+//                 >
+//                   Assign Selected ({selectedQuizzes.length})
+//                 </Button>
+//               </div>
+//             </div>
+//           </DialogContent>
+//         </Dialog>
+//       )}
+
+//       {/* Assessment Answers Modal */}
+//       <AssessmentAnswersModal
+//         assessment={selectedAssessment}
+//         isOpen={showAssessmentAnswers}
+//         onClose={() => setShowAssessmentAnswers(false)}
+//       />
+//     </DialogContent>
+//   </Dialog>
+// </TooltipProvider> */}

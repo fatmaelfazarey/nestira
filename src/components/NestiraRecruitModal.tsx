@@ -46,7 +46,7 @@ export function NestiraRecruitModal({ open, onOpenChange }: NestiraRecruitModalP
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-5xl w-full max-h-[90vh] p-0 overflow-hidden rounded-2xl">
+      <DialogContent className="max-w-5xl w-full max-h-[90vh] p-0 overflow-y-scroll rounded-2xl">
         {/* Close Button */}
         <button
           onClick={() => onOpenChange(false)}
@@ -73,9 +73,9 @@ export function NestiraRecruitModal({ open, onOpenChange }: NestiraRecruitModalP
         </div>
 
         {/* Content Area */}
-        <div className="flex min-h-[500px]">
+        <div className="flex min-h-[500px] flex-col md:flex-row">
           {/* Left Side - Form */}
-          <div className="w-2/5 p-8 bg-white">
+          <div className="w-full md:w-2/5 p-8 bg-white">
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="space-y-2">
                 <Label htmlFor="fullName" className="text-sm font-bold text-gray-800">
@@ -158,7 +158,7 @@ export function NestiraRecruitModal({ open, onOpenChange }: NestiraRecruitModalP
           </div>
 
           {/* Right Side - Calendar */}
-          <div className="w-3/5 bg-gradient-to-br from-gray-50 to-emerald-50/30 flex flex-col">
+          <div className="w-full md:w-3/5 bg-gradient-to-br from-gray-50 to-emerald-50/30 flex flex-col">
             <div className="p-8 border-b border-emerald-100">
               <div className="flex items-center gap-4 mb-3">
                 <Calendar className="w-7 h-7 text-emerald-600" />
@@ -168,8 +168,8 @@ export function NestiraRecruitModal({ open, onOpenChange }: NestiraRecruitModalP
                 Choose a convenient time for a 15-minute discovery call
               </p>
             </div>
-            
-            <div 
+
+            <div
               className="flex-1 p-8 cursor-pointer group"
               onClick={handleCalendarClick}
             >

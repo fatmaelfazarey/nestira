@@ -246,12 +246,12 @@ const Folders = () => {
 
   const handleAddCandidate = () => {
     // Navigate to talent pool with folder context
-    navigate('/talent-pool', { state: { fromFolder: selectedFolder?.name } });
+    navigate('/employer/talent-pool', { state: { fromFolder: selectedFolder?.name } });
     toast.info(`Redirecting to Talent Pool to add candidates to "${selectedFolder?.name}"`);
   };
 
   const handleAddCandidateFromList = () => {
-    navigate('/talent-pool');
+    navigate('/employer/talent-pool');
     toast.info('Redirecting to Talent Pool to add candidates');
   };
 
@@ -260,8 +260,8 @@ const Folders = () => {
       <DashboardLayout>
         <div className="space-y-6">
           {/* Header */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between flex-col md:flex-row">
+            <div className="flex items-center gap-4 ">
               <Button 
                 variant="ghost" 
                 onClick={handleBackToFolders}
@@ -272,8 +272,8 @@ const Folders = () => {
               </Button>
               <Separator orientation="vertical" className="h-6" />
               <div className="flex items-center gap-3">
-                <div className="p-3 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-xl">
-                  <Folder className="w-7 h-7 text-blue-600" />
+                <div className="p-3 bg-gradient-to-br from-orange-50 to-yellow-100 rounded-xl">
+                  <Folder className="w-7 h-7 text-orange-600" />
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold text-gray-900">{selectedFolder.name}</h1>
@@ -285,7 +285,7 @@ const Folders = () => {
               </div>
             </div>
             
-            <Button onClick={handleAddCandidate} className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+            <Button onClick={handleAddCandidate} className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700">
               <UserPlus className="w-4 h-4" />
               Add Candidate
             </Button>
@@ -300,7 +300,7 @@ const Folders = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">No candidates yet</h3>
                 <p className="text-gray-600 mb-6">Start building your talent pool by adding candidates to this folder</p>
-                <Button onClick={handleAddCandidate} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+                <Button onClick={handleAddCandidate} className="bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700">
                   <UserPlus className="w-4 h-4 mr-2" />
                   Add First Candidate
                 </Button>
@@ -309,13 +309,13 @@ const Folders = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {selectedFolder.candidates.map((candidate) => (
-                <Card key={candidate.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/50 hover:from-blue-50/30 hover:to-indigo-50/30">
+                <Card key={candidate.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/50 hover:from-orange-50/30 hover:to-yellow-50/30">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <Avatar className="w-14 h-14 ring-2 ring-white shadow-lg">
                           <AvatarImage src={candidate.avatar} />
-                          <AvatarFallback className="bg-gradient-to-br from-blue-100 to-indigo-200 text-blue-700 font-semibold text-lg">
+                          <AvatarFallback className="bg-gradient-to-br from-orange-100 to-yellow-200 text-orange-700 font-semibold text-lg">
                             {candidate.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
                         </Avatar>
@@ -384,7 +384,7 @@ const Folders = () => {
       <div className="space-y-8">
         {/* Folders Section */}
         <div className="space-y-6">
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between  md:flex-row flex-col">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                 Folders
@@ -401,7 +401,7 @@ const Folders = () => {
                 <UserPlus className="w-4 h-4" />
                 Browse Candidates
               </Button>
-              <FolderManagementButton className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0">
+              <FolderManagementButton className="bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 text-white border-0">
                 <Plus className="w-4 h-4 mr-2" />
                 Manage Folders
               </FolderManagementButton>
@@ -413,14 +413,14 @@ const Folders = () => {
             {folders.map((folder) => (
               <Card 
                 key={folder.id} 
-                className="group cursor-pointer hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/80 hover:from-blue-50/50 hover:to-indigo-50/50 hover:scale-105"
+                className="group cursor-pointer hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/80 hover:from-orange-50/50 hover:to-yellow-50/50 hover:scale-105"
                 onClick={() => handleFolderClick(folder)}
               >
                 <CardContent className="p-6">
                   <div className="space-y-4">
                     <div className="flex items-start justify-between">
-                      <div className="p-3 bg-gradient-to-br from-blue-100 to-indigo-200 rounded-xl group-hover:from-blue-200 group-hover:to-indigo-300 transition-all duration-300">
-                        <Folder className="w-6 h-6 text-blue-600 group-hover:text-blue-700" />
+                      <div className="p-3 bg-gradient-to-br from-orange-100 to-yellow-200 rounded-xl group-hover:from-orange-200 group-hover:to-yellow-300 transition-all duration-300">
+                        <Folder className="w-6 h-6 text-orange-600 group-hover:text-orange-700" />
                       </div>
                       <Badge 
                         variant="outline" 
@@ -431,7 +431,7 @@ const Folders = () => {
                     </div>
                     
                     <div>
-                      <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-blue-900 transition-colors">
+                      <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-orange-900 transition-colors">
                         {folder.name}
                       </h3>
                       <p className="text-sm text-gray-500 flex items-center gap-1">
@@ -453,7 +453,7 @@ const Folders = () => {
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">No folders yet</h3>
                 <p className="text-gray-600 mb-6">Create your first folder to start organizing candidates</p>
-                <FolderManagementButton className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white border-0">
+                <FolderManagementButton className="bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700 text-white border-0">
                   <Plus className="w-4 h-4 mr-2" />
                   Create First Folder
                 </FolderManagementButton>
