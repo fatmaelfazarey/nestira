@@ -229,7 +229,7 @@ const SignAsEmployer = () => {
             toast.success('Account created successfully! Welcome aboard');
 
             setTimeout(() => {
-                navigate('/');
+                navigate('/employer');
             }, 500);
         } catch (error: any) {
             console.error("Signup error:", error);
