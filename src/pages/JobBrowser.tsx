@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +22,8 @@ import { JobApplicationDialog } from "@/components/job-browser/JobApplicationDia
 import { MatchScoreDrawer } from "@/components/job-browser/MatchScoreDrawer";
 import { useToast } from "@/hooks/use-toast";
 import { EasyApplyModal } from "@/components/job-browser/EasyApplyModal";
+// import { getAllJobs, saveJob } from "@/store/candidate store/store";
+import { useCandidateStore } from "@/store/candidate store/CandidateStore";
 
 interface Job {
   id: number;
@@ -54,128 +56,130 @@ interface Job {
   };
 }
 
-const mockJobs: Job[] = [
-  {
-    id: 1,
-    title: "Senior Financial Analyst",
-    company: "Emirates NBD",
-    location: "Dubai, UAE",
-    country: "UAE",
-    currency: "AED",
-    employmentType: "Full-time",
-    workMode: "Hybrid",
-    postedDate: "2 days ago",
-    salary: "15,000 - 22,000",
-    tags: ["Excel", "Financial Modeling", "VBA", "Bloomberg"],
-    description: "Lead financial analysis and modeling for investment banking division in Dubai.",
-    requirements: ["5+ years experience", "CFA preferred", "Advanced Excel"],
-    saved: false,
-    matchScore: 92,
-    matchDetails: {
-      skillsMatched: ["Financial Analysis", "Excel", "VBA"],
-      skillsMissing: ["Python"],
-      toolsMatched: ["Bloomberg", "Excel"],
-      toolsMissing: ["PowerBI"],
-      certificationsMatched: ["CFA Level 1"],
-      certificationsMissing: ["CFA Level 2"],
-      experienceMatch: true,
-      locationMatch: true
-    }
-  },
-  {
-    id: 2,
-    title: "Investment Banking Associate",
-    company: "Al Rajhi Capital",
-    location: "Riyadh, Saudi Arabia",
-    country: "KSA",
-    currency: "SAR",
-    employmentType: "Full-time",
-    workMode: "On-site",
-    postedDate: "3 days ago",
-    salary: "18,000 - 25,000",
-    tags: ["M&A", "DCF", "Pitch Decks", "Arabic"],
-    description: "Execute M&A transactions and support senior bankers in client coverage.",
-    requirements: ["MBA preferred", "Investment banking experience", "Arabic fluency"],
-    saved: true,
-    savedDate: "2024-01-20",
-    deadline: "2024-01-25",
-    applied: true,
-    matchScore: 78,
-    matchDetails: {
-      skillsMatched: ["Financial Modeling", "M&A"],
-      skillsMissing: ["Arabic", "Pitch Deck Creation"],
-      toolsMatched: ["Excel"],
-      toolsMissing: ["Bloomberg"],
-      certificationsMatched: [],
-      certificationsMissing: ["MBA"],
-      experienceMatch: true,
-      locationMatch: false
-    }
-  },
-  {
-    id: 3,
-    title: "Risk Management Specialist",
-    company: "QNB Group",
-    location: "Doha, Qatar",
-    country: "Qatar",
-    currency: "QAR",
-    employmentType: "Contract",
-    workMode: "Remote",
-    postedDate: "5 days ago",
-    salary: "12,000 - 16,000",
-    tags: ["Risk Assessment", "Python", "SQL", "Derivatives"],
-    description: "Develop and implement risk management frameworks for regional operations.",
-    requirements: ["Risk management experience", "FRM certification", "Python skills"],
-    saved: false,
-    matchScore: 65,
-    matchDetails: {
-      skillsMatched: ["Risk Assessment", "SQL"],
-      skillsMissing: ["Python", "Derivatives"],
-      toolsMatched: ["SQL"],
-      toolsMissing: ["Python", "R"],
-      certificationsMatched: [],
-      certificationsMissing: ["FRM"],
-      experienceMatch: true,
-      locationMatch: true
-    }
-  },
-  {
-    id: 4,
-    title: "Corporate Finance Manager",
-    company: "CIB Egypt",
-    location: "Cairo, Egypt",
-    country: "Egypt",
-    currency: "EGP",
-    employmentType: "Full-time",
-    workMode: "Hybrid",
-    postedDate: "1 week ago",
-    salary: "25,000 - 35,000",
-    tags: ["Corporate Finance", "Financial Planning", "Budgeting", "Arabic"],
-    description: "Lead corporate finance initiatives and strategic planning for Egyptian operations.",
-    requirements: ["CPA/CFA preferred", "Corporate finance experience", "Arabic fluency"],
-    saved: true,
-    savedDate: "2024-01-18",
-    applied: false,
-    matchScore: 88,
-    matchDetails: {
-      skillsMatched: ["Corporate Finance", "Financial Planning", "Budgeting"],
-      skillsMissing: ["Arabic"],
-      toolsMatched: ["Excel", "SAP"],
-      toolsMissing: [],
-      certificationsMatched: ["CFA Level 1"],
-      certificationsMissing: ["CFA Level 2"],
-      experienceMatch: true,
-      locationMatch: true
-    }
-  }
-];
+// const mockJobs: Job[] = [
+//   {
+//     id: 1,
+//     title: "Senior Financial Analyst",
+//     company: "Emirates NBD",
+//     location: "Dubai, UAE",
+//     country: "UAE",
+//     currency: "AED",
+//     employmentType: "Full-time",
+//     workMode: "Hybrid",
+//     postedDate: "2 days ago",
+//     salary: "15,000 - 22,000",
+//     tags: ["Excel", "Financial Modeling", "VBA", "Bloomberg"],
+//     description: "Lead financial analysis and modeling for investment banking division in Dubai.",
+//     requirements: ["5+ years experience", "CFA preferred", "Advanced Excel"],
+//     saved: false,
+//     matchScore: 92,
+//     matchDetails: {
+//       skillsMatched: ["Financial Analysis", "Excel", "VBA"],
+//       skillsMissing: ["Python"],
+//       toolsMatched: ["Bloomberg", "Excel"],
+//       toolsMissing: ["PowerBI"],
+//       certificationsMatched: ["CFA Level 1"],
+//       certificationsMissing: ["CFA Level 2"],
+//       experienceMatch: true,
+//       locationMatch: true
+//     }
+//   },
+//   {
+//     id: 2,
+//     title: "Investment Banking Associate",
+//     company: "Al Rajhi Capital",
+//     location: "Riyadh, Saudi Arabia",
+//     country: "KSA",
+//     currency: "SAR",
+//     employmentType: "Full-time",
+//     workMode: "On-site",
+//     postedDate: "3 days ago",
+//     salary: "18,000 - 25,000",
+//     tags: ["M&A", "DCF", "Pitch Decks", "Arabic"],
+//     description: "Execute M&A transactions and support senior bankers in client coverage.",
+//     requirements: ["MBA preferred", "Investment banking experience", "Arabic fluency"],
+//     saved: true,
+//     savedDate: "2024-01-20",
+//     deadline: "2024-01-25",
+//     applied: true,
+//     matchScore: 78,
+//     matchDetails: {
+//       skillsMatched: ["Financial Modeling", "M&A"],
+//       skillsMissing: ["Arabic", "Pitch Deck Creation"],
+//       toolsMatched: ["Excel"],
+//       toolsMissing: ["Bloomberg"],
+//       certificationsMatched: [],
+//       certificationsMissing: ["MBA"],
+//       experienceMatch: true,
+//       locationMatch: false
+//     }
+//   },
+//   {
+//     id: 3,
+//     title: "Risk Management Specialist",
+//     company: "QNB Group",
+//     location: "Doha, Qatar",
+//     country: "Qatar",
+//     currency: "QAR",
+//     employmentType: "Contract",
+//     workMode: "Remote",
+//     postedDate: "5 days ago",
+//     salary: "12,000 - 16,000",
+//     tags: ["Risk Assessment", "Python", "SQL", "Derivatives"],
+//     description: "Develop and implement risk management frameworks for regional operations.",
+//     requirements: ["Risk management experience", "FRM certification", "Python skills"],
+//     saved: false,
+//     matchScore: 65,
+//     matchDetails: {
+//       skillsMatched: ["Risk Assessment", "SQL"],
+//       skillsMissing: ["Python", "Derivatives"],
+//       toolsMatched: ["SQL"],
+//       toolsMissing: ["Python", "R"],
+//       certificationsMatched: [],
+//       certificationsMissing: ["FRM"],
+//       experienceMatch: true,
+//       locationMatch: true
+//     }
+//   },
+//   {
+//     id: 4,
+//     title: "Corporate Finance Manager",
+//     company: "CIB Egypt",
+//     location: "Cairo, Egypt",
+//     country: "Egypt",
+//     currency: "EGP",
+//     employmentType: "Full-time",
+//     workMode: "Hybrid",
+//     postedDate: "1 week ago",
+//     salary: "25,000 - 35,000",
+//     tags: ["Corporate Finance", "Financial Planning", "Budgeting", "Arabic"],
+//     description: "Lead corporate finance initiatives and strategic planning for Egyptian operations.",
+//     requirements: ["CPA/CFA preferred", "Corporate finance experience", "Arabic fluency"],
+//     saved: true,
+//     savedDate: "2024-01-18",
+//     applied: false,
+//     matchScore: 88,
+//     matchDetails: {
+//       skillsMatched: ["Corporate Finance", "Financial Planning", "Budgeting"],
+//       skillsMissing: ["Arabic"],
+//       toolsMatched: ["Excel", "SAP"],
+//       toolsMissing: [],
+//       certificationsMatched: ["CFA Level 1"],
+//       certificationsMissing: ["CFA Level 2"],
+//       experienceMatch: true,
+//       locationMatch: true
+//     }
+//   }
+// ];
 
 export default function JobBrowser() {
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<"browse" | "saved">("browse");
   const [searchTerm, setSearchTerm] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const [jobs, setJobs] = useState<Job[]>(mockJobs);
+  const [jobs, setJobs] = useState([]);
+  const [jobsError, setJobsError] = useState<string | null>(null);
+  const [jobsLoading, setJobsLoading] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [showJobDetails, setShowJobDetails] = useState(false);
   const [showJobApplication, setShowJobApplication] = useState(false);
@@ -190,7 +194,24 @@ export default function JobBrowser() {
     industry: [],
     country: []
   });
+  const {  getAllJobs, saveJob } = useCandidateStore();
 
+  // Fetch jobs on component mount
+  useEffect(() => {
+    fetchJobs();
+  }, []);
+
+  const fetchJobs = async () => {
+    const data = await getAllJobs(setJobs, setJobsError, setJobsLoading);
+    if (!data.success) {
+      toast({
+        title: "Failed to fetch jobs",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    }
+  };
+  
   const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.company.toLowerCase().includes(searchTerm.toLowerCase());
@@ -212,21 +233,30 @@ export default function JobBrowser() {
     return 0;
   });
 
-  const handleSaveJob = (jobId: number) => {
-    setJobs(prev => prev.map(job =>
-      job.id === jobId ? {
-        ...job,
-        saved: !job.saved,
-        savedDate: !job.saved ? new Date().toISOString().split('T')[0] : undefined
-      } : job
-    ));
+  const handleSaveJob = async (jobId: number) => {
+    // setJobs(prev => prev.map(job =>
+    //   job.id === jobId ? {
+    //     ...job,
+    //     saved: !job.saved,
+    //     savedDate: !job.saved ? new Date().toISOString().split('T')[0] : undefined
+    //   } : job
+    // ));
 
-    const job = jobs.find(j => j.id === jobId);
-    if (job && !job.saved) {
+    // const job = jobs.find(j => j.id === jobId);
+    // if (job && !job.saved) {
+    //   toast({
+    //     title: "✅ Job saved to your list",
+    //     description: `${job.title} at ${job.company} has been saved`,
+    //   });
+    // }
+
+    const response = await saveJob(jobId);
+    if (response.success) {
       toast({
-        title: "✅ Job saved to your list",
-        description: `${job.title} at ${job.company} has been saved`,
+        title:  response.message ,
       });
+    } else {
+      console.log('job not save ');
     }
   };
 

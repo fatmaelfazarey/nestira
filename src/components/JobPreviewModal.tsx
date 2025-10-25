@@ -27,6 +27,7 @@ interface JobPreviewModalProps {
 }
 
 export function JobPreviewModal({ open, onOpenChange, jobData }: JobPreviewModalProps) {
+  console.log('jobData-------------');
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -111,7 +112,7 @@ export function JobPreviewModal({ open, onOpenChange, jobData }: JobPreviewModal
           </div>
 
           {/* Skills & Requirements */}
-          {(jobData.skills.length > 0 || jobData.certifications.length > 0) && (
+          {(jobData.skills?.length > 0 || jobData.certifications?.length > 0) && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -130,7 +131,7 @@ export function JobPreviewModal({ open, onOpenChange, jobData }: JobPreviewModal
                     </div>
                   </div>
                 )}
-                
+
                 {jobData.certifications.length > 0 && (
                   <div>
                     <h4 className="font-medium mb-2">Preferred Certifications</h4>
@@ -165,8 +166,8 @@ export function JobPreviewModal({ open, onOpenChange, jobData }: JobPreviewModal
                     </div>
                   </div>
                 )}
-                
-                {jobData.visaStatus.length > 0 && (
+
+                {jobData.visaStatus?.length > 0 && (
                   <div>
                     <h4 className="font-medium mb-2">Accepted Visa Status</h4>
                     <div className="flex flex-wrap gap-2">

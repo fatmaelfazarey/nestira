@@ -288,6 +288,7 @@ const App = () => (
                   <Route path="email-alerts" element={<EmailAlertsSettings />} />
                   <Route path="nesti-sign" element={<NestiSign />} />
                   <Route path="profile-settings" element={<ProfileSettings />} />
+                  <Route path="candidate-profile/:Uid" element={<Profile />} />
                 </Route>
 
                 {/* Candidate Routes */}

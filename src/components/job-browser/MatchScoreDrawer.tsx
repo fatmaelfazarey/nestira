@@ -169,7 +169,7 @@ export function MatchScoreDrawer({ job, open, onClose }: MatchScoreDrawerProps) 
               <h3 className="font-semibold text-foreground">Tools & Technologies</h3>
             </div>
             
-            {job.matchDetails.toolsMatched.length > 0 && (
+            {job.matchDetails.toolsMatched?.length > 0 && (
               <div className="mb-3">
                 <div className="flex items-center gap-2 mb-2">
                   <CheckCircle className="w-4 h-4 text-success" />
@@ -185,7 +185,7 @@ export function MatchScoreDrawer({ job, open, onClose }: MatchScoreDrawerProps) 
               </div>
             )}
 
-            {job.matchDetails.toolsMissing.length > 0 && (
+            {job.matchDetails.toolsMissing?.length > 0 && (
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <XCircle className="w-4 h-4 text-destructive" />

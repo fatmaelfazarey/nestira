@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, FileText, Loader2, AlertCircle, X } from "lucide-react";
 import { toast } from "sonner";
+import { useCandidateStore } from "@/store/candidate store/CandidateStore";
 
 interface CVUploaderProps {
   onCVParsed: (data: any) => void;
@@ -13,6 +14,7 @@ interface CVUploaderProps {
 export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const { sendCVtoBackend } = useCandidateStore();
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -28,7 +30,7 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFile(e.dataTransfer.files[0]);
     }
@@ -43,8 +45,8 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
   const handleFile = async (file: File) => {
     const maxSize = 5 * 1024 * 1024; // 5MB
     const allowedTypes = [
-      'application/pdf', 
-      'application/msword', 
+      'application/pdf',
+      'application/msword',
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
     ];
 
@@ -61,17 +63,27 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
 
     setIsUploading(true);
 
+
     try {
+      const uploadCV = await sendCVtoBackend(file);
+
+      if (!uploadCV.success) {
+        toast.error("Please upload a .pdf or .docx resume");
+        toast.error(uploadCV.message);
+      } else {
+        toast(uploadCV.message);
+      }
+
       // Simulate API call for CV parsing
       await new Promise(resolve => setTimeout(resolve, 3000));
-      
+
       // Simulate parsing success/failure (80% success rate for demo)
       const parsingSuccess = Math.random() > 0.2;
-      
+
       if (!parsingSuccess) {
         throw new Error("Parsing failed");
       }
-      
+
       // Mock parsed data optimized for MENA finance sector
       const mockParsedData = {
         personalInfo: {
@@ -126,10 +138,10 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
 
       onCVParsed(mockParsedData);
       toast.success("Resume uploaded and parsed successfully!");
-      
+
     } catch (error) {
       console.log("CV parsing failed:", error);
-      
+
       // Show failure message with option to continue manually
       toast.error(
         <div className="space-y-2">
@@ -138,14 +150,14 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
         </div>,
         { duration: 5000 }
       );
-      
+
       // Call the failure callback to switch to manual mode
       if (onParsingFailed) {
         setTimeout(() => {
           onParsingFailed();
         }, 2000);
       }
-      
+
     } finally {
       setIsUploading(false);
     }
@@ -161,11 +173,10 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
       </CardHeader>
       <CardContent>
         <div
-          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${
-            dragActive 
-              ? 'border-secondary-c bg-secondary-c/5' 
-              : 'border-border-c hover:border-secondary-c/50'
-          }`}
+          className={`border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ${dragActive
+            ? 'border-secondary-c bg-secondary-c/5'
+            : 'border-border-c hover:border-secondary-c/50'
+            }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
           onDragOver={handleDrag}
@@ -205,7 +216,7 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
             </div>
           )}
         </div>
-        
+
         <div className="mt-4 p-4 bg-info-light rounded-lg border border-info/20">
           <div className="flex items-start gap-2">
             <AlertCircle className="w-4 h-4 text-info mt-0.5 flex-shrink-0" />
