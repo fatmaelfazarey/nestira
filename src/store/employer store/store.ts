@@ -1,14 +1,14 @@
 
 import { Console } from "console";
-
-const path = `http://localhost:3000/api/employer/`;
+import { IP } from "./EmployerStore";
+const path = `${IP}/api/employer/`;
 const token = `Bearer ${localStorage.getItem('token')}`;
 
 // export const addJob = async (jobData: Record<string, any>, setError: (error: string | null) => void, setLoading: (loading: boolean) => void
 // ): Promise<void> => {
 //     setLoading(true);
 //     setError(null);
-//     const url = 'http://localhost:3000/api/employer/jobs';
+//     const url = `${IP}/api/employer/jobs`;
 //     try {
 
 //         console.log(jobData);
@@ -65,7 +65,7 @@ const token = `Bearer ${localStorage.getItem('token')}`;
 
 // export const addIntern = async (internData: Record<string, any>): Promise<void> => {
 
-//     const url = 'http://localhost:3000/api/employer/intern';
+//     const url = `${IP}/api/employer/intern`;
 //     try {
 
 //         console.log(internData);

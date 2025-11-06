@@ -60,7 +60,7 @@ const suggestedBundle: BundleQuiz[] = [
       {
         id: 'ss1',
         text: 'How do you handle conflict in a team setting?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Avoid it', 'Address it directly', 'Escalate to manager', 'Ignore it'],
         correctAnswer: 'Address it directly'
       }
@@ -80,7 +80,7 @@ const suggestedBundle: BundleQuiz[] = [
       {
         id: 'lr1',
         text: 'If all A are B, and all B are C, then all A are C. This is an example of:',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Deductive reasoning', 'Inductive reasoning', 'Abductive reasoning', 'Circular reasoning'],
         correctAnswer: 'Deductive reasoning'
       }
@@ -100,7 +100,7 @@ const suggestedBundle: BundleQuiz[] = [
       {
         id: 'ts1',
         text: 'Which Excel function is used to look up values in a table?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['LOOKUP', 'VLOOKUP', 'FIND', 'SEARCH'],
         correctAnswer: 'VLOOKUP'
       }
@@ -120,7 +120,7 @@ const suggestedBundle: BundleQuiz[] = [
       {
         id: 'cf1',
         text: 'What motivates you most in your work?',
-        type: 'short-answer',
+        type: 'short_answer',
         correctAnswer: 'Sample answer about motivation and alignment with company values'
       }
     ]
@@ -139,7 +139,7 @@ const suggestedBundle: BundleQuiz[] = [
       {
         id: 'ft1',
         text: 'What is the primary purpose of IFRS?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Tax reporting', 'Internal management', 'International standardization', 'Regulatory compliance'],
         correctAnswer: 'International standardization'
       }
@@ -162,7 +162,7 @@ const additionalQuizzes: BundleQuiz[] = [
       {
         id: 'tm1',
         text: 'How do you prioritize multiple urgent tasks?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['First come, first served', 'Based on deadline', 'Based on impact', 'Ask supervisor'],
         correctAnswer: 'Based on impact'
       }
@@ -182,7 +182,7 @@ const additionalQuizzes: BundleQuiz[] = [
       {
         id: 'ra1',
         text: 'What is the primary goal of risk assessment?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Eliminate all risks', 'Identify and mitigate risks', 'Transfer all risks', 'Ignore minor risks'],
         correctAnswer: 'Identify and mitigate risks'
       }
@@ -202,7 +202,7 @@ const additionalQuizzes: BundleQuiz[] = [
       {
         id: 'da1',
         text: 'Which measure best represents central tendency?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Range', 'Standard deviation', 'Mean', 'Variance'],
         correctAnswer: 'Mean'
       }
@@ -222,7 +222,7 @@ const additionalQuizzes: BundleQuiz[] = [
       {
         id: 'rc1',
         text: 'What is the main purpose of SOX compliance?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Tax reporting', 'Financial transparency', 'HR management', 'Marketing compliance'],
         correctAnswer: 'Financial transparency'
       }
@@ -242,7 +242,7 @@ const additionalQuizzes: BundleQuiz[] = [
       {
         id: 'ps1',
         text: 'What is the most important aspect of a financial presentation?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Visual design', 'Data accuracy', 'Speaking confidence', 'Time management'],
         correctAnswer: 'Data accuracy'
       }
@@ -262,7 +262,7 @@ const additionalQuizzes: BundleQuiz[] = [
       {
         id: 'ei1',
         text: 'What should you do if you discover a material error in financial statements?',
-        type: 'multiple-choice',
+        type: 'mcq',
         options: ['Ignore if small', 'Report immediately', 'Fix quietly', 'Wait for audit'],
         correctAnswer: 'Report immediately'
       }

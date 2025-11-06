@@ -1355,10 +1355,11 @@ export function EasyApplyModal({ job, open, onClose, onSubmit, isView = false }:
         onClose();
       } else {
         toast({
-          title: "Failed to apply!",
-          description: applicationError || "An error occurred while submitting your application",
-          variant: "destructive",
+
+          description: applicationError,
+
         });
+        onClose();
       }
     } catch (error) {
       console.error('Application error:', error);
@@ -1456,7 +1457,7 @@ export function EasyApplyModal({ job, open, onClose, onSubmit, isView = false }:
                     <div className="flex items-center gap-2">
                       <Building className="w-4 h-4 text-muted-c-foreground" />
                       <span className="font-medium">Company:</span>
-                      <span>{job.company_name || job.companyInfo?.companyName|| 'Not specified'}</span>
+                      <span>{job.company_name || job.companyInfo?.companyName || 'Not specified'}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Target className="w-4 h-4 text-muted-c-foreground" />

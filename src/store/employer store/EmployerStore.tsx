@@ -1,6 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
-
-const path = `http://localhost:3000/api/employer/`;
+import { IP } from '../Path';
+// export const IP ='http://localhost:3000';
+const path = `${IP}/api/employer/`;
 
 export const useEmployerStore = () => {
     const { currentUser } = useAuth();
@@ -16,7 +17,7 @@ export const useEmployerStore = () => {
 
         setLoading(true);
         setError(null);
-        const url = 'http://localhost:3000/api/employer/jobs';
+        const url = `${IP}/api/employer/jobs`;
         try {
 
             console.log(jobData);
@@ -78,7 +79,7 @@ export const useEmployerStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = 'http://localhost:3000/api/employer/intern';
+        const url = `${IP}/api/employer/intern`;
         try {
 
             console.log(internData);
@@ -468,6 +469,645 @@ export const useEmployerStore = () => {
         }
     }
 
+    const getMatchedJobs = async (setMatchedJobs: any) => {
+        // quiz/match-jobs
+        const url = `${path}quiz/match-jobs`;
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    'Authorization': token,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to GET Matched jobs ");
+            }
+            const data = await response.json();
+            console.log('Matched jobs : ', data);
+            setMatchedJobs(data.data)
+            return data;
+        } catch (error) {
+            console.error('Unexpected error:', error);
+        }
+
+
+    }
+
+    // const addQuiz = async (quizData: any) => {
+
+    //     if (!currentUser) {
+    //         console.warn('No current user found');
+    //         return { success: false, message: 'User not authenticated' };
+    //     }
+
+    //     const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+    //     const url = `${path}quiz`;
+    //     const pad = (num) => String(num).padStart(2, '0');
+    //     try {
+
+    //         console.log('quizData ============= >', quizData);
+    //         const response = await fetch(url, {
+    //             method: "POST",
+    //             headers: {
+
+    //                 'Authorization': token,
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({
+
+    //                 job_id: quizData.job_id,
+    //                 title: quizData.title,
+    //                 description: quizData.description,
+    //                 questionsList: quizData.questionsList,
+    //                 method: quizData.method,
+    //                 totalQuestions: quizData.totalQuestions,
+    //                 totalTime: `${pad(quizData.timeLimit.hours)}:${pad(quizData.timeLimit.minutes)}:${pad(quizData.timeLimit.seconds)}`
+    //             }),
+    //         });
+
+    //         if (!response.ok) {
+    //             const errorData = await response.json();
+    //             console.error("Backend error:", errorData);
+
+    //             const message = errorData?.errors?.[0]?.msg || errorData?.message || "Failed to add quiz";
+    //             alert(message);
+    //         }
+    //         const data = await response.json();
+    //         console.log("Quiz added successfully");
+    //         return data;
+    //     } catch (error: any) {
+    //         console.error('Unexpected error:', error);
+    //     }
+
+    // }
+
+    const getAllQuizzes = async (SetQuizzesData: any) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quizzes`;
+        // const token = `Bearer ${localStorage.getItem('token')}`;
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Failed to fetch Quizzes: ${errorMessage}`);
+
+            }
+            const data = await response.json();
+            SetQuizzesData(data.data);
+            console.log('all quizess data : ', data.data)
+            return data;
+
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+        }
+    }
+
+    // const updatedQuizData = async (quizId: number, newQuizData: any) => {
+    //     if (!currentUser) {
+    //         console.warn('No current user found');
+    //         return { success: false, message: 'User not authenticated' };
+    //     }
+
+    //     const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+    //     const url = `${path}quiz/${quizId}`;
+    //     const pad = (num) => String(num).padStart(2, '0');
+    //     console.log({
+
+    //         job_id: newQuizData.job_id,
+    //         title: newQuizData.title,
+    //         description: newQuizData.description,
+    //         questionsList: newQuizData.questionsList,
+    //         method: newQuizData.method,
+    //         totalQuestions: parseInt(newQuizData.totalQuestions, 10),
+    //         totalTime: `${pad(newQuizData.timeLimit.hours)}:${pad(newQuizData.timeLimit.minutes)}:${pad(newQuizData.timeLimit.seconds)}`
+    //     })
+
+
+    //     try {
+
+    //         // console.log('quizData ============= >', quizData);
+    //         const response = await fetch(url, {
+    //             method: "PATCH",
+    //             headers: {
+
+    //                 'Authorization': token,
+    //                 "Content-Type": "application/json"
+    //             },
+    //             body: JSON.stringify({
+
+    //                 job_id: newQuizData.job_id,
+    //                 title: newQuizData.title,
+    //                 description: newQuizData.description,
+    //                 questionsList: newQuizData.questionsList,
+    //                 method: newQuizData.method,
+    //                 totalQuestions: parseInt(newQuizData.totalQuestions, 10),
+    //                 totalTime: `${pad(newQuizData.timeLimit.hours)}:${pad(newQuizData.timeLimit.minutes)}:${pad(newQuizData.timeLimit.seconds)}`
+    //             }),
+    //         });
+
+    //         if (!response.ok) {
+    //             const errorData = await response.json();
+    //             console.error("Backend error:", errorData);
+
+    //             const message = errorData?.errors?.[0]?.msg || errorData?.message || "Failed to update quiz";
+    //             alert(message);
+    //         }
+    //         const data = await response.json();
+    //         console.log("Failed to update quiz");
+    //         return data;
+    //     } catch (error: any) {
+    //         console.error('Unexpected error:', error);
+    //     }
+    // }
+
+    const updatedQuizData = async (quizId: number, newQuizData: any) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quiz/${quizId}`;
+        const pad = (num: number) => String(num).padStart(2, '0');
+
+        try {
+            const formData = new FormData();
+
+            formData.append('job_id', newQuizData.job_id);
+            formData.append('title', newQuizData.title);
+            formData.append('description', newQuizData.description);
+            formData.append('method', newQuizData.method);
+            formData.append('totalQuestions', parseInt(newQuizData.totalQuestions, 10));
+
+            const formattedTime = `${pad(newQuizData.timeLimit.hours)}:${pad(newQuizData.timeLimit.minutes)}:${pad(newQuizData.timeLimit.seconds)}`;
+            formData.append('totalTime', formattedTime);
+
+            // Handle question files
+            const preparedQuestions = newQuizData.questionsList.map((q: any, index: number) => {
+                // If question type is "file_upload" and a new file is provided
+                if (q.type === "file_upload" && q.file?.file instanceof File) {
+                    formData.append(`question_file_${index}`, q.file.file);
+                    return { ...q, file: `question_file_${index}` }; // Keep a reference in JSON
+                }
+                return q;
+            });
+
+            //  Append questionsList as JSON string
+            formData.append('questionsList', JSON.stringify(preparedQuestions));
+
+            // If a main task file exists for the quiz
+            if (newQuizData.Task_File instanceof File) {
+                formData.append('file_upload', newQuizData.Task_File);
+            }
+
+            //  Send request
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    'Authorization': token,
+                    //  Don't set Content-Type manually; FormData will handle it
+                },
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("Backend error:", data);
+                const message = data?.errors?.[0]?.msg || data?.message || "Failed to update quiz";
+                alert(message);
+                return { success: false, message };
+            }
+
+            console.log("Quiz updated successfully");
+            return { success: true, data };
+
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+            return { success: false, message: 'Unexpected error occurred' };
+        }
+    };
+
+
+    const addQuiz = async (quizData: any) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quiz`;
+        const pad = (num: number) => String(num).padStart(2, '0');
+
+        try {
+            console.log('quizData ============= >', quizData);
+
+            const formData = new FormData();
+
+            formData.append('job_id', quizData.job_id);
+            formData.append('title', quizData.title);
+            formData.append('description', quizData.description);
+            formData.append('method', quizData.method);
+
+            const formattedTime = `${pad(quizData.timeLimit.hours)}:${pad(quizData.timeLimit.minutes)}:${pad(quizData.timeLimit.seconds)}`;
+            formData.append('totalTime', formattedTime);
+            formData.append('totalQuestions', quizData.totalQuestions);
+
+            //  Handle question files before converting to JSON
+            const preparedQuestions = quizData.questionsList.map((q: any, index: number) => {
+                if (q.type === "file_upload" && q.file?.file instanceof File) {
+                    // Add actual file from input or dropzone
+                    formData.append(`question_file_${index}`, q.file.file);
+                    // Keep only the file reference in JSON
+                    return { ...q, file: `question_file_${index}` };
+                }
+                return q;
+            });
+
+            //  Append questionsList as JSON string
+            formData.append('questionsList', JSON.stringify(preparedQuestions));
+
+            // If a main task file exists
+            if (quizData.Task_File instanceof File) {
+                formData.append('file_upload', quizData.Task_File);
+            }
+
+            // Send request
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'Authorization': token,
+                    //  Don't set Content-Type manually
+                },
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("Backend error:", data);
+                const message = data?.errors?.[0]?.msg || data?.message || "Failed to add quiz";
+                alert(message);
+                return { success: false, message };
+            }
+
+            console.log(" Quiz added successfully");
+            return { success: true, data };
+
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+            return { success: false, message: 'Unexpected error occurred' };
+        }
+    };
+
+
+    const updateQuizStatus = async (quizId: Number, newStatus: string) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quiz/status/${quizId}`;
+        try {
+
+            // console.log('quizData ============= >', quizData);
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+
+                    'Authorization': token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+
+                    status: newStatus
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Backend error:", errorData);
+
+                const message = errorData?.errors?.[0]?.msg || errorData?.message || "Failed to update quiz status";
+                alert(message);
+            }
+            const data = await response.json();
+            console.log("Failed to update quiz status");
+            return data;
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+        }
+    }
+
+    const deleteQuiz = async (quizId: number) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quiz/${quizId}`;
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    'Authorization': token,
+                    "Content-Type": "application/json"
+                },
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const message = data?.errors?.[0]?.msg || data?.message || "Failed to delete quiz";
+                console.error("Backend error:", message);
+                alert(message);
+                return { success: false, message };
+            }
+
+            console.log("Quiz deleted successfully");
+            return data;
+
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+            return { success: false, message: error.message || "Unexpected error" };
+        }
+    }
+
+    const getCandidatesForQuiz = async (jobId: number, SetCandidateList: any) => {
+
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quiz/candidates/${jobId}`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                    "Content-Type": "application/json"
+                }
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Backend error:", errorData);
+            }
+            const data = await response.json();
+            SetCandidateList(data.data);
+            return data;
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+        }
+    }
+
+    const assignCandidates = async (quizId: number, candidateIds: []) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quizzes/${quizId}/assign-candidates`;
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    candidateIds: candidateIds
+                })
+            })
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error("Backend error:", errorData);
+            }
+            const data = await response.json();
+            return data;
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+        }
+    }
+
+    const getAssignDataToQuiz = async (
+        quizId: any,
+        setData: any,
+        setDataError: any,
+        setDataLoading: any
+    ) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            setDataError('User not authenticated');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        setDataLoading(true);
+        setDataError(null);
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quizzes/${quizId}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to fetch assign data");
+            }
+
+            if (!result.data) {
+                throw new Error("No assign data returned from server");
+            }
+
+            setData(result.data);
+            console.log("✅ Assigned Quiz Data:", result.data);
+
+            return { success: true, data: result.data };
+
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            setDataError(message);
+            console.error("❌ Error fetching assigned data:", message);
+
+            return { success: false, message };
+
+        } finally {
+            setDataLoading(false);
+        }
+    };
+
+    const quizReview = async (setQuizReview: any, quizCandidateId: number, setQuizReviewLoading: any, setQuizReviewError: any) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        setQuizReviewLoading(true);
+        setQuizReviewError(null);
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}quiz-candidates/${quizCandidateId}/review`;
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to fetch assign data");
+            }
+
+            if (!result.data) {
+                throw new Error("No  Quiz Review data returned from server");
+            }
+
+            setQuizReview(result.data);
+            console.log(" Quiz Review Data:", result.data);
+            return result;
+
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            setQuizReviewError(message);
+            console.error("Error fetching Quiz Review:", message);
+
+            return { success: false, message };
+
+        } finally {
+            setQuizReviewLoading(false);
+        }
+    }
+
+    // const updateQuestionScore = async (quizCandidateId: number, questionId: number, score: number, isCorrect: any) => {
+    //     if (!currentUser) {
+    //         console.warn('No current user found');
+    //         return { success: false, message: 'User not authenticated' };
+    //     }
+
+
+
+    //     const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+    //     const url = `${path}quiz-candidates/score/${quizCandidateId}`;
+
+    //     try {
+    //         const response = await fetch(url, {
+    //             method: "PATCH",
+    //             headers: {
+    //                 Authorization: token,
+    //                 "Content-Type": "application/json",
+    //             },
+    //         });
+
+    //         const result = await response.json();
+
+    //         if (!response.ok) {
+    //             throw new Error(result.message || "Failed to fetch assign data");
+    //         }
+
+    //         if (!result.data) {
+    //             throw new Error("No  Quiz Review data returned from server");
+    //         }
+
+
+    //         console.log(" Quiz Review Data:", result.data);
+    //         return result;
+
+    //     } catch (error: any) {
+    //         const message = error.message || "Unexpected error occurred";
+
+    //         console.error("Error fetching Quiz Review:", message);
+
+    //         return message;
+
+    //     }
+    // }
+
+
+    const updateQuestionScore = async (
+        quizCandidateId: number,
+        questionId: number,
+        score: number,
+        isCorrect: boolean
+    ) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        // const url = `${path}candidate-answer/${quizCandidateId}/score`;
+        const url = `${path}quiz-candidates/${quizCandidateId}/score`;
+
+        try {
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    questionId,
+                    score,
+                    is_correct: isCorrect,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to update score");
+            }
+
+            console.log("Score updated:", result.data);
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error updating score:", message);
+            return { success: false, message };
+        }
+    };
+
+
     return {
 
         addJob,
@@ -479,6 +1119,17 @@ export const useEmployerStore = () => {
         updateIntern,
         getJobsApplications,
         getAllJobsTitle,
-        updateHiringStage
+        updateHiringStage,
+        getMatchedJobs,
+        addQuiz,
+        getAllQuizzes,
+        updatedQuizData,
+        updateQuizStatus,
+        deleteQuiz,
+        getCandidatesForQuiz,
+        assignCandidates,
+        getAssignDataToQuiz,
+        quizReview,
+        updateQuestionScore
     };
 };

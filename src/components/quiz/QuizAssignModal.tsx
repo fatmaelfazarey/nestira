@@ -5,8 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { UserPlus, Search } from 'lucide-react';
+import { UserPlus, Search, Link2, ExternalLink } from 'lucide-react';
 import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
 
 interface Candidate {
   id: string;
@@ -22,61 +23,63 @@ interface QuizAssignModalProps {
   isOpen: boolean;
   onClose: () => void;
   quiz: any;
+  candidates: any;
   onAssign: (quiz: any, candidateIds: string[]) => void;
 }
 
 // Mock unlocked candidates data
-const mockCandidates: Candidate[] = [
-  {
-    id: '1',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    position: 'Financial Analyst',
-    skills: ['Excel', 'Financial Modeling', 'SQL'],
-    experience: '3 years'
-  },
-  {
-    id: '2',
-    name: 'Michael Chen',
-    email: 'michael.chen@email.com',
-    position: 'Investment Analyst',
-    skills: ['Python', 'R', 'Financial Analysis'],
-    experience: '5 years'
-  },
-  {
-    id: '3',
-    name: 'Emily Rodriguez',
-    email: 'emily.rodriguez@email.com',
-    position: 'Risk Analyst',
-    skills: ['Risk Management', 'Excel', 'Statistics'],
-    experience: '4 years'
-  },
-  {
-    id: '4',
-    name: 'David Kim',
-    email: 'david.kim@email.com',
-    position: 'Portfolio Manager',
-    skills: ['Portfolio Management', 'Bloomberg', 'Excel'],
-    experience: '7 years'
-  },
-  {
-    id: '5',
-    name: 'Lisa Wang',
-    email: 'lisa.wang@email.com',
-    position: 'Financial Consultant',
-    skills: ['Financial Planning', 'Excel', 'Presentation'],
-    experience: '6 years'
-  }
-];
+// const mockCandidates: Candidate[] = [
+//   {
+//     id: '1',
+//     name: 'Sarah Johnson',
+//     email: 'sarah.johnson@email.com',
+//     position: 'Financial Analyst',
+//     skills: ['Excel', 'Financial Modeling', 'SQL'],
+//     experience: '3 years'
+//   },
+//   {
+//     id: '2',
+//     name: 'Michael Chen',
+//     email: 'michael.chen@email.com',
+//     position: 'Investment Analyst',
+//     skills: ['Python', 'R', 'Financial Analysis'],
+//     experience: '5 years'
+//   },
+//   {
+//     id: '3',
+//     name: 'Emily Rodriguez',
+//     email: 'emily.rodriguez@email.com',
+//     position: 'Risk Analyst',
+//     skills: ['Risk Management', 'Excel', 'Statistics'],
+//     experience: '4 years'
+//   },
+//   {
+//     id: '4',
+//     name: 'David Kim',
+//     email: 'david.kim@email.com',
+//     position: 'Portfolio Manager',
+//     skills: ['Portfolio Management', 'Bloomberg', 'Excel'],
+//     experience: '7 years'
+//   },
+//   {
+//     id: '5',
+//     name: 'Lisa Wang',
+//     email: 'lisa.wang@email.com',
+//     position: 'Financial Consultant',
+//     skills: ['Financial Planning', 'Excel', 'Presentation'],
+//     experience: '6 years'
+//   }
+// ];
 
-export function QuizAssignModal({ isOpen, onClose, quiz, onAssign }: QuizAssignModalProps) {
+export function QuizAssignModal({ isOpen, onClose, quiz, candidates, onAssign }: QuizAssignModalProps) {
   const [selectedCandidates, setSelectedCandidates] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredCandidates = mockCandidates.filter(candidate =>
-    candidate.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    candidate.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    candidate.position.toLowerCase().includes(searchTerm.toLowerCase())
+  console.log('Quiz : ', quiz)
+  const filteredCandidates = candidates.filter(candidate =>
+    candidate.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    candidate.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    candidate.position?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleCandidateToggle = (candidateId: string) => {
@@ -148,11 +151,10 @@ export function QuizAssignModal({ isOpen, onClose, quiz, onAssign }: QuizAssignM
               filteredCandidates.map((candidate) => (
                 <div
                   key={candidate.id}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    selectedCandidates.includes(candidate.id)
-                      ? 'bg-blue-50 border-blue-200'
-                      : 'bg-white hover:bg-gray-50'
-                  }`}
+                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${selectedCandidates.includes(candidate.id)
+                    ? 'bg-blue-50 border-blue-200'
+                    : 'bg-white hover:bg-gray-50'
+                    }`}
                   onClick={() => handleCandidateToggle(candidate.id)}
                 >
                   <div className="flex items-center gap-4">
@@ -164,21 +166,30 @@ export function QuizAssignModal({ isOpen, onClose, quiz, onAssign }: QuizAssignM
                       <AvatarImage src={candidate.avatar} />
                       <AvatarFallback>{getInitials(candidate.name)}</AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between mb-1">
-                        <h3 className="font-medium">{candidate.name}</h3>
-                        <span className="text-sm text-gray-500">{candidate.experience}</span>
+                    <div className='flex justify-between items-center w-full gap-1'>
+                      <div className="flex-1 ">
+                        <div className="flex items-center justify-between mb-1">
+                          <h3 className="font-medium">{candidate.name}</h3>
+                          <span className="text-sm text-gray-500">{candidate.experience}</span>
+                        </div>
+
+                        <p className="text-sm text-gray-600 mb-2">{candidate.position}</p>
+                        <p className="text-xs text-gray-500 mb-2">{candidate.email}</p>
+                        <div className="flex flex-wrap gap-1">
+                          {candidate.skills?.map((skill) => (
+                            <Badge key={skill} variant="secondary" className="text-xs">
+                              {skill}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-sm text-gray-600 mb-2">{candidate.position}</p>
-                      <p className="text-xs text-gray-500 mb-2">{candidate.email}</p>
-                      <div className="flex flex-wrap gap-1">
-                        {candidate.skills.map((skill) => (
-                          <Badge key={skill} variant="secondary" className="text-xs">
-                            {skill}
-                          </Badge>
-                        ))}
+                      <div>
+                        <Link to={`/employer/candidate-profile/${candidate.id}`} className='flex gap-1 justify-center items-center'>
+                          <span>Profile</span><ExternalLink className='text-secondary-c' />
+                        </Link>
                       </div>
                     </div>
+
                   </div>
                 </div>
               ))

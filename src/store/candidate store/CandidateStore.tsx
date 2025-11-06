@@ -1,6 +1,7 @@
 import { useAuth } from '@/contexts/AuthContext';
-
-const path = `http://localhost:3000/api/candidate/`;
+import { IP } from '../Path';
+import Assessments from '@/pages/Assessments';
+const path = `${IP}/api/candidate/`;
 
 export const useCandidateStore = () => {
     const { currentUser } = useAuth();
@@ -163,7 +164,7 @@ export const useCandidateStore = () => {
     ): Promise<any> => {
         setJobsError(null);
         setJobsLoading(true);
-        // http://localhost:3000/api/candidate/jobs/save
+        // ${IP}/api/candidate/jobs/save
 
 
         if (!currentUser) {
@@ -231,6 +232,7 @@ export const useCandidateStore = () => {
                 const errorMessage = await response.json();
                 setApplicationError(errorMessage.message);
                 throw new Error(`Failed to apply for job: ${errorMessage.message}`);
+
             }
 
             const data = await response.json();
@@ -239,7 +241,7 @@ export const useCandidateStore = () => {
         } catch (error) {
             console.error('Error applying for job:', error);
             setApplicationError(error.message);
-            return { success: false };
+            return { success: false, error: error.message };
         }
     }
 
@@ -250,7 +252,7 @@ export const useCandidateStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `http://localhost:3000/api/uploads/cv`;
+        const url = `${IP}/api/uploads/cv`;
 
         try {
 
@@ -286,7 +288,7 @@ export const useCandidateStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `http://localhost:3000/api/uploads/cv/Candidate-cv-${UID}.pdf`;
+        const url = `${IP}/api/uploads/cv/Candidate-cv-${UID}.pdf`;
 
         try {
             const response = await fetch(url, {
@@ -300,15 +302,14 @@ export const useCandidateStore = () => {
                 throw new Error("Failed to download CV");
             }
 
-            // تحويل الاستجابة إلى blob
+
             const blob = await response.blob();
             const downloadUrl = window.URL.createObjectURL(blob);
 
-            // إنشاء عنصر <a> للتحميل
             const a = document.createElement("a");
             a.href = downloadUrl;
 
-            // اسم الملف الافتراضي
+
             a.download = `Candidate-cv-${UID}.pdf`;
             document.body.appendChild(a);
             a.click();
@@ -323,6 +324,169 @@ export const useCandidateStore = () => {
         }
     };
 
+    const getAssessments = async (
+        setAssessments: (data: any) => void,
+        setAssessmentsLoading: (loading: boolean) => void
+    ) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return false;
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${IP}/api/candidate/assessments`;
+
+        try {
+            setAssessmentsLoading(true);
+
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": token,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Failed to fetch assessments: ${errorMessage}`);
+            }
+
+            const data = await response.json();
+            console.log("data", data);
+
+            setAssessments(data.data || []);
+            return data;
+        } catch (error) {
+            console.error("Unexpected error:", error);
+            setAssessments([]);
+            return error;
+        } finally {
+            setAssessmentsLoading(false);
+        }
+    };
+
+    const fetchAssessmentData = async (
+        assessmentId: any,
+        setAssessment: (data: any) => void,
+        setAssessmentLoading: (loading: boolean) => void,
+        setAssessmentError: (error: string | null) => void
+    ) => {
+
+        if (!currentUser) {
+            console.warn("No current user found");
+            setAssessmentError("User not authenticated");
+            return { success: false };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${IP}/api/candidate/assessments/${assessmentId}`;
+
+        setAssessmentLoading(true);
+        setAssessmentError(null);
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    "Authorization": token,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Failed to fetch assessment data: ${errorMessage}`);
+            }
+
+            const data = await response.json();
+            console.log("Assessment Data:", data);
+
+            setAssessment(data?.data?.quiz || {});
+            return { success: true, assessment: data?.data?.quiz };
+
+        } catch (error: any) {
+            console.error("Unexpected error:", error);
+            setAssessment({});
+            setAssessmentError(error.message);
+            return { success: false, message: error.message };
+
+        } finally {
+            setAssessmentLoading(false);
+        }
+    };
+
+    const submitAnswersData = async (answerData: any) => {
+
+        console.log("answerData =>", answerData);
+
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${IP}/api/candidate/assessments/${answerData.id}/answer`;
+
+        try {
+            const formData = new FormData();
+
+            const preparedAnswers = answerData.answers.map((q: any, index: number) => {
+
+                if (q.type === "file_upload" && q.question_answer?.file instanceof File) {
+
+                    const fileFieldName = `question_file_${q.questionId}_${index}`;
+
+                    // Add the file to formData (real binary file)
+                    formData.append(fileFieldName, q.question_answer.file);
+
+                    // Replace the File object with only a reference
+                    return {
+                        ...q,
+                        question_answer: {
+                            ...q.question_answer,
+                            file: fileFieldName,
+                        }
+                    };
+                }
+
+                return q;
+            });
+
+            // Attach updated answers as JSON
+            formData.append("answerList", JSON.stringify(preparedAnswers));
+
+            // Attach main task file if exists
+            if (answerData.Task_File instanceof File) {
+                formData.append("task_file", answerData.Task_File);
+            }
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    // ⚠️ Never set "Content-Type": fetch will set correct boundary for form-data
+                },
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("Backend error:", data);
+                const message = data?.errors?.[0]?.msg || data?.message || "Failed to submit assessment answers";
+                return { success: false, message };
+            }
+
+            return { success: true, data };
+
+        } catch (error) {
+            console.error("Unexpected error:", error);
+            return { success: false, message: "Unexpected error occurred" };
+        }
+    };
+
+
 
     return {
         myApplications,
@@ -332,7 +496,10 @@ export const useCandidateStore = () => {
         getSavedJobs,
         applyForJob,
         sendCVtoBackend,
-        getCV
+        getCV,
+        getAssessments,
+        fetchAssessmentData,
+        submitAnswersData
 
     };
 };

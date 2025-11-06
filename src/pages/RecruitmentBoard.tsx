@@ -1046,7 +1046,10 @@ const RecruitmentBoard = () => {
 
   // Function to handle CV download/view
   const handleCvAction = (candidate: Candidate, action: 'view' | 'download') => {
+  console.log('cvFile : ', candidate)
+          console.log('cvFile : ', candidate.cvFile)
     if (!candidate.cvFile) {
+
       alert('No CV file available');
       return;
     }
@@ -1440,7 +1443,6 @@ const RecruitmentBoard = () => {
       }
 
       if (candidateToMove) {
-        // تحديث التاغ عند الرفض
         if (newStageId === 'rejected') {
           candidateToMove.tags = ['Rejected'];
         }

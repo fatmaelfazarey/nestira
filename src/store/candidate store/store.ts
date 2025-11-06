@@ -1,5 +1,6 @@
 
-const path = `http://localhost:3000/api/candidate/`;
+import { IP } from "../employer store/EmployerStore";
+const path = `${IP}/api/candidate/`;
 const token = `Bearer ${localStorage.getItem('token')}`;
 import { useAuth } from "@/contexts/AuthContext";
 
@@ -98,7 +99,7 @@ import { useAuth } from "@/contexts/AuthContext";
 // ): Promise<any> => {
 //     setJobsError(null);
 //     setJobsLoading(true);
-//     // http://localhost:3000/api/candidate/jobs/save
+//     // ${IP}/api/candidate/jobs/save
 //     const url = `${path}jobs/save`;
 //     // const token = `Bearer ${localStorage.getItem('token')}`;
 //     try {

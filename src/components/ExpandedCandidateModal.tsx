@@ -1029,7 +1029,7 @@ export function ExpandedCandidateModal({
                         <div className="bg-white rounded-lg overflow-hidden border border-purple-200">
                           <div className="aspect-video bg-black flex items-center justify-center relative">
                             <img 
-                              src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+                              src="/nestira-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
                               alt="Complete assessment recording"
                               className="w-full h-full object-cover"
                             />
@@ -2084,7 +2084,7 @@ export function ExpandedCandidateModal({
 //                     <div className="bg-white rounded-lg overflow-hidden border border-purple-200">
 //                       <div className="aspect-video bg-black flex items-center justify-center relative">
 //                         <img 
-//                           src="/lovable-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
+//                           src="/nestira-uploads/d3a8d219-4f65-455c-9c59-efdfff1fd41b.png" 
 //                           alt="Complete assessment recording"
 //                           className="w-full h-full object-cover"
 //                         />

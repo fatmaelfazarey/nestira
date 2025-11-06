@@ -13,7 +13,7 @@
 //                 <div className={`flex items-center gap-4 min-w-0 ${isExpand ? 'w-full bg-green-600' : ''} `} onClick={() => setIsExpand(!isExpand)}>
 
 //                     <img
-//                         src="/lovable-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png"
+//                         src="/nestira-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png"
 //                         alt="Logo"
 //                         className="h-8 sm:h-10 lg:h-12 shrink-0"
 //                     />
