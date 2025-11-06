@@ -40,9 +40,13 @@ import { JobCreationModal } from "./JobCreationModal";
 import { InternshipCreationModal } from "./InternshipCreationModal";
 import { useState } from "react";
 import { toast } from "sonner";
+
 // import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+// import { addIntern, addJob } from "@/store/employer store/store";
+import { useEmployerStore } from "@/store/employer store/EmployerStore";
 
 const token = localStorage.getItem("token")
 // Navigation items organized by sections
@@ -159,7 +163,8 @@ export function AppSidebar() {
   const [isJobCreationModalOpen, setIsJobCreationModalOpen] = useState(false);
   const [isInternshipCreationModalOpen, setIsInternshipCreationModalOpen] = useState(false);
 
-  // const { toast } = useToast();
+  const { addIntern, addJob } = useEmployerStore()
+  const { toast } = useToast();
   const [loggingOut, setLoggingOut] = useState(false);
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
@@ -203,20 +208,86 @@ export function AppSidebar() {
     }
   };
 
-  const handleJobCreated = (newJob: any) => {
+  const handleJobCreated = async (newJob: any) => {
     console.log('New job created from sidebar:', newJob);
+    // alert("New job created from sidebar")
+    // alert(newJob);
+    await handleAddJobs(newJob);
     toast({
       title: "Job Posted Successfully!",
       description: `"${newJob.title}" has been posted and is now live.`,
     });
   };
 
-  const handleInternshipCreated = (newInternship: any) => {
+  //#region add job to backend
+
+  const [addJobsError, setAddJobsError] = useState<string | null>(null);
+  const [addJobsLoading, SetAddJobsLoading] = useState(false);
+
+  const handleAddJobs = async (job: any) => {
+    if (job && job.title && job.description) {
+
+      try {
+        const addJobData = await addJob(job, setAddJobsError, SetAddJobsLoading);
+        if (addJobData.success) {
+          toast({
+            title: "Job Posted Successfully!",
+            description: `"${addJobData.data.job.title}" has been posted and is now live.`,
+          });
+        } else {
+          toast({
+            title: "Failed to add data. Make sure you are connected to the server.",
+          });
+          console.log('there is an error');
+        }
+      } catch (err) {
+        console.log('error : ', err)
+      }
+
+    } else {
+      toast.error('Fill out all input fields');
+    }
+  }
+
+  const handleAddIntern = async (intern: any) => {
+    if (intern && intern.title && intern.description) {
+
+      try {
+        const addInternData = await addIntern(intern);
+        if (addInternData.success) {
+          toast({
+            title: "addInternData Posted Successfully!",
+            description: `"${addInternData.data.job.title}" has been posted and is now live.`,
+          });
+        } else {
+          toast({
+            title: "Failed to add data. Make sure you are connected to the server.",
+          });
+          console.log('there is an error');
+        }
+      } catch (err) {
+        console.log('error : ', err)
+      }
+
+    } else {
+      toast.error('Fill out all input fields');
+    }
+  }
+
+  ////#endregion
+
+  const handleInternshipCreated = async (newInternship: any) => {
     console.log('New internship created from sidebar:', newInternship);
-    toast({
-      title: "Internship Posted Successfully!",
-      description: `"${newInternship.title}" internship has been posted and is now live.`,
-    });
+
+
+    await handleAddIntern(newInternship);
+
+
+    // toast({
+    //   title: "Internship Posted Successfully!",
+    //   description: `"${newInternship.title}" internship has been posted and is now live.`,
+    // });
+
   };
 
   return (

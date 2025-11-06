@@ -5,7 +5,8 @@ import { CandidateSidebar } from "@/components/CandidateSidebar";
 import { useEffect, useRef, useState } from "react";
 import { Settings, User } from "lucide-react";
 import { Button } from "./ui/button";
-
+// import { logo } from '../assets/logo.png';
+import logo from '@/assets/logo.png';
 const CandidateLayout = () => {
   const [isExpand, setIsExpand] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -58,7 +59,7 @@ const CandidateLayout = () => {
             >
 
               <img
-                src="/lovable-uploads/15ce39a5-675b-4eb2-8d98-088feb86b95d.png"
+                src={logo}
                 alt="Logo"
                 className="h-8 sm:h-10 lg:h-12 shrink-0"
               />

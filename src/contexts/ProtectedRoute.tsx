@@ -11,7 +11,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     const { currentUser, userData } = useAuth(); // currentUser = { id, name, role, ... }
     const location = useLocation();
 
-    // لو مش مسجل دخول
+ 
     if (!currentUser) {
         return <Navigate to="/" state={{ from: location }} replace />;
     }

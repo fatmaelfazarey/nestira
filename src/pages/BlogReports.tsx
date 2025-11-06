@@ -33,7 +33,7 @@ const audienceColorMap: {
   "Finance Candidate": "bg-lime-500 text-lime-950 border-lime-600 dark:bg-lime-600 dark:text-lime-950 dark:border-lime-700"
 };
 const BlogReports = () => {
-  const thumbnail = "/lovable-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
+  const thumbnail = "/nestira-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
   const allContent = [{
     id: 'article-1',
     type: 'article',

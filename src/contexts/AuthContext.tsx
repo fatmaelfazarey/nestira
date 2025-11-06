@@ -358,12 +358,12 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUserData = async (uid: string) => {
     try {
-      console.log("Fetching user data for:", uid);
+      // console.log("Fetching user data for:", uid);
       const userDoc = await getDoc(doc(db, "users", uid));
 
       if (userDoc.exists()) {
         const data = userDoc.data() as UserData;
-        console.log("User data fetched successfully:", data);
+        // console.log("User data fetched successfully:", data);
         setUserData(data);
       } else {
         console.warn("User document does not exist in Firestore");
@@ -469,7 +469,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     newPassword: string
   ): Promise<void> => {
     if (!auth.currentUser || !auth.currentUser.email) {
-      console.log("auth.currentUser", auth.currentUser);
+      // console.log("auth.currentUser", auth.currentUser);
       return Promise.reject(new Error("No user is currently logged in."));
     }
 
@@ -483,7 +483,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Step 2: Update the password after successful reauthentication
       await updatePassword(user, newPassword);
 
-      console.log("Password updated successfully!");
+      // console.log("Password updated successfully!");
     } catch (error: any) {
       console.error("Error updating password:", error);
 

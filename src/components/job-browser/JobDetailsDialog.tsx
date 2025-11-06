@@ -81,13 +81,13 @@ export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDet
     name: "HR Manager",
     companyName: job.company,
     logo: undefined,
-    industry: "Financial Services",
-    companySize: "51-200",
-    location: "Dubai, UAE",
-    description: "We are a leading financial services company in the MENA region, committed to providing innovative solutions and fostering professional growth.",
+    industry: job.employer_data.industry || job.employer.industry,
+    companySize: job.employer_data.companySize || job.employer.companySize,
+    location: job.employer_data.location || job.employer.location || job.location,
+    description: job.employer_data.description || job.employer.description,
     isVerified: Math.random() > 0.5, // Random for demo
-    linkedinUrl: "https://linkedin.com/company/" + job.company.toLowerCase().replace(/\s+/g, '-'),
-    websiteUrl: "https://" + job.company.toLowerCase().replace(/\s+/g, '') + ".com",
+    linkedinUrl: job.employer_data.linkedinUrl || job.employer.linkedinUrl || "https://linkedin.com/company/" + job.company.toLowerCase().replace(/\s+/g, '-'),
+    websiteUrl: job.employer_data.websiteUrl || job.employe.websiteUrl || "https://" + job.company.toLowerCase().replace(/\s+/g, '') + ".com",
     allowMessages: true
   };
 
@@ -138,7 +138,7 @@ export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDet
             </Badge>
             <Badge variant="outline" className="text-foreground">
               <DollarSign className="w-3 h-3 mr-1" />
-              {job.salary}
+              {job.salary?.max || job.salary || 'none'}
             </Badge>
             {job.deadline && (
               <Badge variant="destructive">

@@ -2,11 +2,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  MapPin, 
-  Clock, 
-  Building, 
-  Bookmark, 
+import {
+  MapPin,
+  Clock,
+  Building,
+  Bookmark,
   BookmarkCheck,
   ExternalLink,
   Share2,
@@ -16,6 +16,8 @@ import {
   Eye
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useCandidateStore } from "@/store/candidate store/CandidateStore";
+// import { updateJobView } from "@/store/candidate store/store";
 
 interface Job {
   id: number;
@@ -59,18 +61,18 @@ interface JobCardProps {
   getMatchScoreLabel: (score: number) => string;
 }
 
-export function JobCard({ 
-  job, 
-  onSave, 
-  onApply, 
-  onViewDetails, 
+export function JobCard({
+  job,
+  onSave,
+  onApply,
+  onViewDetails,
   onMatchScoreClick,
   onShare,
   getMatchScoreColor,
   getMatchScoreLabel
 }: JobCardProps) {
   const { toast } = useToast();
-
+  const { updateJobView } = useCandidateStore();
   const getWorkModeColor = (mode: string) => {
     switch (mode.toLowerCase()) {
       case 'remote': return 'bg-success/20 text-success';
@@ -123,9 +125,13 @@ export function JobCard({
     }
   };
 
-  const handleViewDetails = () => {
+  const handleViewDetails = async () => {
     if (onViewDetails) {
       onViewDetails(job.id);
+      const updateViews = await updateJobView(job.id);
+      if (!updateViews.success) {
+        console.log('View not update')
+      }
     } else {
       toast({
         title: "Job Details",
@@ -172,10 +178,10 @@ export function JobCard({
                     </Badge>
                   )}
                 </div>
-                
+
                 {/* Enhanced Match Score Badge - More Clickable */}
                 <div className="flex items-center gap-2 mt-2">
-                  <div 
+                  <div
                     onClick={handleMatchScoreClick}
                     className={`${getMatchScoreColor(job.matchScore)} hover:scale-110 transition-all duration-200 font-semibold px-4 py-2 h-auto border-2 hover:border-opacity-80 hover:shadow-md group cursor-pointer rounded-md bg-background/80 backdrop-blur-sm`}
                   >
@@ -258,10 +264,10 @@ export function JobCard({
                 <h4 className="font-medium text-foreground mb-2">Key Requirements:</h4>
                 <div className="flex flex-wrap gap-2">
                   {job.requirements.map((req, idx) => (
-                    <Badge 
-                      key={idx} 
-                      style={{ 
-                        backgroundColor: '#ff5f1b', 
+                    <Badge
+                      key={idx}
+                      style={{
+                        backgroundColor: '#ff5f1b',
                         color: 'white',
                         border: '1px solid #ff5f1b'
                       }}
@@ -275,7 +281,7 @@ export function JobCard({
             )}
 
             <div className="flex items-center gap-3">
-              <Button 
+              <Button
                 onClick={handleEasyApply}
                 className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200 relative group"
               >
@@ -284,7 +290,7 @@ export function JobCard({
                   Apply using your Nestira profile in seconds
                 </div>
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={handleViewDetails}
@@ -293,7 +299,7 @@ export function JobCard({
                 <Eye className="w-4 h-4 mr-2" />
                 View Details
               </Button>
-              <Button 
+              <Button
                 variant="outline"
                 size="sm"
                 onClick={handleShare}

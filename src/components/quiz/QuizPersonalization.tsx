@@ -1,4 +1,5 @@
 
+
 import React, { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -91,7 +92,7 @@ export function QuizPersonalization({ onRoleSelected }: QuizPersonalizationProps
           {/* Method Selection Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* AI Talent Search */}
-            <Card 
+            {/* <Card 
               className={`cursor-pointer transition-all hover:shadow-md ${
                 inputMethod === 'search' ? 'ring-2 ring-blue-500 border-blue-200' : ''
               }`}
@@ -143,7 +144,7 @@ export function QuizPersonalization({ onRoleSelected }: QuizPersonalizationProps
                   </div>
                 )}
               </CardContent>
-            </Card>
+            </Card> */}
 
             {/* From Job Post */}
             <Card 
@@ -175,7 +176,7 @@ export function QuizPersonalization({ onRoleSelected }: QuizPersonalizationProps
             </Card>
 
             {/* Role Dropdown */}
-            <Card 
+            {/* <Card 
               className={`cursor-pointer transition-all hover:shadow-md ${
                 inputMethod === 'dropdown' ? 'ring-2 ring-purple-500 border-purple-200' : ''
               }`}
@@ -206,7 +207,7 @@ export function QuizPersonalization({ onRoleSelected }: QuizPersonalizationProps
                   </Select>
                 )}
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
         </div>
       </div>

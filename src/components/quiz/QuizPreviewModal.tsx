@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Clock, CheckCircle2, X } from 'lucide-react';
+import { Clock, CheckCircle2, X, Eye, Download } from 'lucide-react';
 import { Question } from './types';
-
+// import { IP } from '@/store/employer store/EmployerStore';
+import { IP } from '@/store/Path';
 interface QuizPreviewModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -22,6 +23,8 @@ interface QuizPreviewModalProps {
 export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProps) {
   const questions = quiz.questionsList || [];
 
+  // console.log('quizee =>', quiz)
+
   const getTotalTime = () => {
     const timeLimit = quiz.timeLimit || { hours: 0, minutes: 30, seconds: 0 };
     const { hours, minutes, seconds } = timeLimit;
@@ -30,6 +33,36 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
     if (minutes > 0) timeString += `${minutes}m `;
     if (seconds > 0) timeString += `${seconds}s`;
     return timeString.trim() || '30m';
+  };
+  const handleCvAction = (question: any, action: 'view' | 'download') => {
+    if (!question.task_file_path) {
+      alert('No CV file available');
+      return;
+    }
+
+    try {
+      // Fixed the URL - added protocol and proper path handling
+      const url = `${IP}/${question.task_file_path}`;
+
+      if (action === 'view') {
+        // Open in new tab
+        window.open(url, '_blank');
+      } else {
+        // Download
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = question.task_file_name;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      // Remove the URL.revokeObjectURL call since we're not creating object URLs
+      // setTimeout(() => URL.revokeObjectURL(url), 100);
+    } catch (error) {
+      console.error('Error handling CV file:', error);
+      alert('Error processing CV file');
+    }
   };
 
   return (
@@ -87,31 +120,28 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
                     {question.text}
                   </h3>
 
-                  {question.type === 'multiple-choice' && (
+                  {question.type === 'mcq' && (
                     <div className="space-y-3">
                       {question.options?.map((option, optionIndex) => (
-                        <div 
-                          key={optionIndex} 
-                          className={`flex items-center space-x-3 p-3 rounded-lg border ${
-                            question.correctAnswer === option 
-                              ? 'bg-green-50 border-green-200' 
-                              : 'bg-gray-50 border-gray-200'
-                          }`}
+                        <div
+                          key={optionIndex}
+                          className={`flex items-center space-x-3 p-3 rounded-lg border ${question.correctAnswer === option
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-gray-50 border-gray-200'
+                            }`}
                         >
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                            question.correctAnswer === option 
-                              ? 'border-green-500 bg-green-500' 
-                              : 'border-gray-300'
-                          }`}>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${question.correctAnswer === option
+                            ? 'border-green-500 bg-green-500'
+                            : 'border-gray-300'
+                            }`}>
                             {question.correctAnswer === option && (
                               <div className="w-2 h-2 rounded-full bg-white" />
                             )}
                           </div>
-                          <span className={`${
-                            question.correctAnswer === option 
-                              ? 'text-green-800 font-medium' 
-                              : 'text-gray-700'
-                          }`}>
+                          <span className={`${question.correctAnswer === option
+                            ? 'text-green-800 font-medium'
+                            : 'text-gray-700'
+                            }`}>
                             {option}
                           </span>
                           {question.correctAnswer === option && (
@@ -122,31 +152,28 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
                     </div>
                   )}
 
-                  {question.type === 'true-false' && (
+                  {question.type === 'true_false' && (
                     <div className="space-y-3">
                       {['True', 'False'].map((option) => (
-                        <div 
+                        <div
                           key={option}
-                          className={`flex items-center space-x-3 p-3 rounded-lg border ${
-                            question.correctAnswer === option 
-                              ? 'bg-green-50 border-green-200' 
-                              : 'bg-gray-50 border-gray-200'
-                          }`}
+                          className={`flex items-center space-x-3 p-3 rounded-lg border ${question.correctAnswer === option
+                            ? 'bg-green-50 border-green-200'
+                            : 'bg-gray-50 border-gray-200'
+                            }`}
                         >
-                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                            question.correctAnswer === option 
-                              ? 'border-green-500 bg-green-500' 
-                              : 'border-gray-300'
-                          }`}>
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${question.correctAnswer === option
+                            ? 'border-green-500 bg-green-500'
+                            : 'border-gray-300'
+                            }`}>
                             {question.correctAnswer === option && (
                               <div className="w-2 h-2 rounded-full bg-white" />
                             )}
                           </div>
-                          <span className={`${
-                            question.correctAnswer === option 
-                              ? 'text-green-800 font-medium' 
-                              : 'text-gray-700'
-                          }`}>
+                          <span className={`${question.correctAnswer === option
+                            ? 'text-green-800 font-medium'
+                            : 'text-gray-700'
+                            }`}>
                             {option}
                           </span>
                           {question.correctAnswer === option && (
@@ -157,7 +184,7 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
                     </div>
                   )}
 
-                  {question.type === 'short-answer' && (
+                  {question.type === 'short_answer' && (
                     <div className="space-y-2">
                       <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
                         <span className="text-gray-600 text-sm">Answer field (text input)</span>
@@ -172,6 +199,34 @@ export function QuizPreviewModal({ isOpen, onClose, quiz }: QuizPreviewModalProp
                         </div>
                       )}
                     </div>
+                  )}
+                  {question.type === 'file_upload' && (
+
+                    <>
+                      <div className="text-sm font-medium text-green-600">
+                        {question.task_file_name}
+                      </div>
+                      <div className="flex gap-1">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 text-xs"
+                          onClick={() => handleCvAction(question, 'view')}
+                        >
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-6 text-xs"
+                          onClick={() => handleCvAction(question, 'download')}
+                        >
+                          <Download className="h-3 w-3 mr-1" />
+                          Download
+                        </Button>
+                      </div>
+                    </>
                   )}
                 </CardContent>
               </Card>

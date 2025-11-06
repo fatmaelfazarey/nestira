@@ -19,6 +19,7 @@ import {
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
 
+
 const mainNavItems = [
   { title: "Dashboard", url: "/candidate", icon: Square },
   { title: "My Applications", url: "/candidate/applications", icon: FileText },
@@ -85,7 +86,7 @@ export function CandidateSidebar() {
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 flex items-center justify-center">
             <img
-              src="/lovable-uploads/b7d3bd2f-64c7-4971-a4e6-bd1f4e1b4de5.png"
+              src="/nestira-uploads/b7d3bd2f-64c7-4971-a4e6-bd1f4e1b4de5.png"
               alt="Nestira Finance Logo"
               className="w-8 h-8 object-contain"
             />
