@@ -1,10 +1,11 @@
-
 import { useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Upload, FileText, Loader2, AlertCircle, X } from "lucide-react";
+import { Upload, FileText, Loader2, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+// import { useCandidateStore } from "@/store/candidate-store/CandidateStore";
 import { useCandidateStore } from "@/store/candidate store/CandidateStore";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CVUploaderProps {
   onCVParsed: (data: any) => void;
@@ -14,7 +15,8 @@ interface CVUploaderProps {
 export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
-  const { sendCVtoBackend } = useCandidateStore();
+  const { sendCVtoBackend, generateCandidatesEmbeddings } = useCandidateStore();
+  const { currentUser } = useAuth();
 
   const handleDrag = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -63,86 +65,41 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
 
     setIsUploading(true);
 
-
     try {
-      const uploadCV = await sendCVtoBackend(file);
+  
+      const uploadResult = await sendCVtoBackend(file);
 
-      if (!uploadCV.success) {
-        toast.error("Please upload a .pdf or .docx resume");
-        toast.error(uploadCV.message);
-      } else {
-        toast(uploadCV.message);
+      console.log('====== uploadResult ===> ', uploadResult);
+
+      if (!uploadResult.success) {
+        toast.error(uploadResult.message || "Upload failed");
+        throw new Error("Upload failed");
       }
-
-      // Simulate API call for CV parsing
-      await new Promise(resolve => setTimeout(resolve, 3000));
-
-      // Simulate parsing success/failure (80% success rate for demo)
-      const parsingSuccess = Math.random() > 0.2;
-
-      if (!parsingSuccess) {
-        throw new Error("Parsing failed");
-      }
-
-      // Mock parsed data optimized for MENA finance sector
-      const mockParsedData = {
-        personalInfo: {
-          fullName: "Ahmed Al-Rashid",
-          email: "ahmed.alrashid@email.com",
-          phone: "+971 50 123 4567",
-          location: "Dubai, UAE",
-          linkedin: "linkedin.com/in/ahmed-alrashid",
-          summary: "Senior Finance Professional with 8+ years of experience in investment banking and financial analysis across the MENA region. Expertise in Islamic finance, risk management, and cross-border-c M&A transactions. Fluent in Arabic and English with deep understanding of Gulf market dynamics."
-        },
-        experience: [
-          {
-            title: "Senior Financial Analyst",
-            company: "Emirates NBD",
-            location: "Dubai, UAE",
-            startDate: "2020-01",
-            endDate: "",
-            current: true,
-            description: "• Led financial modeling for Sukuk issuances worth AED 2B+\n• Developed risk assessment frameworks for regional corporate lending\n• Managed client relationships with high-net-worth individuals across GCC"
-          },
-          {
-            title: "Investment Banking Associate",
-            company: "First Abu Dhabi Bank",
-            location: "Abu Dhabi, UAE",
-            startDate: "2018-06",
-            endDate: "2019-12",
-            current: false,
-            description: "• Executed M&A transactions in oil & gas sector worth $500M+\n• Prepared pitch materials for sovereign wealth fund investments\n• Conducted due diligence for cross-border-c acquisitions"
-          }
-        ],
-        education: [
-          {
-            degree: "Master of Finance (Islamic Banking)",
-            institution: "American University of Sharjah",
-            graduationYear: "2018",
-            gpa: "3.8"
-          },
-          {
-            degree: "Bachelor of Business Administration",
-            institution: "UAE University",
-            graduationYear: "2016",
-            gpa: "3.6"
-          }
-        ],
-        skills: {
-          technical: ["Islamic Finance", "Financial Modeling", "Risk Analysis", "Portfolio Management", "Sukuk Structuring"],
-          software: ["Excel Advanced", "Bloomberg Terminal", "SAP", "Tableau", "Python", "MATLAB"],
-          certifications: ["CFA Level III", "CIPA (Certified Islamic Professional Accountant)", "FRM"],
-          languages: ["Arabic (Native)", "English (Fluent)", "French (Conversational)"]
+      if (uploadResult.success) {
+        console.log('====== generateCandidatesEmbeddings ===> ', generateCandidatesEmbeddings);
+        const emb = await generateCandidatesEmbeddings(currentUser.uid);
+        if (emb.success) {
+          toast.success("embeding done successfully!");
         }
-      };
+      }
 
-      onCVParsed(mockParsedData);
+      // التحقق من وجود البيانات
+      if (!uploadResult.cvData) {
+        console.warn('No CV data received from backend');
+        toast.error("No data extracted from resume");
+        throw new Error("No CV data");
+      }
+
+      console.log('====== Parsed CV Data ===> ', uploadResult.cvData);
+
+      // استدعاء الدالة لتمرير البيانات
+      onCVParsed(uploadResult.cvData);
       toast.success("Resume uploaded and parsed successfully!");
 
     } catch (error) {
-      console.log("CV parsing failed:", error);
+      console.error("CV processing failed:", error);
 
-      // Show failure message with option to continue manually
+      // عرض رسالة الخطأ
       toast.error(
         <div className="space-y-2">
           <p className="font-medium">We couldn't auto-fill your resume this time</p>
@@ -151,11 +108,9 @@ export function CVUploader({ onCVParsed, onParsingFailed }: CVUploaderProps) {
         { duration: 5000 }
       );
 
-      // Call the failure callback to switch to manual mode
+      // استدعاء callback الفشل للتبديل للوضع اليدوي
       if (onParsingFailed) {
-        setTimeout(() => {
-          onParsingFailed();
-        }, 2000);
+        onParsingFailed();
       }
 
     } finally {

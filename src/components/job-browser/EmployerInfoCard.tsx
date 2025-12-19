@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  Building, 
-  Users, 
-  MapPin, 
-  ExternalLink, 
+import {
+  Building,
+  Users,
+  MapPin,
+  ExternalLink,
   MessageCircle,
   CheckCircle,
   Globe,
@@ -27,14 +27,21 @@ interface EmployerProfile {
   linkedinUrl?: string;
   websiteUrl?: string;
   allowMessages?: boolean;
+  id: string;
 }
 
 interface EmployerInfoCardProps {
   employer: EmployerProfile;
   compact?: boolean;
+  onStartChat?: (employer: EmployerProfile) => void;
 }
 
-export function EmployerInfoCard({ employer, compact = false }: EmployerInfoCardProps) {
+// interface EmployerInfoCardProps {
+//   employer: EmployerProfile;
+//   compact?: boolean;
+// }
+
+export function EmployerInfoCard({ employer, compact = false, onStartChat }: EmployerInfoCardProps) {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -47,7 +54,7 @@ export function EmployerInfoCard({ employer, compact = false }: EmployerInfoCard
   const getSizeLabel = (size: string) => {
     const sizeMap: { [key: string]: string } = {
       "1-10": "1-10 Employees",
-      "11-50": "11-50 Employees", 
+      "11-50": "11-50 Employees",
       "51-200": "51-200 Employees",
       "201-500": "201-500 Employees",
       "501-1000": "501-1000 Employees",
@@ -56,20 +63,20 @@ export function EmployerInfoCard({ employer, compact = false }: EmployerInfoCard
     return sizeMap[size] || size;
   };
 
-  const displayName = employer.type === "individual" 
-    ? employer.name 
+  const displayName = employer.type === "individual"
+    ? employer.name
     : employer.companyName || employer.name;
 
   return (
     <Card className="bg-card/50 border-border-c/50">
       <CardHeader className="pb-3">
         <div className="flex items-center gap-3">
-          <Avatar className="h-12 w-12">
+          {/* <Avatar className="h-12 w-12">
             <AvatarImage src={employer.logo} alt={displayName} />
             <AvatarFallback className="bg-primary-c/10 text-primary-c font-semibold">
               {getInitials(displayName)}
             </AvatarFallback>
-          </Avatar>
+          </Avatar> */}
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="font-semibold text-foreground">
@@ -158,18 +165,31 @@ export function EmployerInfoCard({ employer, compact = false }: EmployerInfoCard
         )}
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2 pt-2">
-          {employer.allowMessages && (
+        <div className="flex items-center gap-2 pt-2 flex-col w-full ">
+          {/* {employer.allowMessages && (
             <Button variant="outline" size="sm" className="text-xs">
               <MessageCircle className="w-3 h-3 mr-1" />
               Message Recruiter
             </Button>
+          )} */}
+
+          {employer.allowMessages && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs w-full"
+              onClick={() => onStartChat?.(employer)}
+            >
+              <MessageCircle className="w-3 h-3 mr-1" />
+              Message Recruiter
+            </Button>
           )}
+
           {employer.websiteUrl && (
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="text-xs"
+            <Button
+              variant="outline"
+              size="sm"
+              className="text-xs w-full"
               onClick={() => window.open(employer.websiteUrl, '_blank')}
             >
               <Globe className="w-3 h-3 mr-1" />

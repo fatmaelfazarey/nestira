@@ -18,6 +18,7 @@ import {
 import { toast } from 'sonner';
 import { useAuth } from '@/contexts/AuthContext';
 import GoogleLogin from '../GoogleLogin';
+import { useSharedStore } from '@/store/Shared store/sharedStore';
 
 
 const SignAsEmployer = () => {
@@ -40,6 +41,7 @@ const SignAsEmployer = () => {
 
     const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
     const [photoPreview, setPhotoPreview] = useState<string>('');
+    const { newUser } = useSharedStore();
 
     // Company Info
     const [companyInfo, setCompanyInfo] = useState({
@@ -225,12 +227,16 @@ const SignAsEmployer = () => {
         };
 
         try {
-            await signup(personalInfo.businessEmail, personalInfo.password, profileData);
-            toast.success('Account created successfully! Welcome aboard');
+            const res = await signup(personalInfo.businessEmail, personalInfo.password, profileData);
+            if (res.uid) {
+                toast.success('Account created successfully! Welcome aboard');
 
-            setTimeout(() => {
-                navigate('/employer');
-            }, 500);
+                setTimeout(() => {
+                    navigate('/employer');
+                }, 500);
+                await newUser(res);
+            }
+
         } catch (error: any) {
             console.error("Signup error:", error);
 

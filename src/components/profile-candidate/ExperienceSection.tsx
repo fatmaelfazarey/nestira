@@ -11,6 +11,8 @@ interface ExperienceSectionProps {
 }
 
 export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
+
+  console.log('exper data =======> ', data)
   const addExperience = () => {
     const newExp = {
       title: "",
@@ -59,7 +61,7 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
           <Briefcase className="w-5 h-5 text-secondary-c" />
           Work Experience
         </CardTitle>
-        <Button 
+        <Button
           size="sm"
           onClick={addExperience}
           className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground"
@@ -75,8 +77,8 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
               <div className="flex justify-between items-start mb-4">
                 <h4 className="font-semibold text-foreground">Experience {index + 1}</h4>
                 {data.length > 1 && (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => removeExperience(index)}
                     className="hover:bg-destructive/10 hover:text-destructive hover:border-destructive/50"
@@ -85,28 +87,28 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
                   </Button>
                 )}
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <Input 
+                <Input
                   placeholder="Job Title *"
                   value={exp.title}
                   onChange={(e) => updateExperience(index, 'title', e.target.value)}
                   className="focus:ring-2 focus:ring-secondary-c/50"
                 />
-                <Input 
+                <Input
                   placeholder="Company Name *"
                   value={exp.company}
                   onChange={(e) => updateExperience(index, 'company', e.target.value)}
                   className="focus:ring-2 focus:ring-secondary-c/50"
                 />
-                <Input 
+                <Input
                   placeholder="Location"
                   value={exp.location}
                   onChange={(e) => updateExperience(index, 'location', e.target.value)}
                   className="focus:ring-2 focus:ring-secondary-c/50"
                 />
                 <div className="flex items-center gap-2">
-                  <input 
+                  <input
                     type="checkbox"
                     checked={exp.current}
                     onChange={(e) => updateExperience(index, 'current', e.target.checked)}
@@ -115,11 +117,11 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
                   <label className="text-sm">Current Position</label>
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1 block">Start Date</label>
-                  <Input 
+                  <Input
                     type="month"
                     value={exp.startDate}
                     onChange={(e) => updateExperience(index, 'startDate', e.target.value)}
@@ -128,7 +130,7 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-foreground mb-1 block">End Date</label>
-                  <Input 
+                  <Input
                     type="month"
                     value={exp.current ? "" : exp.endDate}
                     onChange={(e) => updateExperience(index, 'endDate', e.target.value)}
@@ -137,12 +139,12 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
                   />
                 </div>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-foreground">Key Achievements</label>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     size="sm"
                     onClick={() => addAchievement(index)}
                     className="hover:bg-secondary-c/10 hover:text-secondary-c"
@@ -151,18 +153,18 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
                     Add
                   </Button>
                 </div>
-                
+
                 {exp.achievements.map((achievement: string, achIndex: number) => (
                   <div key={achIndex} className="flex gap-2">
-                    <Textarea 
+                    <Textarea
                       placeholder="• Describe your achievement with specific metrics and impact..."
                       value={achievement}
                       onChange={(e) => updateAchievement(index, achIndex, e.target.value)}
                       className="min-h-[60px] flex-1 focus:ring-2 focus:ring-secondary-c/50"
                     />
                     {exp.achievements.length > 1 && (
-                      <Button 
-                        variant="outline" 
+                      <Button
+                        variant="outline"
                         size="sm"
                         onClick={() => removeAchievement(index, achIndex)}
                         className="hover:bg-destructive/10 hover:text-destructive"
@@ -176,7 +178,7 @@ export function ExperienceSection({ data, onChange }: ExperienceSectionProps) {
             </CardContent>
           </Card>
         ))}
-        
+
         {data.length === 0 && (
           <div className="text-center py-8">
             <Briefcase className="w-12 h-12 text-muted-c-foreground mx-auto mb-4" />

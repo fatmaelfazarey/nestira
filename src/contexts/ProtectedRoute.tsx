@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useAuth } from "./AuthContext"; // hook اللي بيرجع currentUser و role
+import { useAuth } from "./AuthContext"; 
 
 interface ProtectedRouteProps {
     allowedRoles: string[];
@@ -11,7 +11,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     const { currentUser, userData } = useAuth(); // currentUser = { id, name, role, ... }
     const location = useLocation();
 
- 
+
     if (!currentUser) {
         return <Navigate to="/" state={{ from: location }} replace />;
     }
@@ -25,6 +25,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     // console.log('--------------------------')
 
     if (localStorage.getItem('token')) {
+
         if (userData?.role === 'candidate' && localStorage.getItem('role') === 'candidate') {
             if (!allowedRoles.includes(userData?.role)) {
                 return <Navigate to="/not-access" replace />;
@@ -34,7 +35,13 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
             if (!allowedRoles.includes('employer')) {
                 return <Navigate to="/not-access" replace />;
             }
+        } else if (userData?.role === 'admin' && localStorage.getItem('role') === 'admin') {
+
+            if (!allowedRoles.includes('admin')) {
+                return <Navigate to="/not-access" replace />;
+            }
         }
+
     } else {
         return <Navigate to="/not-access" replace />;
     }
@@ -46,7 +53,7 @@ const ProtectedRoute = ({ allowedRoles, children }: ProtectedRouteProps) => {
     // }
 
 
-    // كل حاجة تمام → عرض الصفحة
+
     return <>{children}</>;
 };
 

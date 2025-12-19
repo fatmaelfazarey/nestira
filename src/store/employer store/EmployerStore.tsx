@@ -1,10 +1,13 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { IP } from '../Path';
+import { candidatesData } from '@/data/candidatesData';
+import { toast } from 'sonner';
 // export const IP ='http://localhost:3000';
 const path = `${IP}/api/employer/`;
+const adminPath = `${IP}/api/admin/`;
 
 export const useEmployerStore = () => {
-    const { currentUser } = useAuth();
+    const { currentUser, userData } = useAuth();
 
     const addJob = async (jobData: Record<string, any>, setError: (error: string | null) => void, setLoading: (loading: boolean) => void
     ): Promise<void> => {
@@ -58,12 +61,22 @@ export const useEmployerStore = () => {
 
                 }),
             });
+            const data = await response.json();
 
+            //  Handle 403 - reached plan limit
+            if (response.status === 403) {
+                toast.error(data.message || "You reached your plan limit");
+                return null;
+            }
             if (!response.ok) {
+
                 throw new Error("Failed to add job");
             }
-            const data = await response.json();
-            console.log("Job added successfully");
+            // const data = await response.json();
+            // console.log("Job added successfully");
+            // if (!data.success && !data.allowed) {
+            //     toast(data.message);
+            // }
             return data;
         } catch (err: any) {
             setError(err.message);
@@ -119,11 +132,17 @@ export const useEmployerStore = () => {
 
                 }),
             });
+            const data = await response.json();
+            //  Handle 403 - reached plan limit
+            if (response.status === 403) {
+                toast.error(data.message || "You reached your plan limit");
+                return null;
+            }
 
             if (!response.ok) {
                 throw new Error("Failed to add job");
             }
-            const data = await response.json();
+
             console.log("Job added successfully");
             return data;
         } catch (err: any) {
@@ -173,6 +192,41 @@ export const useEmployerStore = () => {
             }
         } finally {
             setJobsLoading(false);
+        }
+    }
+
+    const getJob = async (jobId: number) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}jobs/${jobId}`;
+        // console.log('token :  ', token)
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                throw new Error(`Failed to fetch job: ${errorMessage}`);
+
+            }
+            const data = await response.json();
+            console.log('data--------', data);
+            return data;
+
+        } catch (error) {
+            if (error instanceof Error) {
+                console.error('Error fetching job:', error.message);
+            } else {
+                console.error('Unexpected error:', error);
+            }
         }
     }
 
@@ -435,8 +489,8 @@ export const useEmployerStore = () => {
 
         }
     }
-    const updateHiringStage = async (newStage: any, jobId: number) => {
-        const url = `${path}jobs/applications/hiringStage/${jobId}`;
+    const updateHiringStage = async (newStage: any, jobApplicationId: number, CandidateUID: any, jobId: any) => {
+        const url = `${path}jobs/applications/hiringStage/${jobApplicationId}`;
         if (!currentUser) {
             console.warn('No current user found');
             return { success: false, message: 'User not authenticated' };
@@ -454,7 +508,9 @@ export const useEmployerStore = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    hiring_stage: newStage
+                    hiring_stage: newStage,
+                    candidate_uid: CandidateUID,
+                    job_id: jobId
                 }),
             });
 
@@ -554,9 +610,10 @@ export const useEmployerStore = () => {
             console.warn('No current user found');
             return { success: false, message: 'User not authenticated' };
         }
+        console.warn(currentUser);
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quizzes`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quizzes`;
         // const token = `Bearer ${localStorage.getItem('token')}`;
         try {
             const response = await fetch(url, {
@@ -646,7 +703,7 @@ export const useEmployerStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quiz/${quizId}`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz/${quizId}`;
         const pad = (num: number) => String(num).padStart(2, '0');
 
         try {
@@ -715,7 +772,7 @@ export const useEmployerStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quiz`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz`;
         const pad = (num: number) => String(num).padStart(2, '0');
 
         try {
@@ -723,7 +780,7 @@ export const useEmployerStore = () => {
 
             const formData = new FormData();
 
-            formData.append('job_id', quizData.job_id);
+            // formData.append('job_id', quizData.job_id);
             formData.append('title', quizData.title);
             formData.append('description', quizData.description);
             formData.append('method', quizData.method);
@@ -762,7 +819,12 @@ export const useEmployerStore = () => {
             });
 
             const data = await response.json();
-
+            //  const data = await response.json();
+            //  Handle 403 - reached plan limit
+            if (response.status === 403) {
+                toast.error(data.message || "You reached your plan limit");
+                return null;
+            }
             if (!response.ok) {
                 console.error("Backend error:", data);
                 const message = data?.errors?.[0]?.msg || data?.message || "Failed to add quiz";
@@ -779,6 +841,54 @@ export const useEmployerStore = () => {
         }
     };
 
+    const generateAiQuiz = async (quizDescription: any) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz/ai-generate`;
+
+
+        try {
+            console.log('quizDescription ============= >', quizDescription);
+
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'Authorization': token,
+                 'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    { ...quizDescription }
+                ),
+            });
+
+            const data = await response.json();
+            //  const data = await response.json();
+            //  Handle 403 - reached plan limit
+            if (response.status === 403) {
+                toast.error(data.message || "You reached your plan limit");
+                return null;
+            }
+            if (!response.ok) {
+                console.error("Backend error:", data);
+                const message = data?.errors?.[0]?.msg || data?.message || "Failed to generate quiz";
+                alert(message);
+                return { success: false, message };
+            }
+
+
+            return { success: true, data };
+
+        } catch (error: any) {
+            console.error('Unexpected error:', error);
+            return { success: false, message: 'Unexpected error occurred' };
+        }
+    };
+
 
     const updateQuizStatus = async (quizId: Number, newStatus: string) => {
         if (!currentUser) {
@@ -787,7 +897,7 @@ export const useEmployerStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quiz/status/${quizId}`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz/status/${quizId}`;
         try {
 
             // console.log('quizData ============= >', quizData);
@@ -826,7 +936,7 @@ export const useEmployerStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quiz/${quizId}`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz/${quizId}`;
         try {
             const response = await fetch(url, {
                 method: "DELETE",
@@ -862,7 +972,7 @@ export const useEmployerStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quiz/candidates/${jobId}`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz/candidates/${jobId}`;
 
         try {
             const response = await fetch(url, {
@@ -892,7 +1002,7 @@ export const useEmployerStore = () => {
         }
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quizzes/${quizId}/assign-candidates`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quizzes/${quizId}/assign-candidates`;
 
         try {
             const response = await fetch(url, {
@@ -933,7 +1043,7 @@ export const useEmployerStore = () => {
         setDataError(null);
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quizzes/${quizId}`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quizzes/${quizId}`;
 
         try {
             const response = await fetch(url, {
@@ -981,7 +1091,7 @@ export const useEmployerStore = () => {
         setQuizReviewError(null);
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-        const url = `${path}quiz-candidates/${quizCandidateId}/review`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz-candidates/${quizCandidateId}/review`;
 
         try {
             const response = await fetch(url, {
@@ -1018,51 +1128,6 @@ export const useEmployerStore = () => {
         }
     }
 
-    // const updateQuestionScore = async (quizCandidateId: number, questionId: number, score: number, isCorrect: any) => {
-    //     if (!currentUser) {
-    //         console.warn('No current user found');
-    //         return { success: false, message: 'User not authenticated' };
-    //     }
-
-
-
-    //     const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
-    //     const url = `${path}quiz-candidates/score/${quizCandidateId}`;
-
-    //     try {
-    //         const response = await fetch(url, {
-    //             method: "PATCH",
-    //             headers: {
-    //                 Authorization: token,
-    //                 "Content-Type": "application/json",
-    //             },
-    //         });
-
-    //         const result = await response.json();
-
-    //         if (!response.ok) {
-    //             throw new Error(result.message || "Failed to fetch assign data");
-    //         }
-
-    //         if (!result.data) {
-    //             throw new Error("No  Quiz Review data returned from server");
-    //         }
-
-
-    //         console.log(" Quiz Review Data:", result.data);
-    //         return result;
-
-    //     } catch (error: any) {
-    //         const message = error.message || "Unexpected error occurred";
-
-    //         console.error("Error fetching Quiz Review:", message);
-
-    //         return message;
-
-    //     }
-    // }
-
-
     const updateQuestionScore = async (
         quizCandidateId: number,
         questionId: number,
@@ -1076,7 +1141,7 @@ export const useEmployerStore = () => {
 
         const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
         // const url = `${path}candidate-answer/${quizCandidateId}/score`;
-        const url = `${path}quiz-candidates/${quizCandidateId}/score`;
+        const url = `${userData.role === 'admin' ? adminPath : path}quiz-candidates/${quizCandidateId}/score`;
 
         try {
             const response = await fetch(url, {
@@ -1107,12 +1172,705 @@ export const useEmployerStore = () => {
         }
     };
 
+    const getAllCandidates = async (setCandidates: any, setCandidatesLoading: any, setCandidatesError: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+        console.log('start get candidates ... ')
 
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}all-candidates`;
+        setCandidatesLoading(true)
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to get candidates");
+            }
+            setCandidates(result.data)
+            console.log('Candidates => ', result.data)
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  gtting candidates:", message);
+            setCandidatesError(error)
+        } finally {
+            setCandidatesLoading(false)
+        }
+
+    }
+
+    const UnlockCandidates = async (setUnlockData: any, candidatesID: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+        console.log('start get candidates ... ')
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}unlock-candidaes/${candidatesID}`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const result = await response.json();
+
+            //  const data = await response.json();
+
+            //  Handle 403 - reached plan limit
+            if (response.status === 403) {
+                toast.error(result.message || "You reached your plan limit");
+                return null;
+            }
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to get candidates");
+            }
+            setUnlockData(result.data)
+            console.log('unlocked candidates data => ', result.data)
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  gtting candidates:", message);
+
+        }
+
+    }
+
+    const sendInvitation = async (candidatesID: any, jobsId: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+        console.log('start get candidates ... ')
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}invitation-sent/${candidatesID}`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }, body: JSON.stringify({
+                    jobIds: jobsId
+                })
+            });
+
+            const result = await response.json();
+
+
+            //  Handle 403 - reached plan limit
+            if (response.status === 403) {
+                toast.error(result.message || "You reached your plan limit");
+                return null;
+            }
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to invite");
+            }
+
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  gtting candidates:", message);
+
+        }
+    }
+
+
+    const gatAllFolders = async (setFolders: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}folders`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to get candidates");
+            }
+            setFolders(result.data)
+            console.log('Candidates => ', result.data)
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  gtting candidates:", message);
+
+        }
+    }
+
+    const gatCandudatesFolders = async (folderId: any, setFolderCandidates: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}folders/${folderId}/candidates`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to get candidates");
+            }
+            setFolderCandidates(result.data?.candidates)
+            console.log('Candidates => ', result.data)
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  gtting candidates:", message);
+        }
+    }
+
+    const addCandidatesToFolder = async (folderId: any, candidateId: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}folders/${folderId}/candidates`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+
+
+                    candidateId: candidateId
+
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to get candidates");
+            }
+
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  gtting candidates:", message);
+        }
+    }
+
+    const createNewFolder = async (folderName: string) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}folders`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    folderName: folderName
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to add folder");
+            }
+
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  add folder:", message);
+        }
+    }
+
+    // const deleteFolder = async (folderId: any) => {
+    //     if (!currentUser) {
+    //         console.warn("No current user found");
+    //         return { success: false, message: "User not authenticated" };
+    //     }
+
+
+    //     const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+    //     const url = `${path}folders/${folderId}`;
+
+
+    //     try {
+    //         const response = await fetch(url, {
+    //             method: "DELETE",
+    //             headers: {
+    //                 Authorization: token,
+    //                 "Content-Type": "application/json",
+    //             },
+    //         });
+
+    //         const result = await response.json();
+
+    //         if (!response.ok) {
+    //             throw new Error(result.message || "Failed to add folder");
+    //         }
+
+
+    //         return result;
+    //     } catch (error: any) {
+    //         const message = error.message || "Unexpected error occurred";
+    //         console.error("Error  add folder:", message);
+    //     }
+    // }
+
+    const deleteFolder = async (folderId: string) => {
+        if (!currentUser) {
+            console.warn("No authenticated user found.");
+            return { success: false, message: "You must be logged in to perform this action." };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}folders/${folderId}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to delete the folder.");
+            }
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "An unexpected error occurred while deleting the folder.";
+            console.error("Error deleting folder:", message);
+
+            return {
+                success: false,
+                message,
+            };
+        }
+    };
+
+    const updateFolderName = async (folderId: string, newName: string) => {
+        if (!currentUser) {
+            console.warn("No authenticated user found.");
+            return { success: false, message: "You must be logged in to perform this action." };
+        }
+
+        if (!newName?.trim()) {
+            return { success: false, message: "Folder name cannot be empty." };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}folders/${folderId}`;
+
+        try {
+            const response = await fetch(url, {
+                method: "PATCH",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ folderName: newName }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to update folder name.");
+            }
+
+            return {
+                success: true,
+                message: "Folder name updated successfully.",
+                data: result,
+            };
+        } catch (error: any) {
+            const message = error.message || "An unexpected error occurred while updating folder name.";
+            console.error("Error updating folder name:", message);
+
+            return {
+                success: false,
+                message,
+            };
+        }
+    };
+
+    const deleteCandidateFromFolder = async (folderId: any, candidateId: any) => {
+        if (!currentUser) {
+            console.warn("No authenticated user found.");
+            return {
+                success: false,
+                message: "You must be logged in to perform this action.",
+            };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}folders/${folderId}/candidates`;
+
+        try {
+            const response = await fetch(url, {
+                method: "DELETE",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ candidateId }),
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to delete candidate from folder.");
+            }
+
+            return {
+                success: true,
+                message: result.message || "Candidate deleted successfully from the folder.",
+            };
+        } catch (error: any) {
+            const message =
+                error.message ||
+                "An unexpected error occurred while deleting the candidate from the folder.";
+            console.error("Error deleting candidate from folder:", message);
+
+            return {
+                success: false,
+                message,
+            };
+        }
+    };
+
+
+    const aiSearch = async (query: any) => {
+        if (!currentUser) {
+            console.warn("No authenticated user found.");
+            return {
+                success: false,
+                message: "You must be logged in to perform this action.",
+            };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}ai-search-candidates`;
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    query: query
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "search faild");
+            }
+
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("search faild:", message);
+        }
+    }
+
+    const unlockedCandidatesBackend = async () => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}unlocked`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to get candidates");
+            }
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  gtting candidates:", message);
+        }
+    }
+
+    const sendCompanyDoctoBackend = async (file: File) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${IP}/api/uploads/company-document`;
+
+        try {
+
+            const formData = new FormData();
+            formData.append('docs', file);
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'Authorization': token,
+                },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorMessage = await response.json();
+                throw new Error(`Failed to upload company doc : ${errorMessage.message}`);
+            }
+
+            const data = await response.json();
+            console.log('upload company doc response:', data);
+            return data;
+        } catch (error) {
+            console.error('Error upload company doc :', error);
+            return { success: false };
+        }
+    }
+
+
+    const bookingMeeting = async (bookingData: any) => {
+
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}booking-meetings`;
+
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ...bookingData
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to Booking Meeting");
+            }
+
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  Booking Meeting:", message);
+        }
+
+    }
+
+    const getHelpArticles = async () => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}help-article`;
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to GET help article");
+            }
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  GET-help-article:", message);
+        }
+    }
+
+    const getAllPlans = async () => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}plans`;
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to GET  plans");
+            }
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  GET plans:", message);
+        }
+    }
+
+    const subscriptionsHistory = async () => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}plans/subscriptions-history`;
+        try {
+            const response = await fetch(url, {
+                method: "GET",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to GET  subscriptionsHistory");
+            }
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  GET subscriptionsHistory:", message);
+        }
+    }
+
+    const planSubscriptions = async (paymentData: any, planId: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false, message: "User not authenticated" };
+        }
+
+        console.log('paymentData', paymentData)
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${path}plan-subscriptions/${planId}`;
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    Authorization: token,
+                    "Content-Type": "application/json",
+                }, body: JSON.stringify({
+                    ...paymentData
+                })
+            });
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(result.message || "Failed to planSubscriptions");
+            }
+
+            return result;
+        } catch (error: any) {
+            const message = error.message || "Unexpected error occurred";
+            console.error("Error  planSubscriptions:", message);
+        }
+    }
     return {
 
         addJob,
         addIntern,
         getJobs,
+        getJob,
         deleteJob,
         updateStatus,
         updateJob,
@@ -1130,6 +1888,25 @@ export const useEmployerStore = () => {
         assignCandidates,
         getAssignDataToQuiz,
         quizReview,
-        updateQuestionScore
+        updateQuestionScore,
+        getAllCandidates,
+        UnlockCandidates,
+        sendInvitation,
+        gatAllFolders,
+        gatCandudatesFolders,
+        addCandidatesToFolder,
+        createNewFolder,
+        deleteFolder,
+        updateFolderName,
+        deleteCandidateFromFolder,
+        aiSearch,
+        unlockedCandidatesBackend,
+        sendCompanyDoctoBackend,
+        bookingMeeting,
+        getHelpArticles,
+        getAllPlans,
+        subscriptionsHistory,
+        planSubscriptions,
+        generateAiQuiz
     };
 };

@@ -1,5 +1,5 @@
 
-import { DashboardLayout } from '@/components/DashboardLayout';
+// import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -133,7 +133,14 @@ const JobPosts = () => {
     e.preventDefault();
     e.stopPropagation();
 
-    const newStatus = status === 'Active' ? 'Paused' : 'Active';
+    // const newStatus = status === 'Active' ? 'Paused' : 'Active';
+    // const newStatus = status === "Active" ? "Paused" : status === "Paused" ? "Cancel" : status;
+const newStatus = status === "Active"
+  ? "Paused"
+  : status === "Paused"
+  ? "Cancel"
+  : "Active"; 
+
     const res = await updateStatus(jobId, newStatus);
 
     if (res.success) {
@@ -278,7 +285,7 @@ const JobPosts = () => {
   // Usage in your component:
   // const salaryDisplay = formatSalary(job);
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
@@ -309,6 +316,7 @@ const JobPosts = () => {
                     <div className="flex items-center gap-3 mb-2">
                       <h3 className="text-xl font-semibold">{job.title}</h3>
                       <Badge
+                        // variant={job.status === 'Active' ? 'default' : 'secondary'}
                         variant={job.status === 'Active' ? 'default' : 'secondary'}
                         className={
                           job.status === 'Active'
@@ -365,7 +373,8 @@ const JobPosts = () => {
                       variant="outline"
                       size="sm"
                       onClick={(e) => handleArchiveJob(e, job.id, job.status)}
-                      title={job.status === 'Active' ? 'Pause Job' : 'Activate Job'}
+                      // title={job.status === 'Active' ? 'Pause Job' : 'Activate Job'}
+                      title={job.status === "Active" ? "Paused" : job.status === "Paused" ? "Cancel" : job.status}
                       className="hover:bg-secondary-c active:bg-gray-100"
                     >
                       <Archive className="w-4 h-4" />
@@ -422,22 +431,26 @@ const JobPosts = () => {
         isEditing={true}
       />
 
-      {selectedJob && (
-        <JobPreviewModal
-          open={isJobPreviewModalOpen}
-          onOpenChange={setIsJobPreviewModalOpen}
-          jobData={prepareJobForPreview(selectedJob)}
-        />
-      )}
+      {
+        selectedJob && (
+          <JobPreviewModal
+            open={isJobPreviewModalOpen}
+            onOpenChange={setIsJobPreviewModalOpen}
+            jobData={prepareJobForPreview(selectedJob)}
+          />
+        )
+      }
 
-      {selectedJob && (
-        <JobAnalyticsModal
-          open={isAnalyticsModalOpen}
-          onOpenChange={setIsAnalyticsModalOpen}
-          jobData={prepareJobForPreview(selectedJob)}
-        />
-      )}
-    </DashboardLayout>
+      {
+        selectedJob && (
+          <JobAnalyticsModal
+            open={isAnalyticsModalOpen}
+            onOpenChange={setIsAnalyticsModalOpen}
+            jobData={prepareJobForPreview(selectedJob)}
+          />
+        )
+      }
+    </div >
   );
 };
 

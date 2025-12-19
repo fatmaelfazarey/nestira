@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { DashboardLayout } from '@/components/DashboardLayout';
+// import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -24,7 +24,7 @@ interface AlertSection {
 
 const EmailAlertsSettings = () => {
   const { toast } = useToast();
-  
+
   const [frequency, setFrequency] = useState('immediately');
   const [alertSections, setAlertSections] = useState<AlertSection[]>([
     {
@@ -66,8 +66,8 @@ const EmailAlertsSettings = () => {
       if (idx === sectionIndex) {
         return {
           ...section,
-          settings: section.settings.map(setting => 
-            setting.id === settingId 
+          settings: section.settings.map(setting =>
+            setting.id === settingId
               ? { ...setting, enabled: !setting.enabled }
               : setting
           )
@@ -130,13 +130,13 @@ const EmailAlertsSettings = () => {
   };
 
   const getTotalEnabledCount = () => {
-    return alertSections.reduce((total, section) => 
+    return alertSections.reduce((total, section) =>
       total + section.settings.filter(setting => setting.enabled).length, 0
     );
   };
 
   return (
-    <DashboardLayout>
+    <div>
       <div className="max-w-4xl mx-auto space-y-6 pb-24">
         {/* Header */}
         <div className="space-y-2">
@@ -181,7 +181,7 @@ const EmailAlertsSettings = () => {
           {alertSections.map((section, sectionIndex) => {
             const Icon = section.icon;
             const enabledCount = section.settings.filter(s => s.enabled).length;
-            
+
             return (
               <Card key={section.title} className="overflow-hidden">
                 <CardHeader className="bg-gray-50/50">
@@ -241,7 +241,7 @@ const EmailAlertsSettings = () => {
           </Button>
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

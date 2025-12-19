@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { UserCheck, Calendar, X } from "lucide-react";
 import { toast } from "sonner";
+import { useEmployerStore } from "@/store/employer store/EmployerStore";
+import { calendly } from "@/store/Path";
 
 interface NestiraRecruitModalProps {
   open: boolean;
@@ -18,22 +20,41 @@ interface NestiraRecruitModalProps {
 }
 
 export function NestiraRecruitModal({ open, onOpenChange }: NestiraRecruitModalProps) {
+  const { bookingMeeting } = useEmployerStore();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     roleNeed: "",
-    notes: ""
+    notes: "",
+    type: "hiring_requirements"
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    // console.log("---- NestiraRecruitModal ------", formData);
+
+    // formData : {
+    //     "fullName": "Fatma Mohammed Mahmoud",
+    //     "email": "fatmamohamed58001@gmail.com",
+    //     "phone": "+201050833480",
+    //     "roleNeed": "SW",
+    //     "notes": "FHYTHUYXY"
+    // }
+
+
     e.preventDefault();
     if (!formData.fullName || !formData.email) {
       toast.error("Please fill in required fields");
       return;
     }
-    toast.success("Form submitted! Please select a time to speak with us.");
-    console.log("Nestira Recruit Form Data:", formData);
+    const booked = await bookingMeeting(formData);
+
+    if (booked.success) {
+      toast.success("Form submitted! Please select a time to speak with us.");
+      // console.log("Nestira Recruit Form Data:", formData);
+    }
+
+
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -41,7 +62,8 @@ export function NestiraRecruitModal({ open, onOpenChange }: NestiraRecruitModalP
   };
 
   const handleCalendarClick = () => {
-    window.open("https://calendly.com/your-calendly-url", "_blank");
+    // window.open("https://calendly.com/your-calendly-url", "_blank");
+    window.open(calendly, "_blank");
   };
 
   return (

@@ -36,21 +36,25 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
 }) => {
   return (
     <Card className="hover:shadow-lg transition-all duration-300 relative">
+           {/* <p className="text-sm text-gray-600">{candidate.id}</p> */}
+      
       <CardHeader>
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-3">
             <Avatar className="w-12 h-12">
               <AvatarImage src={candidate.photo} alt={candidate.name} />
-              <AvatarFallback>{candidate.name.charAt(0)}</AvatarFallback>
+              <AvatarFallback>{candidate.name?.charAt(0)}</AvatarFallback>
             </Avatar>
             <div className="flex-1">
               <CardTitle className="text-lg flex items-center gap-2">
                 <span>{candidate.name}</span>
-                <span className="text-lg">{getCountryFlag(candidate.country)}</span>
+                {/* <span className="text-lg">{getCountryFlag(candidate.country)}</span>| */}
               </CardTitle>
               <p className="text-sm text-gray-600">{candidate.title}</p>
+                 
             </div>
           </div>
+          
           <div className="flex items-center gap-3">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -75,14 +79,14 @@ export const CandidateCard: React.FC<CandidateCardProps> = ({
                 </p>
               </TooltipContent>
             </Tooltip>
-            <Button 
+            {/* <Button 
               variant="ghost" 
               size="sm" 
               onClick={() => onToggleFavorite(candidate.id)} 
               className="text-yellow-500 hover:text-yellow-600 p-1"
             >
               <Star className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} />
-            </Button>
+            </Button> */}
           </div>
         </div>
       </CardHeader>

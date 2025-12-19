@@ -1,5 +1,7 @@
 
-import { useState, useMemo } from "react";
+
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,9 +14,13 @@ import {
   Download,
   Mail,
   FileText,
-  ExternalLink
+  ExternalLink,
+  Loader2,
+  AlertCircle,
+  X
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { IP } from "@/store/Path";
 
 interface BlogArticle {
   id: number;
@@ -22,104 +28,73 @@ interface BlogArticle {
   description: string;
   content: string;
   category: string;
-  secondaryCategory: string;
-  readTime: string;
-  date: string;
+  secondary_category: string;
+  read_time: string;
+  created_at: string;
+  time_ago: string;
   tags: string[];
-  bgImage: string;
-  trending: boolean;
+  image_path: string;
+  trending: number;
+  target_audience?: string[];
+  topics?: string[];
+  type?: string; // Add type field for content type filtering
+  experience_level?: string; // Add experience level field
+}
+
+interface ApiResponse {
+  success: boolean;
+  data: BlogArticle[];
 }
 
 export default function Blog() {
-  const [isTrendingEnabled, setIsTrendingEnabled] = useState(true);
+  const navigate = useNavigate();
+  const [isTrendingEnabled, setIsTrendingEnabled] = useState(false);
   const [selectedAudience, setSelectedAudience] = useState("Show All");
-  const [selectedContentType, setSelectedContentType] = useState("Blog");
+  const [selectedContentType, setSelectedContentType] = useState("Show All");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [isFiltersExpanded, setIsFiltersExpanded] = useState(true);
   const [email, setEmail] = useState("");
   const [selectedArticle, setSelectedArticle] = useState<BlogArticle | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [articles, setArticles] = useState<BlogArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const blogArticles: BlogArticle[] = [
-    {
-      id: 1,
-      title: "Finance Skills That Will Get You Hired in 2024",
-      description: "Master these in-demand technical and soft skills to stand out in today's competitive finance job market.",
-      content: "Full article content would go here...",
-      category: "Skill Building",
-      secondaryCategory: "Career Growth",
-      readTime: "7 min read",
-      date: "5/14/2024",
-      tags: ["New", "Trending"],
-      bgImage: "bg-gradient-to-br from-blue-400 to-green-400",
-      trending: true
-    },
-    {
-      id: 2,
-      title: "Remote Finance Jobs: How to Position Yourself",
-      description: "Essential strategies for landing remote finance positions and building your virtual professional brand.",
-      content: "Full article content would go here...",
-      category: "Remote Readiness",
-      secondaryCategory: "Career Growth",
-      readTime: "6 min read",
-      date: "5/9/2024",
-      tags: ["New"],
-      bgImage: "bg-gradient-to-br from-pink-400 to-blue-400",
-      trending: false
-    },
-    {
-      id: 3,
-      title: "Finance Salary Negotiation: Your 2024 Guide",
-      description: "Data-driven insights and proven tactics to negotiate your best compensation package.",
-      content: "Full article content would go here...",
-      category: "Salary Insights",
-      secondaryCategory: "Career Growth",
-      readTime: "8 min read",
-      date: "5/4/2024",
-      tags: [],
-      bgImage: "bg-gradient-to-br from-purple-400 to-pink-400",
-      trending: true
-    },
-    {
-      id: 4,
-      title: "AI Interview Prep for Finance Professionals",
-      description: "How AI is changing finance recruitment and how to prepare for AI-assisted interviews.",
-      content: "Full article content would go here...",
-      category: "Interview Prep",
-      secondaryCategory: "AI in Finance",
-      readTime: "5 min read",
-      date: "4/27/2024",
-      tags: ["Trending"],
-      bgImage: "bg-gradient-to-br from-green-400 to-blue-400",
-      trending: true
-    },
-    {
-      id: 5,
-      title: "Top Finance Certifications Worth Your Time",
-      description: "Which certifications actually boost your career prospects and earning potential in 2024.",
-      content: "Full article content would go here...",
-      category: "Certifications & Tools",
-      secondaryCategory: "Skill Building",
-      readTime: "9 min read",
-      date: "3/24/2024",
-      tags: [],
-      bgImage: "bg-gradient-to-br from-orange-400 to-red-400",
-      trending: false
-    },
-    {
-      id: 6,
-      title: "Finance Resume That Gets Past ATS Systems",
-      description: "Optimize your resume for applicant tracking systems while showcasing your finance expertise.",
-      content: "Full article content would go here...",
-      category: "Resume Tips",
-      secondaryCategory: "Career Growth",
-      readTime: "6 min read",
-      date: "3/9/2024",
-      tags: [],
-      bgImage: "bg-gradient-to-br from-teal-400 to-green-400",
-      trending: false
-    }
-  ];
+  // Fetch data from backend
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`${IP}/api/blogs`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch articles: ${response.status}`);
+        }
+
+        const data: ApiResponse = await response.json();
+
+        if (data.success) {
+          setArticles(data.data);
+        } else {
+          throw new Error('Failed to load articles');
+        }
+      } catch (err) {
+        console.error('Error fetching articles:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load articles');
+        toast({
+          title: "Failed to load articles",
+          description: "Please try again later.",
+          variant: "destructive"
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
 
   const reports = [
     {
@@ -138,21 +113,60 @@ export default function Blog() {
     }
   ];
 
-  const contentTypes = ["Blog", "Report", "Survey", "Case Study"];
-  const audiences = ["Show All", "Entry Level", "Mid-Level", "Senior Level"];
-  const topicFocus = [
-    "Skill Building", "Career Growth", "Remote Readiness",
-    "Salary Insights", "Certifications & Tools", "Interview Prep",
-    "Resume Tips", "AI in Finance"
-  ];
+  // Generate content types dynamically from articles
+  const contentTypes = useMemo(() => {
+    const types = new Set<string>();
+    articles.forEach(article => {
+      if (article.type) types.add(article.type);
+    });
+    return ["Show All", ...Array.from(types).sort()];
+  }, [articles]);
+
+  // Generate audiences dynamically from articles
+  const audiences = useMemo(() => {
+    const levels = new Set<string>();
+    articles.forEach(article => {
+      if (article.experience_level) {
+        levels.add(article.experience_level);
+      }
+      if (article.target_audience) {
+        article.target_audience.forEach(audience => levels.add(audience));
+      }
+    });
+    return ["Show All", ...Array.from(levels).sort()];
+  }, [articles]);
+
+  // Generate topics dynamically from articles
+  const topicFocus = useMemo(() => {
+    const topics = new Set<string>();
+    articles.forEach(article => {
+      if (article.category) topics.add(article.category);
+      if (article.secondary_category) topics.add(article.secondary_category);
+      if (article.topics) article.topics.forEach(topic => topics.add(topic));
+    });
+    return Array.from(topics).sort();
+  }, [articles]);
 
   // Filter articles based on current selections
   const filteredArticles = useMemo(() => {
-    let filtered = [...blogArticles];
+    let filtered = [...articles];
 
     // Apply trending filter
     if (isTrendingEnabled) {
-      filtered = filtered.filter(article => article.trending);
+      filtered = filtered.filter(article => article.trending === 1);
+    }
+
+    // Apply audience filter (experience level)
+    if (selectedAudience !== "Show All") {
+      filtered = filtered.filter(article =>
+        article.experience_level === selectedAudience ||
+        (article.target_audience && article.target_audience.includes(selectedAudience))
+      );
+    }
+
+    // Apply content type filter
+    if (selectedContentType !== "Show All") {
+      filtered = filtered.filter(article => article.type === selectedContentType);
     }
 
     // Apply topic filters
@@ -160,13 +174,14 @@ export default function Blog() {
       filtered = filtered.filter(article =>
         selectedTopics.some(topic =>
           article.category === topic ||
-          article.secondaryCategory.includes(topic)
+          article.secondary_category === topic ||
+          (article.topics && article.topics.includes(topic))
         )
       );
     }
 
     return filtered;
-  }, [isTrendingEnabled, selectedTopics]);
+  }, [articles, isTrendingEnabled, selectedAudience, selectedContentType, selectedTopics]);
 
   const handleTopicToggle = (topic: string) => {
     setSelectedTopics(prev =>
@@ -180,12 +195,15 @@ export default function Blog() {
     setSelectedArticle(article);
   };
 
+  const handleFullArticleClick = (article: BlogArticle) => {
+    navigate(`/career-insights/${article.id}`);
+  };
+
   const handleReportDownload = (report: any) => {
     setIsLoading(true);
 
     // Simulate download
     setTimeout(() => {
-      // In a real app, this would trigger an actual download
       window.open(report.url, '_blank');
       toast({
         title: "Download Started",
@@ -210,9 +228,54 @@ export default function Blog() {
     }, 1000);
   };
 
+  // Check if any filters are active
+  const isFiltered = isTrendingEnabled ||
+    selectedAudience !== "Show All" ||
+    selectedContentType !== "Show All" ||
+    selectedTopics.length > 0;
+
+  // Clear all filters
+  const clearAllFilters = () => {
+    setIsTrendingEnabled(false);
+    setSelectedAudience("Show All");
+    setSelectedContentType("Show All");
+    setSelectedTopics([]);
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto" />
+          <p className="text-gray-600 text-lg">Loading articles...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md">
+          <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+          <h2 className="text-xl font-semibold text-gray-900">Failed to load articles</h2>
+          <p className="text-gray-600">{error}</p>
+          <Button
+            onClick={() => window.location.reload()}
+            className="mt-4"
+          >
+            Try Again
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-foreground mb-2">Career Insights & Resources</h1>
@@ -228,14 +291,26 @@ export default function Blog() {
                 <div className="flex items-center gap-2 mb-6">
                   <Filter className="w-5 h-5 text-primary-c" />
                   <h2 className="text-lg font-semibold text-foreground">Filters & Sorting</h2>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
-                    className="ml-auto"
-                  >
-                    <ChevronDown className={`w-4 h-4 text-muted-c-foreground transition-transform ${isFiltersExpanded ? 'rotate-180' : ''}`} />
-                  </Button>
+                  <div className="ml-auto flex items-center gap-2">
+                    {isFiltered && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={clearAllFilters}
+                        className="h-auto px-2 py-1 text-xs"
+                      >
+                        <X className="w-3 h-3 mr-1" />
+                        Clear All
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setIsFiltersExpanded(!isFiltersExpanded)}
+                    >
+                      <ChevronDown className={`w-4 h-4 text-muted-c-foreground transition-transform ${isFiltersExpanded ? 'rotate-180' : ''}`} />
+                    </Button>
+                  </div>
                 </div>
 
                 {isFiltersExpanded && (
@@ -317,10 +392,14 @@ export default function Blog() {
             {/* Results Summary */}
             <div className="mb-6">
               <p className="text-sm text-muted-c-foreground">
-                Showing {filteredArticles.length} of {blogArticles.length} articles
-                {selectedTopics.length > 0 && (
+                Showing {filteredArticles.length} of {articles.length} articles
+                {isFiltered && (
                   <span className="ml-2">
-                    • Filtered by: {selectedTopics.join(", ")}
+                    •
+                    {isTrendingEnabled && " Trending"}
+                    {selectedAudience !== "Show All" && ` • ${selectedAudience}`}
+                    {selectedContentType !== "Show All" && ` • ${selectedContentType}`}
+                    {selectedTopics.length > 0 && ` • ${selectedTopics.join(", ")}`}
                   </span>
                 )}
               </p>
@@ -332,13 +411,10 @@ export default function Blog() {
                 <p className="text-muted-c-foreground">No articles match your current filters.</p>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    setSelectedTopics([]);
-                    setIsTrendingEnabled(false);
-                  }}
+                  onClick={clearAllFilters}
                   className="mt-4"
                 >
-                  Clear Filters
+                  Clear All Filters
                 </Button>
               </Card>
             ) : (
@@ -349,13 +425,17 @@ export default function Blog() {
                     className="overflow-hidden hover:shadow-lg transition-all duration-200 cursor-pointer group"
                     onClick={() => handleArticleClick(article)}
                   >
-                    <div className={`h-40 ${article.bgImage} relative flex items-center justify-center`}>
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
-                      <div className="relative z-10 text-center">
-                        <div className="w-16 h-16 bg-white/20 rounded-lg backdrop-blur-sm flex items-center justify-center mb-2 group-hover:scale-105 transition-transform">
-                          <span className="text-2xl font-bold text-white">📊</span>
-                        </div>
-                      </div>
+                    {/* Image Container */}
+                    <div className="h-40 relative overflow-hidden">
+                      <img
+                        src={article.image_path}
+                        alt={article.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        onError={(e) => {
+                          e.currentTarget.src = "/nestira-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                       {/* Tags */}
                       <div className="absolute top-4 left-4 flex gap-2">
@@ -367,7 +447,21 @@ export default function Blog() {
                             {tag}
                           </Badge>
                         ))}
+                        {article.trending === 1 && (
+                          <Badge className="bg-red-500 text-white">
+                            Trending
+                          </Badge>
+                        )}
                       </div>
+
+                      {/* Content Type Badge */}
+                      {article.type && (
+                        <div className="absolute top-4 right-4">
+                          <Badge className="bg-blue-500 text-white text-xs">
+                            {article.type}
+                          </Badge>
+                        </div>
+                      )}
 
                       {/* Category badge at bottom */}
                       <div className="absolute bottom-4 left-4 right-4">
@@ -389,17 +483,24 @@ export default function Blog() {
                         <Badge variant="outline" className="text-xs">
                           {article.category}
                         </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {article.secondaryCategory}
-                        </Badge>
+                        {article.secondary_category && (
+                          <Badge variant="outline" className="text-xs">
+                            {article.secondary_category}
+                          </Badge>
+                        )}
+                        {article.experience_level && (
+                          <Badge variant="secondary" className="text-xs">
+                            {article.experience_level}
+                          </Badge>
+                        )}
                       </div>
 
                       <div className="flex items-center justify-between text-xs text-muted-c-foreground">
                         <div className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          <span>{article.readTime}</span>
+                          <span>{article.read_time}</span>
                         </div>
-                        <span>{article.date}</span>
+                        <span>{article.time_ago}</span>
                       </div>
                     </CardContent>
                   </Card>
@@ -504,16 +605,19 @@ export default function Blog() {
                     <div className="flex items-center gap-4 text-sm text-muted-c-foreground mb-4">
                       <div className="flex items-center gap-1">
                         <Clock className="w-3 h-3" />
-                        <span>{selectedArticle.readTime}</span>
+                        <span>{selectedArticle.read_time}</span>
                       </div>
-                      <span>{selectedArticle.date}</span>
+                      <span>{selectedArticle.time_ago}</span>
                       <Badge variant="outline">{selectedArticle.category}</Badge>
+                      {selectedArticle.type && (
+                        <Badge variant="secondary">{selectedArticle.type}</Badge>
+                      )}
                     </div>
                   </div>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => window.open(`/blog/${selectedArticle.id}`, '_blank')}
+                    onClick={() => handleFullArticleClick(selectedArticle)}
                   >
                     <ExternalLink className="w-4 h-4 mr-1" />
                     Full Article

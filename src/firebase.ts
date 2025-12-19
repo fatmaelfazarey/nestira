@@ -3,6 +3,8 @@ import { initializeApp } from "firebase/app"
 import { getAuth, GoogleAuthProvider } from "firebase/auth"
 import { getFirestore } from "firebase/firestore";
 
+import { getDatabase } from "firebase/database";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDXyN2RU9o4iBWzQiZ2vWaA8dylMygbdbo",
   authDomain: "neistra-e68ee.firebaseapp.com",
@@ -16,5 +18,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)
 export const db = getFirestore(app);
+
+export const realtimeDB = getDatabase(app);
 
 export { app }

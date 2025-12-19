@@ -35,7 +35,7 @@ export function ResumeBuilderHeader({
       </div>
 
       {/* Target Job Title */}
-      <Card className="border-secondary-c/20 bg-secondary-c/5">
+      {/* <Card className="border-secondary-c/20 bg-secondary-c/5">
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
             <Target className="w-5 h-5 text-secondary-c" />
@@ -52,7 +52,7 @@ export function ResumeBuilderHeader({
             </div>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Entry Points */}
       <Card className="border-border-c shadow-sm">
@@ -108,7 +108,7 @@ export function ResumeBuilderHeader({
           </Button>
           <Button onClick={onDownload} className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground" size="sm">
             <Download className="w-4 h-4 mr-2" />
-            Download PDF
+            Download ATS CV
           </Button>
         </div>
       </div>

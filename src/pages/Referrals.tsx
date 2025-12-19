@@ -1,5 +1,5 @@
 
-import { DashboardLayout } from '@/components/DashboardLayout';
+// import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,7 +21,7 @@ const Referrals = () => {
   ];
 
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-8 p-8">
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900">Referrals</h1>
@@ -156,7 +156,7 @@ const Referrals = () => {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

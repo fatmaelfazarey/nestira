@@ -12,6 +12,21 @@ import AuthProvider from "@/contexts/AuthContext";
 import ProtectedRoute from "./contexts/ProtectedRoute";
 import UploadResumeToAutoFill from "./components/UploadResumeToAutoFill";
 import TakeAssessment from "./pages/TakeAssessment";
+import ChatTest from "./components/ChatTest";
+import Dashboard from "./pages/Admin Pages/Dashboard";
+import SingleArticle from "./pages/SingleArticle";
+import SingleBlog from "./pages/SingleBlog";
+import Candidates from "./pages/Admin Pages/Candidates";
+// import AdminCandidateVerification from "./pages/Admin Pages/AdminCandidateVerification";
+import Meetings from "./pages/Admin Pages/Meetings";
+import AdminHelpCenter from './pages/Admin Pages/AdminHelpCenter';
+import Plans from "./pages/Admin Pages/Plans";
+import Employers from "./pages/Admin Pages/Employers";
+import Blogs from "./pages/Admin Pages/Blogs";
+import Quizzes from "./pages/Admin Pages/Quizzes";
+import AdminProfile from "./pages/Admin Pages/AdminProfile";
+import ATSResumeBuilder from "./pages/ATSResumeBuilder";
+// import AdminInbox from "./pages/Admin Pages/Inbox";
 
 // Lazy load Employer Pages
 const Index = lazy(() => import("./pages/Index"));
@@ -49,6 +64,7 @@ const CandidateDashboard = lazy(() => import("./components/CandidateDashboard"))
 // Lazy load Layouts
 const EmployerLayout = lazy(() => import("./components/EmployerLayout"));
 const CandidateLayout = lazy(() => import("./components/CandidateLayout"));
+const AdminLayout = lazy(() => import("./components/Layouts/AdminLayout"));
 
 // Lazy load Landing/Auth pages
 const LandingPage = lazy(() => import("./pages/LandingPage"));
@@ -90,8 +106,14 @@ const App = () => (
                   {/* <Route path="jobs" element={<JobsPage />} />
                   <Route path="about" element={<AboutPage />} />
                   <Route path="contact" element={<Contact />} /> */}
+                  <Route path="/blog-reports" element={<BlogReports />} />
+                  <Route path="/blog-reports/:id" element={<SingleArticle />} />
+
+                  <Route path="career-insights" element={<Blog />} />
+                  <Route path="career-insights/:id" element={<SingleBlog />} />
 
                 </Route>
+
 
                 {/* Auth Pages */}
                 {/* <Route path="/up" element={<UploadResumeToAutoFill />} /> */}
@@ -101,6 +123,14 @@ const App = () => (
                 <Route path="signup/employer" element={<SignAsEmployer />} />
                 <Route path="/forget-password" element={<ForgetPassword />} />
                 <Route path="/update-password" element={<UpdatePassword />} />
+                {/* <Route path="/blog-reports" element={<BlogReports />} />
+                <Route path="/blog-reports/:id" element={<SingleArticle />} />
+
+                <Route path="career-insights" element={<Blog />} />
+                <Route path="career-insights/:id" element={<SingleBlog />} /> */}
+                {/* <Route path="/blog-reports" element={<BlogReports />} />
+
+                <Route path="career-insights" element={<Blog />} /> */}
 
                 {/* Employer Routes */}
                 <Route path="/employer/*" element={
@@ -123,12 +153,13 @@ const App = () => (
                   <Route path="offer-templates" element={<OfferTemplates />} />
                   <Route path="billing" element={<Billing />} />
                   <Route path="referrals" element={<Referrals />} />
-                  <Route path="blog" element={<BlogReports />} />
+                  <Route path="blog-reports" element={<BlogReports />} />?
                   <Route path="help" element={<HelpCenter />} />
                   <Route path="email-alerts" element={<EmailAlertsSettings />} />
                   <Route path="nesti-sign" element={<NestiSign />} />
                   <Route path="profile-settings" element={<ProfileSettings />} />
                   <Route path="candidate-profile/:Uid" element={<Profile />} />
+                  {/* <Route path="chat-test" element={<ChatTest />} /> */}
 
                 </Route>
 
@@ -139,6 +170,7 @@ const App = () => (
                   </ProtectedRoute>
                 }>
                   <Route index element={<CandidateDashboard />} />
+                  <Route path="inbox" element={<Inbox />} />
                   <Route path="applications" element={<Applications />} />
                   <Route path="assessments" element={<Assessments />} />
                   {/* <Route path="take-assessment/:assessmentId" element={<TakeAssessment />} /> */}
@@ -146,7 +178,9 @@ const App = () => (
                   <Route path="profile" element={<Profile />} />
                   <Route path="saved" element={<SavedJobs />} />
                   <Route path="ats-resume" element={<ATSResume />} />
-                  <Route path="blog" element={<Blog />} />
+
+                  {/* <Route path="ats-resume" element={<ATSResumeBuilder />} /> */}
+                  <Route path="career-insights" element={<Blog />} />
                   <Route path="jobs" element={<JobBrowser />} />
 
                 </Route>
@@ -159,6 +193,30 @@ const App = () => (
                     </ProtectedRoute>
                   }
                 />
+
+                {/* Admin Routes */}
+                <Route path="/admin/*" element={
+                  <ProtectedRoute allowedRoles={["admin"]}>
+                    <AdminLayout />
+                  </ProtectedRoute>
+                }>
+                  <Route index element={<Dashboard />} />
+                  <Route path="candidates" element={<Candidates />} />
+                  <Route path="employers" element={<Employers />} />
+                  <Route path="employers/:Uid" element={<ProfileSettings />} />
+                  <Route path="blogs" element={<Blogs />} />
+                  {/* <Route path="quizzes" element={<Quizzes />} /> */}
+                  <Route path="quizzes" element={<QuizBuilder />} />
+                  <Route path="quizzes/:quizId" element={<Quiz />} />
+                  <Route path="profile" element={<AdminProfile />} />
+                  {/* <Route path="very" element={<AdminCandidateVerification />} /> */}
+                  <Route path="candidate-profile/:Uid" element={<Profile />} />
+                  <Route path="meetings" element={<Meetings />} />
+                  {/* <Route path="inbox" element={<AdminInbox />} /> */}
+                  <Route path="inbox" element={<Inbox />} />
+                  <Route path="help" element={<AdminHelpCenter />} />
+                  <Route path="plans" element={<Plans />} />
+                </Route>
 
                 {/* Catch all */}
                 <Route path="/not-access" element={<NotFound />} />

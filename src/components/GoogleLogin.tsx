@@ -4,6 +4,7 @@ import { doc, getDoc, setDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "@/firebase";
 import { toast } from "sonner";
+import { useSharedStore } from "@/store/Shared store/sharedStore";
 
 type GoogleLoginProps = {
     role?: "candidate" | "employer" | null;
@@ -14,6 +15,7 @@ export default function GoogleLogin({ role = null }: GoogleLoginProps) {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const { newUser } = useSharedStore();
 
     const saveTokenToStorage = async (user: any) => {
         try {
@@ -50,7 +52,8 @@ export default function GoogleLogin({ role = null }: GoogleLoginProps) {
                     const userData = userSnapshot.data();
                     const userRole = userData.role;
 
-                    console.log("Existing user role:", userRole);
+                    console.log('userData', userData)
+               
 
                     switch (userRole) {
                         case "candidate":
@@ -94,6 +97,7 @@ export default function GoogleLogin({ role = null }: GoogleLoginProps) {
                     toast.success("Login successful! Welcome back");
 
                     navigate("/candidate/profile");
+                    await newUser();
 
                 } else if (role === 'employer') {
                     // If role is provided via prop, use it
@@ -116,6 +120,7 @@ export default function GoogleLogin({ role = null }: GoogleLoginProps) {
                     localStorage.setItem("role", 'recruiter');
 
                     navigate("/employer/profile-settings");
+                    await newUser();
                 } else {
                     // If no role is provided for new user, redirect to role selection
                     console.log("New user - no role provided, redirecting to role selection");

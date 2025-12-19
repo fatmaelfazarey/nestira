@@ -12,7 +12,9 @@ import {
   Bookmark,
   BookmarkCheck,
   Filter,
-  X
+  X,
+  AlertCircle,
+  RefreshCw
 } from "lucide-react";
 import { JobCard } from "@/components/job-browser/JobCard";
 import { FilterSidebar } from "@/components/job-browser/FilterSidebar";
@@ -24,6 +26,9 @@ import { useToast } from "@/hooks/use-toast";
 import { EasyApplyModal } from "@/components/job-browser/EasyApplyModal";
 // import { getAllJobs, saveJob } from "@/store/candidate store/store";
 import { useCandidateStore } from "@/store/candidate store/CandidateStore";
+import ChatPopup from "@/components/Chat/ChatPopup";
+import { useAuth } from "@/contexts/AuthContext";
+import LoadingState from "@/components/LoadingState";
 
 interface Job {
   id: number;
@@ -194,7 +199,7 @@ export default function JobBrowser() {
     industry: [],
     country: []
   });
-  const {  getAllJobs, saveJob } = useCandidateStore();
+  const { getAllJobs, saveJob } = useCandidateStore();
 
   // Fetch jobs on component mount
   useEffect(() => {
@@ -211,7 +216,7 @@ export default function JobBrowser() {
       });
     }
   };
-  
+
   const filteredJobs = jobs.filter(job => {
     const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       job.company.toLowerCase().includes(searchTerm.toLowerCase());
@@ -253,7 +258,7 @@ export default function JobBrowser() {
     const response = await saveJob(jobId);
     if (response.success) {
       toast({
-        title:  response.message ,
+        title: response.message,
       });
     } else {
       console.log('job not save ');
@@ -321,10 +326,30 @@ export default function JobBrowser() {
     return "Low Match";
   };
 
+  //#region chat
+  const { currentUser } = useAuth();
+  // Add these states with the existing states
+  const [showChatPopup, setShowChatPopup] = useState(false);
+  const [selectedEmployer, setSelectedEmployer] = useState<any>(null);
+
+  // Add this handler function with the other handlers
+  const handleStartChat = (employer: any) => {
+    // console.log('----------=======employer---------', employer)
+    setSelectedEmployer(employer);
+    setShowChatPopup(true);
+  };
+
+  const handleCloseChatPopup = () => {
+    setShowChatPopup(false);
+    setSelectedEmployer(null);
+  };
+
+  //#endregion
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-card border-b border-border-c p-6">
+      <div className="bg-card border-b border-border-c ">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <div>
@@ -419,6 +444,53 @@ export default function JobBrowser() {
             )}
           </div>
 
+
+          {/* Loading state */}
+          {jobsLoading && (
+            <LoadingState LoadingStateMessage='Matching Jobs' />
+
+            // <div className="flex flex-col items-center justify-center p-8 space-y-4">
+            //   <div className="flex flex-col items-center space-y-4">
+            //     <div className="flex space-x-2">
+            //       <div className="w-4 h-4 bg-gray-300 rounded-full animate-bounce [animation-delay:-0.32s] shadow-md"></div>
+            //       <div className="w-4 h-4 bg-orange-500 rounded-full animate-bounce [animation-delay:-0.16s] shadow-lg shadow-orange-200"></div>
+            //       <div className="w-4 h-4 bg-gray-300 rounded-full animate-bounce shadow-md"></div>
+            //     </div>
+            //     <div className="text-center">
+            //       <p className="text-gray-700 font-semibold text-lg">
+            //         Loading matched Jobs
+            //       </p>
+            //       <p className="text-gray-500 text-sm mt-1">
+            //         Please wait while we fetch the latest opportunities for you...
+            //       </p>
+            //     </div>
+            //   </div>
+            // </div>
+          )}
+
+          {/* Error State */}
+          {jobsError && (
+            <div className="flex flex-col items-center justify-center p-8 space-y-4 bg-white rounded-lg border border-gray-200 shadow-sm mx-4 my-6">
+              <div className="text-center">
+                <AlertCircle className="w-12 h-12 text-orange-400 mx-auto mb-3" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Oops! Something went wrong
+                </h3>
+                <p className="text-gray-600 mb-4 max-w-md">
+                  We couldn't load the job listings at the moment. {jobsError}
+                </p>
+                <Button
+                  onClick={fetchJobs}
+                  className="bg-orange-600 hover:bg-orange-700 text-white flex items-center justify-center"
+                >
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Retry
+                </Button>
+              </div>
+            </div>
+          )}
+
+
           {/* Content based on active tab */}
           {activeTab === "browse" ? (
             <div className="space-y-4">
@@ -449,7 +521,7 @@ export default function JobBrowser() {
             />
           )}
 
-          {filteredJobs.length === 0 && (
+          {filteredJobs.length === 0 && !jobsLoading && (
             <div className="text-center py-12">
               <p className="text-muted-c-foreground text-lg">No jobs found matching your criteria</p>
               <Button
@@ -475,13 +547,33 @@ export default function JobBrowser() {
       </div>
 
       {/* Job Details Dialog */}
+      {/* <JobDetailsDialog
+        job={selectedJob}
+        open={showJobDetails}
+        onClose={() => setShowJobDetails(false)}
+        onSave={handleSaveJob}
+        onApply={handleApplyToJob}
+      /> */}
+
       <JobDetailsDialog
         job={selectedJob}
         open={showJobDetails}
         onClose={() => setShowJobDetails(false)}
         onSave={handleSaveJob}
         onApply={handleApplyToJob}
+        onStartChat={handleStartChat}
       />
+      {/* Chat Popup */}
+      {selectedEmployer && currentUser && (
+        <ChatPopup
+          currentUserId={currentUser.uid}
+          otherUserId={selectedEmployer.id}
+          otherUserName={selectedEmployer.name}
+          otherUserTitle={selectedEmployer.companyName || "Recruiter"}
+          isOpen={showChatPopup}
+          onClose={handleCloseChatPopup}
+        />
+      )}
 
       {/* Job Application Dialog */}
       <JobApplicationDialog

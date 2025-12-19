@@ -1,20 +1,19 @@
-
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { toast } from "sonner";
-import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardTitle, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { AspectRatio } from "@/components/ui/aspect-ratio";
-import { Clock, Send, FileText, Filter, X } from 'lucide-react';
+import { Clock, Send, FileText, Filter, X, Loader2, AlertCircle } from 'lucide-react';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import NewsletterSubscription from '@/components/blog/NewsletterSubscription';
+import { IP } from '@/store/Path';
+import { Link } from 'react-router-dom';
 
-const allAvailableTopics = ["AI in Finance", "Career Growth", "MENA/GCC Focus", "Remote Work", "Salary Trends", "Skills & Hiring", "Survey Report"];
 const topicColorMap: {
   [key: string]: string;
 } = {
@@ -24,123 +23,108 @@ const topicColorMap: {
   "Remote Work": "bg-pink-100 text-pink-800 border-pink-200 dark:bg-pink-900/50 dark:text-pink-300 dark:border-pink-700/50",
   "Salary Trends": "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/50 dark:text-yellow-300 dark:border-yellow-700/50",
   "Skills & Hiring": "bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/50 dark:text-indigo-300 dark:border-indigo-700/50",
-  "Survey Report": "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700/50"
+  "Survey Report": "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/50 dark:text-red-300 dark:border-red-700/50",
+  "Cybersecurity": "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/50 dark:text-gray-300 dark:border-gray-700/50",
+  "AI": "bg-teal-100 text-teal-800 border-teal-200 dark:bg-teal-900/50 dark:text-teal-300 dark:border-teal-700/50",
+  "Networking": "bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/50 dark:text-amber-300 dark:border-amber-700/50"
 };
+
 const audienceColorMap: {
   [key: string]: string;
 } = {
   "Hiring Manager": "bg-sky-500 text-white border-sky-600 dark:bg-sky-600 dark:border-sky-700",
-  "Finance Candidate": "bg-lime-500 text-lime-950 border-lime-600 dark:bg-lime-600 dark:text-lime-950 dark:border-lime-700"
+  "Finance Candidate": "bg-lime-500 text-lime-950 border-lime-600 dark:bg-lime-600 dark:text-lime-950 dark:border-lime-700",
+  "Students": "bg-purple-500 text-white border-purple-600 dark:bg-purple-600 dark:border-purple-700",
+  "Developers": "bg-orange-500 text-white border-orange-600 dark:bg-orange-600 dark:border-orange-700",
+  "IT Professionals": "bg-teal-500 text-white border-teal-600 dark:bg-teal-600 dark:border-teal-700"
 };
+
+// Types for the API response
+interface BlogArticle {
+  id: number;
+  type: string;
+  title: string;
+  excerpt: string;
+  image_path: string;
+  read_time: string | null;
+  views: string;
+  is_new: number;
+  is_trending: number;
+  target_audience: string[];
+  topics: string[];
+  created_at: string;
+  time_ago: string;
+}
+
+interface ApiResponse {
+  success: boolean;
+  data: BlogArticle[];
+}
+
 const BlogReports = () => {
-  const thumbnail = "/nestira-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
-  const allContent = [{
-    id: 'article-1',
-    type: 'article',
-    title: "2024 Finance Salary Trends in MENA",
-    excerpt: "Comprehensive analysis of compensation trends across financial roles in the Middle East and North Africa.",
-    topics: ["Salary Trends", "MENA/GCC Focus"],
-    readTime: "8 min read",
-    publishedAt: "2024-05-15",
-    thumbnail,
-    isNew: true,
-    targetAudience: "Hiring Manager",
-    isTrending: true
-  }, {
-    id: 'article-2',
-    type: 'article',
-    title: "The Future of Remote Finance Teams",
-    excerpt: "How distributed finance teams are reshaping the industry and what it means for hiring.",
-    topics: ["Remote Work", "Skills & Hiring"],
-    readTime: "6 min read",
-    publishedAt: "2024-05-10",
-    thumbnail,
-    isNew: true,
-    targetAudience: "Finance Candidate"
-  }, {
-    id: 'article-3',
-    type: 'article',
-    title: "Essential Skills for Finance Professionals in 2024",
-    excerpt: "The top technical and soft skills employers are looking for in finance candidates.",
-    topics: ["Skills & Hiring", "Career Growth"],
-    readTime: "5 min read",
-    publishedAt: "2024-05-05",
-    thumbnail,
-    isNew: false,
-    targetAudience: "Finance Candidate"
-  }, {
-    id: 'report-1',
-    type: 'report',
-    title: "Q2 2024 Hiring Benchmark Report",
-    excerpt: "Market insights and hiring metrics for the finance sector.",
-    topics: ["Skills & Hiring", "MENA/GCC Focus"],
-    downloadCount: "1.2K downloads",
-    publishedAt: "2024-04-20",
-    thumbnail,
-    isNew: false,
-    targetAudience: "Hiring Manager"
-  }, {
-    id: 'report-2',
-    type: 'report',
-    title: "Finance Skills Gap Analysis",
-    excerpt: "Understanding the gap between required and available skills.",
-    topics: ["Skills & Hiring", "Career Growth"],
-    downloadCount: "890 downloads",
-    publishedAt: "2024-04-15",
-    thumbnail,
-    isNew: false,
-    targetAudience: "Hiring Manager"
-  }, {
-    id: 'article-4',
-    type: 'article',
-    title: 'AI in Financial Recruitment',
-    excerpt: 'How AI is changing the landscape of finding and hiring top financial talent.',
-    topics: ["AI in Finance", "Skills & Hiring"],
-    readTime: '7 min read',
-    publishedAt: '2024-04-28',
-    thumbnail,
-    isNew: false,
-    targetAudience: "Hiring Manager",
-    isTrending: true
-  }, {
-    id: 'survey-1',
-    type: 'survey',
-    title: "Remote Work in Finance: 2024 Survey",
-    excerpt: "Survey results on remote work preferences in finance roles.",
-    topics: ["Remote Work", "Survey Report"],
-    readTime: "4 min read",
-    publishedAt: "2024-03-25",
-    thumbnail,
-    isNew: false,
-    targetAudience: "Finance Candidate"
-  }, {
-    id: 'case-study-1',
-    type: 'case-study',
-    title: "Case Study: Scaling a FinTech Startup's Finance Team",
-    excerpt: "How Company X grew its finance department by 500% in one year.",
-    topics: ["Career Growth", "Skills & Hiring", "Survey Report", "AI in Finance", "Remote Work", "MENA/GCC Focus", "Salary Trends"],
-    readTime: "9 min read",
-    publishedAt: "2024-03-10",
-    thumbnail,
-    isNew: false,
-    targetAudience: 'Hiring Manager'
-  }];
+  const [articles, setArticles] = useState<BlogArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const audiences = ['Show All', 'Hiring Manager', 'Finance Candidate'];
-  const contentTypes = [...new Set(allContent.map(item => item.type))];
-  const allTopics = [...new Set(allContent.flatMap(item => item.topics))].sort();
+
+  // Fetch data from backend
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await fetch(`${IP}/api/blog-articles`);
+
+        if (!response.ok) {
+          throw new Error(`Failed to fetch articles: ${response.status}`);
+        }
+
+        const data: ApiResponse = await response.json();
+
+        if (data.success) {
+          setArticles(data.data);
+          console.log('Data loaded from backend:', data.data);
+        } else {
+          throw new Error('Failed to load articles');
+        }
+      } catch (err) {
+        console.error('Error fetching articles:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load articles');
+        toast.error("Failed to load articles", {
+          description: "Please try again later."
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchArticles();
+  }, []);
+
+  // Generate dynamic filters from backend data
+  const allAudiences = [...new Set(articles.flatMap(item => item.target_audience))];
+  const audiences = ['Show All', ...allAudiences];
+  const contentTypes = [...new Set(articles.map(item => item.type))];
+  const allTopics = [...new Set(articles.flatMap(item => item.topics))].sort();
+
   const typeDisplayNames: {
     [key: string]: string;
   } = {
     'article': 'Blog',
     'report': 'Report',
     'survey': 'Survey',
-    'case-study': 'Case Study'
+    'case-study': 'Case Study',
+    'Article': 'Blog',
+    'Report': 'Report',
+    'Survey': 'Survey'
   };
+
   const roleFilter = searchParams.get('role') || 'Show All';
   const typeFilter = searchParams.get('types')?.split(',').filter(Boolean) || [];
   const topicFilter = searchParams.get('topics')?.split(',').filter(Boolean) || [];
   const trendingFilter = searchParams.get('trending') === 'true';
+
   const updateSearchParams = (key: string, value: string | null) => {
     const newParams = new URLSearchParams(searchParams);
     if (value === null || value === '') {
@@ -152,26 +136,77 @@ const BlogReports = () => {
       replace: true
     });
   };
+
+
   const filteredContent = useMemo(() => {
-    let content = [...allContent];
+    let content = [...articles];
+
+    // Role filter (target_audience is array in backend)
     if (roleFilter !== 'Show All') {
-      content = content.filter(item => item.targetAudience === roleFilter);
+      content = content.filter(item =>
+        item.target_audience.includes(roleFilter)
+      );
     }
+
+    // Type filter
     if (typeFilter.length > 0) {
       content = content.filter(item => typeFilter.includes(item.type));
     }
+
+    // Topic filter
     if (topicFilter.length > 0) {
-      content = content.filter(item => item.topics.some(topic => topicFilter.includes(topic)));
+      content = content.filter(item =>
+        item.topics.some(topic => topicFilter.includes(topic))
+      );
     }
+
+    // Trending filter
     if (trendingFilter) {
-      content.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+      content = content.filter(item => item.is_trending === 1);
     }
+
     return content;
-  }, [roleFilter, typeFilter, topicFilter, trendingFilter]);
-  const articles = filteredContent.filter(item => item.type !== 'report');
-  const reports = filteredContent.filter(item => item.type === 'report');
+  }, [articles, roleFilter, typeFilter, topicFilter, trendingFilter]);
+
   const isFiltered = roleFilter !== 'Show All' || typeFilter.length > 0 || topicFilter.length > 0 || trendingFilter;
-  return <DashboardLayout>
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="p-responsive">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center space-y-4">
+            <Loader2 className="w-12 h-12 animate-spin text-orange-500 mx-auto" />
+            <p className="text-gray-600 text-lg">Loading articles...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="p-responsive">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-center space-y-4 max-w-md">
+            <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+            <h2 className="text-xl font-semibold text-gray-900">Failed to load articles</h2>
+            <p className="text-gray-600">{error}</p>
+            <Button
+              onClick={() => window.location.reload()}
+              className="mt-4"
+            >
+              Try Again
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className='p-responsive'>
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Blog & Reports</h1>
@@ -194,108 +229,207 @@ const BlogReports = () => {
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex items-center gap-2">
                     <Label htmlFor="trending-switch" className="font-medium whitespace-nowrap">🔥 Trending</Label>
-                    <Switch id="trending-switch" checked={trendingFilter} onCheckedChange={checked => updateSearchParams('trending', checked ? 'true' : null)} />
+                    <Switch
+                      id="trending-switch"
+                      checked={trendingFilter}
+                      onCheckedChange={checked => updateSearchParams('trending', checked ? 'true' : null)}
+                    />
                   </div>
-                  {isFiltered && <Button variant="ghost" size="sm" className="h-auto px-2 py-1 text-xs self-end sm:self-center" onClick={() => setSearchParams({}, {
-                  replace: true
-                })}>
-                        <X className="w-3 h-3 mr-1" />
-                        Clear Filters
-                      </Button>}
+                  {isFiltered && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-auto px-2 py-1 text-xs self-end sm:self-center"
+                      onClick={() => setSearchParams({}, { replace: true })}
+                    >
+                      <X className="w-3 h-3 mr-1" />
+                      Clear Filters
+                    </Button>
+                  )}
                 </div>
                 <div className="space-y-2">
                   <Label className="font-medium">I am a...</Label>
-                  <ToggleGroup type="single" variant="outline" value={roleFilter} onValueChange={value => updateSearchParams('role', value === 'Show All' ? null : value)} className="justify-start flex-wrap">
-                    {audiences.map(audience => <ToggleGroupItem key={audience} value={audience} className="text-xs sm:text-sm">{audience}</ToggleGroupItem>)}
+                  <ToggleGroup
+                    type="single"
+                    variant="outline"
+                    value={roleFilter}
+                    onValueChange={value => updateSearchParams('role', value === 'Show All' ? null : value)}
+                    className="justify-start flex-wrap"
+                  >
+                    {audiences.map(audience => (
+                      <ToggleGroupItem key={audience} value={audience} className="text-xs sm:text-sm">
+                        {audience}
+                      </ToggleGroupItem>
+                    ))}
                   </ToggleGroup>
                 </div>
                 <div className="space-y-2">
                   <Label className="font-medium">Content Type</Label>
-                  <ToggleGroup type="multiple" variant="outline" value={typeFilter} onValueChange={value => updateSearchParams('types', value.join(','))} className="justify-start flex-wrap">
-                    {contentTypes.map(type => <ToggleGroupItem key={type} value={type} className="text-xs sm:text-sm">{typeDisplayNames[type]}</ToggleGroupItem>)}
+                  <ToggleGroup
+                    type="multiple"
+                    variant="outline"
+                    value={typeFilter}
+                    onValueChange={value => updateSearchParams('types', value.join(','))}
+                    className="justify-start flex-wrap"
+                  >
+                    {contentTypes.map(type => (
+                      <ToggleGroupItem key={type} value={type} className="text-xs sm:text-sm">
+                        {typeDisplayNames[type] || type}
+                      </ToggleGroupItem>
+                    ))}
                   </ToggleGroup>
                 </div>
                 <div className="space-y-2">
                   <Label className="font-medium">Topic Focus</Label>
-                  <ToggleGroup type="multiple" variant="outline" value={topicFilter} onValueChange={value => updateSearchParams('topics', value.join(','))} className="justify-start flex-wrap">
-                      {allTopics.map(topic => <ToggleGroupItem key={topic} value={topic} className="text-xs sm:text-sm">{topic}</ToggleGroupItem>)}
-                    </ToggleGroup>
+                  <ToggleGroup
+                    type="multiple"
+                    variant="outline"
+                    value={topicFilter}
+                    onValueChange={value => updateSearchParams('topics', value.join(','))}
+                    className="justify-start flex-wrap"
+                  >
+                    {allTopics.map(topic => (
+                      <ToggleGroupItem key={topic} value={topic} className="text-xs sm:text-sm">
+                        {topic}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
                 </div>
               </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-12">
-          {/* Left Column: Articles */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {articles.length > 0 ? articles.map(item => <Card key={item.id} className="overflow-hidden flex flex-col group hover:shadow-xl transition-all duration-300 rounded-lg">
-                  
-                  <div className="relative">
-                    <AspectRatio ratio={16 / 9}>
-                      <img src={item.thumbnail} alt={item.title} className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105" />
-                    </AspectRatio>
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    <div className="absolute top-2 left-4 flex items-center gap-2">
-                      {item.isNew && <Badge className="bg-accent text-accent-foreground border-accent-foreground/20">New</Badge>}
-                      {(item as any).isTrending && <Badge className="bg-green-600 text-white border-transparent">🔥 Trending</Badge>}
+
+        <div className="flex flex-col lg:flex-row gap-8 w-full">
+
+          <div className="flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 w-full">
+              {filteredContent.length > 0 ? filteredContent.map(item => (
+                <Link to={`/blog-reports/${item.id}`} key={item.id}>
+
+                  <Card
+                    key={item.id}
+                    className="flex flex-col group hover:shadow-2xl transition-all duration-500 ease-out rounded-xl overflow-hidden transform hover:-translate-y-2 hover:scale-[1.02]"
+                  >
+                    {/* Image Container */}
+                    <div className="relative overflow-hidden">
+                      <AspectRatio ratio={16 / 9}>
+                        <img
+                          src={item.image_path}
+                          alt={item.title}
+                          className="object-cover w-full h-full transition-all duration-700 group-hover:scale-110"
+                          onError={(e) => {
+                            // Fallback image if the original fails to load
+                            e.currentTarget.src = "/nestira-uploads/101ed80f-9435-4448-b400-3662735a2cb1.png";
+                          }}
+                        />
+                      </AspectRatio>
+
+                      {/* Gradient Overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                      {/* Badges */}
+                      <div className="absolute top-3 left-3 flex items-center gap-2">
+                        {item.is_new === 1 && (
+                          <Badge className="bg-accent text-accent-foreground border-accent-foreground/20 shadow-lg transform group-hover:scale-105 transition-transform duration-300">
+                            New
+                          </Badge>
+                        )}
+                        {item.is_trending === 1 && (
+                          <Badge className="bg-gradient-to-r from-orange-500 to-red-500 text-white border-transparent shadow-lg transform group-hover:scale-105 transition-transform duration-300">
+                            🔥 Trending
+                          </Badge>
+                        )}
+
+                        <Badge className="bg-blue-500 text-white border-transparent shadow-lg">
+                          {typeDisplayNames[item.type] || item.type}
+                        </Badge>
+                      </div>
+
+                      {/* Title Section */}
+                      <div className="absolute bottom-0 left-0 right-0 p-4 transform transition-transform duration-500 group-hover:-translate-y-1">
+                        {item.target_audience.length > 0 && (
+                          <Badge
+                            className={`mb-3 rounded-lg font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 ${audienceColorMap[item.target_audience[0] as keyof typeof audienceColorMap] || 'bg-gray-100 text-gray-800'
+                              }`}
+                          >
+                            {item.target_audience[0]}
+                          </Badge>
+                        )}
+                        <CardTitle className="text-lg font-bold leading-tight text-white drop-shadow-lg group-hover:text-amber-300 transition-colors duration-300 line-clamp-2">
+                          {item.title}
+                        </CardTitle>
+                      </div>
                     </div>
-                    <div className="absolute bottom-0 p-4">
-                        <Badge className={`mb-2 rounded-md font-bold shadow hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-200 ${audienceColorMap[item.targetAudience as keyof typeof audienceColorMap] || 'bg-gray-100 text-gray-800'}`}>{item.targetAudience}</Badge>
-                        <CardTitle className="text-lg font-bold leading-snug text-white group-hover:text-amber-300 transition-colors">{item.title}</CardTitle>
-                    </div>
-                  </div>
-                  <CardContent className="p-4 flex-grow">
-                    <div className="flex flex-wrap gap-1.5 mb-2">
-                      {item.topics.map(topic => <Badge key={topic} className={topicColorMap[topic] || 'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700'}>{topic}</Badge>)}
-                    </div>
-                    <p className="text-sm text-gray-600 line-clamp-3">{item.excerpt}</p>
-                  </CardContent>
-                  <CardFooter className="bg-gray-50/50 p-4 mt-auto">
-                    <div className="flex items-center justify-between w-full text-xs text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {'readTime' in item && item.readTime}
-                      </span>
-                      <span>{new Date(item.publishedAt).toLocaleDateString()}</span>
-                    </div>
-                  </CardFooter>
-                
-                </Card>) : <p className="text-gray-500 md:col-span-2">No articles match your criteria.</p>}
+
+                    {/* Content Section */}
+                    <CardContent className="p-5 flex-grow flex flex-col">
+                      {/* Topics */}
+                      <div className="flex flex-wrap gap-2 mb-3">
+                        {item.topics.map(topic => (
+                          <Badge
+                            key={topic}
+                            variant="secondary"
+                            className="text-xs transition-all duration-300 hover:scale-105 hover:shadow-md"
+                          >
+                            {topic}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      {/* Excerpt */}
+                      <p className="text-sm text-gray-600 line-clamp-3 flex-grow mb-4 group-hover:text-gray-700 transition-colors duration-300">
+                        {item.excerpt}
+                      </p>
+
+                      {/* Footer */}
+                      <CardFooter className="p-0 mt-auto">
+                        <div className="flex items-center justify-between w-full text-xs text-gray-500 border-t border-gray-100 pt-3 group-hover:text-gray-600 transition-colors duration-300">
+                          <span className="flex items-center gap-1.5 font-medium">
+                            <Clock className="w-3.5 h-3.5 group-hover:text-blue-500 transition-colors duration-300" />
+                            {item.read_time || '5 min'}
+                            {item.views !== "0" && item.views !== "0" && (
+                              <span className="ml-2">• {item.views} views</span>
+                            )}
+                          </span>
+                          <span className="font-medium group-hover:text-green-600 transition-colors duration-300">
+                            {item.time_ago}
+                          </span>
+                        </div>
+                      </CardFooter>
+                    </CardContent>
+                  </Card>
+                </Link>
+
+              )) : (
+                <div className="w-full text-center py-12 col-span-2">
+                  <p className="text-gray-500 text-lg">
+                    {articles.length === 0 ? 'No content available.' : 'No content matches your criteria.'}
+                  </p>
+                  {articles.length === 0 && (
+                    <Button
+                      onClick={() => window.location.reload()}
+                      className="mt-4"
+                    >
+                      Try Again
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Right Column: Reports */}
-          <div className="lg:col-span-1 space-y-6">
-            <div className="border-b pb-4 py-0 px-0 my-0 mx-8">
-              <h2 className="text-2xl font-bold text-gray-900">Reports</h2>
-              <p className="text-gray-600">In-depth analysis and data.</p>
-            </div>
-            
-            <div className="space-y-4 px-[6px]">
-              {reports.length > 0 ? reports.map(item => <Card key={item.id} className="flex items-center p-4 gap-4 hover:shadow-md transition-shadow duration-300">
-                  
-                  <div className="bg-blue-100 p-3 rounded-lg shrink-0">
-                    <FileText className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <div className="flex-grow">
-                    <p className="font-semibold text-gray-800 line-clamp-2 leading-tight">{item.title}</p>
-                    {'downloadCount' in item && <span className="text-sm text-gray-500 font-medium">{item.downloadCount}</span>}
-                  </div>
-                  <Button variant="ghost" size="icon" className="text-accent hover:text-accent/80 shrink-0" onClick={() => toast.success("Report Sent!", { description: "We've dispatched the report to your inbox. It should arrive shortly." })}>
-                    <Send className="w-5 h-5" />
-                  </Button>
-                
-                </Card>) : <p className="text-gray-500">No reports match your criteria.</p>}
-            </div>
 
-            <div className="px-2">
+          <div className="lg:w-1/3 w-full flex-shrink-0 space-y-6 mt-6 lg:mt-0">
+            <div className="transform hover:-translate-y-1 transition-transform duration-300">
               <NewsletterSubscription />
             </div>
           </div>
         </div>
       </div>
-    </DashboardLayout>;
+    </div>
+  );
 };
+
 export default BlogReports;

@@ -1,8 +1,748 @@
+// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail, Plus } from "lucide-react";
+// import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+// import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+// import { useEffect, useState } from "react";
+// import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+// import { Input } from "@/components/ui/input";
+// import { Label } from "@/components/ui/label";
+// import { Link } from "react-router-dom";
+// import { useTranslation } from "@/hooks/useTranslation";
+// import { CircularProgress } from "@/components/ui/circular-progress";
+// import { useAuth } from "@/contexts/AuthContext";
+// import { IP } from "@/store/Path";
+// import { Skeleton } from "@/components/ui/skeleton";
+
+// // Types for backend data
+// interface PlanLimit {
+//   feature: string;
+//   value: number;
+//   is_unlimited: number;
+// }
+
+// interface CurrentPlan {
+//   planId: number;
+//   name: string;
+//   price: string;
+//   limits: PlanLimit[];
+// }
+
+// interface RecruiterStatistics {
+//   posted_jobs: number;
+//   jobs_views: string;
+//   jobs_applications: string;
+//   unlocked_candidates: number;
+//   invitations_sent: number;
+//   quizzes: number;
+//   folders: number;
+//   interviews: number;
+//   total_applicants: string;
+//   current_plan: CurrentPlan;
+// }
+
+// interface JobAnalytics {
+//   views: number;
+//   applications: number;
+//   title: string;
+// }
+
+// interface DashboardData {
+//   statistics: RecruiterStatistics | null;
+//   jobAnalytics: JobAnalytics[] | null;
+//   isLoading: boolean;
+//   error: string | null;
+// }
+
+// const chartConfig = {
+//   views: {
+//     label: "Job Views",
+//     color: "hsl(220, 70%, 50%)"
+//   },
+//   applications: {
+//     label: "Applications",
+//     color: "hsl(28, 95%, 53%)"
+//   },
+//   conversion: {
+//     label: "Conversion Rate",
+//     color: "hsl(142, 70%, 45%)"
+//   }
+// };
+
+// // Helper function to get plan limit by feature
+// const getPlanLimit = (plan: CurrentPlan | null, feature: string): number => {
+//   if (!plan || !plan.limits) return 0; // Default fallback
+//   const limit = plan.limits.find(limit => limit.feature === feature);
+//   return limit ? limit.value : 0; // Default to 5 if feature not found
+// };
+
+// export function DashboardOverview() {
+//   const { userData, currentUser } = useAuth();
+//   const [userName, setUserName] = useState('');
+//   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
+//   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+//   const [showAddTeamMemberModal, setShowAddTeamMemberModal] = useState(false);
+//   const [newMemberName, setNewMemberName] = useState('');
+//   const [newMemberEmail, setNewMemberEmail] = useState('');
+//   const [dashboardData, setDashboardData] = useState<DashboardData>({
+//     statistics: null,
+//     jobAnalytics: null,
+//     isLoading: true,
+//     error: null
+//   });
+
+//   const { t } = useTranslation();
+
+//   // Generate KPI data from backend statistics
+//   const getKpiData = (stats: RecruiterStatistics | null) => [{
+//     title: "Total Jobs",
+//     value: stats?.posted_jobs.toString() || "0",
+//     subtitle: "All jobs posted",
+//     icon: Briefcase,
+//     color: "text-blue-600",
+//     bgColor: "bg-blue-50",
+//     isPositive: true,
+//     clickAction: "job-posts"
+//   }, {
+//     title: "Applications Received",
+//     value: stats?.jobs_applications || "0",
+//     subtitle: "Total applications",
+//     icon: FileText,
+//     color: "text-purple-600",
+//     bgColor: "bg-purple-50",
+//     isPositive: true,
+//     clickAction: "recruitment-board"
+//   }, {
+//     title: "Avg Applications per Job",
+//     value: stats?.posted_jobs ? (parseInt(stats.jobs_applications) / stats.posted_jobs).toFixed(1) : "0",
+//     subtitle: "Per job posted",
+//     icon: TrendingUp,
+//     color: "text-orange-600",
+//     bgColor: "bg-orange-50",
+//     isPositive: true,
+//     clickAction: "recruitment-board"
+//   }, {
+//     title: "Unlocked Candidates",
+//     value: stats?.unlocked_candidates.toString() || "0",
+//     subtitle: "Total unlocked profiles",
+//     icon: Unlock,
+//     color: "text-indigo-600",
+//     bgColor: "bg-indigo-50",
+//     isPositive: true,
+//     clickAction: "unlocked-talents"
+//   }, {
+//     title: "Interviews Scheduled",
+//     value: stats?.interviews.toString() || "0",
+//     subtitle: "Upcoming interviews",
+//     icon: Calendar,
+//     color: "text-teal-600",
+//     bgColor: "bg-teal-50",
+//     isPositive: true,
+//     clickAction: "interviews"
+//   }];
+
+//   // Generate plan usage data from backend statistics
+//   const getPlanUsageData = (stats: RecruiterStatistics | null) => [{
+//     title: "Unlocked CVs",
+//     current: stats?.unlocked_candidates || 0,
+//     total: getPlanLimit(stats?.current_plan || null, "unlocked"),
+//     icon: Unlock,
+//     color: "text-blue-600",
+//     bgColor: "bg-blue-50"
+//   }, {
+//     title: "Posted Jobs",
+//     current: stats?.posted_jobs || 0,
+//     total: getPlanLimit(stats?.current_plan || null, "jobPosts"),
+//     icon: Briefcase,
+//     color: "text-green-600",
+//     bgColor: "bg-green-50"
+//   }, {
+//     title: "Invitations Sent",
+//     current: stats?.invitations_sent || 0,
+//     total: getPlanLimit(stats?.current_plan || null, "invitations"),
+//     icon: Send,
+//     color: "text-purple-600",
+//     bgColor: "bg-purple-50"
+//   }, {
+//     title: "Quizzes Created",
+//     current: stats?.quizzes || 0,
+//     total: getPlanLimit(stats?.current_plan || null, "onlineAssessment"),
+//     icon: PuzzleIcon,
+//     color: "text-orange-600",
+//     bgColor: "bg-orange-50"
+//   }, {
+//     title: "Folders Created",
+//     current: stats?.folders || 0,
+//     total: getPlanLimit(stats?.current_plan || null, "folders") , 
+//     icon: FileText,
+//     color: "text-indigo-600",
+//     bgColor: "bg-indigo-50"
+//   }, {
+//     title: "Interviews Scheduled",
+//     current: stats?.interviews || 0,
+//     total: getPlanLimit(stats?.current_plan || null, "onlineInterview"),
+//     icon: Calendar,
+//     color: "text-red-600",
+//     bgColor: "bg-red-50",
+//     clickAction: "interviews"
+//   }];
+
+//   // Generate performance trend data from job analytics
+//   const getPerformanceTrendData = (analytics: JobAnalytics[] | null) => {
+//     if (!analytics || analytics.length === 0) {
+//       return [{
+//         metric: "No Data",
+//         views: 0,
+//         applications: 0
+//       }];
+//     }
+
+//     // Use actual job analytics data from backend
+//     return analytics.map(job => ({
+//       metric: job.title.length > 10 ? `${job.title.substring(0, 10)}...` : job.title,
+//       views: job.views,
+//       applications: job.applications
+//     }));
+//   };
+
+//   // Generate conversion rate data for pie chart
+//   const getConversionData = (stats: RecruiterStatistics | null) => {
+//     const views = parseInt(stats?.jobs_views || "0");
+//     const applications = parseInt(stats?.jobs_applications || "0");
+//     const conversionRate = views > 0 ? ((applications / views) * 100) : 0;
+
+//     // Pie chart data for views vs applications - using same colors as line chart
+//     const pieData = [
+//       { name: 'Applications', value: applications, color: '#f97316' },
+//       { name: 'Views Only', value: Math.max(0, views - applications), color: 'hsl(var(--primary))' }
+//     ];
+
+//     return {
+//       pieData,
+//       conversionRate: conversionRate.toFixed(1)
+//     };
+//   };
+
+//   const handleKpiClick = (action: string) => {
+//     console.log(`Navigating to ${action}`);
+//   };
+
+//   const handlePlanUsageClick = (action?: string) => {
+//     if (action === 'interviews') {
+//       setShowAnalyticsModal(true);
+//     }
+//   };
+
+//   const fetchRecruiterStatistics = async () => {
+//     if (!currentUser) {
+//       console.warn("No current user found");
+//       setDashboardData(prev => ({ ...prev, error: "User not authenticated", isLoading: false }));
+//       return;
+//     }
+
+//     const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+//     const url = `${IP}/api/employer/dashboard`;
+
+//     try {
+//       const response = await fetch(url, {
+//         method: "GET",
+//         headers: {
+//           Authorization: token,
+//           "Content-Type": "application/json",
+//         }
+//       });
+
+//       const result = await response.json();
+
+//       if (!response.ok) {
+//         throw new Error(result.message || "Failed to get Recruiter Statistics");
+//       }
+
+//       setDashboardData(prev => ({
+//         ...prev,
+//         statistics: result.data,
+//         isLoading: false,
+//         error: null
+//       }));
+//     } catch (error: any) {
+//       const message = error.message || "Unexpected error occurred";
+//       console.error("Error getting Recruiter Statistics:", message);
+//       setDashboardData(prev => ({ ...prev, error: message, isLoading: false }));
+//     }
+//   };
+
+//   const fetchJobAnalytics = async () => {
+//     if (!currentUser) {
+//       console.warn("No current user found");
+//       return;
+//     }
+
+//     const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+//     const url = `${IP}/api/employer/dashboard/job-analytics`;
+
+//     try {
+//       const response = await fetch(url, {
+//         method: "GET",
+//         headers: {
+//           Authorization: token,
+//           "Content-Type": "application/json",
+//         }
+//       });
+
+//       const result = await response.json();
+
+//       if (!response.ok) {
+//         throw new Error(result.message || "Failed to get Job Analytics");
+//       }
+
+//       setDashboardData(prev => ({
+//         ...prev,
+//         jobAnalytics: result.data,
+//         isLoading: false
+//       }));
+//     } catch (error: any) {
+//       const message = error.message || "Unexpected error occurred";
+//       console.error("Error getting Job Analytics:", message);
+//       // Continue without job analytics data
+//     }
+//   };
+
+//   useEffect(() => {
+//     const fetchData = async () => {
+//       setDashboardData(prev => ({ ...prev, isLoading: true }));
+//       setUserName(userData?.personalInfo?.fullName || '');
+//       await Promise.all([
+//         fetchRecruiterStatistics(),
+//         fetchJobAnalytics()
+//       ]);
+//     };
+
+//     fetchData();
+//   }, [userData, currentUser]);
+
+//   const kpiData = getKpiData(dashboardData.statistics);
+//   const planUsageData = getPlanUsageData(dashboardData.statistics);
+//   const performanceTrendData = getPerformanceTrendData(dashboardData.jobAnalytics);
+//   const conversionData = getConversionData(dashboardData.statistics);
+
+//   // Calculate conversion rate
+//   const views = parseInt(dashboardData.statistics?.jobs_views || "0");
+//   const applications = parseInt(dashboardData.statistics?.jobs_applications || "0");
+//   const conversionRate = views > 0 ? ((applications / views) * 100).toFixed(1) : "0.0";
+
+//   // Loading skeleton component
+//   const SkeletonCard = () => (
+//     <Card className="p-6">
+//       <div className="flex items-center gap-2 mb-4">
+//         <Skeleton className="h-5 w-5 rounded" />
+//         <Skeleton className="h-6 w-40 rounded" />
+//       </div>
+//       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+//         {Array.from({ length: 6 }).map((_, i) => (
+//           <div key={i} className="space-y-3">
+//             <div className="flex items-center justify-between">
+//               <Skeleton className="h-5 w-5 rounded" />
+//               <Skeleton className="h-4 w-10 rounded" />
+//             </div>
+//             <Skeleton className="h-4 w-20 rounded" />
+//             <Skeleton className="h-6 w-16 rounded" />
+//             <Skeleton className="h-2 w-full rounded" />
+//           </div>
+//         ))}
+//       </div>
+//     </Card>
+//   );
+
+//   if (dashboardData.isLoading) {
+//     return (
+//       <div className="space-y-6">
+//         {/* Welcome Section Skeleton */}
+//         <div className="p-6 rounded-xl bg-gray-200 animate-pulse">
+//           <div className="flex items-center gap-3 mb-3">
+//             <Skeleton className="w-10 h-10 rounded-lg" />
+//             <Skeleton className="h-6 w-64 rounded" />
+//           </div>
+//           <Skeleton className="h-4 w-96 rounded" />
+//         </div>
+
+//         {/* Plan Usage Skeleton */}
+//         <SkeletonCard />
+
+//         {/* KPI Metrics Skeleton */}
+//         <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+//           {Array.from({ length: 5 }).map((_, i) => (
+//             <Skeleton key={i} className="h-32 rounded-lg" />
+//           ))}
+//         </div>
+//       </div>
+//     );
+//   }
+
+//   if (dashboardData.error) {
+//     return (
+//       <div className="flex flex-col items-center justify-center p-12 text-center">
+//         <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
+//         <h2 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Dashboard</h2>
+//         <p className="text-gray-600 mb-6">{dashboardData.error}</p>
+//         <Button onClick={fetchRecruiterStatistics} className="bg-blue-600 hover:bg-blue-700">
+//           Try Again
+//         </Button>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="space-responsive-lg">
+//       {/* Welcome Section */}
+//       <div className="p-responsive rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
+//         <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
+//         <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/30 rounded-full opacity-60"></div>
+//         <div className="relative z-10">
+//           <div className="flex items-center gap-3 mb-3">
+//             <div className="bg-accent/20 p-2 rounded-lg shrink-0">
+//               <Briefcase className="w-5 h-5 text-accent" />
+//             </div>
+//             <h1 className="text-responsive-lg font-bold">Welcome back, {userName}!</h1>
+//           </div>
+//           <p className="text-responsive-sm text-slate-300">
+//             Here's what's happening with your hiring pipeline today.
+//           </p>
+//         </div>
+//       </div>
+
+//       {/* Plan Usage Section */}
+//       <Card className="p-responsive">
+//         <div className="flex items-center gap-2 mb-6">
+//           <CreditCard className="w-5 h-5 text-gray-600 shrink-0" />
+//           <h2 className="text-responsive-lg font-semibold text-gray-900">Plan Usage</h2>
+//         </div>
+
+//         <div className="responsive-grid-3">
+//           {planUsageData.map((item) => {
+//             const percentage = Math.round((item.current / item.total) * 100);
+//             return (
+//               <div
+//                 key={item.title}
+//                 className={`p-responsive-sm rounded-lg border border-gray-200 bg-white ${item.clickAction ? 'cursor-pointer hover:shadow-md transition-all duration-200' : ''}`}
+//                 onClick={() => item.clickAction && handlePlanUsageClick(item.clickAction)}
+//               >
+//                 <div className="flex items-center justify-between mb-3">
+//                   <item.icon className={`w-5 h-5 ${item.color} shrink-0`} />
+//                   <span className="text-responsive-sm font-medium text-gray-500">{percentage}%</span>
+//                 </div>
+//                 <div className="space-y-2">
+//                   <h3 className="text-responsive-sm font-medium text-gray-700">{item.title}</h3>
+//                   <p className="text-responsive-lg font-bold text-gray-900">
+//                     {item.current} / {item.total}
+//                   </p>
+//                   <div className="w-full bg-gray-200 rounded-full h-2">
+//                     <div
+//                       className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-red-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-green-500'}`}
+//                       style={{ width: `${percentage}%` }}
+//                     ></div>
+//                   </div>
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </Card>
+
+//       {/* KPI Metrics Row with Quick Actions */}
+//       <div className="p-responsive flex flex-col lg:flex-row gap-4 lg:gap-auto w-full justify-center items-center">
+//         {/* KPI Metrics - Takes 3 columns on lg, 5 columns on xl */}
+//         <div className="flex flex-col xs:flex-row flex-wrap gap-3 lg:gap-4 w-fit h-fit pb-2">
+//           {kpiData.map((kpi, index) => (
+//             <div
+//               key={kpi.title}
+//               className={`p-3 sm:p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2 rounded-lg h-fit min-h-[140px] sm:min-h-[160px] flex-1 min-w-[160px] sm:min-w-[180px] max-w-[250px] flex items-center justify-center`}
+//               onClick={() => handleKpiClick(kpi.clickAction)}
+//             >
+//               <div className="flex flex-col items-center text-center space-y-1 w-full">
+//                 <div className="p-1.5 rounded-lg bg-white/70 shrink-0">
+//                   <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
+//                 </div>
+//                 <div className="space-y-0.5 min-w-0 w-full flex-1 flex flex-col justify-center">
+//                   <h3 className={`text-sm xs:text-base sm:text-lg font-bold ${kpi.color} truncate w-full`}>{kpi.value}</h3>
+//                   <p className={`text-xs font-semibold ${kpi.color} opacity-90 leading-tight truncate w-full`}>{kpi.title}</p>
+//                   <p className={`text-xs ${kpi.color} opacity-70 leading-tight line-clamp-2 flex-1`}>{kpi.subtitle}</p>
+//                 </div>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+
+//         {/* Quick Actions - Takes 1 column on lg and xl */}
+//         <div className="w-full lg:w-fit bg-orange-50 border border-orange-200 rounded-lg p-4 h-fit">
+//           <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
+//             <Target className="w-5 h-5 text-orange-600 shrink-0" />
+//             Quick Actions
+//           </h3>
+//           <div className="flex flex-col w-full lg:w-fit gap-3">
+//             <Link to="talent-pool">
+//               <button className="flex items-center justify-start h-fit bg-orange-600 hover:bg-orange-700 text-white w-full text-sm sm:text-base px-3 sm:px-4 rounded-md transition-colors py-1">
+//                 <Users className="w-4 h-4 mr-3 shrink-0" />
+//                 Browse Talent Pool
+//               </button>
+//             </Link>
+//             <Link to="unlocked-talents">
+//               <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
+//                 <UserCheck className="w-4 h-4 mr-3 shrink-0" />
+//                 Unlocked Talents
+//               </button>
+//             </Link>
+//             <Link to="job-posts">
+//               <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
+//                 <FileText className="w-4 h-4 mr-3 shrink-0" />
+//                 Create Job Post
+//               </button>
+//             </Link>
+//             <Link to="quiz-builder">
+//               <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
+//                 <PuzzleIcon className="w-4 h-4 mr-3 shrink-0" />
+//                 Quiz Builder
+//               </button>
+//             </Link>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Charts Section - Views vs Applications */}
+//       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+//         {/* Performance Trend Chart - Using Real Job Analytics Data */}
+//         <Card className="p-responsive">
+//           <div className="mb-6">
+//             <h3 className="text-responsive-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+//               <TrendingUp className="w-5 h-5 text-green-500 shrink-0" />
+//               Job Performance Analytics
+//             </h3>
+//             <div className="flex-responsive">
+//               <div className="flex items-center gap-2">
+//                 <div className="w-3 h-3 rounded-full bg-primary shrink-0"></div>
+//                 <span className="text-responsive-sm text-gray-600">Applications</span>
+//               </div>
+//               <div className="flex items-center gap-2">
+//                 <div className="w-3 h-3 rounded-full bg-secondary-c shrink-0"></div>
+//                 <span className="text-responsive-sm text-gray-600">Job Views</span>
+//               </div>
+//             </div>
+//           </div>
+//           <div className="h-80 w-full">
+//             <ResponsiveContainer width="100%" height="100%">
+//               <ChartContainer config={chartConfig} className="h-full w-full">
+//                 <BarChart data={performanceTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+//                   <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" opacity={0.8} />
+//                   <XAxis
+//                     dataKey="metric"
+//                     axisLine={false}
+//                     tickLine={false}
+//                     tick={{ fontSize: 12, fill: '#64748b' }}
+//                     tickMargin={10}
+//                   />
+//                   <YAxis
+//                     axisLine={false}
+//                     tickLine={false}
+//                     tick={{ fontSize: 12, fill: '#64748b' }}
+//                     tickMargin={10}
+//                   />
+//                   <ChartTooltip content={<ChartTooltipContent />} />
+//                   <Bar dataKey="views" fill="#f97316" radius={[4, 4, 0, 0]} name="Views" />
+//                   <Bar dataKey="applications" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Applications" />
+//                 </BarChart>
+//               </ChartContainer>
+//             </ResponsiveContainer>
+//           </div>
+//         </Card>
+
+//         {/* Conversion Rate Pie Chart */}
+//         <Card className="p-responsive">
+//           <div className="mb-6">
+//             <h3 className="text-responsive-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+//               <TrendingUp className="w-5 h-5 text-green-500 shrink-0" />
+//               Conversion Rate Analysis
+//             </h3>
+//             <p className="text-responsive-sm text-gray-600">
+//               Relationship between job views and applications
+//             </p>
+//           </div>
+//           <div className="h-80 w-full">
+//             <ResponsiveContainer width="100%" height="100%">
+//               <ChartContainer config={chartConfig} className="h-full w-full">
+//                 <PieChart>
+//                   <Pie
+//                     data={conversionData.pieData}
+//                     cx="50%"
+//                     cy="50%"
+//                     labelLine={false}
+//                     outerRadius={80}
+//                     fill="#8884d8"
+//                     dataKey="value"
+//                     label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+//                   >
+//                     {conversionData.pieData.map((entry, index) => (
+//                       <Cell key={`cell-${index}`} fill={entry.color} />
+//                     ))}
+//                   </Pie>
+//                   <ChartTooltip />
+//                 </PieChart>
+//               </ChartContainer>
+//             </ResponsiveContainer>
+//           </div>
+//         </Card>
+//       </div>
+
+//       {/* Analytics Modal */}
+//       <Dialog open={showAnalyticsModal} onOpenChange={setShowAnalyticsModal}>
+//         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+//           <DialogHeader>
+//             <DialogTitle className="flex items-center gap-2">
+//               <TrendingUp className="w-5 h-5 shrink-0" />
+//               Analytics Dashboard - Backend Data
+//             </DialogTitle>
+//           </DialogHeader>
+//           <div className="space-responsive">
+//             {/* Key Metrics Overview from Backend */}
+//             <div className="responsive-grid-2">
+//               <div className="text-center p-4 bg-blue-50 rounded-lg">
+//                 <div className="text-2xl font-bold text-blue-600">{dashboardData.statistics?.jobs_views || "0"}</div>
+//                 <div className="text-responsive-sm text-blue-800">Total Job Views</div>
+//               </div>
+//               <div className="text-center p-4 bg-green-50 rounded-lg">
+//                 <div className="text-2xl font-bold text-green-600">{dashboardData.statistics?.jobs_applications || "0"}</div>
+//                 <div className="text-responsive-sm text-green-800">Applications Received</div>
+//               </div>
+//               <div className="text-center p-4 bg-orange-50 rounded-lg">
+//                 <div className="text-2xl font-bold text-orange-600">{dashboardData.statistics?.interviews || "0"}</div>
+//                 <div className="text-responsive-sm text-orange-800">Interviews Scheduled</div>
+//               </div>
+//               <div className="text-center p-4 bg-purple-50 rounded-lg">
+//                 <div className="text-2xl font-bold text-purple-600">{dashboardData.statistics?.unlocked_candidates || "0"}</div>
+//                 <div className="text-responsive-sm text-purple-800">Unlocked Candidates</div>
+//               </div>
+//             </div>
+
+//             {/* Job Analytics Details */}
+//             {dashboardData.jobAnalytics && dashboardData.jobAnalytics.length > 0 && (
+//               <Card className="p-4">
+//                 <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+//                   <BarChart3 className="w-4 h-4 shrink-0" />
+//                   Detailed Job Analytics
+//                 </h4>
+//                 <div className="space-y-3">
+//                   {dashboardData.jobAnalytics.map((job, index) => (
+//                     <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+//                       <div className="min-w-0 flex-1">
+//                         <p className="font-medium text-gray-900 truncate">{job.title}</p>
+//                         <p className="text-sm text-gray-600">
+//                           {job.views} views • {job.applications} applications
+//                         </p>
+//                       </div>
+//                       <div className="text-right">
+//                         <div className="text-lg font-bold text-green-600">
+//                           {job.views > 0 ? ((job.applications / job.views) * 100).toFixed(1) : 0}%
+//                         </div>
+//                         <div className="text-xs text-gray-500">Conversion</div>
+//                       </div>
+//                     </div>
+//                   ))}
+//                 </div>
+//               </Card>
+//             )}
+
+//             {/* Conversion Rate Summary */}
+//             <Card className="p-4">
+//               <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+//                 <Activity className="w-4 h-4 shrink-0" />
+//                 Conversion Performance
+//               </h4>
+//               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//                 <div className="text-center">
+//                   <div className="text-lg font-bold text-blue-600">{dashboardData.statistics?.jobs_views || "0"}</div>
+//                   <div className="text-xs text-gray-600">Total Views</div>
+//                 </div>
+//                 <div className="text-center">
+//                   <div className="text-lg font-bold text-orange-600">{dashboardData.statistics?.jobs_applications || "0"}</div>
+//                   <div className="text-xs text-gray-600">Total Applications</div>
+//                 </div>
+//                 <div className="text-center">
+//                   <div className="text-lg font-bold text-green-600">{conversionRate}%</div>
+//                   <div className="text-xs text-gray-600">Conversion Rate</div>
+//                 </div>
+//               </div>
+//             </Card>
+
+//             {/* Current Plan Details */}
+//             <Card className="p-4">
+//               <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+//                 <CreditCard className="w-4 h-4 shrink-0" />
+//                 Current Plan: {dashboardData.statistics?.current_plan?.name?.toUpperCase() || "FREE"}
+//               </h4>
+//               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+//                 <div className="text-center">
+//                   <div className="text-lg font-bold text-gray-900">${dashboardData.statistics?.current_plan?.price || "0.00"}</div>
+//                   <div className="text-xs text-gray-600">Monthly Price</div>
+//                 </div>
+//                 <div className="text-center">
+//                   <div className="text-lg font-bold text-gray-900">{getPlanLimit(dashboardData.statistics?.current_plan || null, "jobPosts")}</div>
+//                   <div className="text-xs text-gray-600">Job Limit</div>
+//                 </div>
+//                 <div className="text-center">
+//                   <div className="text-lg font-bold text-gray-900">{getPlanLimit(dashboardData.statistics?.current_plan || null, "invitations")}</div>
+//                   <div className="text-xs text-gray-600">Invitations Limit</div>
+//                 </div>
+//                 <div className="text-center">
+//                   <div className="text-lg font-bold text-gray-900">{getPlanLimit(dashboardData.statistics?.current_plan || null, "unlocked")}</div>
+//                   <div className="text-xs text-gray-600">Unlocked CVs Limit</div>
+//                 </div>
+//               </div>
+//             </Card>
+//           </div>
+//         </DialogContent>
+//       </Dialog>
+
+//       {/* Add Team Member Modal */}
+//       <Dialog open={showAddTeamMemberModal} onOpenChange={setShowAddTeamMemberModal}>
+//         <DialogContent className="max-w-md">
+//           <DialogHeader>
+//             <DialogTitle className="flex items-center gap-2">
+//               <Users className="w-5 h-5 shrink-0" />
+//               Add Team Member
+//             </DialogTitle>
+//           </DialogHeader>
+//           <div className="space-y-4">
+//             <div className="space-y-2">
+//               <Label htmlFor="memberName">Full Name</Label>
+//               <Input
+//                 id="memberName"
+//                 placeholder="Enter team member's name"
+//                 value={newMemberName}
+//                 onChange={e => setNewMemberName(e.target.value)}
+//               />
+//             </div>
+//             <div className="space-y-2">
+//               <Label htmlFor="memberEmail">Email Address</Label>
+//               <Input
+//                 id="memberEmail"
+//                 type="email"
+//                 placeholder="Enter email address"
+//                 value={newMemberEmail}
+//                 onChange={e => setNewMemberEmail(e.target.value)}
+//               />
+//             </div>
+//           </div>
+//         </DialogContent>
+//       </Dialog>
+//     </div>
+//   );
+// }
+
+
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, TrendingUp, Users, FileText, Briefcase, Clock, ArrowUpRight, ArrowDownRight, MoreVertical, CheckCircle, PuzzleIcon, Activity, Unlock, Eye, Target, BarChart3, UserCheck, AlertCircle, CreditCard, Send, Video, Mail, Plus } from "lucide-react";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, BarChart, Bar, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { useEffect, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -11,701 +751,749 @@ import { Link } from "react-router-dom";
 import { useTranslation } from "@/hooks/useTranslation";
 import { CircularProgress } from "@/components/ui/circular-progress";
 import { useAuth } from "@/contexts/AuthContext";
-const kpiData = [{
-  title: "Total Jobs",
-  value: "2",
-  subtitle: "All jobs posted",
-  icon: Briefcase,
-  color: "text-blue-600",
-  bgColor: "bg-blue-50",
-  isPositive: true,
-  clickAction: "job-listings"
-}, {
-  title: "Applications Received",
-  value: "3",
-  subtitle: "Total applications",
-  icon: FileText,
-  color: "text-purple-600",
-  bgColor: "bg-purple-50",
-  isPositive: true,
-  clickAction: "recruitment-board"
-}, {
-  title: "Avg Applications per Job",
-  value: "1.5",
-  subtitle: "Per job posted",
-  icon: TrendingUp,
-  color: "text-orange-600",
-  bgColor: "bg-orange-50",
-  isPositive: true,
-  clickAction: "recruitment-board"
-}, {
-  title: "Unlocked Candidates",
-  value: "1",
-  subtitle: "Total unlocked profiles",
-  icon: Unlock,
-  color: "text-indigo-600",
-  bgColor: "bg-indigo-50",
-  isPositive: true,
-  clickAction: "unlocked-talents"
-}, {
-  title: "Interviews Scheduled",
-  value: "3",
-  subtitle: "Upcoming interviews",
-  icon: Calendar,
-  color: "text-teal-600",
-  bgColor: "bg-teal-50",
-  isPositive: true,
-  clickAction: "interviews"
-}];
-const activityData = [{
-  day: "Mon",
-  applications: 15,
-  interviews: 8
-}, {
-  day: "Tue",
-  applications: 12,
-  interviews: 6
-}, {
-  day: "Wed",
-  applications: 18,
-  interviews: 12
-}, {
-  day: "Thu",
-  applications: 25,
-  interviews: 15
-}, {
-  day: "Fri",
-  applications: 22,
-  interviews: 10
-}, {
-  day: "Sat",
-  applications: 15,
-  interviews: 8
-}, {
-  day: "Sun",
-  applications: 19,
-  interviews: 14
-}];
-const interviewData = [{
-  month: "Apr",
-  count: 10
-}, {
-  month: "May",
-  count: 11
-}, {
-  month: "Jun",
-  count: 15
-}, {
-  month: "Jul",
-  count: 12
-}, {
-  month: "Aug",
-  count: 14
-}, {
-  month: "Sep",
-  count: 9
-}, {
-  month: "Oct",
-  count: 11
-}];
-const todayInterviews = [{
-  time: "10:00 AM",
-  candidate: "Sarah Ahmed",
-  position: "Senior Financial Analyst"
-}, {
-  time: "2:00 PM",
-  candidate: "Mohamed Hassan",
-  position: "Finance Manager"
-}, {
-  time: "4:30 PM",
-  candidate: "Layla Ibrahim",
-  position: "Investment Associate"
-}];
-const recentProfileViews = [{
-  name: "Karim Ahmed",
-  location: "Giza, Egypt",
-  timeAgo: "3 days ago",
-  avatar: "K",
-  views: 12
-}, {
-  name: "Omar Fathy Ahmed Huss...",
-  location: "Alexandria, Egypt",
-  timeAgo: "5 days ago",
-  avatar: "O",
-  views: 8
-}, {
-  name: "moamen abdulraouf",
-  location: "Cairo, Egypt",
-  timeAgo: "5 days ago",
-  avatar: "M",
-  views: 15
-}, {
-  name: "Elsayed Kewan",
-  location: "Cairo, Egypt",
-  timeAgo: "5 days ago",
-  avatar: "E",
-  views: 6
-}, {
-  name: "Yasser Khairy",
-  location: "Cairo, Egypt",
-  timeAgo: "5 days ago",
-  avatar: "Y",
-  views: 9
-}];
+import { IP } from "@/store/Path";
+import { Skeleton } from "@/components/ui/skeleton";
+
+
+interface CurrentPlan {
+  unlocked: number;
+  jobPosts: number;
+  invitations: number;
+  onlineAssessment: number;
+  onlineInterview: string | number;
+  folders?: number;
+}
+
+interface RecruiterStatistics {
+  posted_jobs: number;
+  jobs_views: string;
+  jobs_applications: string;
+  unlocked_candidates: number;
+  invitations_sent: number;
+  quizzes: number;
+  folders: number;
+  interviews: number;
+  total_applicants: string;
+  current_plan: CurrentPlan;
+}
+
+interface JobAnalytics {
+  views: number;
+  applications: number;
+  title: string;
+}
+
+interface DashboardData {
+  statistics: RecruiterStatistics | null;
+  jobAnalytics: JobAnalytics[] | null;
+  isLoading: boolean;
+  error: string | null;
+}
+
 const chartConfig = {
+  views: {
+    label: "Job Views",
+    color: "hsl(220, 70%, 50%)"
+  },
   applications: {
     label: "Applications",
-    color: "hsl(var(--primary))"
-  },
-  interviews: {
-    label: "Interviews",
     color: "hsl(28, 95%, 53%)"
   },
-  count: {
-    label: "Interviews",
-    color: "hsl(var(--primary))"
+  conversion: {
+    label: "Conversion Rate",
+    color: "hsl(142, 70%, 45%)"
   }
 };
-const planUsageData = [{
-  title: "Unlocked CVs",
-  current: 13,
-  total: 30,
-  icon: Unlock,
-  color: "text-blue-600",
-  bgColor: "bg-blue-50"
-}, {
-  title: "Posted Jobs",
-  current: 0,
-  total: 2,
-  icon: Briefcase,
-  color: "text-green-600",
-  bgColor: "bg-green-50"
-}, {
-  title: "Invitations Sent",
-  current: 0,
-  total: 10,
-  icon: Send,
-  color: "text-purple-600",
-  bgColor: "bg-purple-50"
-}, {
-  title: "Video Credit",
-  current: 0,
-  total: 15,
-  icon: Video,
-  color: "text-orange-600",
-  bgColor: "bg-orange-50"
-}, {
-  title: "Video Invitations Sent",
-  current: 0,
-  total: 10,
-  icon: Mail,
-  color: "text-indigo-600",
-  bgColor: "bg-indigo-50"
-}, {
-  title: "Profile Views",
-  current: recentProfileViews.length,
-  total: 50,
-  icon: Eye,
-  color: "text-indigo-600",
-  bgColor: "bg-indigo-50",
-  clickAction: "profile-views"
-}];
-const defaultTeamMembers = [{
-  name: "Sarah Ahmed",
-  avatar: "SA",
-  color: "bg-blue-500"
-}, {
-  name: "Mohamed Hassan",
-  avatar: "MH",
-  color: "bg-green-500"
-}, {
-  name: "Layla Ibrahim",
-  avatar: "LI",
-  color: "bg-purple-500"
-}, {
-  name: "Omar Fathy",
-  avatar: "OF",
-  color: "bg-orange-500"
-}, {
-  name: "Karim Ahmed",
-  avatar: "KA",
-  color: "bg-teal-500"
-}];
+
+// Helper function to get plan 
+const getPlanLimit = (plan: CurrentPlan | null, feature: string): string | number => {
+  if (!plan) return 0;
+  
+  const limitMap: { [key: string]: any } = {
+    'unlocked': plan.unlocked,
+    'jobPosts': plan.jobPosts,
+    'invitations': plan.invitations,
+    'onlineAssessment': plan.onlineAssessment,
+    'onlineInterview': plan.onlineInterview,
+    'folders': plan.folders || "unlimited" // Default value since not in backend
+  };
+
+  const limit = limitMap[feature];
+  if (limit === "unlimited") return "Infinity";
+  return limit || 0;
+};
+
+// Helper function to calculate percentage for progress bar
+const calculatePercentage = (current: number, total: string | number): number => {
+  if (total === "Infinity") return 0;
+  if (typeof total === 'string') return 0;
+  return Math.round((current / total) * 100);
+};
+
 export function DashboardOverview() {
-  const { userData } = useAuth();
+  const { userData, currentUser } = useAuth();
   const [userName, setUserName] = useState('');
   const [showProfileViewsModal, setShowProfileViewsModal] = useState(false);
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [showAddTeamMemberModal, setShowAddTeamMemberModal] = useState(false);
-  const [teamMembers, setTeamMembers] = useState(defaultTeamMembers);
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberEmail, setNewMemberEmail] = useState('');
-  const {
-    t
-  } = useTranslation();
+  const [dashboardData, setDashboardData] = useState<DashboardData>({
+    statistics: null,
+    jobAnalytics: null,
+    isLoading: true,
+    error: null
+  });
+
+  const { t } = useTranslation();
+
+  // Generate KPI data from backend statistics
+  const getKpiData = (stats: RecruiterStatistics | null) => [{
+    title: "Total Jobs",
+    value: stats?.posted_jobs.toString() || "0",
+    subtitle: "All jobs posted",
+    icon: Briefcase,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50",
+    isPositive: true,
+    clickAction: "job-posts"
+  }, {
+    title: "Applications Received",
+    value: stats?.jobs_applications || "0",
+    subtitle: "Total applications",
+    icon: FileText,
+    color: "text-purple-600",
+    bgColor: "bg-purple-50",
+    isPositive: true,
+    clickAction: "recruitment-board"
+  }, {
+    title: "Avg Applications per Job",
+    value: stats?.posted_jobs ? (parseInt(stats.jobs_applications) / stats.posted_jobs).toFixed(1) : "0",
+    subtitle: "Per job posted",
+    icon: TrendingUp,
+    color: "text-orange-600",
+    bgColor: "bg-orange-50",
+    isPositive: true,
+    clickAction: "recruitment-board"
+  }, {
+    title: "Unlocked Candidates",
+    value: stats?.unlocked_candidates.toString() || "0",
+    subtitle: "Total unlocked profiles",
+    icon: Unlock,
+    color: "text-indigo-600",
+    bgColor: "bg-indigo-50",
+    isPositive: true,
+    clickAction: "unlocked-talents"
+  }, {
+    title: "Interviews Scheduled",
+    value: stats?.interviews.toString() || "0",
+    subtitle: "Upcoming interviews",
+    icon: Calendar,
+    color: "text-teal-600",
+    bgColor: "bg-teal-50",
+    isPositive: true,
+    clickAction: "interviews"
+  }];
+
+  // Generate plan usage data from backend statistics 
+  const getPlanUsageData = (stats: RecruiterStatistics | null) => [{
+    title: "Unlocked CVs",
+    current: stats?.unlocked_candidates || 0,
+    total: getPlanLimit(stats?.current_plan || null, "unlocked"),
+    icon: Unlock,
+    color: "text-blue-600",
+    bgColor: "bg-blue-50"
+  }, {
+    title: "Posted Jobs",
+    current: stats?.posted_jobs || 0,
+    total: getPlanLimit(stats?.current_plan || null, "jobPosts"),
+    icon: Briefcase,
+    color: "text-green-600",
+    bgColor: "bg-green-50"
+  }, {
+    title: "Invitations Sent",
+    current: stats?.invitations_sent || 0,
+    total: getPlanLimit(stats?.current_plan || null, "invitations"),
+    icon: Send,
+    color: "text-purple-600",
+    bgColor: "bg-purple-50"
+  }, {
+    title: "Quizzes Created",
+    current: stats?.quizzes || 0,
+    total: getPlanLimit(stats?.current_plan || null, "onlineAssessment"),
+    icon: PuzzleIcon,
+    color: "text-orange-600",
+    bgColor: "bg-orange-50"
+  }, {
+    title: "Folders Created",
+    current: stats?.folders || 0,
+    total: getPlanLimit(stats?.current_plan || null, "folders"),
+    icon: FileText,
+    color: "text-indigo-600",
+    bgColor: "bg-indigo-50"
+  }, {
+    title: "Interviews Scheduled",
+    current: stats?.interviews || 0,
+    total: getPlanLimit(stats?.current_plan || null, "onlineInterview"),
+    icon: Calendar,
+    color: "text-red-600",
+    bgColor: "bg-red-50",
+    clickAction: "interviews"
+  }];
+
+  // Generate performance trend data from job analytics
+  const getPerformanceTrendData = (analytics: JobAnalytics[] | null) => {
+    if (!analytics || analytics.length === 0) {
+      return [{
+        metric: "No Data",
+        views: 0,
+        applications: 0
+      }];
+    }
+
+    // Use actual job analytics data from backend
+    return analytics.map(job => ({
+      metric: job.title.length > 10 ? `${job.title.substring(0, 10)}...` : job.title,
+      views: job.views,
+      applications: job.applications
+    }));
+  };
+
+  // Generate conversion rate data for pie chart
+  const getConversionData = (stats: RecruiterStatistics | null) => {
+    const views = parseInt(stats?.jobs_views || "0");
+    const applications = parseInt(stats?.jobs_applications || "0");
+    const conversionRate = views > 0 ? ((applications / views) * 100) : 0;
+
+    // Pie chart data for views vs applications - using same colors as line chart
+    const pieData = [
+      { name: 'Applications', value: applications, color: '#f97316' },
+      { name: 'Views Only', value: Math.max(0, views - applications), color: 'hsl(var(--primary))' }
+    ];
+
+    return {
+      pieData,
+      conversionRate: conversionRate.toFixed(1)
+    };
+  };
+
   const handleKpiClick = (action: string) => {
     console.log(`Navigating to ${action}`);
   };
+
   const handlePlanUsageClick = (action?: string) => {
-    if (action === 'profile-views') {
-      setShowProfileViewsModal(true);
+    if (action === 'interviews') {
+      setShowAnalyticsModal(true);
     }
   };
+
+  const fetchRecruiterStatistics = async () => {
+    if (!currentUser) {
+      console.warn("No current user found");
+      setDashboardData(prev => ({ ...prev, error: "User not authenticated", isLoading: false }));
+      return;
+    }
+
+    const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+    const url = `${IP}/api/employer/dashboard`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        }
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to get Recruiter Statistics");
+      }
+
+      setDashboardData(prev => ({
+        ...prev,
+        statistics: result.data,
+        isLoading: false,
+        error: null
+      }));
+    } catch (error: any) {
+      const message = error.message || "Unexpected error occurred";
+      console.error("Error getting Recruiter Statistics:", message);
+      setDashboardData(prev => ({ ...prev, error: message, isLoading: false }));
+    }
+  };
+
+  const fetchJobAnalytics = async () => {
+    if (!currentUser) {
+      console.warn("No current user found");
+      return;
+    }
+
+    const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+    const url = `${IP}/api/employer/dashboard/job-analytics`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        }
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || "Failed to get Job Analytics");
+      }
+
+      setDashboardData(prev => ({
+        ...prev,
+        jobAnalytics: result.data,
+        isLoading: false
+      }));
+    } catch (error: any) {
+      const message = error.message || "Unexpected error occurred";
+      console.error("Error getting Job Analytics:", message);
+      // Continue without job analytics data
+    }
+  };
+
   useEffect(() => {
-    console.log('from Dashboard', userData)
-    setUserName(userData?.personalInfo?.fullName);
-  }, [])
-  const handleAddTeamMember = () => {
-    if (newMemberName.trim()) {
-      const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-orange-500', 'bg-teal-500', 'bg-red-500', 'bg-indigo-500', 'bg-pink-500'];
-      const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const avatar = newMemberName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
-      const newMember = {
-        name: newMemberName,
-        avatar: avatar,
-        color: randomColor
-      };
-      setTeamMembers([...teamMembers, newMember]);
-      setNewMemberName('');
-      setNewMemberEmail('');
-      setShowAddTeamMemberModal(false);
-    }
-  };
-  return <div className="space-responsive-lg">
-    {/* Welcome Section */}
-    <div className="p-responsive rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
-      <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
-      <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/30 rounded-full opacity-60"></div>
-      <div className="relative z-10">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="bg-accent/20 p-2 rounded-lg shrink-0">
-            <Briefcase className="w-5 h-5 text-accent" />
+    const fetchData = async () => {
+      setDashboardData(prev => ({ ...prev, isLoading: true }));
+      setUserName(userData?.personalInfo?.fullName || '');
+      await Promise.all([
+        fetchRecruiterStatistics(),
+        fetchJobAnalytics()
+      ]);
+    };
+
+    fetchData();
+  }, [userData, currentUser]);
+
+  const kpiData = getKpiData(dashboardData.statistics);
+  const planUsageData = getPlanUsageData(dashboardData.statistics);
+  const performanceTrendData = getPerformanceTrendData(dashboardData.jobAnalytics);
+  const conversionData = getConversionData(dashboardData.statistics);
+
+  // Calculate conversion rate
+  const views = parseInt(dashboardData.statistics?.jobs_views || "0");
+  const applications = parseInt(dashboardData.statistics?.jobs_applications || "0");
+  const conversionRate = views > 0 ? ((applications / views) * 100).toFixed(1) : "0.0";
+
+  // Loading skeleton component
+  const SkeletonCard = () => (
+    <Card className="p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <Skeleton className="h-5 w-5 rounded" />
+        <Skeleton className="h-6 w-40 rounded" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-5 w-5 rounded" />
+              <Skeleton className="h-4 w-10 rounded" />
+            </div>
+            <Skeleton className="h-4 w-20 rounded" />
+            <Skeleton className="h-6 w-16 rounded" />
+            <Skeleton className="h-2 w-full rounded" />
           </div>
-          <h1 className="text-responsive-lg font-bold">Welcome back, {userName}!</h1>
-        </div>
-        <p className="text-responsive-sm text-slate-300">
-          Here's what's happening with your hiring pipeline today.
-        </p>
-      </div>
-    </div>
-
-    {/* Plan Usage Section */}
-    <Card className="p-responsive">
-      <div className="flex items-center gap-2 mb-6">
-        <CreditCard className="w-5 h-5 text-gray-600 shrink-0" />
-        <h2 className="text-responsive-lg font-semibold text-gray-900">Plan Usage</h2>
-      </div>
-
-      <div className="responsive-grid-3">
-        {planUsageData.map(item => {
-          const percentage = item.clickAction === 'profile-views' ? 100 : Math.round(item.current / item.total * 100);
-          return <div key={item.title} className={`p-responsive-sm rounded-lg border border-gray-200 bg-white ${item.clickAction ? 'cursor-pointer hover:shadow-md transition-all duration-200' : ''}`} onClick={() => item.clickAction && handlePlanUsageClick(item.clickAction)}>
-            <div className="flex items-center justify-between mb-3">
-              <item.icon className={`w-5 h-5 ${item.color} shrink-0`} />
-              {item.clickAction !== 'profile-views' && <span className="text-responsive-sm font-medium text-gray-500">{percentage}%</span>}
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-responsive-sm font-medium text-gray-700">{item.title}</h3>
-              {item.clickAction === 'profile-views' ? <p className="text-responsive-lg font-bold text-gray-900">{item.current}</p> : <p className="text-responsive-lg font-bold text-gray-900">
-                {item.current} / {item.total}
-              </p>}
-              {item.clickAction !== 'profile-views' && <div className="w-full bg-gray-200 rounded-full h-2">
-                <div className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-green-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-blue-500'}`} style={{
-                  width: `${percentage}%`
-                }}></div>
-              </div>}
-            </div>
-          </div>;
-        })}
+        ))}
       </div>
     </Card>
+  );
 
-    {/* KPI Metrics Row with Quick Actions */}
-
-  <div className="p-responsive flex flex-col lg:flex-row gap-4 lg:gap-auto w-full justify-center items-center  ">
-    {/* KPI Metrics - Takes 3 columns on lg, 5 columns on xl */}
-    <div className="flex flex-col xs:flex-row flex-wrap gap-3 lg:gap-4 w-fit h-fit  pb-2 ">
-      {kpiData.map((kpi, index) => (
-        <div
-          key={kpi.title}
-          className={`p-3 sm:p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2 rounded-lg h-fit min-h-[140px] sm:min-h-[160px] flex-1 min-w-[160px] sm:min-w-[180px] max-w-[250px] flex items-center justify-center`}
-          onClick={() => handleKpiClick(kpi.clickAction)}
-        >
-          <div className="flex flex-col items-center text-center space-y-1 w-full">
-            <div className="p-1.5 rounded-lg bg-white/70 shrink-0">
-              <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
-            </div>
-            <div className="space-y-0.5 min-w-0 w-full flex-1 flex flex-col justify-center">
-              <h3 className={`text-sm xs:text-base sm:text-lg font-bold ${kpi.color} truncate w-full`}>{kpi.value}</h3>
-              <p className={`text-xs font-semibold ${kpi.color} opacity-90 leading-tight truncate w-full`}>{kpi.title}</p>
-              <p className={`text-xs ${kpi.color} opacity-70 leading-tight line-clamp-2 flex-1`}>{kpi.subtitle}</p>
-            </div>
+  if (dashboardData.isLoading) {
+    return (
+      <div className="space-y-6">
+        {/* Welcome Section Skeleton */}
+        <div className="p-6 rounded-xl bg-gray-200 animate-pulse">
+          <div className="flex items-center gap-3 mb-3">
+            <Skeleton className="w-10 h-10 rounded-lg" />
+            <Skeleton className="h-6 w-64 rounded" />
           </div>
+          <Skeleton className="h-4 w-96 rounded" />
         </div>
-      ))}
-    </div>
-    
-    {/* Quick Actions - Takes 1 column on lg and xl */}
-    <div className=" w-full lg:w-fit  bg-orange-50 border border-orange-200 rounded-lg p-4  h-fit">
-      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2 ">
-        <Target className="w-5 h-5 text-orange-600 shrink-0" />
-        Quick Actions
-      </h3>
-      <div className="flex flex-col w-full lg:w-fit gap-3 ">
-        <Link to="talent-pool">
-          <button className="flex items-center justify-start h-fit bg-orange-600 hover:bg-orange-700 text-white w-full text-sm sm:text-base px-3 sm:px-4 rounded-md transition-colors py-1">
-            <Users className="w-4 h-4 mr-3 shrink-0" />
-            Browse Talent Pool
-          </button>
-        </Link>
-        <Link to="unlocked-talents">
-          <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
-            <UserCheck className="w-4 h-4 mr-3 shrink-0" />
-            Unlocked Talents
-          </button>
-        </Link>
-        <Link to="job-listings">
-          <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
-            <FileText className="w-4 h-4 mr-3 shrink-0" />
-            Create Job Post
-          </button>
-        </Link>
-        <Link to="quiz-builder">
-          <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
-            <PuzzleIcon className="w-4 h-4 mr-3 shrink-0" />
-            Quiz Builder
-          </button>
-        </Link>
+
+        {/* Plan Usage Skeleton */}
+        <SkeletonCard />
+
+        {/* KPI Metrics Skeleton */}
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Skeleton key={i} className="h-32 rounded-lg" />
+          ))}
+        </div>
       </div>
-    </div>
-  </div>
+    );
+  }
 
+  if (dashboardData.error) {
+    return (
+      <div className="flex flex-col items-center justify-center p-12 text-center">
+        <AlertCircle className="w-16 h-16 text-red-500 mb-4" />
+        <h2 className="text-2xl font-bold text-gray-900 mb-2">Unable to Load Dashboard</h2>
+        <p className="text-gray-600 mb-6">{dashboardData.error}</p>
+        <Button onClick={fetchRecruiterStatistics} className="bg-blue-600 hover:bg-blue-700">
+          Try Again
+        </Button>
+      </div>
+    );
+  }
 
-    {/* Charts Section */}
-    <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-      {/* Weekly Activity Chart - Takes 2 columns */}
-      <Card className="xl:col-span-2 p-responsive">
-        <div className="mb-6">
-          <h3 className="text-responsive-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <BarChart3 className="w-5 h-5 text-orange-500 shrink-0" />
-            Weekly Activity
+  return (
+    <div className="space-responsive-lg">
+      {/* Welcome Section */}
+      <div className="p-responsive rounded-xl bg-primary text-primary-foreground border-accent/20 border shadow-lg relative overflow-hidden">
+        <div className="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full opacity-60"></div>
+        <div className="absolute top-16 -left-12 w-40 h-40 bg-accent/30 rounded-full opacity-60"></div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-3">
+            <div className="bg-accent/20 p-2 rounded-lg shrink-0">
+              <Briefcase className="w-5 h-5 text-accent" />
+            </div>
+            <h1 className="text-responsive-lg font-bold">Welcome back, {userName}!</h1>
+          </div>
+          <p className="text-responsive-sm text-slate-300">
+            Here's what's happening with your hiring pipeline today.
+          </p>
+        </div>
+      </div>
+
+      {/* Plan Usage Section */}
+      <Card className="p-responsive">
+        <div className="flex items-center gap-2 mb-6">
+          <CreditCard className="w-5 h-5 text-gray-600 shrink-0" />
+          <h2 className="text-responsive-lg font-semibold text-gray-900">Plan Usage</h2>
+        </div>
+
+        <div className="responsive-grid-3">
+          {planUsageData.map((item) => {
+            const percentage = calculatePercentage(item.current, item.total);
+            const displayTotal = item.total === "Infinity" ? "∞" : item.total;
+            
+            return (
+              <div
+                key={item.title}
+                className={`p-responsive-sm rounded-lg border border-gray-200 bg-white ${item.clickAction ? 'cursor-pointer hover:shadow-md transition-all duration-200' : ''}`}
+                onClick={() => item.clickAction && handlePlanUsageClick(item.clickAction)}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <item.icon className={`w-5 h-5 ${item.color} shrink-0`} />
+                  <span className="text-responsive-sm font-medium text-gray-500">
+                    {item.total === "Infinity" ? "∞" : `${percentage}%`}
+                  </span>
+                </div>
+                <div className="space-y-2">
+                  <h3 className="text-responsive-sm font-medium text-gray-700">{item.title}</h3>
+                  <p className="text-responsive-lg font-bold text-gray-900">
+                    {item.current} / {displayTotal}
+                  </p>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    {item.total !== "Infinity" && (
+                      <div
+                        className={`h-2 rounded-full transition-all duration-300 ${percentage >= 80 ? 'bg-red-500' : percentage >= 60 ? 'bg-orange-500' : 'bg-green-500'}`}
+                        style={{ width: `${percentage}%` }}
+                      ></div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* KPI Metrics Row with Quick Actions */}
+      <div className="p-responsive flex flex-col lg:flex-row gap-4 lg:gap-auto w-full justify-center items-center">
+        {/* KPI Metrics - Takes 3 columns on lg, 5 columns on xl */}
+        <div className="flex flex-col xs:flex-row flex-wrap gap-3 lg:gap-4 w-fit h-fit pb-2">
+          {kpiData.map((kpi, index) => (
+            <div
+              key={kpi.title}
+              className={`p-3 sm:p-4 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-105 ${kpi.bgColor} border-2 rounded-lg h-fit min-h-[140px] sm:min-h-[160px] flex-1 min-w-[160px] sm:min-w-[180px] max-w-[250px] flex items-center justify-center`}
+              onClick={() => handleKpiClick(kpi.clickAction)}
+            >
+              <div className="flex flex-col items-center text-center space-y-1 w-full">
+                <div className="p-1.5 rounded-lg bg-white/70 shrink-0">
+                  <kpi.icon className={`w-4 h-4 ${kpi.color}`} />
+                </div>
+                <div className="space-y-0.5 min-w-0 w-full flex-1 flex flex-col justify-center">
+                  <h3 className={`text-sm xs:text-base sm:text-lg font-bold ${kpi.color} truncate w-full`}>{kpi.value}</h3>
+                  <p className={`text-xs font-semibold ${kpi.color} opacity-90 leading-tight truncate w-full`}>{kpi.title}</p>
+                  <p className={`text-xs ${kpi.color} opacity-70 leading-tight line-clamp-2 flex-1`}>{kpi.subtitle}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Quick Actions - Takes 1 column on lg and xl */}
+        <div className="w-full lg:w-fit bg-orange-50 border border-orange-200 rounded-lg p-4 h-fit">
+          <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-4 sm:mb-6 flex items-center gap-2">
+            <Target className="w-5 h-5 text-orange-600 shrink-0" />
+            Quick Actions
           </h3>
-          <div className="flex-responsive">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-primary shrink-0"></div>
-              <span className="text-responsive-sm text-gray-600">Applications</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-orange-500 shrink-0"></div>
-              <span className="text-responsive-sm text-gray-600">Interviews</span>
-            </div>
+          <div className="flex flex-col w-full lg:w-fit gap-3">
+            <Link to="talent-pool">
+              <button className="flex items-center justify-start h-fit bg-orange-600 hover:bg-orange-700 text-white w-full text-sm sm:text-base px-3 sm:px-4 rounded-md transition-colors py-1">
+                <Users className="w-4 h-4 mr-3 shrink-0" />
+                Browse Talent Pool
+              </button>
+            </Link>
+            <Link to="unlocked-talents">
+              <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
+                <UserCheck className="w-4 h-4 mr-3 shrink-0" />
+                Unlocked Talents
+              </button>
+            </Link>
+            <Link to="job-posts">
+              <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
+                <FileText className="w-4 h-4 mr-3 shrink-0" />
+                Create Job Post
+              </button>
+            </Link>
+            <Link to="quiz-builder">
+              <button className="flex items-center justify-start h-10 sm:h-12 w-full text-sm sm:text-base px-3 sm:px-4 rounded-md border border-orange-300 text-orange-700 hover:bg-orange-100 hover:text-orange-800 transition-colors">
+                <PuzzleIcon className="w-4 h-4 mr-3 shrink-0" />
+                Quiz Builder
+              </button>
+            </Link>
           </div>
         </div>
-        <div className="h-80 w-full">
-          <ChartContainer config={chartConfig} className="h-full w-full">
-            <LineChart data={activityData} margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 20
-            }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" opacity={0.8} />
-              <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{
-                fontSize: 12,
-                fill: '#64748b'
-              }} tickMargin={10} />
-              <YAxis axisLine={false} tickLine={false} tick={{
-                fontSize: 12,
-                fill: '#64748b'
-              }} tickMargin={10} />
-              <ChartTooltip content={<ChartTooltipContent />} cursor={{
-                stroke: '#e2e8f0',
-                strokeWidth: 1
-              }} />
-              <Line type="monotone" dataKey="applications" stroke="hsl(var(--primary))" strokeWidth={3} dot={{
-                r: 5,
-                fill: "hsl(var(--primary))",
-                strokeWidth: 2,
-                stroke: "#fff"
-              }} activeDot={{
-                r: 7,
-                stroke: "hsl(var(--primary))",
-                strokeWidth: 2,
-                fill: "#fff"
-              }} />
-              <Line type="monotone" dataKey="interviews" stroke="#f97316" strokeWidth={3} dot={{
-                r: 5,
-                fill: "#f97316",
-                strokeWidth: 2,
-                stroke: "#fff"
-              }} activeDot={{
-                r: 7,
-                stroke: "#f97316",
-                strokeWidth: 2,
-                fill: "#fff"
-              }} />
-            </LineChart>
-          </ChartContainer>
-        </div>
-      </Card>
+      </div>
 
-      {/* Team Activity - Takes 1 column */}
-      <Card className="xl:col-span-1 p-responsive bg-gray-50">
-        <div className="text-center space-responsive">
-          <h3 className="text-responsive-lg font-semibold text-gray-900">Team Activity</h3>
-
-          {/* Team member avatars arranged in a scattered pattern */}
-          <div className="relative h-32 mb-6 mx-auto max-w-60">
-            {teamMembers.map((member, index) => <div key={member.name} className={`absolute w-12 h-12 rounded-full ${member.color} flex items-center justify-center text-white font-semibold text-sm shadow-lg hover:scale-110 transition-transform cursor-pointer`} style={{
-              top: index === 0 ? '10px' : index === 1 ? '60px' : index === 2 ? '20px' : index === 3 ? '80px' : index === 4 ? '40px' : `${20 + index % 3 * 25}px`,
-              left: index === 0 ? '20px' : index === 1 ? '60px' : index === 2 ? '140px' : index === 3 ? '180px' : index === 4 ? '100px' : `${40 + index % 4 * 35}px`
-            }} title={member.name}>
-              {member.avatar}
-            </div>)}
+      {/* Charts Section - Views vs Applications */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        {/* Performance Trend Chart - Using Real Job Analytics Data */}
+        <Card className="p-responsive">
+          <div className="mb-6">
+            <h3 className="text-responsive-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-green-500 shrink-0" />
+              Job Performance Analytics
+            </h3>
+            <div className="flex-responsive">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-primary shrink-0"></div>
+                <span className="text-responsive-sm text-gray-600">Applications</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-secondary-c shrink-0"></div>
+                <span className="text-responsive-sm text-gray-600">Job Views</span>
+              </div>
+            </div>
           </div>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer config={chartConfig} className="h-full w-full">
+                <BarChart data={performanceTrendData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e0e7ff" opacity={0.8} />
+                  <XAxis
+                    dataKey="metric"
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: '#64748b' }}
+                    tickMargin={10}
+                  />
+                  <YAxis
+                    axisLine={false}
+                    tickLine={false}
+                    tick={{ fontSize: 12, fill: '#64748b' }}
+                    tickMargin={10}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="views" fill="#f97316" radius={[4, 4, 0, 0]} name="Views" />
+                  <Bar dataKey="applications" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Applications" />
+                </BarChart>
+              </ChartContainer>
+            </ResponsiveContainer>
+          </div>
+        </Card>
 
-          <div className="space-y-3">
-            <p className="text-gray-600 text-responsive-sm">
-              Your team members activity on different job posts will appear here
+        {/* Conversion Rate Pie Chart */}
+        <Card className="p-responsive">
+          <div className="mb-6">
+            <h3 className="text-responsive-lg font-semibold text-gray-900 mb-2 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-green-500 shrink-0" />
+              Conversion Rate Analysis
+            </h3>
+            <p className="text-responsive-sm text-gray-600">
+              Relationship between job views and applications
             </p>
+          </div>
+          <div className="h-80 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <ChartContainer config={chartConfig} className="h-full w-full">
+                <PieChart>
+                  <Pie
+                    data={conversionData.pieData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {conversionData.pieData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <ChartTooltip />
+                </PieChart>
+              </ChartContainer>
+            </ResponsiveContainer>
+          </div>
+        </Card>
+      </div>
 
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white text-responsive-sm" onClick={() => setShowAddTeamMemberModal(true)}>
-              <Plus className="w-4 h-4 mr-2 shrink-0" />
+      {/* Analytics Modal */}
+      <Dialog open={showAnalyticsModal} onOpenChange={setShowAnalyticsModal}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 shrink-0" />
+              Analytics Dashboard - Backend Data
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-responsive">
+            {/* Key Metrics Overview from Backend */}
+            <div className="responsive-grid-2">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">{dashboardData.statistics?.jobs_views || "0"}</div>
+                <div className="text-responsive-sm text-blue-800">Total Job Views</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">{dashboardData.statistics?.jobs_applications || "0"}</div>
+                <div className="text-responsive-sm text-green-800">Applications Received</div>
+              </div>
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">{dashboardData.statistics?.interviews || "0"}</div>
+                <div className="text-responsive-sm text-orange-800">Interviews Scheduled</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">{dashboardData.statistics?.unlocked_candidates || "0"}</div>
+                <div className="text-responsive-sm text-purple-800">Unlocked Candidates</div>
+              </div>
+            </div>
+
+            {/* Job Analytics Details */}
+            {dashboardData.jobAnalytics && dashboardData.jobAnalytics.length > 0 && (
+              <Card className="p-4">
+                <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 shrink-0" />
+                  Detailed Job Analytics
+                </h4>
+                <div className="space-y-3">
+                  {dashboardData.jobAnalytics.map((job, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-gray-900 truncate">{job.title}</p>
+                        <p className="text-sm text-gray-600">
+                          {job.views} views • {job.applications} applications
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-lg font-bold text-green-600">
+                          {job.views > 0 ? ((job.applications / job.views) * 100).toFixed(1) : 0}%
+                        </div>
+                        <div className="text-xs text-gray-500">Conversion</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+            )}
+
+            {/* Conversion Rate Summary */}
+            <Card className="p-4">
+              <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <Activity className="w-4 h-4 shrink-0" />
+                Conversion Performance
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">{dashboardData.statistics?.jobs_views || "0"}</div>
+                  <div className="text-xs text-gray-600">Total Views</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-orange-600">{dashboardData.statistics?.jobs_applications || "0"}</div>
+                  <div className="text-xs text-gray-600">Total Applications</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-green-600">{conversionRate}%</div>
+                  <div className="text-xs text-gray-600">Conversion Rate</div>
+                </div>
+              </div>
+            </Card>
+
+            {/* Current Plan Details */}
+            <Card className="p-4">
+              <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <CreditCard className="w-4 h-4 shrink-0" />
+                Current Plan Usage
+              </h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-gray-900">{dashboardData.statistics?.current_plan?.jobPosts || "0"}</div>
+                  <div className="text-xs text-gray-600">Job Posts Limit</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-gray-900">{dashboardData.statistics?.current_plan?.invitations || "0"}</div>
+                  <div className="text-xs text-gray-600">Invitations Limit</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-gray-900">{dashboardData.statistics?.current_plan?.unlocked || "0"}</div>
+                  <div className="text-xs text-gray-600">Unlocked CVs Limit</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-lg font-bold text-gray-900">
+                    {dashboardData.statistics?.current_plan?.onlineInterview === "unlimited" ? "∞" : dashboardData.statistics?.current_plan?.onlineInterview}
+                  </div>
+                  <div className="text-xs text-gray-600">Interviews Limit</div>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Team Member Modal */}
+      <Dialog open={showAddTeamMemberModal} onOpenChange={setShowAddTeamMemberModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Users className="w-5 h-5 shrink-0" />
               Add Team Member
-            </Button>
-          </div>
-        </div>
-      </Card>
-    </div>
-
-    {/* Profile Views Modal */}
-    <Dialog open={showProfileViewsModal} onOpenChange={setShowProfileViewsModal}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Eye className="w-5 h-5 shrink-0" />
-            Profile Views Analytics
-          </DialogTitle>
-        </DialogHeader>
-        <div className="space-responsive">
-          <div className="responsive-grid-3">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">50</div>
-              <div className="text-responsive-sm text-blue-800">Total Views Today</div>
-            </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">348</div>
-              <div className="text-responsive-sm text-green-800">This Week</div>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">1,247</div>
-              <div className="text-responsive-sm text-purple-800">This Month</div>
-            </div>
-          </div>
-
+            </DialogTitle>
+          </DialogHeader>
           <div className="space-y-4">
-            <h4 className="font-semibold text-gray-900">Detailed Profile Views</h4>
-            {recentProfileViews.map((profile, index) => <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg gap-4">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 bg-accent rounded-full flex items-center justify-center text-white font-semibold shrink-0">
-                  {profile.avatar}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-medium text-gray-900 truncate">{profile.name}</p>
-                  <p className="text-responsive-sm text-gray-600 truncate">{profile.location}</p>
-                  <p className="text-xs text-gray-500">{profile.timeAgo}</p>
-                </div>
-              </div>
-              <div className="text-right shrink-0">
-                <div className="text-lg font-bold text-gray-900">{profile.views}</div>
-                <div className="text-xs text-gray-500">views</div>
-              </div>
-            </div>)}
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-
-    {/* Analytics Modal */}
-    <Dialog open={showAnalyticsModal} onOpenChange={setShowAnalyticsModal}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 shrink-0" />
-            Analytics Dashboard
-          </DialogTitle>
-        </DialogHeader>
-        <div className="space-responsive">
-          {/* Key Metrics Overview */}
-          <div className="responsive-grid-2">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">2,847</div>
-              <div className="text-responsive-sm text-blue-800">Total Profile Views</div>
-              <div className="text-xs text-green-600 mt-1">↑ 23% vs last month</div>
+            <div className="space-y-2">
+              <Label htmlFor="memberName">Full Name</Label>
+              <Input
+                id="memberName"
+                placeholder="Enter team member's name"
+                value={newMemberName}
+                onChange={e => setNewMemberName(e.target.value)}
+              />
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">156</div>
-              <div className="text-responsive-sm text-green-800">Applications Received</div>
-              <div className="text-xs text-green-600 mt-1">↑ 15% vs last month</div>
-            </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">43</div>
-              <div className="text-responsive-sm text-orange-800">Interviews Scheduled</div>
-              <div className="text-xs text-red-600 mt-1">↓ 8% vs last month</div>
-            </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">12</div>
-              <div className="text-responsive-sm text-purple-800">Candidates Hired</div>
-              <div className="text-xs text-green-600 mt-1">↑ 33% vs last month</div>
+            <div className="space-y-2">
+              <Label htmlFor="memberEmail">Email Address</Label>
+              <Input
+                id="memberEmail"
+                type="email"
+                placeholder="Enter email address"
+                value={newMemberEmail}
+                onChange={e => setNewMemberEmail(e.target.value)}
+              />
             </div>
           </div>
-
-          {/* Job Performance Analytics */}
-          <div className="responsive-grid-2">
-            <Card className="p-4">
-              <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <TrendingUp className="w-4 h-4 shrink-0" />
-                Top Performing Jobs
-              </h4>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-4">
-                  <div className="min-w-0">
-                    <p className="font-medium text-gray-900 truncate">Senior Financial Analyst</p>
-                    <p className="text-responsive-sm text-gray-600">Posted 5 days ago</p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <div className="text-lg font-bold text-gray-900">47</div>
-                    <div className="text-xs text-gray-500">applications</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-4">
-                  <div className="min-w-0">
-                    <p className="font-medium text-gray-900 truncate">Finance Manager</p>
-                    <p className="text-responsive-sm text-gray-600">Posted 3 days ago</p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <div className="text-lg font-bold text-gray-900">34</div>
-                    <div className="text-xs text-gray-500">applications</div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg gap-4">
-                  <div className="min-w-0">
-                    <p className="font-medium text-gray-900 truncate">Investment Associate</p>
-                    <p className="text-responsive-sm text-gray-600">Posted 8 days ago</p>
-                  </div>
-                  <div className="text-right shrink-0">
-                    <div className="text-lg font-bold text-gray-900">28</div>
-                    <div className="text-xs text-gray-500">applications</div>
-                  </div>
-                </div>
-              </div>
-            </Card>
-
-            <Card className="p-4">
-              <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Target className="w-4 h-4 shrink-0" />
-                Application Sources
-              </h4>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-responsive-sm font-medium">Direct Applications</span>
-                  <span className="text-responsive-sm text-gray-600">45%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{
-                    width: '45%'
-                  }}></div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-responsive-sm font-medium">Talent Pool Search</span>
-                  <span className="text-responsive-sm text-gray-600">32%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{
-                    width: '32%'
-                  }}></div>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="text-responsive-sm font-medium">Referrals</span>
-                  <span className="text-responsive-sm text-gray-600">23%</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div className="bg-orange-500 h-2 rounded-full" style={{
-                    width: '23%'
-                  }}></div>
-                </div>
-              </div>
-            </Card>
-          </div>
-
-          {/* Time-to-Hire Analytics */}
-          <Card className="p-4">
-            <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <Activity className="w-4 h-4 shrink-0" />
-              Hiring Pipeline Performance
-            </h4>
-            <div className="responsive-grid">
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">156</div>
-                <div className="text-xs text-gray-600">Applications</div>
-                <div className="text-xs text-green-600">100%</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">78</div>
-                <div className="text-xs text-gray-600">Screening</div>
-                <div className="text-xs text-gray-600">50%</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">43</div>
-                <div className="text-xs text-gray-600">Interviews</div>
-                <div className="text-xs text-gray-600">27.6%</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">18</div>
-                <div className="text-xs text-gray-600">Final Round</div>
-                <div className="text-xs text-gray-600">11.5%</div>
-              </div>
-              <div className="text-center">
-                <div className="text-xl font-bold text-gray-900">12</div>
-                <div className="text-xs text-gray-600">Hired</div>
-                <div className="text-xs text-green-600">7.7%</div>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </DialogContent>
-    </Dialog>
-
-    {/* Add Team Member Modal */}
-    <Dialog open={showAddTeamMemberModal} onOpenChange={setShowAddTeamMemberModal}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 shrink-0" />
-            Add Team Member
-          </DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="memberName">Full Name</Label>
-            <Input id="memberName" placeholder="Enter team member's name" value={newMemberName} onChange={e => setNewMemberName(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="memberEmail">Email Address</Label>
-            <Input id="memberEmail" type="email" placeholder="Enter email address" value={newMemberEmail} onChange={e => setNewMemberEmail(e.target.value)} />
-          </div>
-          <div className="flex gap-3 pt-4">
-            <Button variant="outline" className="flex-1" onClick={() => setShowAddTeamMemberModal(false)}>
-              Cancel
-            </Button>
-            <Button className="flex-1 bg-blue-600 hover:bg-blue-700" onClick={handleAddTeamMember} disabled={!newMemberName.trim()}>
-              Add Member
-            </Button>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  </div>;
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }

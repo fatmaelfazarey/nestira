@@ -1,4 +1,274 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Nestira Brand Colors */
+    --background: 220 25% 97%;
+    --foreground: 222 47% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 9%;
+
+    /* Dark Navy Primary */
+    --primary: 222 60% 9%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Orange Accent */
+    --accent: 14 100% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 222 47% 9%;
+
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 14 100% 58%;
+
+    --radius: 0.625rem;
+
+    /* Custom Nestira tokens */
+    --navy: 222 60% 9%;
+    --navy-light: 222 40% 15%;
+    --orange: 14 100% 58%;
+    --orange-hover: 14 100% 50%;
+    --gray-light: 220 25% 97%;
+    --gray-medium: 220 14% 90%;
+  }
+
+  .dark {
+    --background: 222 60% 9%;
+    --foreground: 0 0% 100%;
+
+    --card: 222 40% 12%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 222 40% 12%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 0 0% 100%;
+    --primary-foreground: 222 60% 9%;
+
+    --accent: 14 100% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    --secondary: 222 40% 15%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 222 40% 15%;
+    --muted-foreground: 220 14% 70%;
+
+    --border: 222 40% 20%;
+    --input: 222 40% 20%;
+    --ring: 14 100% 58%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-accent to-orange-400;
+  }
+
+  .bg-navy {
+    background-color: hsl(var(--navy));
+  }
+
+  .bg-navy-light {
+    background-color: hsl(var(--navy-light));
+  }
+
+  .text-navy {
+    color: hsl(var(--navy));
+  }
+
+  .bg-orange {
+    background-color: hsl(var(--orange));
+  }
+
+  .text-orange {
+    color: hsl(var(--orange));
+  }
+
+  .section-padding {
+    @apply py-16 md:py-24 lg:py-32;
+  }
+
+  .container-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-accent-foreground bg-accent rounded-lg transition-all duration-300 hover:bg-[hsl(var(--orange-hover))] hover:shadow-lg hover:shadow-accent/25 hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-6 py-3 text-base font-semibold text-primary-foreground bg-primary border border-primary rounded-lg transition-all duration-300 hover:bg-navy-light hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center px-6 py-3 text-base font-semibold border-2 border-primary-foreground text-primary-foreground bg-transparent rounded-lg transition-all duration-300 hover:bg-primary-foreground hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary-foreground focus:ring-offset-2;
+  }
+
+  .card-elevated {
+    @apply bg-card rounded-xl p-6 shadow-lg shadow-primary/5 border border-border transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-1;
+  }
+
+  .section-title {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold text-foreground tracking-tight;
+  }
+
+  .section-subtitle {
+    @apply text-lg md:text-xl text-muted-foreground max-w-3xl;
+  }
+}
+
+/* Custom Animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px hsl(var(--orange) / 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--orange) / 0.5);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.6s ease-out forwards;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.6s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.6s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animation-delay-100 {
+  animation-delay: 0.1s;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
+}
+
+.animation-delay-400 {
+  animation-delay: 0.4s;
+}
+
+.animation-delay-500 {
+  animation-delay: 0.5s;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===================== */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -357,4 +627,16 @@
     border: 1px solid #ccc;
     break-inside: avoid;
   }
+}
+
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.Hidescrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.Hidescrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }

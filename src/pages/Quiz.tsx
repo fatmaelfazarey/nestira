@@ -1,4 +1,4 @@
-import { DashboardLayout } from '@/components/DashboardLayout';
+// import { DashboardLayout } from '@/components/DashboardLayout';
 import { useEmployerStore } from '@/store/employer store/EmployerStore';
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
@@ -69,7 +69,7 @@ const Quiz = () => {
 
     // Filter candidates based on search and filters
     const filteredCandidates = data?.assignedCandidates?.filter(candidate => {
-        const matchesSearch = candidate.fullName.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = candidate?.fullName?.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesStatus = statusFilter === 'all' || candidate.status === statusFilter;
         const matchesScore = scoreFilter === 'all' || candidate.status_score === scoreFilter;
 
@@ -160,42 +160,42 @@ const Quiz = () => {
 
     if (dataLoading) {
         return (
-            <DashboardLayout>
+            <div>
                 <div className="flex justify-center items-center min-h-64">
                     <div className="text-lg">Loading quiz data...</div>
                 </div>
-            </DashboardLayout>
+            </div>
         );
     }
 
     if (dataError) {
         return (
-            <DashboardLayout>
+            <div>
                 <div className="flex justify-center items-center min-h-64">
                     <div className="text-red-500 text-lg">Error: {dataError}</div>
                     <Button onClick={fetchData} className="ml-4" variant="outline">
                         Retry
                     </Button>
                 </div>
-            </DashboardLayout>
+            </div>
         );
     }
 
     if (!data) {
         return (
-            <DashboardLayout>
+            <div>
                 <div className="flex justify-center items-center min-h-64">
                     <div className="text-lg">No quiz data found.</div>
                     <Button onClick={fetchData} className="ml-4" variant="outline">
                         Retry
                     </Button>
                 </div>
-            </DashboardLayout>
+            </div>
         );
     }
 
     return (
-        <DashboardLayout>
+        <div>
             <div className="min-h-screen bg-background">
                 <div className="space-y-6 p-6">
                     {/* Quiz Header */}
@@ -471,7 +471,7 @@ const Quiz = () => {
 
             </div>
 
-        </DashboardLayout>
+        </div>
     );
 }
 

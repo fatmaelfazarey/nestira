@@ -11,6 +11,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Building2, Calendar, X } from "lucide-react";
 import { toast } from "sonner";
+import { useEmployerStore } from "@/store/employer store/EmployerStore";
+import { calendly } from "@/store/Path";
 
 interface NestiraRemoteModalProps {
   open: boolean;
@@ -18,22 +20,39 @@ interface NestiraRemoteModalProps {
 }
 
 export function NestiraRemoteModal({ open, onOpenChange }: NestiraRemoteModalProps) {
+  const { bookingMeeting } = useEmployerStore();
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
     phone: "",
     roleNeed: "",
-    notes: ""
+    notes: "",
+    type: "remote_team_management"
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    // console.log("---- NestiraRemoteModal ------", formData);
+    //formData {
+    //     "fullName": "et",
+    //     "email": "erye@gmail.com",
+    //     "phone": "yrtr",
+    //     "roleNeed": "ert4tt",
+    //     "notes": ""
+    // }
+
     e.preventDefault();
     if (!formData.fullName || !formData.email) {
       toast.error("Please fill in required fields");
       return;
     }
-    toast.success("Form submitted! Please select a time to speak with us.");
-    console.log("Nestira Remote Form Data:", formData);
+
+    const booked = await bookingMeeting(formData);
+
+    if (booked.success) {
+      toast.success("Form submitted! Please select a time to speak with us.");
+      // console.log("Nestira Remote Form Data:", formData);
+    }
+
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -41,7 +60,8 @@ export function NestiraRemoteModal({ open, onOpenChange }: NestiraRemoteModalPro
   };
 
   const handleCalendarClick = () => {
-    window.open("https://calendly.com/your-calendly-url", "_blank");
+    // window.open("https://calendly.com/your-calendly-url", "_blank");
+    window.open(calendly, "_blank");
   };
 
   return (
@@ -168,8 +188,8 @@ export function NestiraRemoteModal({ open, onOpenChange }: NestiraRemoteModalPro
                 Choose a convenient time for a 15-minute discovery call
               </p>
             </div>
-            
-            <div 
+
+            <div
               className="flex-1 p-8 cursor-pointer group"
               onClick={handleCalendarClick}
             >

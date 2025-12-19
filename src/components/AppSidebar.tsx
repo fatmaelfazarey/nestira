@@ -120,7 +120,7 @@ const navigationSections = [
       },
       {
         title: "Blog & Reports",
-        url: "/employer/blog",
+        url: "/blog-reports",
         icon: BookOpen,
         badge: null
       }

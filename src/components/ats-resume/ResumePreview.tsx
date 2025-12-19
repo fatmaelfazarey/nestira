@@ -3,36 +3,82 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { X, Download, FileText } from "lucide-react";
 
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+
 interface ResumePreviewProps {
   resumeData: any;
   onClose: () => void;
 }
 
+
 export function ResumePreview({ resumeData, onClose }: ResumePreviewProps) {
+
+  const downloadPreviewPDF = async () => {
+    const element = document.getElementById("resume-preview-content");
+    if (!element) return;
+
+    const canvas = await html2canvas(element, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`${resumeData.personalInfo.fullName}_Resume.pdf`);
+  };
+
+  const downloadPreviewDOCX = async () => {
+
+  };
+
+
+
+  // const downloadPreviewPDF = async (resumeData: any) => {
+  //   const element = document.getElementById("resume-preview-content");
+  //   if (!element) return;
+
+  //   const canvas = await html2canvas(element, { scale: 2 });
+  //   const imgData = canvas.toDataURL("image/png");
+  //   const pdf = new jsPDF("p", "mm", "a4");
+  //   const imgProps = pdf.getImageProperties(imgData);
+  //   const pdfWidth = pdf.internal.pageSize.getWidth();
+  //   const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+  //   pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+  //   pdf.save(`${resumeData.personalInfo.fullName}_Resume.pdf`);
+  // };
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-background rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
         <div className="flex items-center justify-between p-4 border-b border-border-c">
           <h2 className="text-lg font-semibold text-foreground">Resume Preview</h2>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => downloadPreviewPDF(resumeData)}>
               <Download className="w-4 h-4 mr-2" />
               Download PDF
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => downloadPreviewDOCX(resumeData)}>
               <FileText className="w-4 h-4 mr-2" />
               Download DOCX
             </Button>
+
+            {/* <Button onClick={() => downloadPreviewPDF(resumeData)}>Download PDF</Button>
+            <Button onClick={() => generateDOCX(resumeData)}>Download DOCX</Button> */}
             <Button onClick={onClose} variant="ghost" size="sm">
               <X className="w-4 h-4" />
             </Button>
           </div>
         </div>
-        
-        <div className="p-6 overflow-y-auto max-h-[80vh]">
-          <div className="bg-white text-black max-w-2xl mx-auto shadow-lg rounded-lg overflow-hidden">
+
+        <div className="p-6 overflow-y-auto max-h-[80vh]" >
+          <div className="bg-white text-black max-w-2xl mx-auto shadow-lg rounded-lg overflow-hidden" id="resume-preview-content">
             {/* Header */}
-            <div className="bg-primary-c text-primary-c-foreground p-6">
+            <div className="bg-primary-c text-primary-c p-6">
+              {resumeData.jobTitle && (
+                <div className="text-sm font-semibold mb-2">{resumeData.jobTitle}</div>
+              )}
               <h1 className="text-2xl font-bold mb-2">{resumeData.personalInfo.fullName}</h1>
               <div className="text-sm space-y-1">
                 <p>{resumeData.personalInfo.email} • {resumeData.personalInfo.phone}</p>

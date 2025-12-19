@@ -7,9 +7,9 @@ const ProfileSettings = () => {
   console.log('ProfileSettings page loaded');
   
   return (
-    <DashboardLayout>
+    // <DashboardLayout>
       <ProfileSettingsContent />
-    </DashboardLayout>
+    // </DashboardLayout>
   );
 };
 

@@ -7,338 +7,451 @@ import {
   User,
   VideoIcon as Video,
   Phone,
-  MapPin
+  MapPin,
+  Loader2,
+  ExternalLink,
+  Globe,
+  Briefcase
 } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { IP } from "@/store/Path";
+import { useState, useEffect } from "react";
+import { toast } from "@/components/ui/use-toast";
+import LoadingState from "@/components/LoadingState"; 
+
+interface Interview {
+  id: number;
+  employerName: string;
+  employerPosition?: string;
+  employerPhoto?: string;
+  companyName: string;
+  companyWebsite?: string;
+  companyLinkedIn?: string;
+  jobTitle: string;
+  data: string;
+  time: string;
+  interviewType: string;
+  interviewMode: string;
+  meetingLink?: string;
+  instructions?: string;
+  status: string;
+  result: string;
+  isScheduled: number;
+  duration_minutes?: number;
+}
 
 export default function Interviews() {
-  const upcomingInterviews = [
-    {
-      id: 1,
-      company: "Goldman Sachs",
-      role: "Investment Banking Analyst",
-      type: "Final Round",
-      date: "2024-01-22",
-      time: "14:00",
-      duration: "60 mins",
-      interviewer: "Sarah Johnson",
-      interviewerTitle: "VP, Investment Banking",
-      format: "Video Call",
-      location: "Zoom",
-      status: "Confirmed",
-      statusColor: "text-success",
-      statusBg: "bg-success/20"
-    },
-    {
-      id: 2,
-      company: "JP Morgan Chase",
-      role: "Financial Analyst",
-      type: "Technical Interview",
-      date: "2024-01-25",
-      time: "10:30",
-      duration: "45 mins",
-      interviewer: "Michael Chen",
-      interviewerTitle: "Senior Director",
-      format: "Phone Call",
-      location: "+1 (555) 123-4567",
-      status: "Pending Confirmation",
-      statusColor: "text-warning",
-      statusBg: "bg-warning/20"
-    },
-    {
-      id: 3,
-      company: "Morgan Stanley",
-      role: "Risk Analyst",
-      type: "Panel Interview",
-      date: "2024-01-28",
-      time: "15:30",
-      duration: "90 mins",
-      interviewer: "Multiple Interviewers",
-      interviewerTitle: "Risk Management Team",
-      format: "In-Person",
-      location: "London Office",
-      status: "Confirmed",
-      statusColor: "text-success",
-      statusBg: "bg-success/20"
-    }
-  ];
+  const { currentUser } = useAuth();
+  const path = `${IP}/api/candidate/`;
 
-  const pastInterviews = [
-    {
-      id: 4,
-      company: "Deutsche Bank",
-      role: "Quantitative Analyst",
-      type: "First Round",
-      date: "2024-01-15",
-      time: "11:00",
-      interviewer: "Alex Thompson",
-      result: "Progressed to Next Round",
-      feedback: "Strong technical skills, good cultural fit",
-      statusColor: "text-success",
-      statusBg: "bg-success/20"
-    },
-    {
-      id: 5,
-      company: "Credit Suisse",
-      role: "Portfolio Manager",
-      type: "Behavioral Interview",
-      date: "2024-01-12",
-      time: "16:00",
-      interviewer: "Lisa Wang",
-      result: "Offer Extended",
-      feedback: "Excellent communication and leadership potential",
-      statusColor: "text-success",
-      statusBg: "bg-success/20"
-    }
-  ];
+  const [interviews, setInterviews] = useState<Interview[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const getFormatIcon = (format: string) => {
-    switch (format) {
-      case "Video Call":
+  const getInterviews = async () => {
+    if (!currentUser) {
+      setError('User not authenticated');
+      return { success: false, message: 'User not authenticated' };
+    }
+
+    setLoading(true);
+    setError(null);
+    const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+    const url = `${path}interviews`;
+
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          'Authorization': token,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch interviews: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (data.success) {
+        setInterviews(data.data);
+      } else {
+        throw new Error(data.message || 'Failed to fetch interviews');
+      }
+      return data;
+    } catch (err: any) {
+      console.error('Unexpected error:', err);
+      setError(err.message);
+      toast({
+        title: "Error",
+        description: "Failed to fetch interviews",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getInterviews();
+  }, [currentUser]);
+
+  const getStatusBadge = (status: string, result: string) => {
+    const statusConfig: { [key: string]: { text: string; color: string; bg: string } } = {
+      scheduled: { text: "Scheduled", color: "text-blue-600", bg: "bg-blue-100" },
+      in_progress: { text: "In Progress", color: "text-orange-600", bg: "bg-orange-100" },
+      completed: { text: "Completed", color: "text-green-600", bg: "bg-green-100" },
+      cancelled: { text: "Cancelled", color: "text-red-600", bg: "bg-red-100" },
+      missing: { text: "Missing", color: "text-red-600", bg: "bg-red-100" },
+      pending: { text: "Pending", color: "text-yellow-600", bg: "bg-yellow-100" }
+    };
+
+    const config = statusConfig[status] || statusConfig.pending;
+
+    if (status === "completed") {
+      if (result === "pass") {
+        return { text: "Passed", color: "text-green-600", bg: "bg-green-100" };
+      } else if (result === "fail") {
+        return { text: "Failed", color: "text-red-600", bg: "bg-red-100" };
+      }
+    }
+
+    return config;
+  };
+
+  const getFormatIcon = (mode: string) => {
+    switch (mode.toLowerCase()) {
+      case "video":
         return <Video className="w-4 h-4" />;
-      case "Phone Call":
+      case "audio":
         return <Phone className="w-4 h-4" />;
-      case "In-Person":
+      case "in-person":
         return <MapPin className="w-4 h-4" />;
       default:
         return <Calendar className="w-4 h-4" />;
     }
   };
 
+  const getInterviewTypeDisplay = (type: string) => {
+    const typeMap: { [key: string]: string } = {
+      technical: "Technical Interview",
+      personal: "Personal Interview",
+      hr: "HR Interview",
+      final: "Final Round Interview",
+      screening: "Screening Interview",
+      combined: "Combined Interview",
+      general: "General Interview"
+    };
+    return typeMap[type] || type;
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (timeString: string) => {
+    return new Date(`1970-01-01T${timeString}`).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  // Filter interviews
+  const now = new Date();
+  const upcomingInterviews = interviews.filter(interview => {
+    const interviewDate = new Date(interview.data);
+    return interviewDate >= now && interview.status === 'scheduled';
+  });
+
+  const pastInterviews = interviews.filter(interview => {
+    const interviewDate = new Date(interview.data);
+    return interviewDate < now || interview.status === 'completed' || interview.status === 'cancelled' || interview.status === 'missing';
+  });
+
+  // Calculate stats based on real data
+  const stats = {
+    upcoming: upcomingInterviews.length,
+    completed: pastInterviews.filter(i => i.status === 'completed').length,
+    successRate: pastInterviews.filter(i => i.status === 'completed').length > 0
+      ? Math.round((pastInterviews.filter(i => i.result === 'pass').length / pastInterviews.filter(i => i.status === 'completed').length) * 100)
+      : 0,
+    thisWeek: upcomingInterviews.filter(interview => {
+      const interviewDate = new Date(interview.data);
+      const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      return interviewDate <= oneWeekFromNow;
+    }).length
+  };
+
+  // Interview Card Component for consistent styling
+  const InterviewCard = ({ interview, isPast = false }: { interview: Interview; isPast?: boolean }) => {
+    const statusBadge = getStatusBadge(interview.status, interview.result);
+
+    return (
+      <Card className="border hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02]">
+        <CardContent className="p-6">
+          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+            {/* Left side: main information */}
+            <div className="flex items-start gap-4 flex-1">
+              {/* Icon */}
+              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${statusBadge.bg} flex-shrink-0`}>
+                <div className={statusBadge.color}>
+                  {getFormatIcon(interview.interviewMode)}
+                </div>
+              </div>
+
+              {/* Details */}
+              <div className="flex-1 min-w-0">
+                {/* Title and status */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-2">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-lg text-foreground mb-1">
+                      {interview.jobTitle}
+                    </h3>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="text-muted-foreground font-medium">
+                        {interview.companyName}
+                      </p>
+                      <span className="text-muted-foreground">•</span>
+                      <p className="text-muted-foreground font-medium">
+                        {getInterviewTypeDisplay(interview.interviewType)}
+                      </p>
+                    </div>
+                  </div>
+                  <Badge className={`${statusBadge.bg} ${statusBadge.color} flex-shrink-0`}>
+                    {statusBadge.text}
+                  </Badge>
+                </div>
+
+                {/* Interview information */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm mb-4">
+                  <div>
+                    <span className="text-muted-foreground text-xs">Date & Time:</span>
+                    <p className="font-medium text-foreground">
+                      {formatDate(interview.data)} at {formatTime(interview.time)}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">Duration:</span>
+                    <p className="font-medium text-foreground">
+                      {interview.duration_minutes || 30} minutes
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">Mode:</span>
+                    <p className="font-medium text-foreground capitalize">
+                      {interview.interviewMode}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground text-xs">Type:</span>
+                    <p className="font-medium text-foreground capitalize">
+                      {interview.interviewType}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Interviewer & Company Info */}
+                <div className="rounded-lg bg-muted/20 p-4 mb-4">
+                  <h4 className="text-sm font-medium text-muted-foreground">Interview Details</h4>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Interviewer Info */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium text-foreground">Interviewer:</span>
+                      </div>
+                      <div className="ml-6 space-y-1">
+                        <p className="text-sm text-foreground">{interview.employerName}
+                        {interview.employerPosition && (
+                          <span className="text-xs text-muted-foreground"> - {interview.employerPosition}</span>
+                        )}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Company Links */}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <Briefcase className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium text-foreground">Company Links:</span>
+                      </div>
+                      <div className="ml-6 flex  items-center  gap-1">
+                        {interview.companyWebsite && (
+                          <a
+                            href={interview.companyWebsite}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-xs text-orange-600 hover:text-orange-700 transition-colors"
+                          >
+                            Website -
+                          </a>
+                        )}
+                        {interview.companyLinkedIn && (
+                          <a
+                            href={interview.companyLinkedIn}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 transition-colors"
+                          >
+                            LinkedIn
+                          </a>
+                        )}
+                        {!interview.companyWebsite && !interview.companyLinkedIn && (
+                          <span className="text-xs text-muted-foreground italic">
+                            No links provided
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Instructions */}
+                {interview.instructions && (
+                  <div className="bg-muted/30 rounded-lg p-3">
+                    <span className="text-sm font-medium text-muted-foreground">Instructions:</span>
+                    <p className="text-sm text-foreground mt-1">
+                      {interview.instructions}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right side: Action Buttons */}
+            {!isPast && (
+              <div className="flex flex-col gap-2 w-full lg:w-48 flex-shrink-0">
+                {(interview.interviewMode === 'video' || interview.interviewMode === 'audio') && interview.meetingLink && (
+                  <Button
+                    className="bg-secondary-c hover:bg-secondary-c/95 text-white"
+                    size="sm"
+                    onClick={() => window.open(interview.meetingLink, '_blank')}
+                  >
+                    <Video className="w-4 h-4 mr-2" />
+                    Join Meeting
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-background">
+      <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-8 animate-fade-in">
           <h1 className="text-3xl font-bold text-foreground mb-2">Interview Schedule</h1>
-          <p className="text-muted-c-foreground">Manage your upcoming and past interviews</p>
+          <p className="text-muted-foreground">Manage your upcoming and past interviews</p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="bg-secondary-c/10 border-secondary-c/20 animate-scale-in">
+          <Card className="bg-blue-50 border-blue-200 animate-scale-in">
             <CardContent className="p-6 text-center">
-              <h3 className="font-medium text-sm text-muted-c-foreground mb-2">Upcoming</h3>
-              <p className="text-3xl font-bold text-secondary-c">3</p>
+              <h3 className="font-medium text-sm text-muted-foreground mb-2">Upcoming</h3>
+
+              <p className="text-3xl font-bold text-blue-600">{0 || stats.upcoming}</p>
+
             </CardContent>
           </Card>
-          <Card className="bg-success/10 border-success/20 animate-scale-in" style={{ animationDelay: '100ms' }}>
+          <Card className="bg-green-50 border-green-200 animate-scale-in" style={{ animationDelay: '100ms' }}>
             <CardContent className="p-6 text-center">
-              <h3 className="font-medium text-sm text-muted-c-foreground mb-2">Completed</h3>
-              <p className="text-3xl font-bold text-success">8</p>
+              <h3 className="font-medium text-sm text-muted-foreground mb-2">Completed</h3>
+
+              <p className="text-3xl font-bold text-green-600">{0 || stats.completed}</p>
+
             </CardContent>
           </Card>
-          <Card className="bg-warning/10 border-warning/20 animate-scale-in" style={{ animationDelay: '200ms' }}>
+          <Card className="bg-yellow-50 border-yellow-200 animate-scale-in" style={{ animationDelay: '200ms' }}>
             <CardContent className="p-6 text-center">
-              <h3 className="font-medium text-sm text-muted-c-foreground mb-2">Success Rate</h3>
-              <p className="text-3xl font-bold text-warning">75%</p>
+              <h3 className="font-medium text-sm text-muted-foreground mb-2">Success Rate</h3>
+
+              <p className="text-3xl font-bold text-yellow-600">{0 || stats.successRate}%</p>
+
             </CardContent>
           </Card>
-          <Card className="bg-primary-c/10 border-primary-c/20 animate-scale-in" style={{ animationDelay: '300ms' }}>
+          <Card className="bg-purple-50 border-purple-200 animate-scale-in" style={{ animationDelay: '300ms' }}>
             <CardContent className="p-6 text-center">
-              <h3 className="font-medium text-sm text-muted-c-foreground mb-2">This Week</h3>
-              <p className="text-3xl font-bold text-primary-c">2</p>
+              <h3 className="font-medium text-sm text-muted-foreground mb-2">This Week</h3>
+
+              <p className="text-3xl font-bold text-purple-600">{0 || stats.thisWeek}</p>
+
             </CardContent>
           </Card>
         </div>
 
-        {/* Upcoming Interviews */}
-        <Card className="mb-8 animate-fade-in">
-          <CardHeader>
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <Calendar className="w-6 h-6 text-secondary-c" />
-              Upcoming Interviews
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {upcomingInterviews.map((interview, index) => (
-              <Card
-                key={interview.id}
-                className="border hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02]"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <CardContent className="p-4 sm:p-6">
-                  {/* Main structure */}
-                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-
-                    {/* Left side: main information */}
-                    <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full">
-                      {/* Icon */}
-                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center ${interview.statusBg} flex-shrink-0`}>
-                        <div className={interview.statusColor}>
-                          {getFormatIcon(interview.format)}
-                        </div>
-                      </div>
-
-                      {/* Details */}
-                      <div className="flex-1 min-w-0">
-                        {/* Title and status */}
-                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
-                          <div className="min-w-0">
-                            <h3 className="font-semibold text-base sm:text-lg text-foreground mb-1 truncate">
-                              {interview.role}
-                            </h3>
-                            <p className="text-muted-c-foreground font-medium text-sm sm:text-base truncate">
-                              {interview.company} • {interview.type}
-                            </p>
-                          </div>
-                          <Badge
-                            className={`${interview.statusBg} ${interview.statusColor} hover:scale-105 transition-transform duration-200 flex-shrink-0 w-fit`}
-                          >
-                            {interview.status}
-                          </Badge>
-                        </div>
-
-                        {/* Interview information */}
-                        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-sm mb-4">
-                          <div className="min-w-0">
-                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Date & Time:</span>
-                            <p className="font-medium text-foreground text-sm sm:text-base truncate">{interview.date} at {interview.time}</p>
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Duration:</span>
-                            <p className="font-medium text-foreground text-sm sm:text-base">{interview.duration}</p>
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Format:</span>
-                            <p className="font-medium text-foreground text-sm sm:text-base">{interview.format}</p>
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Location:</span>
-                            <p className="font-medium text-foreground text-sm sm:text-base truncate">{interview.location}</p>
-                          </div>
-                        </div>
-
-                        {/* Interviewer information */}
-                        <div className="flex flex-col xs:flex-row xs:items-center gap-1 xs:gap-2 text-sm">
-                          <div className="flex items-center gap-1 xs:gap-2">
-                            <User className="w-3 h-3 sm:w-4 sm:h-4 text-muted-c-foreground flex-shrink-0" />
-                            <span className="text-muted-c-foreground text-xs sm:text-sm">Interviewer:</span>
-                            <span className="font-medium text-foreground text-xs sm:text-sm truncate">{interview.interviewer}</span>
-                          </div>
-                          <span className="text-muted-c-foreground hidden xs:inline">•</span>
-                          <span className="text-muted-c-foreground text-xs sm:text-sm truncate">{interview.interviewerTitle}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right side: buttons */}
-                    <div className="flex flex-row lg:flex-col gap-2 w-full lg:w-auto justify-between lg:justify-start">
-                      {interview.format === "Video Call" && (
-                        <Button
-                          className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200 text-xs sm:text-sm whitespace-nowrap"
-                          size="sm"
-                        >
-                          <Video className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                          Join Meeting
-                        </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="hover:bg-primary-c/10 hover:text-primary-c hover:border-primary-c/50 transition-all duration-200 text-xs sm:text-sm whitespace-nowrap"
-                      >
-                        <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
-                        Reschedule
-                      </Button>
-                    </div>
+        {/* Loading state for interviews only */}
+        {loading ? (
+          <LoadingState LoadingStateMessage="interviews..." />
+        ) : error ? (
+          <div className="text-center py-12 space-y-4">
+            <p className="text-destructive">Error loading interviews</p>
+            <Button onClick={getInterviews} variant="outline">
+              Try Again
+            </Button>
+          </div>
+        ) : (
+          <>
+            {/* Upcoming Interviews */}
+            <Card className="mb-8 animate-fade-in">
+              <CardHeader>
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  <Calendar className="w-6 h-6 text-blue-600" />
+                  Upcoming Interviews
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {upcomingInterviews.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No upcoming interviews scheduled
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </CardContent>
+                ) : (
+                  upcomingInterviews.map((interview, index) => (
+                    <InterviewCard
+                      key={interview.id}
+                      interview={interview}
+                      isPast={false}
+                    />
+                  ))
+                )}
+              </CardContent>
+            </Card>
 
-        </Card>
-
-        {/* Past Interviews */}
-        <Card className="animate-fade-in">
-          <CardHeader>
-            <CardTitle className="text-2xl flex items-center gap-2">
-              <Clock className="w-6 h-6 text-muted-c-foreground" />
-              Past Interviews
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {pastInterviews.map((interview, index) => (
-              <Card
-                key={interview.id}
-                className="border hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02]"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <CardContent className="p-4 sm:p-6">
-                  {/* Main structure */}
-                  <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
-
-                    {/* Left side: Basic information */}
-                    <div className="flex items-start gap-3 sm:gap-4 flex-1 w-full">
-                      {/* Icon */}
-                      <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center ${interview.statusBg} flex-shrink-0`}>
-                        <div className={interview.statusColor}>
-                          <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-                        </div>
-                      </div>
-
-                      {/* Details */}
-                      <div className="flex-1 min-w-0">
-                        {/* Title and result */}
-                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
-                          <div className="min-w-0">
-                            <h3 className="font-semibold text-base sm:text-lg text-foreground mb-1 truncate">
-                              {interview.role}
-                            </h3>
-                            <p className="text-muted-c-foreground font-medium text-sm sm:text-base truncate">
-                              {interview.company} • {interview.type}
-                            </p>
-                          </div>
-                          <Badge
-                            className={`${interview.statusBg} ${interview.statusColor} hover:scale-105 transition-transform duration-200 flex-shrink-0 w-fit`}
-                          >
-                            {interview.result}
-                          </Badge>
-                        </div>
-
-                        {/* Interview info */}
-                        <div className="grid grid-cols-1 xs:grid-cols-2 gap-3 sm:gap-4 text-sm mb-3">
-                          <div className="min-w-0">
-                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Date & Time:</span>
-                            <p className="font-medium text-foreground text-sm sm:text-base truncate">
-                              {interview.date} at {interview.time}
-                            </p>
-                          </div>
-                          <div className="min-w-0">
-                            <span className="text-muted-c-foreground block text-xs sm:text-sm">Interviewer:</span>
-                            <p className="font-medium text-foreground text-sm sm:text-base truncate">
-                              {interview.interviewer}
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Feedback section */}
-                        <div className="bg-accent-c/30 rounded-lg p-3">
-                          <span className="text-sm text-muted-c-foreground">Feedback:</span>
-                          <p className="text-sm text-foreground mt-1 line-clamp-2 sm:line-clamp-3">
-                            {interview.feedback}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right side: Actions */}
-                    <div className="flex lg:flex-col justify-end lg:justify-start w-full lg:w-auto">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="hover:bg-success/10 hover:text-success hover:border-success/50 transition-all duration-200 whitespace-nowrap w-full lg:w-auto justify-center"
-                      >
-                        View Details
-                      </Button>
-                    </div>
+            {/* Past Interviews */}
+            <Card className="animate-fade-in">
+              <CardHeader>
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  <Clock className="w-6 h-6 text-muted-foreground" />
+                  Past Interviews
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {pastInterviews.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    No past interviews found
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-          </CardContent>
-
-        </Card>
+                ) : (
+                  pastInterviews.map((interview, index) => (
+                    <InterviewCard
+                      key={interview.id}
+                      interview={interview}
+                      isPast={true}
+                    />
+                  ))
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

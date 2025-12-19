@@ -214,7 +214,7 @@ export const FilterSidebar = ({
                 </Select>
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Career Level</label>
                 <Select value={skillsFilter} onValueChange={setSkillsFilter}>
                   <SelectTrigger>
@@ -227,7 +227,7 @@ export const FilterSidebar = ({
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+              </div> */}
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">Status</label>
@@ -249,7 +249,7 @@ export const FilterSidebar = ({
           <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
 
           {/* Job & Stage Filters */}
-          <div className="space-y-4">
+          {/* <div className="space-y-4">
             <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
               <Briefcase className="w-4 h-4 text-accent" />
               Job &amp; Stage
@@ -297,7 +297,7 @@ export const FilterSidebar = ({
             </div>
           </div>
 
-          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" />
+          <Separator className="my-6 h-[1px] bg-gray-300 opacity-30" /> */}
 
           {/* Experience and Score Range */}
           <div className="space-y-4">

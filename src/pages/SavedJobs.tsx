@@ -22,6 +22,7 @@ import { EasyApplyModal } from "@/components/job-browser/EasyApplyModal";
 import { useToast } from "@/hooks/use-toast";
 import { JobDetailsDialog } from "@/components/job-browser/JobDetailsDialog";
 import { useCandidateStore } from "@/store/candidate store/CandidateStore";
+import { useAuth } from "@/contexts/AuthContext";
 // import { getSavedJobs, saveJob, updateJobView } from "@/store/candidate store/store";
 
 // Types
@@ -76,6 +77,7 @@ const useSavedJobs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+
 
   const fetchJobs = useCallback(async () => {
     try {
@@ -205,6 +207,7 @@ const JobCard = ({
   onUnsave: (jobId: number) => void;
 }) => {
   const matchColors = getMatchColor(job.matchScore);
+  const { isVerified } = useAuth();
 
   return (
     <Card className="hover:shadow-lg transition-all duration-200 animate-slide-up hover:scale-[1.02]">
@@ -318,16 +321,33 @@ const JobCard = ({
 
           {/* Actions */}
           <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-2 sm:gap-3">
-            <Button
+            {/* <Button
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground hover:scale-105 transition-all duration-200 flex-1 xs:flex-none justify-center"
               size="sm"
               onClick={() => onApply(job)}
             >
               <FileText className="w-4 h-4 mr-2" />
               Apply Now
-            </Button>
+            </Button> */}
+            <div className="relative group">
+              <Button
+                disabled={!isVerified}
+                onClick={() => onApply(job)}
+                className="bg-secondary-c text-secondary-c-foreground hover:bg-secondary-c-hover hover:scale-105 transition-all duration-200"
+              >
+                Apply Now
+              </Button>
+
+              <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                {isVerified
+                  ? 'Apply using your Nestira profile in seconds'
+                  : 'Please verify your account to apply for this job'}
+              </div>
+            </div>
+
             <Button
               variant="outline"
+               disabled={!isVerified}
               className="hover:bg-primary/10 hover:text-primary hover:border-primary/50 flex-1 xs:flex-none justify-center"
               size="sm"
               onClick={() => onViewDetails(job)}
@@ -385,6 +405,7 @@ export default function SavedJobs() {
   const [showEasyApply, setShowEasyApply] = useState(false);
   const [showJobDetails, setShowJobDetails] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+
 
   const { jobs, loading, error, fetchJobs, setJobs } = useSavedJobs();
   const { searchTerm, setSearchTerm, sortBy, setSortBy, filteredJobs } = useJobFilters(jobs);
@@ -466,7 +487,7 @@ export default function SavedJobs() {
   }
 
   return (
-    <div className="min-h-screen bg-background p-4 sm:p-8">
+    <div className="min-h-screen bg-background ">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8 animate-fade-in">

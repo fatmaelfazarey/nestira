@@ -29,12 +29,13 @@ export function QuizEditModal({ isOpen, onClose, quiz, onSave }: QuizEditModalPr
   const [description, setDescription] = useState('');
   const [timeLimit, setTimeLimit] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
+  console.log('Quiz --------- ', quiz)
   useEffect(() => {
     if (quiz) {
       setTitle(quiz.title || '');
       setDescription(quiz.description || '');
       setTimeLimit(quiz.timeLimit);
-      setSelectedQuestions(quiz.questionsList || []);
+      setSelectedQuestions(quiz.questionsList || []);// quiz.method=='search'
     }
   }, [quiz]);
 
@@ -305,7 +306,7 @@ export function QuizEditModal({ isOpen, onClose, quiz, onSave }: QuizEditModalPr
             <div className="space-y-3">
               {['True', 'False'].map((option) => (
                 <div key={option} className="flex items-center space-x-3 p-3 border rounded-lg hover:bg-gray-50">
-                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${question.correctAnswer === option
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${question?.correctAnswer === option
                     ? 'border-green-500 bg-green-500'
                     : 'border-gray-300'
                     }`}>
@@ -313,7 +314,7 @@ export function QuizEditModal({ isOpen, onClose, quiz, onSave }: QuizEditModalPr
                       <CheckCircle className="w-3 h-3 text-white" />
                     )}
                   </div>
-                  <span className={`flex-1 ${question.correctAnswer === option
+                  <span className={`flex-1 ${question === option
                     ? 'text-green-700 font-medium'
                     : 'text-gray-700'
                     }`}>
@@ -459,7 +460,7 @@ export function QuizEditModal({ isOpen, onClose, quiz, onSave }: QuizEditModalPr
 
         <div className=" flex flex-col-reverse md:flex-row gap-6 ">
           {/* AI-Suggested Questions */}
-          <div className="space-y-4 overflow-scroll w-full">
+          {quiz.method != 'search' && (<div className="space-y-4 overflow-scroll w-full">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-orange-100 rounded-lg">
                 <span className="text-orange-600 font-bold">🤖</span>
@@ -518,7 +519,8 @@ export function QuizEditModal({ isOpen, onClose, quiz, onSave }: QuizEditModalPr
                 );
               })}
             </div>
-          </div>
+          </div>)}
+
 
           {/* Customize Your Quiz */}
           <div className="space-y-4 overflow-scroll w-full">

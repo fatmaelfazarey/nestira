@@ -21,7 +21,7 @@ export const CandidateActions: React.FC<CandidateActionsProps> = ({
   return (
     <div className="flex flex-col gap-2">
       <div className="text-xs text-gray-500">
-        Last active: 2 days ago
+        {/* Last active: 2 days ago */}
       </div>
       
       <div className="flex gap-2">
@@ -35,7 +35,7 @@ export const CandidateActions: React.FC<CandidateActionsProps> = ({
           View Profile
         </Button>
         
-        {!isUnlocked ? (
+        {/* {!isUnlocked ? (
           <Button 
             size="sm" 
             className="bg-accent hover:bg-accent/90 flex-1 text-xs"
@@ -53,7 +53,7 @@ export const CandidateActions: React.FC<CandidateActionsProps> = ({
             <UserPlus className="w-3 h-3 mr-1" />
             Invite
           </Button>
-        )}
+        )} */}
       </div>
     </div>
   );

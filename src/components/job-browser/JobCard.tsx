@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useCandidateStore } from "@/store/candidate store/CandidateStore";
+import { useAuth } from "@/contexts/AuthContext";
 // import { updateJobView } from "@/store/candidate store/store";
 
 interface Job {
@@ -73,6 +74,7 @@ export function JobCard({
 }: JobCardProps) {
   const { toast } = useToast();
   const { updateJobView } = useCandidateStore();
+  const { isVerified } = useAuth();
   const getWorkModeColor = (mode: string) => {
     switch (mode.toLowerCase()) {
       case 'remote': return 'bg-success/20 text-success';
@@ -243,7 +245,7 @@ export function JobCard({
             </div>
 
             <p className="text-foreground mb-4 leading-relaxed">
-              {job.description}
+              {job.description?.slice(0, 200) + "..."}
             </p>
 
             <div className="flex flex-wrap gap-2 mb-4">
@@ -281,17 +283,38 @@ export function JobCard({
             )}
 
             <div className="flex items-center gap-3">
-              <Button
+              {/* <Button
+                disabled={!isVerified}
                 onClick={handleEasyApply}
                 className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground hover:scale-105 transition-all duration-200 relative group"
               >
                 Easy Apply
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
-                  Apply using your Nestira profile in seconds
+                  {isVerified ?
+                    'Apply using your Nestira profile in seconds' :
+                    'Please verify your account to apply for this job'}
                 </div>
-              </Button>
+              </Button> */}
+
+              <div className="relative group">
+                <Button
+                  disabled={!isVerified}
+                  onClick={handleEasyApply}
+                  className="bg-secondary-c text-secondary-c-foreground hover:bg-secondary-c-hover hover:scale-105 transition-all duration-200"
+                >
+                  Easy Apply
+                </Button>
+
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-foreground text-background text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                  {isVerified
+                    ? 'Apply using your Nestira profile in seconds'
+                    : 'Please verify your account to apply for this job'}
+                </div>
+              </div>
+
               <Button
                 variant="outline"
+                disabled={!isVerified}
                 size="sm"
                 onClick={handleViewDetails}
                 className="hover:bg-primary-c/10 hover:text-primary-c hover:border-primary-c/50 transition-all duration-200"
@@ -299,6 +322,7 @@ export function JobCard({
                 <Eye className="w-4 h-4 mr-2" />
                 View Details
               </Button>
+
               <Button
                 variant="outline"
                 size="sm"

@@ -39,8 +39,12 @@ const MainLogin = () => {
                 setTimeout(() => {
                     if (role === "recruiter") {
                         navigate("/employer");
-                    } else {
+                    } else if (role === "candidate") {
                         navigate("/candidate");
+                    } else if (role === "admin") {
+                        navigate("/admin");
+                    } else {
+                        navigate("/not-access");
                     }
                 }, 500);
             } else {

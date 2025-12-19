@@ -73,7 +73,7 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                   const shouldBlurProfile = !isUnlocked;
                   const shouldBlurTags = !isUnlocked;
                   const shouldShowScore = (isRevealed && scoreVisibility.showScores) || isUnlocked;
-                  
+
                   return (
                     <TableRow key={candidate.id}>
                       <TableCell className="min-w-[150px]">
@@ -120,23 +120,23 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>
-                              {shouldShowScore 
-                                ? `Matching Score: ${candidate.score}%` 
+                              {shouldShowScore
+                                ? `Matching Score: ${candidate.score}%`
                                 : 'Use filters, job post, or AI search to reveal match'}
                             </p>
                           </TooltipContent>
                         </Tooltip>
                       </TableCell>
-                      <TableCell className="min-w-[100px]">
+                      {/* <TableCell className="min-w-[100px]">
                         <span className="text-xs text-gray-500">Last active: 2 days ago</span>
-                      </TableCell>
-                      
+                      </TableCell> */}
+
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.industryExperience.slice(0, 2).map((industry: string) => (
-                            <Badge 
-                              key={industry} 
-                              variant="outline" 
+                            <Badge
+                              key={industry}
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : ''}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -144,8 +144,8 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                             </Badge>
                           ))}
                           {candidate.industryExperience.length > 2 && (
-                            <Badge 
-                              variant="outline" 
+                            <Badge
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : ''}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -157,9 +157,9 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.financeSubfields.slice(0, 2).map((subfield: string) => (
-                            <Badge 
-                              key={subfield} 
-                              variant="outline" 
+                            <Badge
+                              key={subfield}
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : 'bg-blue-50 text-blue-700 border-blue-200'}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -167,8 +167,8 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                             </Badge>
                           ))}
                           {candidate.financeSubfields.length > 2 && (
-                            <Badge 
-                              variant="outline" 
+                            <Badge
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : ''}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -180,9 +180,9 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.softwareTools.slice(0, 2).map((tool: string) => (
-                            <Badge 
-                              key={tool} 
-                              variant="outline" 
+                            <Badge
+                              key={tool}
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : 'bg-purple-50 text-purple-700 border-purple-200'}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -190,8 +190,8 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                             </Badge>
                           ))}
                           {candidate.softwareTools.length > 2 && (
-                            <Badge 
-                              variant="outline" 
+                            <Badge
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : ''}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -203,9 +203,9 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                       <TableCell className="min-w-[120px]">
                         <div className="flex flex-wrap gap-1">
                           {candidate.certifications.slice(0, 2).map((cert: string) => (
-                            <Badge 
-                              key={cert} 
-                              variant="outline" 
+                            <Badge
+                              key={cert}
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : 'bg-green-50 text-green-700 border-green-200'}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -213,8 +213,8 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                             </Badge>
                           ))}
                           {candidate.certifications.length > 2 && (
-                            <Badge 
-                              variant="outline" 
+                            <Badge
+                              variant="outline"
                               className={`text-xs transition-all ease-in-out duration-300 ${shouldBlurTags ? 'blur-sm opacity-60 bg-blue-50 border-blue-200' : ''}`}
                               aria-hidden={shouldBlurTags}
                             >
@@ -224,29 +224,29 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                         </div>
                       </TableCell>
                       <TableCell className="min-w-[120px] text-sm">{candidate.salaryExpectation}</TableCell>
-                      
+
                       <TableCell className="min-w-[180px]">
                         <div className="flex gap-1 flex-wrap">
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            onClick={() => onToggleFavorite(candidate.id)} 
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onToggleFavorite(candidate.id)}
                             className="text-yellow-500 hover:text-yellow-600 p-1"
                           >
                             <Star className={`w-4 h-4 ${favorites.has(candidate.id) ? 'fill-current' : ''}`} />
                           </Button>
-                          
-                          <AddToFolderButton 
-                            candidate={candidate} 
+
+                          <AddToFolderButton
+                            candidate={candidate}
                             size="sm"
                             showIcon={true}
                             className="text-xs px-2"
                           >
                             <Plus className="w-3 h-3" />
                           </AddToFolderButton>
-                          
-                          <Button 
-                            size="sm" 
+
+                          <Button
+                            size="sm"
                             variant="outline"
                             className="text-xs px-2"
                             onClick={() => handleViewProfile(candidate)}
@@ -254,19 +254,19 @@ export const CandidateTableView: React.FC<CandidateTableViewProps> = ({
                             <Eye className="w-3 h-3 mr-1" />
                             View
                           </Button>
-                          
+
                           {!isUnlocked ? (
-                            <Button 
-                              size="sm" 
-                              className="bg-accent hover:bg-accent/90 text-xs px-2" 
+                            <Button
+                              size="sm"
+                              className="bg-accent hover:bg-accent/90 text-xs px-2"
                               onClick={() => onUnlock(candidate)}
                             >
                               <Unlock className="w-3 h-3 mr-1" />
                               Unlock
                             </Button>
                           ) : (
-                            <Button 
-                              size="sm" 
+                            <Button
+                              size="sm"
                               className="bg-green-600 hover:bg-green-700 text-white text-xs px-2"
                               onClick={() => handleInviteToApply(candidate)}
                             >

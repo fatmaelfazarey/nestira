@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { DashboardLayout } from '@/components/DashboardLayout';
+// import { DashboardLayout } from '@/components/DashboardLayout';
 import { QuizCreator } from '@/components/QuizCreator';
 import { QuizPreviewModal } from '@/components/quiz/QuizPreviewModal';
 import { QuizAssignModal } from '@/components/quiz/QuizAssignModal';
@@ -138,7 +138,8 @@ const QuizBuilder = () => {
         toast.success('Quiz created successfully!');
         fetchQuizzes();
       } else {
-        toast.error('Failed to Create new quiz')
+        // toast.error('Failed to Create new quiz');
+        alert('Failed to Create new quiz')
       }
       setShowCreator(false);
       // Create new quiz object
@@ -161,9 +162,10 @@ const QuizBuilder = () => {
 
     } catch (error) {
       console.error('❌ Submit error:', error);
-      toast.error('Failed to save quiz');
+      // toast.error('Failed to save quiz');
     }
   };
+
 
   // Function to update existing quiz
   const handleUpdateQuiz = async (updatedQuiz: any) => {
@@ -345,17 +347,17 @@ const QuizBuilder = () => {
 
   if (showCreator) {
     return (
-      <DashboardLayout>
+      <div>
         <QuizCreator
           onSave={handleSubmitQuiz}
           onCancel={() => setShowCreator(false)}
         />
-      </DashboardLayout>
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-6">
         <div className="flex justify-between items-start md:items-center md:flex-row flex-col gap-3">
           <div>
@@ -507,7 +509,7 @@ const QuizBuilder = () => {
                               <Play className="w-4 h-4 mr-1" />
                               Delete
                             </Button> */}
-                           
+
 
 
                             {quiz.isActive && (
@@ -521,7 +523,7 @@ const QuizBuilder = () => {
                               </Button>
                             )}
 
-                             {quiz.assignedCandidates == 0 && <Button
+                            {quiz.assignedCandidates == 0 && <Button
                               variant="ghost"
                               size="sm"
                               onClick={() => handleRemoveQuiz(quiz)}
@@ -582,7 +584,7 @@ const QuizBuilder = () => {
         selectedSkills={selectedSkills}
         onSelectedSkillsChange={setSelectedSkills}
       />
-    </DashboardLayout>
+    </div>
   );
 };
 

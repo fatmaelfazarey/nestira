@@ -31,6 +31,7 @@ interface Job {
   saved: boolean;
   deadline?: string;
   employer?: {
+    id: string;
     type: "individual" | "company";
     name: string;
     companyName?: string;
@@ -46,15 +47,24 @@ interface Job {
   };
 }
 
+// interface JobDetailsDialogProps {
+//   job: Job | null;
+//   open: boolean;
+//   onClose: () => void;
+//   onSave: (jobId: number | null) => void;
+//   onApply: (jobId: number | null) => void;
+// }
+
 interface JobDetailsDialogProps {
   job: Job | null;
   open: boolean;
   onClose: () => void;
   onSave: (jobId: number | null) => void;
   onApply: (jobId: number | null) => void;
+  onStartChat?: (employer: any) => void;
 }
 
-export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDetailsDialogProps) {
+export function JobDetailsDialog({ job, open, onClose, onSave, onApply, onStartChat }: JobDetailsDialogProps) {
   if (!job) return null;
 
   const getWorkModeColor = (mode: string) => {
@@ -81,6 +91,7 @@ export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDet
     name: "HR Manager",
     companyName: job.company,
     logo: undefined,
+    id: job.employer_data.id,
     industry: job.employer_data.industry || job.employer.industry,
     companySize: job.employer_data.companySize || job.employer.companySize,
     location: job.employer_data.location || job.employer.location || job.location,
@@ -194,7 +205,11 @@ export function JobDetailsDialog({ job, open, onClose, onSave, onApply }: JobDet
 
           {/* Sidebar with Employer Info */}
           <div className="lg:col-span-1">
-            <EmployerInfoCard employer={mockEmployer} />
+            {/* <EmployerInfoCard employer={mockEmployer} /> */}
+            <EmployerInfoCard
+              employer={mockEmployer}
+              onStartChat={onStartChat}
+            />
           </div>
         </div>
 

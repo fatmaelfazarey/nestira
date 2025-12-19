@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Folder, Plus, Edit, Trash2, Users } from 'lucide-react';
 import { toast } from 'sonner';
+import { useEmployerStore } from '@/store/employer store/EmployerStore';
 
 interface Folder {
   id: string;
@@ -32,12 +33,14 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
   isOpen,
   onClose
 }) => {
-  const [folders, setFolders] = useState<Folder[]>(mockFolders);
+  const [folders, setFolders] = useState<Folder[]>();
   const [newFolderName, setNewFolderName] = useState('');
   const [editingFolder, setEditingFolder] = useState<string | null>(null);
   const [editFolderName, setEditFolderName] = useState('');
+  const { gatAllFolders, createNewFolder, deleteFolder, updateFolderName } = useEmployerStore();
 
   useEffect(() => {
+    fetchFoldrs()
     if (!isOpen) {
       setNewFolderName('');
       setEditingFolder(null);
@@ -45,17 +48,27 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
     }
   }, [isOpen]);
 
-  const handleCreateFolder = () => {
+  const fetchFoldrs = async () => {
+    await gatAllFolders(setFolders);
+  }
+
+  const handleCreateFolder = async () => {
+
+
     if (newFolderName.trim() && !folders.find(f => f.name.toLowerCase() === newFolderName.toLowerCase())) {
-      const newFolder: Folder = {
-        id: Date.now().toString(),
-        name: newFolderName.trim(),
-        count: 0,
-        createdAt: new Date()
-      };
-      setFolders(prev => [...prev, newFolder]);
-      setNewFolderName('');
-      toast.success(`Created folder: ${newFolder.name}`);
+      const created = await createNewFolder(newFolderName.trim());
+      if (created.success) {
+        const newFolder: Folder = {
+          id: Date.now().toString(),
+          name: newFolderName.trim(),
+          count: 0,
+          createdAt: new Date()
+        };
+        setFolders(prev => [...prev, newFolder]);
+        setNewFolderName('');
+        toast.success(`Created folder: ${newFolder.name}`);
+      }
+
     } else if (folders.find(f => f.name.toLowerCase() === newFolderName.toLowerCase())) {
       toast.error('A folder with this name already exists');
     }
@@ -66,43 +79,93 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
     setEditFolderName(folder.name);
   };
 
-  const handleSaveEdit = () => {
+  //   const handleSaveEdit = () => {
+  //     if (editFolderName.trim() && editingFolder) {
+  //       const existingFolder = folders.find(f => f.id !== editingFolder && f.name.toLowerCase() === editFolderName.toLowerCase());
+  //       if (existingFolder) {
+  //         toast.error('A folder with this name already exists');
+  //         return;
+  //       }
+
+  //       setFolders(prev => prev.map(folder =>
+  //         folder.id === editingFolder
+  //           ? {
+  //             await updateFolderName(editingFolder, editFolderName.trim())
+  //             { ...folder, name: editFolderName.trim() }}
+  //           : folder
+  //       ));
+  // toast.success('Folder renamed successfully');
+  // setEditingFolder(null);
+  // setEditFolderName('');
+  //     }
+  //   };
+
+  const handleSaveEdit = async () => {
     if (editFolderName.trim() && editingFolder) {
-      const existingFolder = folders.find(f => f.id !== editingFolder && f.name.toLowerCase() === editFolderName.toLowerCase());
+
+      const existingFolder = folders.find(
+        f => f.id !== editingFolder && f.name.toLowerCase() === editFolderName.toLowerCase()
+      );
+
       if (existingFolder) {
-        toast.error('A folder with this name already exists');
+        toast.error("A folder with this name already exists");
         return;
       }
 
-      setFolders(prev => prev.map(folder => 
-        folder.id === editingFolder 
-          ? { ...folder, name: editFolderName.trim() }
-          : folder
-      ));
-      toast.success('Folder renamed successfully');
-      setEditingFolder(null);
-      setEditFolderName('');
+      try {
+
+        const result = await updateFolderName(editingFolder, editFolderName.trim());
+
+        if (!result.success) {
+          toast.error(result.message || "Failed to update folder name");
+          return;
+        }
+
+
+        setFolders(prev =>
+          prev.map(folder =>
+            folder.id === editingFolder
+              ? { ...folder, name: editFolderName.trim() }
+              : folder
+          )
+        );
+
+        toast.success("Folder renamed successfully");
+        setEditingFolder(null);
+        setEditFolderName("");
+      } catch (error) {
+        console.error("Error updating folder name:", error);
+        toast.error("An unexpected error occurred while renaming the folder");
+      }
     }
   };
+
 
   const handleCancelEdit = () => {
     setEditingFolder(null);
     setEditFolderName('');
   };
 
-  const handleDeleteFolder = (folderId: string) => {
+  const handleDeleteFolder = async (folderId: string) => {
     const folder = folders.find(f => f.id === folderId);
     if (folder) {
       if (folder.count > 0) {
         const confirmed = window.confirm(`This folder contains ${folder.count} candidates. Are you sure you want to delete it?`);
         if (!confirmed) return;
       }
-      
-      setFolders(prev => prev.filter(f => f.id !== folderId));
-      toast.success(`Deleted folder: ${folder.name}`);
+      const isDeleted = await deleteFolder(folderId)
+      if (isDeleted.success) {
+        setFolders(prev => prev.filter(f => f.id !== folderId));
+        toast.success(`Deleted folder: ${folder.name}`);
+      }
+
     }
   };
 
+  const handleDoneButton = async () => {
+
+    onClose();
+  }
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
@@ -128,7 +191,7 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
                   }
                 }}
               />
-              <Button onClick={handleCreateFolder} disabled={!newFolderName.trim()}>
+              <Button onClick={handleCreateFolder} disabled={!newFolderName.trim()} className='text-secondary-c border-2 border-secondary-c hover:text-white hover:bg-secondary-c'>
                 <Plus className="w-4 h-4 mr-2" />
                 Create
               </Button>
@@ -137,9 +200,9 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
 
           {/* Existing Folders */}
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Your Folders ({folders.length})</Label>
-            
-            {folders.length === 0 ? (
+            <Label className="text-sm font-medium">Your Folders ({folders?.length})</Label>
+
+            {folders?.length === 0 ? (
               <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300 rounded-lg">
                 <Folder className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>No folders created yet</p>
@@ -147,7 +210,7 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
               </div>
             ) : (
               <div className="space-y-2 max-h-96 overflow-y-auto">
-                {folders.map((folder) => (
+                {folders?.map((folder) => (
                   <div
                     key={folder.id}
                     className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50"
@@ -169,7 +232,7 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
                             }}
                             autoFocus
                           />
-                          <Button size="sm" onClick={handleSaveEdit} disabled={!editFolderName.trim()}>
+                          <Button size="sm" onClick={handleSaveEdit} disabled={!editFolderName.trim()} className='bg-secondary-c'>
                             Save
                           </Button>
                           <Button size="sm" variant="outline" onClick={handleCancelEdit}>
@@ -181,7 +244,7 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
                           <div className="flex-1">
                             <div className="font-medium">{folder.name}</div>
                             <div className="text-xs text-gray-500">
-                              Created {folder.createdAt.toLocaleDateString()}
+                              Created {new Date(folder?.createdAt).toLocaleString()}
                             </div>
                           </div>
                           <Badge variant="outline" className="flex items-center gap-1">
@@ -220,7 +283,7 @@ export const FolderManagementModal: React.FC<FolderManagementModalProps> = ({
 
           {/* Close Button */}
           <div className="flex justify-end pt-4 border-t">
-            <Button onClick={onClose} variant="outline">
+            <Button onClick={handleDoneButton} variant="outline">
               Done
             </Button>
           </div>

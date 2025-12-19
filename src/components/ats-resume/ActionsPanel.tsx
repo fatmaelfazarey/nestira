@@ -17,24 +17,24 @@ export function ActionsPanel({ onPreview, onDownloadPDF, onDownloadDOCX, onSaveT
         <CardTitle className="text-lg font-semibold text-foreground">Actions</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <Button 
+        <Button
           onClick={onPreview}
           className="w-full bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground"
         >
           <Eye className="w-4 h-4 mr-2" />
           Preview Resume
         </Button>
-        
-        <Button 
+
+        <Button
           onClick={onDownloadPDF}
           variant="outline"
           className="w-full"
         >
           <Download className="w-4 h-4 mr-2" />
-          Download PDF
+          Download ATS CV
         </Button>
-        
-        <Button 
+
+        <Button
           onClick={onDownloadDOCX}
           variant="outline"
           className="w-full"
@@ -43,9 +43,9 @@ export function ActionsPanel({ onPreview, onDownloadPDF, onDownloadDOCX, onSaveT
           Download DOCX
         </Button>
 
-        <Button 
+        <Button
           onClick={onSaveToProfile}
-          variant="outline" 
+          variant="outline"
           className="w-full border-success text-success hover:bg-success hover:text-success-foreground"
         >
           <Save className="w-4 h-4 mr-2" />

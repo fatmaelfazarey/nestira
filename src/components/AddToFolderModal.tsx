@@ -10,6 +10,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Check, ChevronDown, X, Folder, Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
+import { useEmployerStore } from '@/store/employer store/EmployerStore';
 
 interface AddToFolderModalProps {
   candidate: any;
@@ -18,13 +19,13 @@ interface AddToFolderModalProps {
 }
 
 // Mock folders data - in a real app, this would come from a state management system or API
-const mockFolders = [
-  { id: '1', name: 'Logistics coordinator', count: 12 },
-  { id: '2', name: 'Finance Managers', count: 8 },
-  { id: '3', name: 'Senior Analysts', count: 15 },
-  { id: '4', name: 'Remote Candidates', count: 23 },
-  { id: '5', name: 'High Priority', count: 6 }
-];
+// const mockFolders = [
+//   { id: '1', name: 'Logistics coordinator', count: 12 },
+//   { id: '2', name: 'Finance Managers', count: 8 },
+//   { id: '3', name: 'Senior Analysts', count: 15 },
+//   { id: '4', name: 'Remote Candidates', count: 23 },
+//   { id: '5', name: 'High Priority', count: 6 }
+// ];
 
 export const AddToFolderModal: React.FC<AddToFolderModalProps> = ({
   candidate,
@@ -32,18 +33,26 @@ export const AddToFolderModal: React.FC<AddToFolderModalProps> = ({
   onClose
 }) => {
   const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
-  const [folders, setFolders] = useState(mockFolders);
+  const [folders, setFolders] = useState([]);
   const [searchValue, setSearchValue] = useState('');
   const [open, setOpen] = useState(false);
   const [newFolderName, setNewFolderName] = useState('');
+  const { gatAllFolders ,addCandidatesToFolder} = useEmployerStore();
 
   useEffect(() => {
+    fetchFoldrs()
     if (!isOpen) {
       setSelectedFolders([]);
       setSearchValue('');
       setNewFolderName('');
+
     }
+
   }, [isOpen]);
+
+  const fetchFoldrs = async () => {
+    await gatAllFolders(setFolders);
+  }
 
   const handleCreateNewFolder = () => {
     if (newFolderName.trim() && !folders.find(f => f.name.toLowerCase() === newFolderName.toLowerCase())) {
@@ -60,8 +69,8 @@ export const AddToFolderModal: React.FC<AddToFolderModalProps> = ({
   };
 
   const handleToggleFolder = (folderId: string) => {
-    setSelectedFolders(prev => 
-      prev.includes(folderId) 
+    setSelectedFolders(prev =>
+      prev.includes(folderId)
         ? prev.filter(id => id !== folderId)
         : [...prev, folderId]
     );
@@ -71,32 +80,66 @@ export const AddToFolderModal: React.FC<AddToFolderModalProps> = ({
     setSelectedFolders(prev => prev.filter(id => id !== folderId));
   };
 
-  const handleSave = () => {
-    if (selectedFolders.length === 0) {
-      toast.error('Please select at least one folder');
+  // const handleSave = async () => {
+  //   if (selectedFolders.length === 0) {
+  //     toast.error('Please select at least one folder');
+  //     return;
+  //   }
+  //   // const addToFolder = await addCandidatesToFolder(f.id, candidate.id)
+  //   const folderNames = selectedFolders.map(id =>
+  //     // folders.find(f => f.id === id)?.name
+  //     await addCandidatesToFolder(f.id, candidate.id)
+  //   ).filter(Boolean);
+
+  //   // Mock save operation - in a real app, this would be an API call
+  //   setTimeout(() => {
+  //     if (folderNames.length === 1) {
+  //       toast.success(`Candidate added to folder: ${folderNames[0]}`);
+  //     } else {
+  //       toast.success(`Candidate added to ${folderNames.length} folders`);
+  //     }
+  //     onClose();
+  //   }, 300);
+  // };
+  const handleSave = async () => {
+  if (selectedFolders.length === 0) {
+    toast.error('Please select at least one folder');
+    return;
+  }
+
+  try {
+
+    const results = await Promise.all(
+      selectedFolders.map(id => addCandidatesToFolder(id, candidate.id))
+    );
+
+
+    const successfulFolders = results.filter(res => res?.success);
+
+    if (successfulFolders.length === 0) {
+      toast.error('Failed to add candidate to any folder');
       return;
     }
 
-    const folderNames = selectedFolders.map(id => 
-      folders.find(f => f.id === id)?.name
-    ).filter(Boolean);
+    if (successfulFolders.length === 1) {
+      toast.success(`Candidate added to folder successfully`);
+    } else {
+      toast.success(`Candidate added to ${successfulFolders.length} folders`);
+    }
 
-    // Mock save operation - in a real app, this would be an API call
-    setTimeout(() => {
-      if (folderNames.length === 1) {
-        toast.success(`Candidate added to folder: ${folderNames[0]}`);
-      } else {
-        toast.success(`Candidate added to ${folderNames.length} folders`);
-      }
-      onClose();
-    }, 300);
-  };
+    onClose();
+  } catch (error) {
+    console.error(error);
+    toast.error('Something went wrong while saving');
+  }
+};
+
 
   const filteredFolders = folders.filter(folder =>
     folder.name.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  const canCreateNew = searchValue.trim() && 
+  const canCreateNew = searchValue.trim() &&
     !folders.find(f => f.name.toLowerCase() === searchValue.toLowerCase());
 
   return (
@@ -158,8 +201,8 @@ export const AddToFolderModal: React.FC<AddToFolderModalProps> = ({
               </PopoverTrigger>
               <PopoverContent className="w-full p-0" align="start">
                 <Command>
-                  <CommandInput 
-                    placeholder="Search folders..." 
+                  <CommandInput
+                    placeholder="Search folders..."
                     value={searchValue}
                     onValueChange={setSearchValue}
                   />
@@ -246,7 +289,7 @@ export const AddToFolderModal: React.FC<AddToFolderModalProps> = ({
 
           {/* Save Button */}
           <div className="flex justify-end pt-4">
-            <Button 
+            <Button
               onClick={handleSave}
               disabled={selectedFolders.length === 0 && !newFolderName}
               className="bg-blue-600 hover:bg-blue-700 text-white px-8"

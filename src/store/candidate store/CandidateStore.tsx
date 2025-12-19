@@ -6,7 +6,6 @@ const path = `${IP}/api/candidate/`;
 export const useCandidateStore = () => {
     const { currentUser } = useAuth();
 
-
     const myApplications = async (setApplications: any) => {
         if (!currentUser) {
             console.warn('No current user found');
@@ -281,6 +280,65 @@ export const useCandidateStore = () => {
         }
     }
 
+    // const signWithCv = async (file: File) => {
+
+    //     const url = `${IP}/api/uploads/cv`;
+
+    //     try {
+
+    //         const formData = new FormData();
+    //         formData.append('cv', file);
+
+    //         const response = await fetch(url, {
+    //             method: "POST",
+
+    //             body: formData
+    //         });
+
+    //         if (!response.ok) {
+    //             const errorMessage = await response.json();
+    //             throw new Error(`Failed to upload cv : ${errorMessage.message}`);
+    //         }
+
+    //         const data = await response.json();
+    //         console.log('upload cv response:', data);
+    //         return data;
+    //     } catch (error) {
+    //         console.error('Error upload cv :', error);
+    //         return { success: false };
+    //     }
+    // }
+
+    const signWithCv = async (file: File) => {
+        const url = `${IP}/api/uploads/parse-cv-sign`;
+
+        try {
+            const formData = new FormData();
+            formData.append('cv', file);
+
+            const response = await fetch(url, {
+                method: "POST",
+                body: formData
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: 'Unknown error' }));
+                throw new Error(`Failed to upload CV: ${errorData.message || response.statusText}`);
+            }
+
+            const data = await response.json();
+            console.log('Upload CV response:', data);
+            return data;
+
+        } catch (error) {
+            console.error('Error uploading CV:', error);
+            return {
+                success: false,
+                message: error instanceof Error ? error.message : 'Upload failed'
+            };
+        }
+    }
+
     const getCV = async (UID: string) => {
         if (!currentUser) {
             console.warn("No current user found");
@@ -465,7 +523,6 @@ export const useCandidateStore = () => {
                 method: "POST",
                 headers: {
                     Authorization: token,
-                    // ⚠️ Never set "Content-Type": fetch will set correct boundary for form-data
                 },
                 body: formData,
             });
@@ -486,7 +543,125 @@ export const useCandidateStore = () => {
         }
     };
 
+    const generateCandidatesEmbeddings = async (candidateId: string) => {
+        if (!currentUser) {
+            console.warn('No current user found');
+            return { success: false, message: 'User not authenticated' };
+        }
 
+        console.log('generateCandidatesEmbeddings....')
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${IP}/api/candidate/embed-data`;
+
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                }, body: JSON.stringify({
+                    candidateId: candidateId,
+                }),
+            });
+            if (!response.ok) {
+                const errorMessage = await response.text();
+                console.error('Error during embedding:', error.message);
+                throw new Error(`Failed to embed candidate dat : ${errorMessage}`);
+            }
+            const data = await response.json();
+            alert("Embedding completed successfully:")
+            console.log("Embedding completed successfully:", data);
+            return data;
+
+        } catch (error) {
+            if (error instanceof Error) {
+                alert("An error occurred while generating embeddings. This candidate will not appear in AI Search results.");
+                console.error('Error during embedding:', error.message);
+            } else {
+                console.error('Unexpected error:', error);
+            }
+        }
+    };
+
+
+    // CV 
+
+    const downloadCV = async (data: any, format = "pdf") => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+
+        console.log('cv data => ', data);
+        try {
+            const url = format === "pdf"
+                ? `${IP}/api/candidate/generate-Pdf-CV`
+                : `${IP}/api/candidate/generate-docx-CV`;
+
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Authorization": token,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to generate CV");
+            }
+
+            const blob = await response.blob();
+            const downloadUrl = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = downloadUrl;
+            link.download = `CV.${format === "pdf" ? "pdf" : "docx"}`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+        } catch (err) {
+            console.error("Download CV Error:", err);
+        }
+    };
+
+    const JobMatching = async (matchJobData: any) => {
+        if (!currentUser) {
+            console.warn("No current user found");
+            return { success: false };
+        }
+
+        const token = `Bearer ${currentUser.stsTokenManager.accessToken}`;
+        const url = `${IP}/api/candidate/matching-cv-job`;
+        try {
+
+            const formData = new FormData();
+            formData.append('jobDescription', matchJobData.jobDescription);
+            formData.append('cvFile', matchJobData.cvFile);
+            formData.append('cvFileName', matchJobData.cvFileName);
+
+            // Send to backend API
+            console.log(' matchJobData => ', matchJobData)
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Authorization": token
+                },
+                body: formData,
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to analyze job match');
+            }
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            console.error('Job matching error:', error);
+        }
+    }
 
     return {
         myApplications,
@@ -496,10 +671,13 @@ export const useCandidateStore = () => {
         getSavedJobs,
         applyForJob,
         sendCVtoBackend,
+        signWithCv,
         getCV,
         getAssessments,
         fetchAssessmentData,
-        submitAnswersData
-
+        submitAnswersData,
+        generateCandidatesEmbeddings,
+        downloadCV,
+        JobMatching
     };
 };

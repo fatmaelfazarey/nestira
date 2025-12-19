@@ -4,9 +4,9 @@ import { DashboardOverview } from '@/components/DashboardOverview';
 
 const Index = () => {
   return (
-    <DashboardLayout>
+    // <DashboardLayout>
       <DashboardOverview />
-    </DashboardLayout>
+    // </DashboardLayout>
   );
 };
 

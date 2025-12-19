@@ -1,6 +1,6 @@
 
-import { useState } from 'react';
-import { DashboardLayout } from '@/components/DashboardLayout';
+import { useEffect, useState } from 'react';
+// import { DashboardLayout } from '@/components/DashboardLayout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -10,239 +10,267 @@ import { Folder, Plus, ArrowLeft, X, UserPlus, MapPin, Briefcase, Star, Users } 
 import { FolderManagementButton } from '@/components/FolderManagementButton';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useEmployerStore } from '@/store/employer store/EmployerStore';
 
 // Mock data for folders and their candidates
-const mockFoldersData = [
-  { 
-    id: '1', 
-    name: 'Logistics coordinator', 
-    count: 3,
-    candidates: [
-      {
-        id: 1,
-        name: "Sarah Johnson",
-        title: "Senior Logistics Coordinator",
-        location: "New York, NY",
-        experience: "5 years",
-        score: 92,
-        avatar: "/placeholder.svg",
-        tags: ["Supply Chain", "Inventory Management", "SAP"]
-      },
-      {
-        id: 2,
-        name: "Mike Chen",
-        title: "Logistics Manager",
-        location: "Los Angeles, CA",
-        experience: "7 years",
-        score: 88,
-        avatar: "/placeholder.svg",
-        tags: ["Transportation", "Warehouse Operations", "Lean Six Sigma"]
-      },
-      {
-        id: 3,
-        name: "Emma Davis",
-        title: "Supply Chain Analyst",
-        location: "Chicago, IL",
-        experience: "3 years",
-        score: 85,
-        avatar: "/placeholder.svg",
-        tags: ["Data Analysis", "Forecasting", "Excel"]
-      }
-    ]
-  },
-  { 
-    id: '2', 
-    name: 'Finance Managers', 
-    count: 2,
-    candidates: [
-      {
-        id: 4,
-        name: "David Wilson",
-        title: "Finance Manager",
-        location: "Boston, MA",
-        experience: "8 years",
-        score: 94,
-        avatar: "/placeholder.svg",
-        tags: ["Financial Planning", "Budget Management", "SAP"]
-      },
-      {
-        id: 5,
-        name: "Lisa Anderson",
-        title: "Senior Finance Manager",
-        location: "Seattle, WA",
-        experience: "10 years",
-        score: 96,
-        avatar: "/placeholder.svg",
-        tags: ["Financial Analysis", "Reporting", "Team Leadership"]
-      }
-    ]
-  },
-  { 
-    id: '3', 
-    name: 'Senior Analysts', 
-    count: 4,
-    candidates: [
-      {
-        id: 6,
-        name: "John Smith",
-        title: "Senior Financial Analyst",
-        location: "Miami, FL",
-        experience: "6 years",
-        score: 90,
-        avatar: "/placeholder.svg",
-        tags: ["Financial Modeling", "Valuation", "Excel"]
-      },
-      {
-        id: 7,
-        name: "Rachel Green",
-        title: "Senior Business Analyst",
-        location: "Denver, CO",
-        experience: "5 years",
-        score: 87,
-        avatar: "/placeholder.svg",
-        tags: ["Process Improvement", "Data Analysis", "SQL"]
-      },
-      {
-        id: 8,
-        name: "Tom Brown",
-        title: "Senior Data Analyst",
-        location: "Austin, TX",
-        experience: "4 years",
-        score: 89,
-        avatar: "/placeholder.svg",
-        tags: ["Python", "Machine Learning", "Tableau"]
-      },
-      {
-        id: 9,
-        name: "Amy White",
-        title: "Senior Market Analyst",
-        location: "Portland, OR",
-        experience: "7 years",
-        score: 91,
-        avatar: "/placeholder.svg",
-        tags: ["Market Research", "Competitive Analysis", "PowerBI"]
-      }
-    ]
-  },
-  { 
-    id: '4', 
-    name: 'Remote Candidates', 
-    count: 5,
-    candidates: [
-      {
-        id: 10,
-        name: "Alex Johnson",
-        title: "Remote Finance Specialist",
-        location: "Remote",
-        experience: "4 years",
-        score: 86,
-        avatar: "/placeholder.svg",
-        tags: ["Remote Work", "Financial Planning", "Quickbooks"]
-      },
-      {
-        id: 11,
-        name: "Maria Garcia",
-        title: "Remote Accountant",
-        location: "Remote",
-        experience: "6 years",
-        score: 88,
-        avatar: "/placeholder.svg",
-        tags: ["Accounting", "Tax Preparation", "Remote Collaboration"]
-      },
-      {
-        id: 12,
-        name: "Chris Lee",
-        title: "Remote Data Analyst",
-        location: "Remote",
-        experience: "3 years",
-        score: 84,
-        avatar: "/placeholder.svg",
-        tags: ["Data Analysis", "R", "Statistical Modeling"]
-      },
-      {
-        id: 13,
-        name: "Jessica Taylor",
-        title: "Remote Project Manager",
-        location: "Remote",
-        experience: "8 years",
-        score: 92,
-        avatar: "/placeholder.svg",
-        tags: ["Project Management", "Agile", "Team Leadership"]
-      },
-      {
-        id: 14,
-        name: "Kevin Miller",
-        title: "Remote Business Analyst",
-        location: "Remote",
-        experience: "5 years",
-        score: 89,
-        avatar: "/placeholder.svg",
-        tags: ["Requirements Analysis", "Process Mapping", "Stakeholder Management"]
-      }
-    ]
-  },
-  { 
-    id: '5', 
-    name: 'High Priority', 
-    count: 2,
-    candidates: [
-      {
-        id: 15,
-        name: "Robert Kim",
-        title: "VP of Finance",
-        location: "San Francisco, CA",
-        experience: "12 years",
-        score: 98,
-        avatar: "/placeholder.svg",
-        tags: ["Executive Leadership", "Strategic Planning", "M&A"]
-      },
-      {
-        id: 16,
-        name: "Jennifer Liu",
-        title: "Chief Financial Officer",
-        location: "New York, NY",
-        experience: "15 years",
-        score: 99,
-        avatar: "/placeholder.svg",
-        tags: ["C-Level", "Financial Strategy", "Public Companies"]
-      }
-    ]
-  }
-];
+// const mockFoldersData = [
+//   {
+//     id: '1',
+//     name: 'Logistics coordinator',
+//     count: 3,
+//     candidates: [
+//       {
+//         id: 1,
+//         name: "Sarah Johnson",
+//         title: "Senior Logistics Coordinator",
+//         location: "New York, NY",
+//         experience: "5 years",
+//         score: 92,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Supply Chain", "Inventory Management", "SAP"]
+//       },
+//       {
+//         id: 2,
+//         name: "Mike Chen",
+//         title: "Logistics Manager",
+//         location: "Los Angeles, CA",
+//         experience: "7 years",
+//         score: 88,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Transportation", "Warehouse Operations", "Lean Six Sigma"]
+//       },
+//       {
+//         id: 3,
+//         name: "Emma Davis",
+//         title: "Supply Chain Analyst",
+//         location: "Chicago, IL",
+//         experience: "3 years",
+//         score: 85,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Data Analysis", "Forecasting", "Excel"]
+//       }
+//     ]
+//   },
+//   {
+//     id: '2',
+//     name: 'Finance Managers',
+//     count: 2,
+//     candidates: [
+//       {
+//         id: 4,
+//         name: "David Wilson",
+//         title: "Finance Manager",
+//         location: "Boston, MA",
+//         experience: "8 years",
+//         score: 94,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Financial Planning", "Budget Management", "SAP"]
+//       },
+//       {
+//         id: 5,
+//         name: "Lisa Anderson",
+//         title: "Senior Finance Manager",
+//         location: "Seattle, WA",
+//         experience: "10 years",
+//         score: 96,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Financial Analysis", "Reporting", "Team Leadership"]
+//       }
+//     ]
+//   },
+//   {
+//     id: '3',
+//     name: 'Senior Analysts',
+//     count: 4,
+//     candidates: [
+//       {
+//         id: 6,
+//         name: "John Smith",
+//         title: "Senior Financial Analyst",
+//         location: "Miami, FL",
+//         experience: "6 years",
+//         score: 90,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Financial Modeling", "Valuation", "Excel"]
+//       },
+//       {
+//         id: 7,
+//         name: "Rachel Green",
+//         title: "Senior Business Analyst",
+//         location: "Denver, CO",
+//         experience: "5 years",
+//         score: 87,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Process Improvement", "Data Analysis", "SQL"]
+//       },
+//       {
+//         id: 8,
+//         name: "Tom Brown",
+//         title: "Senior Data Analyst",
+//         location: "Austin, TX",
+//         experience: "4 years",
+//         score: 89,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Python", "Machine Learning", "Tableau"]
+//       },
+//       {
+//         id: 9,
+//         name: "Amy White",
+//         title: "Senior Market Analyst",
+//         location: "Portland, OR",
+//         experience: "7 years",
+//         score: 91,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Market Research", "Competitive Analysis", "PowerBI"]
+//       }
+//     ]
+//   },
+//   {
+//     id: '4',
+//     name: 'Remote Candidates',
+//     count: 5,
+//     candidates: [
+//       {
+//         id: 10,
+//         name: "Alex Johnson",
+//         title: "Remote Finance Specialist",
+//         location: "Remote",
+//         experience: "4 years",
+//         score: 86,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Remote Work", "Financial Planning", "Quickbooks"]
+//       },
+//       {
+//         id: 11,
+//         name: "Maria Garcia",
+//         title: "Remote Accountant",
+//         location: "Remote",
+//         experience: "6 years",
+//         score: 88,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Accounting", "Tax Preparation", "Remote Collaboration"]
+//       },
+//       {
+//         id: 12,
+//         name: "Chris Lee",
+//         title: "Remote Data Analyst",
+//         location: "Remote",
+//         experience: "3 years",
+//         score: 84,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Data Analysis", "R", "Statistical Modeling"]
+//       },
+//       {
+//         id: 13,
+//         name: "Jessica Taylor",
+//         title: "Remote Project Manager",
+//         location: "Remote",
+//         experience: "8 years",
+//         score: 92,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Project Management", "Agile", "Team Leadership"]
+//       },
+//       {
+//         id: 14,
+//         name: "Kevin Miller",
+//         title: "Remote Business Analyst",
+//         location: "Remote",
+//         experience: "5 years",
+//         score: 89,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Requirements Analysis", "Process Mapping", "Stakeholder Management"]
+//       }
+//     ]
+//   },
+//   {
+//     id: '5',
+//     name: 'High Priority',
+//     count: 2,
+//     candidates: [
+//       {
+//         id: 15,
+//         name: "Robert Kim",
+//         title: "VP of Finance",
+//         location: "San Francisco, CA",
+//         experience: "12 years",
+//         score: 98,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["Executive Leadership", "Strategic Planning", "M&A"]
+//       },
+//       {
+//         id: 16,
+//         name: "Jennifer Liu",
+//         title: "Chief Financial Officer",
+//         location: "New York, NY",
+//         experience: "15 years",
+//         score: 99,
+//         avatar: "/placeholder.svg",
+//         softwareTools: ["C-Level", "Financial Strategy", "Public Companies"]
+//       }
+//     ]
+//   }
+// ];
 
 const Folders = () => {
   const [selectedFolder, setSelectedFolder] = useState(null);
-  const [folders, setFolders] = useState(mockFoldersData);
+  const [folders, setFolders] = useState([]);
+  const { gatAllFolders, gatCandudatesFolders, deleteCandidateFromFolder } = useEmployerStore();
   const navigate = useNavigate();
 
-  const handleFolderClick = (folder) => {
-    setSelectedFolder(folder);
+  useEffect(() => {
+    fetchFoldrs()
+  }, [])
+  const fetchFoldrs = async () => {
+    await gatAllFolders(setFolders);
+  }
+
+  const handleFolderClick = async (folder) => {
+    // setSelectedFolder(folder);
+    const res = await gatCandudatesFolders(folder.id, setSelectedFolder);
+    setSelectedFolder(res.data);
   };
 
   const handleBackToFolders = () => {
     setSelectedFolder(null);
   };
 
-  const handleRemoveCandidate = (candidateId) => {
+
+  const handleRemoveCandidate = async (candidateId: string) => {
     if (!selectedFolder) return;
-    
-    const updatedFolders = folders.map(folder => {
-      if (folder.id === selectedFolder.id) {
-        const updatedCandidates = folder.candidates.filter(c => c.id !== candidateId);
-        const updatedFolder = {
-          ...folder,
-          candidates: updatedCandidates,
-          count: updatedCandidates.length
-        };
-        setSelectedFolder(updatedFolder);
-        return updatedFolder;
+
+    try {
+
+      const result = await deleteCandidateFromFolder(selectedFolder.id, candidateId);
+
+      if (!result.success) {
+        toast.error(result.message || "Failed to remove candidate from folder");
+        return;
       }
-      return folder;
-    });
-    
-    setFolders(updatedFolders);
-    toast.success('Candidate removed from folder');
+
+      const updatedFolders = folders.map(folder => {
+        if (folder.id === selectedFolder.id) {
+          const updatedCandidates = folder.candidates.filter(c => c.id !== candidateId);
+          const updatedFolder = {
+            ...folder,
+            candidates: updatedCandidates,
+            count: updatedCandidates.length,
+          };
+          setSelectedFolder(updatedFolder);
+          return updatedFolder;
+        }
+        return folder;
+      });
+
+      setFolders(updatedFolders);
+      toast.success(result.message || "Candidate removed from folder successfully");
+    } catch (error) {
+      console.error("Error removing candidate from folder:", error);
+      toast.error("An unexpected error occurred while removing the candidate");
+    }
   };
+
+
+
 
   const handleAddCandidate = () => {
     // Navigate to talent pool with folder context
@@ -257,13 +285,13 @@ const Folders = () => {
 
   if (selectedFolder) {
     return (
-      <DashboardLayout>
+      <div>
         <div className="space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between flex-col md:flex-row">
             <div className="flex items-center gap-4 ">
-              <Button 
-                variant="ghost" 
+              <Button
+                variant="ghost"
                 onClick={handleBackToFolders}
                 className="flex items-center gap-2"
               >
@@ -279,12 +307,12 @@ const Folders = () => {
                   <h1 className="text-2xl font-bold text-gray-900">{selectedFolder.name}</h1>
                   <p className="text-gray-600 flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    {selectedFolder.candidates.length} candidates
+                    {selectedFolder?.candidates?.length} candidates
                   </p>
                 </div>
               </div>
             </div>
-            
+
             <Button onClick={handleAddCandidate} className="flex items-center gap-2 bg-gradient-to-r from-orange-600 to-yellow-600 hover:from-orange-700 hover:to-yellow-700">
               <UserPlus className="w-4 h-4" />
               Add Candidate
@@ -292,7 +320,7 @@ const Folders = () => {
           </div>
 
           {/* Candidates Grid */}
-          {selectedFolder.candidates.length === 0 ? (
+          {selectedFolder?.candidates?.length === 0 ? (
             <Card className="p-12 text-center bg-gradient-to-br from-gray-50 to-white border-dashed border-2">
               <div className="max-w-sm mx-auto">
                 <div className="p-4 bg-gray-100 rounded-full w-fit mx-auto mb-4">
@@ -308,13 +336,13 @@ const Folders = () => {
             </Card>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {selectedFolder.candidates.map((candidate) => (
+              {selectedFolder?.candidates?.map((candidate) => (
                 <Card key={candidate.id} className="group hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/50 hover:from-orange-50/30 hover:to-yellow-50/30">
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3 flex-1 min-w-0">
                         <Avatar className="w-14 h-14 ring-2 ring-white shadow-lg">
-                          <AvatarImage src={candidate.avatar} />
+                          <AvatarImage src={candidate.photo} />
                           <AvatarFallback className="bg-gradient-to-br from-orange-100 to-yellow-200 text-orange-700 font-semibold text-lg">
                             {candidate.name.split(' ').map(n => n[0]).join('')}
                           </AvatarFallback>
@@ -334,7 +362,7 @@ const Folders = () => {
                       </Button>
                     </div>
                   </CardHeader>
-                  
+
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-1 text-gray-600">
@@ -346,7 +374,7 @@ const Folders = () => {
                         <span>{candidate.experience}</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <div className="flex items-center gap-1 bg-gradient-to-r from-yellow-100 to-orange-100 px-2 py-1 rounded-full">
@@ -356,16 +384,16 @@ const Folders = () => {
                         <span className="text-xs text-gray-500">match</span>
                       </div>
                     </div>
-                    
+
                     <div className="flex flex-wrap gap-1.5">
-                      {candidate.tags.slice(0, 2).map((tag, index) => (
+                      {candidate.softwareTools.slice(0, 2).map((tag, index) => (
                         <Badge key={index} variant="secondary" className="text-xs bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-0">
                           {tag}
                         </Badge>
                       ))}
-                      {candidate.tags.length > 2 && (
+                      {candidate.softwareTools.length > 2 && (
                         <Badge variant="outline" className="text-xs border-dashed bg-white/50">
-                          +{candidate.tags.length - 2} more
+                          +{candidate.softwareTools.length - 2} more
                         </Badge>
                       )}
                     </div>
@@ -375,12 +403,12 @@ const Folders = () => {
             </div>
           )}
         </div>
-      </DashboardLayout>
+      </div>
     );
   }
 
   return (
-    <DashboardLayout>
+    <div>
       <div className="space-y-8">
         {/* Folders Section */}
         <div className="space-y-6">
@@ -391,10 +419,10 @@ const Folders = () => {
               </h1>
               <p className="text-gray-600 mt-1">Organize and manage your talent pipeline</p>
             </div>
-            
+
             <div className="flex items-center gap-3">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={handleAddCandidateFromList}
                 className="flex items-center gap-2 border-2 hover:bg-gray-50"
               >
@@ -411,8 +439,8 @@ const Folders = () => {
           {/* Folders Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {folders.map((folder) => (
-              <Card 
-                key={folder.id} 
+              <Card
+                key={folder.id}
                 className="group cursor-pointer hover:shadow-xl transition-all duration-300 border-0 shadow-md bg-gradient-to-br from-white to-gray-50/80 hover:from-orange-50/50 hover:to-yellow-50/50 hover:scale-105"
                 onClick={() => handleFolderClick(folder)}
               >
@@ -422,14 +450,14 @@ const Folders = () => {
                       <div className="p-3 bg-gradient-to-br from-orange-100 to-yellow-200 rounded-xl group-hover:from-orange-200 group-hover:to-yellow-300 transition-all duration-300">
                         <Folder className="w-6 h-6 text-orange-600 group-hover:text-orange-700" />
                       </div>
-                      <Badge 
-                        variant="outline" 
+                      <Badge
+                        variant="outline"
                         className="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 border-0 font-semibold px-3 py-1"
                       >
                         {folder.count}
                       </Badge>
                     </div>
-                    
+
                     <div>
                       <h3 className="font-bold text-gray-900 text-lg mb-1 group-hover:text-orange-900 transition-colors">
                         {folder.name}
@@ -462,7 +490,7 @@ const Folders = () => {
           )}
         </div>
       </div>
-    </DashboardLayout>
+    </div>
   );
 };
 

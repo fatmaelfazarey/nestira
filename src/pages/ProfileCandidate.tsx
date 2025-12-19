@@ -13,7 +13,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase"; // Adjust import path as needed
+import { db } from "@/firebase";
 import { useCandidateStore } from "@/store/candidate store/CandidateStore";
 
 // import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
@@ -22,7 +22,7 @@ import { useCandidateStore } from "@/store/candidate store/CandidateStore";
 export default function Profile() {
   const { Uid } = useParams();
   // console.log('----------Uid----------- :', Uid);
-  const { currentUser, userData, loading, updateUserProfile } = useAuth();
+  const { currentUser, userData, loading, updateUserProfile ,isVerified} = useAuth();
   // console.log('currentUser:=>',currentUser.uid );
 
   const [isViewMode, setIsViewMode] = useState(false);
@@ -35,7 +35,7 @@ export default function Profile() {
   const [showParsingModal, setShowParsingModal] = useState(false);
   const [parsedData, setParsedData] = useState<any>(null);
   const [saving, setSaving] = useState(false);
-  const { getCV } = useCandidateStore();
+  const { getCV, generateCandidatesEmbeddings } = useCandidateStore();
 
 
   const [profileData, setProfileData] = useState<any>({
@@ -158,8 +158,33 @@ export default function Profile() {
   };
 
   const handleCVParsed = (data: any) => {
-    setParsedData(data);
-    setShowParsingModal(true);
+    console.log('======data ===> ', data)
+    if (data) {
+      setProfileData({
+        basicInfo: data.basicInfo || {},
+        industry: data.industry || { industries: [], subfields: [] },
+        summary: data.summary || "",
+        coverLetter: data.coverLetter || "",
+        experience: data.experience || [],
+        education: data.education || [],
+        skills: data.skills || { technical: [], software: [], certifications: [], languages: [] },
+        video: data.video || { hasVideo: false, status: 'not_started' },
+        behavioral: data.behavioral || { completed: false, status: 'not_started' },
+        preferences: data.preferences || {
+          jobTitles: [],
+          locations: [],
+          workType: "",
+          visaStatus: "",
+          noticePeriod: "",
+          salaryRange: { min: 0, max: 0, currency: "AED" }
+        }
+      });
+
+
+    }
+
+    // setParsedData(data);
+    // setShowParsingModal(true);
   };
 
   const handleConfirmParsedData = async (confirmedData: any) => {
@@ -186,6 +211,11 @@ export default function Profile() {
     try {
       setSaving(true);
       await updateUserProfile(profileData);
+      if(isVerified){
+        
+          await generateCandidatesEmbeddings(currentUser.uid);
+      }
+    
       toast.success("Profile saved successfully!");
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -216,7 +246,7 @@ export default function Profile() {
 
   if (inputMode === 'select' && !currentUser && !isViewMode) {
     return (
-      <div className="min-h-screen bg-background p-8">
+      <div className="min-h-screen bg-background ">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12 animate-fade-in">
             <h1 className="text-4xl font-bold text-foreground mb-4">Build Your Profile</h1>
@@ -314,7 +344,7 @@ export default function Profile() {
   // Upload Mode (only available in normal mode)
   if (inputMode === 'upload' && !isViewMode) {
     return (
-      <div className="min-h-screen bg-background p-8">
+      <div className="min-h-screen bg-background ">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-center gap-4 mb-8">
             <Button
@@ -370,7 +400,7 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen bg-background p-8">
+    <div className="min-h-screen bg-background ">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-8 animate-fade-in md:flex-row flex-col">

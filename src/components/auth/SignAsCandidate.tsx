@@ -19,9 +19,13 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import GoogleLogin from '../GoogleLogin';
 import UploadResumeToAutoFill from '../UploadResumeToAutoFill';
+import { CVUploader } from '../ats-resume/CVUploader';
+import { useCandidateStore } from '@/store/candidate store/CandidateStore';
+import { useSharedStore } from '@/store/Shared store/sharedStore';
 
 const SignAsCandidate = () => {
     // const [recruiterType, setRecruiterType] = useState<'individual' | 'company'>('individual');
+    // const { generateCandidatesEmbeddings } = useCandidateStore();
     const { signup } = useAuth();
     const navigate = useNavigate();
 
@@ -71,6 +75,7 @@ const SignAsCandidate = () => {
 
     const [currentStep, setCurrentStep] = useState(1);
     const [loading, setLoading] = useState(false);
+    const { newUser } = useSharedStore();
 
     const calculateProgress = () => {
         let progress = 0;
@@ -336,26 +341,50 @@ const SignAsCandidate = () => {
             preferences: {
                 ...preferences,
                 salaryRange: {
-                    min: preferences.salaryRange.min ? Number(preferences.salaryRange.min) : undefined,
-                    max: preferences.salaryRange.max ? Number(preferences.salaryRange.max) : undefined,
+                    min: preferences.salaryRange.min ? Number(preferences.salaryRange.min) : 0,
+                    max: preferences.salaryRange.max ? Number(preferences.salaryRange.max) : 0,
                     currency: preferences.salaryRange.currency
                 }
             },
             video: { status: 'not_started' as const },
             behavioral: { status: 'not_started' as const },
-            profileCompletion: calculateProgress()
+            profileCompletion: calculateProgress(),
         };
 
         try {
-            await signup(basicInfo.email, basicInfo.password, profileData);
+            const res = await signup(basicInfo.email, basicInfo.password, profileData);
+
+            if (res.uid) {
+                // Use the user from signup directly
+                // const embeding = await generateCandidatesEmbeddings(res);
+                // console.log("embeding ============= > ", embeding);
+                toast.success('Account created successfully! Welcome aboard');
+                setTimeout(() => navigate('/candidate'), 500);
+                console.log('res : ', res)
+                await newUser(res);
+            }
+
+            setTimeout(() => navigate('/candidate'), 500);
+
+            // const res = await signup(basicInfo.email, basicInfo.password, profileData);
+            // console.log("res ============= > ", res)
+            // if (res.uid) {
+            //     const embeding = await generateCandidatesEmbeddings();
+            //     console.log("embeding ============= > ", embeding)
+            //     toast.success('Account created successfully! Welcome aboard');
+            //     setTimeout(() => {
+            //         navigate('/candidate');
+            //     }, 500);
+
+            // }
 
             // TODO: Upload photo to Firebase Storage if profilePhoto exists
 
-            toast.success('Account created successfully! Welcome aboard');
 
-            setTimeout(() => {
-                navigate('/candidate');
-            }, 500);
+
+            // setTimeout(() => {
+            //     navigate('/candidate');
+            // }, 500);
         } catch (error: any) {
             console.error("Signup error:", error);
 
@@ -373,9 +402,55 @@ const SignAsCandidate = () => {
         }
     };
 
+    const handleCVParsed = (data: any) => {
+        console.log('======data ===> ', data)
+        if (data) {
+
+            setBasicInfo(data.basicInfo || {})
+            setExperience(data.experience || [])
+
+            setEducation(data.education || [])
+            setSkills(data.skills || { technical: [], software: [], certifications: [], languages: [] })
+            setSummary(data.summary || "")
+            //   setProfileData({
+            //     basicInfo: data.basicInfo || {},
+            //     industry: data.industry || { industries: [], subfields: [] },
+            //     summary: data.summary || "",
+            //     coverLetter: data.coverLetter || "",
+            //     experience: data.experience || [],
+            //     education: data.education || [],
+            //     skills: data.skills || { technical: [], software: [], certifications: [], languages: [] },
+            //     video: data.video || { hasVideo: false, status: 'not_started' },
+            //     behavioral: data.behavioral || { completed: false, status: 'not_started' },
+            //     preferences: data.preferences || {
+            //       jobTitles: [],
+            //       locations: [],
+            //       workType: "",
+            //       visaStatus: "",
+            //       noticePeriod: "",
+            //       salaryRange: { min: 0, max: 0, currency: "AED" }
+            //     }
+            //   });
+
+
+        }
+
+        // setParsedData(data);
+        // setShowParsingModal(true);
+    };
+
+    const handleParsingFailed = () => {
+
+        toast.error("Failed to parse resume. Please try manual entry.");
+    };
+
     return (
         <>
-        <UploadResumeToAutoFill />
+            {/* <UploadResumeToAutoFill /> */}
+            <UploadResumeToAutoFill
+                onCVParsed={handleCVParsed}
+                onParsingFailed={handleParsingFailed}
+            />
             <div className=" relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
                 <div className="max-w-5xl mx-auto">
                     <div className="text-center mb-8">

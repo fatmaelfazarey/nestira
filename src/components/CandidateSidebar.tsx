@@ -15,6 +15,8 @@ import {
   Zap,
   LogIn,
   LogOut,
+  Inbox,
+  Sidebar,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { toast } from "sonner";
@@ -22,6 +24,8 @@ import { toast } from "sonner";
 
 const mainNavItems = [
   { title: "Dashboard", url: "/candidate", icon: Square },
+
+  { title: "Inbox", url: "/candidate/inbox", icon: Inbox },
   { title: "My Applications", url: "/candidate/applications", icon: FileText },
   { title: "Assessments", url: "/candidate/assessments", icon: CircleCheck },
   { title: "Interview Schedule", url: "/candidate/interviews", icon: Calendar },
@@ -31,7 +35,7 @@ const accountNavItems = [
   { title: "Profile", url: "/candidate/profile", icon: User },
   { title: "Saved Jobs", url: "/candidate/saved", icon: Star },
   { title: "ATS Resume Maker", url: "/candidate/ats-resume", icon: FileSpreadsheet },
-  { title: "Career Insights", url: "/candidate/blog", icon: FileText },
+  { title: "Career Insights", url: "/career-insights", icon: FileText },
 ];
 
 export function CandidateSidebar() {
@@ -79,8 +83,10 @@ export function CandidateSidebar() {
   };
 
   return (
-    <div className="w-64 min-w-64 bg-primary border-r border-border-c flex flex-col h-screen static top-0 left-0 overflow-hidden z-50">
 
+
+    <div className="min-w-0 shrink-0 bg-primary border-r border-border-c flex flex-col h-screen static top-0 left-0 overflow-hidden z-50">
+      {/* className="border-r border-gray-200/60 bg-gradient-to-b from-slate-50 to-white min-w-0 shrink-0" */}
       {/* Header */}
       <div className="p-6 border-b border-border-c/20 flex-shrink-0">
         <div className="flex items-center gap-3">
@@ -180,37 +186,37 @@ export function CandidateSidebar() {
             </div>
           </div>
           <div className="mb-4 border-t border-border-c/20 ">
-             <Button
-          onClick={handleAuthAction}
-          disabled={loggingOut}
-          className={`w-full transition-all duration-200 ${currentUser
-            ? "bg-secondary-c hover:opacity-[.8] text-destructive-foreground"
-            : " hover:opacity-[.8] text-primary-c-foreground  bg-secondary-c"
-            }`}
-        >
-          {loggingOut ? (
-            <span className="flex items-center gap-2">
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-              Logging out...
-            </span>
-          ) : currentUser ? (
-            <>
-              <LogOut className="w-4 h-4 mr-2" />
-              Logout
-            </>
-          ) : (
-            <>
-              <LogIn className="w-4 h-4 mr-2" />
-              Login
-            </>
-          )}
-        </Button>
+            <Button
+              onClick={handleAuthAction}
+              disabled={loggingOut}
+              className={`w-full transition-all duration-200 ${currentUser
+                ? "bg-secondary-c hover:opacity-[.8] text-destructive-foreground"
+                : " hover:opacity-[.8] text-primary-c-foreground  bg-secondary-c"
+                }`}
+            >
+              {loggingOut ? (
+                <span className="flex items-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Logging out...
+                </span>
+              ) : currentUser ? (
+                <>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Logout
+                </>
+              ) : (
+                <>
+                  <LogIn className="w-4 h-4 mr-2" />
+                  Login
+                </>
+              )}
+            </Button>
 
-        {currentUser && (
-          <p className="text-xs text-center text-primary-c-foreground/60 mt-2 truncate">
-            {currentUser.email}
-          </p>
-        )}
+            {currentUser && (
+              <p className="text-xs text-center text-primary-c-foreground/60 mt-2 truncate">
+                {currentUser.email}
+              </p>
+            )}
           </div>
         </div>
       </nav>
@@ -250,5 +256,7 @@ export function CandidateSidebar() {
         )} 
       </div> */}
     </div>
+
+
   );
 }

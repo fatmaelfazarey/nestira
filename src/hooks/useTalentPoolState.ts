@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { candidates } from '@/data/candidatesData';
+// import { candidates } from '@/data/candidatesData';
 import { aiSearchCandidates } from '@/utils/aiCandidateSearch';
 
 export const useTalentPoolState = () => {
@@ -74,13 +74,13 @@ export const useTalentPoolState = () => {
     if (newFilters.industry) setSelectedIndustries(newFilters.industry);
     if (newFilters.skills) {
       // Split skills into different categories - this is a simplified approach
-      setSelectedSubfields(newFilters.skills.filter((skill: string) => 
+      setSelectedSubfields(newFilters.skills.filter((skill: string) =>
         ['Financial Planning', 'Budget Management', 'Cost Analysis', 'Risk Assessment', 'Financial Modeling', 'Data Analysis', 'Management Accounting', 'IFRS Compliance', 'Team Leadership'].includes(skill)
       ));
-      setSelectedSoftware(newFilters.skills.filter((skill: string) => 
+      setSelectedSoftware(newFilters.skills.filter((skill: string) =>
         ['SAP', 'Oracle', 'QuickBooks', 'Tableau', 'Power BI', 'SQL Server', 'Python', 'R', 'Microsoft Dynamics', 'Excel Advanced'].includes(skill)
       ));
-      setSelectedCertifications(newFilters.skills.filter((skill: string) => 
+      setSelectedCertifications(newFilters.skills.filter((skill: string) =>
         ['CPA', 'CFA Level 2', 'FRM', 'PMP', 'ACCA', 'IFRS Certificate'].includes(skill)
       ));
     }
@@ -89,31 +89,31 @@ export const useTalentPoolState = () => {
 
   // Check if any filters are applied
   const hasActiveFilters = () => {
-    return searchQuery !== '' || 
-           locationFilter !== 'all' || 
-           experienceRange[0] > 0 || 
-           statusFilter !== 'all' || 
-           skillsFilter !== 'all' || 
-           scoreRange[0] > 0 ||
-           assessmentScoreRange[0] > 0 ||
-           selectedJob !== 'all' ||
-           hiringStageFilter.length > 0 ||
-           selectedSubfields.length > 0 || 
-           selectedSoftware.length > 0 || 
-           erpVersion !== 'all' || 
-           selectedCertifications.length > 0 || 
-           selectedIndustries.length > 0 || 
-           selectedVisaStatus.length > 0 || 
-           employmentType !== 'all' || 
-           workMode !== 'all' || 
-           availability !== 'all' ||
-           languageProficiency !== 'all' || 
-           genderFilter !== 'all' || 
-           educationLevel !== 'all' || 
-           selectedSpecialNeeds.length > 0 || 
-           cvCompleteness !== 'all' || 
-           academicExcellence || 
-           selectedScreeningTags.length > 0;
+    return searchQuery !== '' ||
+      locationFilter !== 'all' ||
+      experienceRange[0] > 0 ||
+      statusFilter !== 'all' ||
+      skillsFilter !== 'all' ||
+      scoreRange[0] > 0 ||
+      assessmentScoreRange[0] > 0 ||
+      selectedJob !== 'all' ||
+      hiringStageFilter.length > 0 ||
+      selectedSubfields.length > 0 ||
+      selectedSoftware.length > 0 ||
+      erpVersion !== 'all' ||
+      selectedCertifications.length > 0 ||
+      selectedIndustries.length > 0 ||
+      selectedVisaStatus.length > 0 ||
+      employmentType !== 'all' ||
+      workMode !== 'all' ||
+      availability !== 'all' ||
+      languageProficiency !== 'all' ||
+      genderFilter !== 'all' ||
+      educationLevel !== 'all' ||
+      selectedSpecialNeeds.length > 0 ||
+      cvCompleteness !== 'all' ||
+      academicExcellence ||
+      selectedScreeningTags.length > 0;
   };
 
   // Trigger reveal function
@@ -258,12 +258,12 @@ export const useTalentPoolState = () => {
     cvCompleteness, setCvCompleteness,
     academicExcellence, setAcademicExcellence,
     selectedScreeningTags, setSelectedScreeningTags,
-    
+
     // Add missing properties
     viewMode, setViewMode,
     showCandidateModal, setShowCandidateModal,
     filters, setFilters,
-    
+
     // Helper functions
     hasActiveFilters,
     triggerReveal,

@@ -12,6 +12,8 @@ interface SkillsSectionProps {
 }
 
 export function SkillsSection({ data, onChange }: SkillsSectionProps) {
+
+  console.log('------data------', data);
   const [newSkill, setNewSkill] = useState({ category: 'technical', value: '' });
 
   const financeSkills = [
@@ -47,7 +49,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
   const SkillInput = ({ category, placeholder, suggestions }: any) => (
     <div className="space-y-3">
       <div className="flex gap-2">
-        <Input 
+        <Input
           placeholder={placeholder}
           value={newSkill.category === category ? newSkill.value : ''}
           onChange={(e) => setNewSkill({ category, value: e.target.value })}
@@ -58,7 +60,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
           }}
           className="flex-1 focus:ring-2 focus:ring-secondary-c/50"
         />
-        <Button 
+        <Button
           size="sm"
           onClick={() => newSkill.value.trim() && addSkill(category, newSkill.value.trim())}
           className="bg-secondary-c hover:bg-secondary-c-hover text-secondary-c-foreground"
@@ -66,7 +68,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
           <Plus className="w-4 h-4" />
         </Button>
       </div>
-      
+
       {suggestions && (
         <div className="flex flex-wrap gap-2">
           {suggestions.slice(0, 6).map((skill: string) => (
@@ -83,13 +85,13 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
           ))}
         </div>
       )}
-      
+
       <div className="flex flex-wrap gap-2">
         {data[category].map((skill: string, index: number) => (
           <Badge key={index} variant="secondary-c" className="flex items-center gap-1">
             {skill}
-            <X 
-              className="w-3 h-3 cursor-pointer hover:text-destructive" 
+            <X
+              className="w-3 h-3 cursor-pointer hover:text-destructive"
               onClick={() => removeSkill(category, index)}
             />
           </Badge>
@@ -113,7 +115,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
             <Award className="w-4 h-4 text-primary-c" />
             Technical Skills
           </h4>
-          <SkillInput 
+          <SkillInput
             category="technical"
             placeholder="Add technical skill..."
             suggestions={financeSkills}
@@ -123,7 +125,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
         {/* Software & Tools */}
         <div>
           <h4 className="font-semibold text-foreground mb-3">Software & Tools</h4>
-          <SkillInput 
+          <SkillInput
             category="software"
             placeholder="Add software or tool..."
             suggestions={softwareTools}
@@ -136,7 +138,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
             <CheckCircle className="w-4 h-4 text-success" />
             Certifications
           </h4>
-          <SkillInput 
+          <SkillInput
             category="certifications"
             placeholder="Add certification..."
             suggestions={certifications}
@@ -146,7 +148,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
         {/* Languages */}
         <div>
           <h4 className="font-semibold text-foreground mb-3">Languages</h4>
-          <SkillInput 
+          <SkillInput
             category="languages"
             placeholder="Add language (e.g., Arabic - Native)..."
           />
@@ -165,7 +167,7 @@ export function SkillsSection({ data, onChange }: SkillsSectionProps) {
                   <p className="text-sm text-muted-c-foreground">Take assessments to boost credibility</p>
                 </div>
               </div>
-              <Button 
+              <Button
                 size="sm"
                 className="bg-success hover:bg-success/80 text-success-foreground"
               >

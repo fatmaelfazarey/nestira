@@ -1,8 +1,8 @@
 
-import { Console } from "console";
-import { IP } from "./EmployerStore";
-const path = `${IP}/api/employer/`;
-const token = `Bearer ${localStorage.getItem('token')}`;
+// import { Console } from "console";
+// import { IP } from "./EmployerStore";
+// const path = `${IP}/api/employer/`;
+// const token = `Bearer ${localStorage.getItem('token')}`;
 
 // export const addJob = async (jobData: Record<string, any>, setError: (error: string | null) => void, setLoading: (loading: boolean) => void
 // ): Promise<void> => {

@@ -6,20 +6,18 @@ import {
   signInWithEmailAndPassword,
   signOut,
 
-
-
   sendPasswordResetEmail,
   updateEmail,
   updatePassword,
-
 
   EmailAuthProvider,
   reauthenticateWithCredential,
   sendEmailVerification,
   verifyBeforeUpdateEmail
 } from "firebase/auth";
-import { doc, setDoc, getDoc, Timestamp } from "firebase/firestore";
+import { doc, setDoc, getDoc, Timestamp, query, collection, where, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebase";
+import { FileChartColumnIncreasingIcon } from "lucide-react";
 
 
 
@@ -92,6 +90,7 @@ export interface CandidateData {
   createdAt?: Date | Timestamp;
   updatedAt?: Date | Timestamp;
   isActive?: boolean;
+  isVerified?: boolean;
 }
 
 interface RecruiterData {
@@ -149,6 +148,9 @@ interface AuthContextType {
     newEmail: string) => Promise<void>;
   updateUserPassword: (currentPassword: string,
     newPassword: string) => Promise<void>;
+
+  isVerified: boolean;
+
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -157,6 +159,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isVerified, setIsVerified] = useState(false);
 
   const signup = async (
     email: string,
@@ -196,7 +199,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           profileCompletion: profileData.profileCompletion || 0,
           createdAt: new Date(),
           updatedAt: new Date(),
-          isActive: true
+          isActive: true,
+          isVerified: false
         } as RecruiterData;
       } else {
 
@@ -233,7 +237,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           profileCompletion: profileData.profileCompletion || 0,
           createdAt: new Date(),
           updatedAt: new Date(),
-          isActive: true
+          isActive: true,
+          isVerified: false
+
         } as CandidateData;
       }
 
@@ -271,6 +277,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await signOut(auth);
       setUserData(null);
+      setIsVerified(false);
       try { localStorage.removeItem("token"); } catch { }
     } catch (error: any) {
       console.error("Logout error:", error);
@@ -355,6 +362,30 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return progress;
   };
 
+  //   const getUnverifiedCandidates = async () => {
+  //     try {
+  //       const q = query(
+  //         collection(db, "users"),
+  //         where("role", "==", "candidate")
+  //       );
+
+
+  //       const snapshot = await getDocs(q);
+
+  //       const candidates = snapshot.docs.map(doc => ({
+  //         id: doc.id,
+  //         ...doc.data(),
+  //       }));
+
+  // console.log(candidates)
+
+  //       return candidates;
+  //     } catch (error) {
+  //       console.error("Error fetching candidates:", error);
+  //       throw error;
+  //     }
+  //   };
+
 
   const fetchUserData = async (uid: string) => {
     try {
@@ -364,6 +395,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (userDoc.exists()) {
         const data = userDoc.data() as UserData;
         // console.log("User data fetched successfully:", data);
+        // console.log("this user isVerified :", data.isVerified);
+        setIsVerified(data.isVerified);
         setUserData(data);
       } else {
         console.warn("User document does not exist in Firestore");
@@ -456,14 +489,6 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // const updateUserPassword = (password: string): Promise<void> => {
-  //   if (!auth.currentUser) {
-  //     console.log('auth.currentUser', auth.currentUser)
-  //     return Promise.reject(new Error("No user is currently logged in."));
-  //   }
-  //   return updatePassword(auth.currentUser, password);
-  // };
-
   const updateUserPassword = async (
     currentPassword: string,
     newPassword: string
@@ -534,6 +559,8 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     resetPassword,
     updateUserEmail,
     updateUserPassword,
+
+    isVerified
 
   };
 
